@@ -1,43 +1,34 @@
-import React, { useState, useEffect } from "react";
-import bridge from "@vkontakte/vk-bridge";
-import View from "@vkontakte/vkui/dist/components/View/View";
-import ScreenSpinner from "@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner";
+import React from "react";
 import "@vkontakte/vkui/dist/vkui.css";
+import { connect } from "react-redux";
 
-import Home from "./panels/Home";
-import Persik from "./panels/Persik";
+import { HashRouter as Router, Route } from "react-router-dom";
+// import {handleLocation, HISTORY_ACTION_PUSH} from "./modules/LocationModule";
+// import store from "./store";
+// import history from "./routing/history";
+import { ConfigProvider } from "@vkontakte/vkui";
+import { isDevEnv } from "./tools/helpers";
+import MobileContainer from "./containers/MobileContainer/MobileContainer";
 
 const App = () => {
-  const [activePanel, setActivePanel] = useState("home");
-  const [fetchedUser, setUser] = useState(null);
-  const [popout, setPopout] = useState(<ScreenSpinner size="large" />);
-
-  useEffect(() => {
-    bridge.subscribe(({ detail: { type, data } }) => {
-      if (type === "VKWebAppUpdateConfig") {
-        const schemeAttribute = document.createAttribute("scheme");
-        schemeAttribute.value = data.scheme ? data.scheme : "client_light";
-        document.body.attributes.setNamedItem(schemeAttribute);
-      }
-    });
-    async function fetchData() {
-      const user = await bridge.send("VKWebAppGetUserInfo");
-      setUser(user);
-      setPopout(null);
-    }
-    fetchData();
-  }, []);
-
-  const go = e => {
-    setActivePanel(e.currentTarget.dataset.to);
-  };
-
+  // history.listen((location, action) => {
+  //   store.dispatch(handleLocation(location, action, false));
+  // });
+  // store.dispatch(handleLocation(history.location, HISTORY_ACTION_PUSH, true));
   return (
-    <View activePanel={activePanel} popout={popout}>
-      <Home id="home" fetchedUser={fetchedUser} go={go} />
-      <Persik id="persik" go={go} />
-    </View>
+    <ConfigProvider
+      webviewType="vkapps"
+      isWebView={isDevEnv() ? true : undefined}
+    >
+      <Router history={[]}>
+        <Route component={props => <MobileContainer {...props} />} />
+      </Router>
+    </ConfigProvider>
   );
 };
 
-export default App;
+function map(state) {
+  return {};
+}
+
+export default connect(map, {})(App);

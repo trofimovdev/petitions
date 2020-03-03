@@ -1,8 +1,6 @@
 import { combineReducers } from "redux";
-import { routerReducer } from "./router/reducers";
-import { vkuiReducer } from "./vk/reducers";
+import routerReducer from "./router/reducers";
 
 export default combineReducers({
-  vkui: vkuiReducer,
   router: routerReducer
 });

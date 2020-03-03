@@ -1,4 +1,4 @@
-import VkSdk from "vk-apps-sdk";
+import VkSdk from "@happysanta/vk-apps-sdk";
 import {
   SET_PAGE,
   GO_BACK,
@@ -6,15 +6,15 @@ import {
   CLOSE_POPOUT,
   OPEN_MODAL,
   CLOSE_MODAL,
-  SET_STORY
+  SET_STORY,
+  SET_ACTIVE_TAB
 } from "./actionTypes";
-
-import { smoothScrollToTop } from "../../services/_functions";
 
 const initialState = {
   activeStory: null,
   activeView: null,
   activePanel: null,
+  activeTab: null,
 
   storiesHistory: [],
   viewsHistory: [],
@@ -28,15 +28,19 @@ const initialState = {
 };
 
 const routerReducer = (state = initialState, action) => {
+  console.log(state, action);
   switch (action.type) {
     case SET_PAGE: {
       const View = action.payload.view;
       const Panel = action.payload.panel;
+      console.log(View, Panel);
 
       window.history.pushState(null, null);
 
       let panelsHistory = state.panelsHistory[View] || [];
       const viewsHistory = state.viewsHistory[state.activeStory] || [];
+      console.log(panelsHistory);
+      console.log(viewsHistory);
 
       const viewIndexInHistory = viewsHistory.indexOf(View);
 
@@ -49,8 +53,14 @@ const routerReducer = (state = initialState, action) => {
       }
 
       if (panelsHistory.length > 1) {
-        VkSdk.swipeBackOn();
+        // VkSdk.swipeBackOn();
+        console.log("vksdk swipeBackOn");
       }
+      console.log("end", {
+        ...state,
+        activeView: View,
+        activePanel: Panel
+      });
 
       return {
         ...state,
@@ -82,7 +92,7 @@ const routerReducer = (state = initialState, action) => {
       let { storiesHistory } = state;
       let activeView = viewsHistory[viewsHistory.length - 1];
       let panelsHistory = state.panelsHistory[activeView] || [
-        action.payload.initial_panel
+        action.payload.initialPanel
       ];
       let activePanel = panelsHistory[panelsHistory.length - 1];
 
@@ -107,9 +117,10 @@ const routerReducer = (state = initialState, action) => {
         panelsHistory.length === 1 &&
         window.pageYOffset > 0
       ) {
-        window.scrollTo(0, 30);
+        // window.scrollTo(0, 30);
 
-        smoothScrollToTop();
+        // smoothScrollToTop();
+        VkSdk.scroll(0);
       }
 
       const storiesIndexInHistory = storiesHistory.indexOf(
@@ -226,11 +237,13 @@ const routerReducer = (state = initialState, action) => {
           setPanel = panelsHistoryNew[0];
         }
       } else {
-        VkSdk.closeApp();
+        // VkSdk.closeApp();
+        console.log("vksdk closeApp");
       }
 
       if (panelsHistory.length === 1) {
-        VkSdk.swipeBackOff();
+        // VkSdk.swipeBackOff();
+        console.log("vksdk swipeBackOff");
       }
 
       return {
@@ -336,6 +349,15 @@ const routerReducer = (state = initialState, action) => {
         }
       };
     }
+
+    case SET_ACTIVE_TAB:
+      return {
+        ...state,
+        activeTab: {
+          ...state.activeTab,
+          [action.payload.component]: action.payload.tab
+        }
+      };
 
     default: {
       return state;

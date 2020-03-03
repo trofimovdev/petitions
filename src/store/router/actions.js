@@ -5,7 +5,8 @@ import {
   OPEN_POPOUT,
   CLOSE_POPOUT,
   OPEN_MODAL,
-  CLOSE_MODAL
+  CLOSE_MODAL,
+  SET_ACTIVE_TAB
 } from "./actionTypes";
 
 export const setStory = (story, initialPanel) => ({
@@ -48,4 +49,12 @@ export const openModal = id => ({
 
 export const closeModal = () => ({
   type: CLOSE_MODAL
+});
+
+export const setActiveTab = (component, tab) => ({
+  type: SET_ACTIVE_TAB,
+  payload: {
+    component,
+    tab
+  }
 });
