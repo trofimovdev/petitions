@@ -6,11 +6,12 @@ import { Provider } from "react-redux";
 import VkSdk from "@happysanta/vk-apps-sdk";
 import store from "./store";
 import App from "./App";
-import { setPage } from "./store/router/actions";
+import { setActiveTab, setStory} from "./store/router/actions";
 
 VkSdk.init();
 
-store.dispatch(setPage("main", "feed"));
+store.dispatch(setStory("petitions", "feed"));
+store.dispatch(setActiveTab("feed", "popular"));
 
 ReactDOM.render(
   <Provider store={store}>

@@ -1,53 +1,76 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Root, View, Panel, Button } from "@vkontakte/vkui";
-import { goBack, setPage } from "../../store/router/actions";
+import {
+  View,
+  Panel,
+  PanelHeaderSimple,
+  Epic,
+  Tabs,
+  TabsItem,
+  Separator,
+  HorizontalScroll
+} from "@vkontakte/vkui";
+import {
+  setPage,
+  goBack,
+  setStory,
+  setActiveTab
+} from "../../store/router/actions";
 import "@vkontakte/vkui/dist/vkui.css";
+import EpicTabbar from "../../components/EpicTabbar/EpicTabbar";
+import Petitions from "../../components/Petitions/Petitions";
 
-const MobileContainer = props => {
-  console.log(props);
-  const { setPage, activePanel } = props;
+const MobileContainer = ({
+  activePanel,
+  setStory,
+  activeStory,
+  setActiveTab,
+  activeTab
+}) => {
   return (
-    <Root activeView="main">
-      <View id="main" activePanel={activePanel} onSwipeBack={() => goBack()}>
-        <Panel id="feed">
-          this is feed
-          <Button onClick={() => setPage("main", "test")}>
-            перейти на test
-          </Button>
-        </Panel>
-
-        <Panel id="test">
-          this is test
-          <Button onClick={() => setPage("main", "test2")}>
-            перейти на test2
-          </Button>
-        </Panel>
-
-        <Panel id="test2">
-          this is test2
-          <Button onClick={() => setPage("main", "test")}>
-            перейти на test
-          </Button>
+    <Epic
+      activeStory={activeStory}
+      tabbar={<EpicTabbar activeStory={activeStory} setStory={setStory} />}
+    >
+      <Petitions
+        id="petitions"
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+        activePanel={activePanel}
+      />
+      <View id="discover" activePanel="discover">
+        <Panel id="discover">
+          <PanelHeaderSimple>Поиск</PanelHeaderSimple>
         </Panel>
       </View>
-    </Root>
+    </Epic>
   );
 };
 
 const mapStateToProps = state => {
   return {
     activeView: state.router.activeView,
-    activePanel: state.router.activePanel
+    activePanel: state.router.activePanel,
+    activeStory: state.router.activeStory,
+    activeTab: state.router.activeTab
   };
 };
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
-    ...bindActionCreators({ goBack, setPage }, dispatch)
+    ...bindActionCreators({ goBack, setPage, setStory, setActiveTab }, dispatch)
   };
 }
+
+MobileContainer.propTypes = {
+  activePanel: PropTypes.string,
+  setStory: PropTypes.func,
+  activeStory: PropTypes.string,
+  setActiveTab: PropTypes.func.isRequired,
+  activeTab: PropTypes.object.isRequired
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(MobileContainer);

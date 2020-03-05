@@ -40,7 +40,6 @@ const routerReducer = (state = initialState, action) => {
       let panelsHistory = state.panelsHistory[View] || [];
       const viewsHistory = state.viewsHistory[state.activeStory] || [];
       console.log(panelsHistory);
-      console.log(viewsHistory);
 
       const viewIndexInHistory = viewsHistory.indexOf(View);
 
@@ -56,10 +55,9 @@ const routerReducer = (state = initialState, action) => {
         // VkSdk.swipeBackOn();
         console.log("vksdk swipeBackOn");
       }
-      console.log("end", {
-        ...state,
-        activeView: View,
-        activePanel: Panel
+      console.log("panelsHistory", {
+        ...state.panelsHistory,
+        [View]: panelsHistory
       });
 
       return {
@@ -134,6 +132,27 @@ const routerReducer = (state = initialState, action) => {
       ) {
         storiesHistory = [...storiesHistory, action.payload.story];
       }
+      console.log("setStory", {
+        ...state,
+        activeStory: action.payload.story,
+        activeView,
+        activePanel,
+
+        storiesHistory,
+        viewsHistory: {
+          ...state.viewsHistory,
+          [activeView]: viewsHistory
+        },
+        panelsHistory: {
+          ...state.panelsHistory,
+          [activeView]: panelsHistory
+        },
+
+        scrollPosition: {
+          ...state.scrollPosition,
+          [`${state.activeStory}_${state.activeView}_${state.activePanel}`]: window.pageYOffset
+        }
+      });
 
       return {
         ...state,
@@ -246,6 +265,11 @@ const routerReducer = (state = initialState, action) => {
         console.log("vksdk swipeBackOff");
       }
 
+      console.log("panelsHistory goBack", {
+        ...state.panelsHistory,
+        [state.activeView]: panelsHistory
+      });
+
       return {
         ...state,
         activeView: setView,
@@ -351,6 +375,13 @@ const routerReducer = (state = initialState, action) => {
     }
 
     case SET_ACTIVE_TAB:
+      console.log("setActiveTab", {
+        ...state,
+        activeTab: {
+          ...state.activeTab,
+          [action.payload.component]: action.payload.tab
+        }
+      });
       return {
         ...state,
         activeTab: {
