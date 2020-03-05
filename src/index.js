@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import VkSdk from "@happysanta/vk-apps-sdk";
 import store from "./store";
+import "./style/index.css";
 import App from "./App";
 import { setActiveTab, setStory} from "./store/router/actions";
 

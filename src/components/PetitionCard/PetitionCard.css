@@ -1,0 +1,22 @@
+.PetitionCard {
+  margin: 0;
+  padding: 16px 16px 22px 16px; }
+  .PetitionCard__title {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    line-height: 24px; }
+  .PetitionCard__progress_text {
+    margin: 0 0 9px 0;
+    font-size: 15px;
+    color: #76787a; }
+  .PetitionCard__progress_bar {
+    margin: 0 0 16px 0; }
+  .PetitionCard__card {
+    height: 180px;
+    overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0 0 12px 0; }
+  .PetitionCard__users_stack {
+    margin: 0;
+    padding: 0; }
