@@ -1,4 +1,5 @@
 import VkSdk from "@happysanta/vk-apps-sdk";
+import { smoothScrollToTop } from "../../tools/helpers";
 import {
   SET_PAGE,
   GO_BACK,
@@ -115,10 +116,7 @@ const routerReducer = (state = initialState, action) => {
         panelsHistory.length === 1 &&
         window.pageYOffset > 0
       ) {
-        // window.scrollTo(0, 30);
-
-        // smoothScrollToTop();
-        VkSdk.scroll(0);
+        smoothScrollToTop();
       }
 
       const storiesIndexInHistory = storiesHistory.indexOf(
@@ -372,21 +370,41 @@ const routerReducer = (state = initialState, action) => {
       };
     }
 
-    case SET_ACTIVE_TAB:
+    case SET_ACTIVE_TAB: {
+      let scrollPosition1 = {};
+      if (state.activeTab && state.activeTab[state.activePanel]) {
+        console.log(
+          `set scrollPosition ${window.pageYOffset} in tab ${
+            state.activePanel
+          }_${state.activeTab[state.activePanel]}`
+        );
+        scrollPosition1 = {
+          ...state.scrollPosition,
+          [`${state.activeStory}_${state.activeView}_${state.activePanel}_${state.activeTab[state.activePanel]}`]: window.pageYOffset
+        };
+      } else {
+        scrollPosition1 = {
+          ...state.scrollPosition,
+          [`${state.activeStory}_${state.activeView}_${state.activePanel}`]: window.pageYOffset
+        };
+      }
       console.log("setActiveTab", {
         ...state,
         activeTab: {
           ...state.activeTab,
           [action.payload.component]: action.payload.tab
-        }
+        },
+        scrollPosition: scrollPosition1
       });
       return {
         ...state,
         activeTab: {
           ...state.activeTab,
           [action.payload.component]: action.payload.tab
-        }
+        },
+        scrollPosition: scrollPosition1
       };
+    }
 
     default:
       return state;

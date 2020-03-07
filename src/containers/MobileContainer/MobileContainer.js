@@ -15,7 +15,6 @@ import Petitions from "../../components/Petitions/Petitions";
 import Management from "../../components/Management/Management";
 
 const MobileContainer = props => {
-  console.log(props);
   const {
     activeView,
     activePanel,
@@ -27,18 +26,18 @@ const MobileContainer = props => {
   } = props;
 
   useEffect(() => {
-    const pageScrollPosition =
-      scrollPosition[`${activeStory}_${activeView}_${activePanel}`] || 0;
-    console.log(
-      pageScrollPosition,
-      activeStory,
-      activeView,
-      activePanel,
-      props
-    );
+    console.log(activeTab, activePanel);
+    // TODO: save scroll position between tabs
+    const pageScrollPosition = activeTab[activePanel]
+      ? scrollPosition[
+          `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
+        ] || 0
+      : scrollPosition[`${activeStory}_${activeView}_${activePanel}`] || 0;
+    console.log("apply ", pageScrollPosition, activePanel, activeTab[activePanel]);
+    console.log(scrollPosition);
 
     window.scroll(0, pageScrollPosition);
-  }, [activeStory, activeView, activePanel, scrollPosition, props]);
+  }, [activeStory, activeView, activePanel, activeTab, scrollPosition, props]);
 
   return (
     <Epic

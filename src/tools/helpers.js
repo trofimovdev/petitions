@@ -7,3 +7,12 @@ export function devLog(any) {
     console.log(any);
   }
 }
+
+export const smoothScrollToTop = () => {
+  const c = document.documentElement.scrollTop || document.body.scrollTop;
+  if (c <= 0) {
+    return;
+  }
+  window.requestAnimationFrame(smoothScrollToTop);
+  window.scrollTo(0, c - c / 8);
+};
