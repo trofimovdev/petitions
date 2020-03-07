@@ -27,13 +27,21 @@ const MobileContainer = props => {
 
   useEffect(() => {
     console.log(activeTab, activePanel);
-    // TODO: save scroll position between tabs
-    const pageScrollPosition = activeTab[activePanel]
+    const pageScrollPosition = scrollPosition[
+      `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
+    ]
       ? scrollPosition[
           `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
-        ] || 0
-      : scrollPosition[`${activeStory}_${activeView}_${activePanel}`] || 0;
-    console.log("apply ", pageScrollPosition, activePanel, activeTab[activePanel]);
+        ]
+      : scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
+      ? scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
+      : 0;
+    console.log(
+      "apply ",
+      pageScrollPosition,
+      activePanel,
+      activeTab[activePanel]
+    );
     console.log(scrollPosition);
 
     window.scroll(0, pageScrollPosition);

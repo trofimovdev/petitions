@@ -29,7 +29,7 @@ const initialState = {
 };
 
 const routerReducer = (state = initialState, action) => {
-  console.log(state, action);
+  console.log("router", state, action);
   switch (action.type) {
     case SET_PAGE: {
       const View = action.payload.view;

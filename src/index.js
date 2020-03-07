@@ -7,10 +7,14 @@ import VkSdk from "@happysanta/vk-apps-sdk";
 import store from "./store";
 import "./style/index.css";
 import App from "./App";
-import { setActiveTab, setStory} from "./store/router/actions";
+import { setActiveTab, setStory } from "./store/router/actions";
+import setColorScheme from "./store/ui/actions";
 
 VkSdk.init();
-
+VkSdk.subscribeEvent("VKWebAppUpdateConfig", ({ scheme }) => {
+  store.dispatch(setColorScheme(scheme));
+  console.log("SET COLOR SCHEME", scheme);
+});
 store.dispatch(setStory("petitions", "feed"));
 store.dispatch(setActiveTab("feed", "popular"));
 
