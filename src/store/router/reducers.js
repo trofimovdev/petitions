@@ -287,7 +287,7 @@ const routerReducer = (state = initialState, action) => {
       };
     }
 
-    case OPEN_POPOUT: {
+    case OPEN_POPOUT:
       window.history.pushState(null, null);
 
       return {
@@ -297,9 +297,8 @@ const routerReducer = (state = initialState, action) => {
           [state.activeView]: action.payload.popout
         }
       };
-    }
 
-    case CLOSE_POPOUT: {
+    case CLOSE_POPOUT:
       return {
         ...state,
         popouts: {
@@ -307,7 +306,6 @@ const routerReducer = (state = initialState, action) => {
           [state.activeView]: null
         }
       };
-    }
 
     case OPEN_MODAL: {
       window.history.pushState(null, null);
@@ -390,9 +388,8 @@ const routerReducer = (state = initialState, action) => {
         }
       };
 
-    default: {
+    default:
       return state;
-    }
   }
 };
 

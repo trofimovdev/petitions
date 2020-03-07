@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "homepage":"./",
   "scripts": {
     "build-js": "react-scripts build",
     "build": "GENERATE_SOURCEMAP=false npm-run-all build-css build-js",
@@ -11,12 +12,14 @@
     "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
     "start-js": "cross-env react-scripts start",
     "start": "npm-run-all -p watch-css start-js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "deploy": "vk-miniapps-deploy"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@vkontakte/vk-miniapps-deploy": "0.0.13",
     "cross-env": "^5.2.1",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",

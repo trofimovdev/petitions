@@ -8,7 +8,7 @@ import Icon28SettingsOutline from "@vkontakte/icons/dist/28/settings_outline";
 const EpicTabbar = ({ setStory, activeStory }) => (
   <Tabbar>
     <TabbarItem
-      onClick={() => setStory("petitions")}
+      onClick={() => setStory("petitions", "feed")}
       selected={activeStory === "petitions"}
       data-story="petitions"
       text="Петиции"
@@ -16,7 +16,7 @@ const EpicTabbar = ({ setStory, activeStory }) => (
       <Icon28WriteSquareOutline />
     </TabbarItem>
     <TabbarItem
-      onClick={() => setStory("management")}
+      onClick={() => setStory("management", "feed")}
       selected={activeStory === "management"}
       data-story="management"
       text="Управление"
