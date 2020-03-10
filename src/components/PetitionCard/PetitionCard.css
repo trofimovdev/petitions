@@ -11,6 +11,8 @@
     color: #76787a; }
   .PetitionCard__progress_bar {
     margin: 0 0 16px 0; }
+    .PetitionCard__progress_bar.done > .Progress__in {
+      background: #4bb34b; }
   .PetitionCard__card {
     height: 180px;
     overflow: hidden;
@@ -20,3 +22,8 @@
   .PetitionCard__users_stack {
     margin: 0;
     padding: 0; }
+
+.Progress__in {
+  max-width: 100%; }
+  .Progress__in.done {
+    background: #4bb34b; }

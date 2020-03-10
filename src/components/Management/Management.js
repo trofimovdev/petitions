@@ -27,9 +27,7 @@ const Management = ({ id, setActiveTab, activeTab, activePanel }) => {
         </FixedLayout>
         <Separator style={{ marginTop: `58px` }} />
         <div>
-          <PetitionCard title="Поместить Кобе Брайанта на новый логотип НБА" />
-          <Separator />
-          <PetitionCard title="Поместить Кобе Брайанта на новый логотип НБА" />
+          empty
         </div>
       </Panel>
     </View>

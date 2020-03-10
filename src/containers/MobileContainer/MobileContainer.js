@@ -22,11 +22,11 @@ const MobileContainer = props => {
     activeStory,
     setActiveTab,
     activeTab,
-    scrollPosition
+    scrollPosition,
+    setPage
   } = props;
 
   useEffect(() => {
-    console.log(activeTab, activePanel);
     const pageScrollPosition = scrollPosition[
       `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
     ]
@@ -36,14 +36,6 @@ const MobileContainer = props => {
       : scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
       ? scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
       : 0;
-    console.log(
-      "apply ",
-      pageScrollPosition,
-      activePanel,
-      activeTab[activePanel]
-    );
-    console.log(scrollPosition);
-
     window.scroll(0, pageScrollPosition);
   }, [activeStory, activeView, activePanel, activeTab, scrollPosition, props]);
 
@@ -57,6 +49,7 @@ const MobileContainer = props => {
         setActiveTab={setActiveTab}
         activeTab={activeTab}
         activePanel={activePanel}
+        setPage={setPage}
       />
       <Management
         id="management"

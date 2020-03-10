@@ -18,6 +18,10 @@
 
   &__progress_bar {
     margin: 0 0 16px 0;
+
+    &.done > .Progress__in {
+      background: $progress-bar-done-color;
+    }
   }
 
   &__card {
@@ -31,5 +35,13 @@
   &__users_stack {
     margin: 0;
     padding: 0;
+  }
+}
+
+.Progress__in {
+  max-width: 100%;
+
+  &.done {
+    background: $progress-bar-done-color;
   }
 }

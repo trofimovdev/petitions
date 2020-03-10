@@ -1,7 +1,7 @@
 import SET_COLOR_SCHEME from "./actionTypes";
 
 const initialState = {
-  colorScheme: "space_gray"
+  colorScheme: "bright_light"
 };
 
 const uiReducer = (state = initialState, action) => {

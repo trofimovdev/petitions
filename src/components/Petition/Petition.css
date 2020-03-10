@@ -1,0 +1,29 @@
+.PanelHeaderSimple__in {
+  background: transparent;
+  z-index: 10; }
+
+.test {
+  width: 100%;
+  height: 18vh;
+  position: absolute;
+  top: 0;
+  overflow: hidden; }
+
+.test img {
+  width: 100%; }
+
+.test:before {
+  content: '';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0)); }
+
+.PullToRefresh {
+  margin-top: 18vh; }
+
+.PullToRefresh__controls {
+  position: absolute;
+  top: 0; }
