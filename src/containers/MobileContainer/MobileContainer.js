@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Epic } from "@vkontakte/vkui";
+import { Epic, Root } from "@vkontakte/vkui";
 import {
   setPage,
   goBack,
@@ -40,16 +40,15 @@ const MobileContainer = props => {
   }, [activeStory, activeView, activePanel, activeTab, scrollPosition, props]);
 
   return (
-    <Epic
-      activeStory={activeStory}
-      tabbar={<EpicTabbar activeStory={activeStory} setStory={setStory} />}
-    >
+    <Epic activeStory={activeStory}>
       <Petitions
         id="petitions"
         setActiveTab={setActiveTab}
         activeTab={activeTab}
         activePanel={activePanel}
         setPage={setPage}
+        activeStory={activeStory}
+        setStory={setStory}
       />
       <Management
         id="management"

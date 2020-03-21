@@ -2,26 +2,12 @@
 
 .PetitionCard {
   margin: 0;
-  padding: 16px 16px 22px 16px;
+  padding-bottom: 22px;
 
   &__title {
     margin: 0 0 12px 0;
     font-size: 20px;
     line-height: 24px;
-  }
-
-  &__progress_text {
-    margin: 0 0 9px 0;
-    font-size: $progress-text-font-size;
-    color: $progress-text-color;
-  }
-
-  &__progress_bar {
-    margin: 0 0 16px 0;
-
-    &.done > .Progress__in {
-      background: $progress-bar-done-color;
-    }
   }
 
   &__card {

@@ -10,13 +10,16 @@ import {
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import PetitionCard from "../PetitionCard/PetitionCard";
+import EpicTabbar from "../EpicTabbar/EpicTabbar";
 
 const PetitionsFeed = ({
   id,
   setActiveTab,
   activeTab,
   activePanel,
-  setPage
+  setPage,
+  activeStory,
+  setStory
 }) => {
   return (
     <Panel id={id} separator={false}>
@@ -68,6 +71,7 @@ const PetitionsFeed = ({
           />
         </div>
       )}
+      <EpicTabbar activeStory={activeStory} setStory={setStory} />
     </Panel>
   );
 };
@@ -76,6 +80,8 @@ PetitionsFeed.propTypes = {
   setActiveTab: PropTypes.func.isRequired,
   activeTab: PropTypes.object.isRequired,
   activePanel: PropTypes.string.isRequired,
+  activeStory: PropTypes.string.isRequired,
+  setStory: PropTypes.func.isRequired,
   setPage: PropTypes.func.isRequired
 };
 

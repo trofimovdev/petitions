@@ -1,0 +1,12 @@
+.Tabbar {
+  height: 68px !important; }
+
+.PetitionTabbar {
+  display: flex;
+  width: 100%; }
+
+.PetitionTabbar > * {
+  margin-right: 8px; }
+
+.PetitionTabbar > *:last-child {
+  margin-right: 0; }

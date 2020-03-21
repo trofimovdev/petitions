@@ -1,7 +1,8 @@
 import React from "react";
-import { Progress, Div, Card, UsersStack } from "@vkontakte/vkui";
+import { Div, Card, UsersStack } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./PetitionCard.css";
+import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import test from "../../img/test.jpg";
 
 const PetitionCard = ({
@@ -12,21 +13,6 @@ const PetitionCard = ({
   setPage,
   activePanel
 }) => {
-  const declOfNum = n => {
-    const titles = ["подписи", "подписей", "подписей"];
-    return titles[
-      n % 10 === 1 && n % 100 !== 11
-        ? 0
-        : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)
-        ? 1
-        : 2
-    ];
-  };
-
-  const getProgressBarValue = () => {
-    return Math.floor((numberOfSignatures / totalSignatures) * 100);
-  };
-
   return (
     <Div
       className="PetitionCard"
@@ -37,16 +23,9 @@ const PetitionCard = ({
     >
       <h1 className="PetitionCard__title">{title}</h1>
       <div>
-        <p className="PetitionCard__progress_text">
-          {`${numberOfSignatures} из ${totalSignatures} ${declOfNum(
-            numberOfSignatures
-          )}`}
-        </p>
-        <Progress
-          className={`PetitionCard__progress_bar ${
-            numberOfSignatures >= totalSignatures ? "done" : ""
-          }`}
-          value={getProgressBarValue()}
+        <PetitionProgress
+          numberOfSignatures={numberOfSignatures}
+          totalSignatures={totalSignatures}
         />
         <Card
           size="l"

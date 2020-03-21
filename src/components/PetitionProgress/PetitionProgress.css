@@ -1,0 +1,9 @@
+.PetitionProgress__text {
+  margin: 0 0 9px 0;
+  font-size: 15px;
+  color: #76787a; }
+
+.PetitionProgress__bar {
+  margin: 0 0 12px 0; }
+  .PetitionProgress__bar.done > .Progress__in {
+    background: #4bb34b; }
