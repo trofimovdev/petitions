@@ -1,4 +1,4 @@
-import VkSdk from "@happysanta/vk-apps-sdk";
+import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import { smoothScrollToTop } from "../../tools/helpers";
 import {
   SET_PAGE,
@@ -11,6 +11,7 @@ import {
   SET_ACTIVE_TAB
 } from "./actionTypes";
 
+const api = new VKMiniAppAPI();
 const initialState = {
   activeStory: null,
   activeView: null,

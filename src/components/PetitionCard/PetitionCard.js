@@ -2,23 +2,27 @@ import React from "react";
 import { Div, Card, UsersStack } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./PetitionCard.css";
+import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import test from "../../img/test.jpg";
+
+const api = new VKMiniAppAPI();
 
 const PetitionCard = ({
   id,
   title,
   numberOfSignatures,
   totalSignatures,
-  setPage,
-  activePanel
+  activePanel,
+  setPage
 }) => {
   return (
     <Div
       className="PetitionCard"
       onClick={() => {
-        setPage(activePanel, "petition");
-        console.log("test");
+        api.setLocationHash("p").then(() => {
+          setPage(activePanel, "petition");
+        });
       }}
     >
       <h1 className="PetitionCard__title">{title}</h1>
@@ -52,8 +56,8 @@ PetitionCard.propTypes = {
   title: PropTypes.string.isRequired,
   numberOfSignatures: PropTypes.number.isRequired,
   totalSignatures: PropTypes.number.isRequired,
-  setPage: PropTypes.func.isRequired,
-  activePanel: PropTypes.string.isRequired
+  activePanel: PropTypes.string.isRequired,
+  setPage: PropTypes.func.isRequired
 };
 
 export default PetitionCard;

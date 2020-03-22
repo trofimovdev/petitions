@@ -4,7 +4,14 @@ import PropTypes from "prop-types";
 import PetitionsFeed from "../PetitionsFeed/PetitionsFeed";
 import Petition from "../Petition/Petiton";
 
-const Petitions = ({ setActiveTab, activeTab, activePanel, activeStory, setStory, setPage }) => {
+const Petitions = ({
+  setActiveTab,
+  activeTab,
+  activePanel,
+  activeStory,
+  setStory,
+  setPage
+}) => {
   return (
     <View activePanel={activePanel} header={false}>
       <PetitionsFeed

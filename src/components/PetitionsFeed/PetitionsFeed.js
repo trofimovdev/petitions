@@ -19,7 +19,8 @@ const PetitionsFeed = ({
   activePanel,
   setPage,
   activeStory,
-  setStory
+  setStory,
+  api
 }) => {
   return (
     <Panel id={id} separator={false}>

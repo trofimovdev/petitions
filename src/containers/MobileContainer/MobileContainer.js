@@ -10,7 +10,6 @@ import {
   setActiveTab
 } from "../../store/router/actions";
 import "@vkontakte/vkui/dist/vkui.css";
-import EpicTabbar from "../../components/EpicTabbar/EpicTabbar";
 import Petitions from "../../components/Petitions/Petitions";
 import Management from "../../components/Management/Management";
 
@@ -23,7 +22,8 @@ const MobileContainer = props => {
     setActiveTab,
     activeTab,
     scrollPosition,
-    setPage
+    setPage,
+    api
   } = props;
 
   useEffect(() => {
