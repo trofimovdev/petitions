@@ -1,6 +1,13 @@
 import React from "react";
 import "./ManagementFeed.css";
-import { Panel, PanelHeaderSimple, Button, Placeholder } from "@vkontakte/vkui";
+import {
+  Panel,
+  PanelHeaderSimple,
+  Button,
+  Placeholder,
+  usePlatform,
+  getClassName
+} from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
@@ -14,10 +21,12 @@ const ManagementFeed = ({
   activePanel,
   setPage
 }) => {
+  const platform = usePlatform();
   return (
     <Panel id={id} separator={false}>
       <PanelHeaderSimple>Петиции</PanelHeaderSimple>
       <Placeholder
+        className={getClassName("Placeholder", platform)}
         action={
           <Button
             size="l"

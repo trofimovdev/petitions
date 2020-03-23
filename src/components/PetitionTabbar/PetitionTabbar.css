@@ -1,9 +1,17 @@
 .PetitionTabbar {
-  height: 68px !important; }
-  .PetitionTabbar__wrapper {
+  height: 112px !important;
+  display: flex;
+  flex-direction: column; }
+  .PetitionTabbar__signed {
+    margin: 0 auto;
     display: flex;
-    width: 100%; }
-  .PetitionTabbar__wrapper > * {
+    align-items: center;
+    color: #4bb34b; }
+    .PetitionTabbar__signed__icon {
+      margin-right: 10px; }
+  .PetitionTabbar__buttons {
+    display: flex; }
+  .PetitionTabbar__buttons > * {
     margin-right: 8px; }
-  .PetitionTabbar__wrapper > *:last-child {
+  .PetitionTabbar__buttons > *:last-child {
     margin-right: 0; }

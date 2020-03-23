@@ -1,16 +1,30 @@
-.PetitionTabbar {
-  height: 68px !important;
+@import "src/style/_vars.scss";
 
-  &__wrapper {
+.PetitionTabbar {
+  height: 112px !important;
+  display: flex;
+  flex-direction: column;
+
+  &__signed {
+    margin: 0 auto;
     display: flex;
-    width: 100%;
+    align-items: center;
+    color: $petition-signed-text-color;
+
+    &__icon {
+      margin-right: 10px;
+    }
   }
 
-  &__wrapper > * {
+  &__buttons {
+    display: flex;
+  }
+
+  &__buttons > * {
     margin-right: 8px;
   }
 
-  &__wrapper > *:last-child {
+  &__buttons > *:last-child {
     margin-right: 0;
   }
 }

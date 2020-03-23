@@ -7,8 +7,14 @@
   }
 
   &__info {
-    margin-top: calc(12vh - var(--safe-area-inset-top));
     padding-bottom: 20px;
+    &--ios {
+      margin-top: calc(180px - var(--panelheader_height_ios) - var(--safe-area-inset-top));
+    }
+
+    &--android {
+      margin-top: calc(180px - var(--panelheader_height_android) - var(--safe-area-inset-top));
+    }
   }
 
   &__info h1 {
@@ -33,7 +39,7 @@
 
 .test {
   width: 100%;
-  height: 18vh;
+  height: 180px;
   position: absolute;
   top: 0;
   overflow: hidden;

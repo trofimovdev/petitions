@@ -1,2 +1,5 @@
-.Placeholder {
-  margin-top: calc(var(--panelheader_height_android) + var(--panelheader_height_ios) + var(--safe-area-inset-top)); }
+.Placeholder--ios {
+  margin-top: calc(5px + var(--panelheader_height_ios) + var(--safe-area-inset-top)); }
+
+.Placeholder--android {
+  margin-top: calc(5px + var(--panelheader_height_android) + var(--safe-area-inset-top)); }
