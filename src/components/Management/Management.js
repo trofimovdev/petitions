@@ -1,44 +1,36 @@
-import React, { useRef } from "react";
-import "./Management.css";
-import {
-  Panel,
-  PanelHeaderSimple,
-  Separator,
-  View,
-  FixedLayout,
-  Button,
-  Div
-} from "@vkontakte/vkui";
-import Icon24Add from "@vkontakte/icons/dist/24/add";
+import React from "react";
+import { View } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
-import PetitionCard from "../PetitionCard/PetitionCard";
+import ManagementFeed from "../ManagementFeed/ManagementFeed";
+import Create from "../Create/Create";
 
-const Management = ({ id, setActiveTab, activeTab, activePanel }) => {
+const Management = ({ id, activeStory, setStory, activePanel, setPage }) => {
   return (
     <View id={id} activePanel={activePanel} header={false}>
-      <Panel id="feed" separator={false}>
-        <PanelHeaderSimple separator={false}>Петиции</PanelHeaderSimple>
-        <FixedLayout vertical="top">
-          <Div style={{ paddingTop: `0px`, background: `#ffffff` }}>
-            <Button before={<Icon24Add />} size="xl" mode="secondary">
-              Создать петицию
-            </Button>
-          </Div>
-        </FixedLayout>
-        <Separator style={{ marginTop: `58px` }} />
-        <div>
-          empty
-        </div>
-      </Panel>
+      <ManagementFeed
+        id="feed"
+        activeStory={activeStory}
+        setStory={setStory}
+        activePanel={activePanel}
+        setPage={setPage}
+      />
+      <Create
+        id="create"
+        activeStory={activeStory}
+        activePanel={activePanel}
+        setStory={setStory}
+        setPage={setPage}
+      />
     </View>
   );
 };
 
 Management.propTypes = {
   id: PropTypes.string.isRequired,
-  setActiveTab: PropTypes.func.isRequired,
-  activeTab: PropTypes.object.isRequired,
-  activePanel: PropTypes.string.isRequired
+  activeStory: PropTypes.string.isRequired,
+  setStory: PropTypes.func.isRequired,
+  activePanel: PropTypes.string.isRequired,
+  setPage: PropTypes.func.isRequired
 };
 
 export default Management;

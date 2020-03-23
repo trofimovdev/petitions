@@ -23,7 +23,7 @@ const Petitions = ({
         activeStory={activeStory}
         setStory={setStory}
       />
-      <Petition id="petition" />
+      <Petition id="petition" setPage={setPage} activePanel={activePanel} />
     </View>
   );
 };

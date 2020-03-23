@@ -1,0 +1,2 @@
+.Placeholder {
+  margin-top: calc(var(--panelheader_height_android) + var(--panelheader_height_ios) + var(--safe-area-inset-top)); }

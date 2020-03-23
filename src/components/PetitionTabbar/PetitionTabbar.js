@@ -7,8 +7,8 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 const api = new VKMiniAppAPI();
 
 const PetitionTabbar = () => (
-  <Tabbar>
-    <Div className="PetitionTabbar">
+  <Tabbar className="PetitionTabbar">
+    <Div className="PetitionTabbar__wrapper">
       <Button size="xl" mode="primary">
         Подписать
       </Button>

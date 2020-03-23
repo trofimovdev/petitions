@@ -1,16 +1,16 @@
-.Tabbar {
-  height: 68px !important;
-}
-
 .PetitionTabbar {
-  display: flex;
-  width: 100%;
-}
+  height: 68px !important;
 
-.PetitionTabbar > * {
-  margin-right: 8px;
-}
+  &__wrapper {
+    display: flex;
+    width: 100%;
+  }
 
-.PetitionTabbar > *:last-child {
-  margin-right: 0;
+  &__wrapper > * {
+    margin-right: 8px;
+  }
+
+  &__wrapper > *:last-child {
+    margin-right: 0;
+  }
 }

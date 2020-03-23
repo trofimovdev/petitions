@@ -7,17 +7,18 @@
   }
 
   &__info {
-    margin-top: 12vh;
+    margin-top: calc(12vh - var(--safe-area-inset-top));
     padding-bottom: 20px;
   }
 
   &__info h1 {
     font-size: 20px;
-    margin: 0 0 14px 0;
+    margin: 0 0 14px 0 !important;
   }
 
   &__creator {
     margin-top: 5px;
+    margin-bottom: 34px;
 
     &__link {
       font-weight: 600;

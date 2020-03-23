@@ -3,15 +3,16 @@
   z-index: 10; }
 
 .Petition__info {
-  margin-top: 12vh;
+  margin-top: calc(12vh - var(--safe-area-inset-top));
   padding-bottom: 20px; }
 
 .Petition__info h1 {
   font-size: 20px;
-  margin: 0 0 14px 0; }
+  margin: 0 0 14px 0 !important; }
 
 .Petition__creator {
-  margin-top: 5px; }
+  margin-top: 5px;
+  margin-bottom: 34px; }
   .Petition__creator__link {
     font-weight: 600; }
 

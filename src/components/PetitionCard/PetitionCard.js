@@ -14,13 +14,14 @@ const PetitionCard = ({
   numberOfSignatures,
   totalSignatures,
   activePanel,
-  setPage
+  setPage,
+  managementDots
 }) => {
   return (
     <Div
       className="PetitionCard"
       onClick={() => {
-        api.setLocationHash("p").then(() => {
+        api.setLocationHash(`p${id.toString()}`).then(() => {
           setPage(activePanel, "petition");
         });
       }}
@@ -57,7 +58,8 @@ PetitionCard.propTypes = {
   numberOfSignatures: PropTypes.number.isRequired,
   totalSignatures: PropTypes.number.isRequired,
   activePanel: PropTypes.string.isRequired,
-  setPage: PropTypes.func.isRequired
+  setPage: PropTypes.func.isRequired,
+  managementDots: PropTypes.bool.isRequired
 };
 
 export default PetitionCard;

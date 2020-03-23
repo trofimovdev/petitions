@@ -1,12 +1,9 @@
-.Tabbar {
-  height: 68px !important; }
-
 .PetitionTabbar {
-  display: flex;
-  width: 100%; }
-
-.PetitionTabbar > * {
-  margin-right: 8px; }
-
-.PetitionTabbar > *:last-child {
-  margin-right: 0; }
+  height: 68px !important; }
+  .PetitionTabbar__wrapper {
+    display: flex;
+    width: 100%; }
+  .PetitionTabbar__wrapper > * {
+    margin-right: 8px; }
+  .PetitionTabbar__wrapper > *:last-child {
+    margin-right: 0; }

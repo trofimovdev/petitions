@@ -60,6 +60,7 @@ const PetitionsFeed = ({
             totalSignatures={40000}
             activePanel={activePanel}
             setPage={setPage}
+            managementDots={false}
           />
           <Separator />
           <PetitionCard
@@ -69,6 +70,7 @@ const PetitionsFeed = ({
             totalSignatures={25000}
             activePanel={activePanel}
             setPage={setPage}
+            managementDots={false}
           />
         </div>
       )}
