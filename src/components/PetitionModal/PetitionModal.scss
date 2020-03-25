@@ -1,0 +1,18 @@
+.PetitionModal {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  &__button-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(100% / 3);
+    text-align: center;
+
+    &__text {
+      font-size: 14px;
+      margin: 10px auto 0 auto;
+    }
+  }
+}

@@ -307,6 +307,7 @@ const routerReducer = (state = initialState, action) => {
       };
 
     case OPEN_MODAL: {
+      console.log('OPEN MODAL');
       window.history.pushState(null, null);
 
       const activeModal = action.payload.id || null;

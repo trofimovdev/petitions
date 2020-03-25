@@ -3,7 +3,6 @@
 .Petition {
   &__header .PanelHeaderSimple__in {
     background: transparent;
-    z-index: 10;
   }
 
   &__info {
@@ -24,10 +23,11 @@
 
   &__creator {
     margin-top: 5px;
-    margin-bottom: 34px;
+    margin-bottom: 72px; // 34px
 
     &__link {
       font-weight: 600;
+      margin-right: 4px;
     }
   }
 

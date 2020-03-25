@@ -5,13 +5,14 @@ import Icon24Settings from "@vkontakte/icons/dist/24/settings";
 import Icon24DoneOutline from "@vkontakte/icons/dist/24/done_outline";
 import "./PetitionTabbar.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
+import PropTypes from "prop-types";
 
 const api = new VKMiniAppAPI();
 
-const PetitionTabbar = () => (
+const PetitionTabbar = ({ openModal }) => (
   <Tabbar className="PetitionTabbar">
     <div className="PetitionTabbar__signed">
-      <Icon24DoneOutline className="PetitionTabbar__signed__icon"/>
+      <Icon24DoneOutline className="PetitionTabbar__signed__icon" />
       Вы подписали эту петицию
     </div>
     <Div className="PetitionTabbar__buttons">
@@ -22,7 +23,9 @@ const PetitionTabbar = () => (
         size="l"
         mode="secondary"
         onClick={() => {
-          api.shareLink("lolkek");
+          console.log("try to open");
+          openModal("share-type");
+          console.log("opened");
         }}
       >
         <Icon24ShareOutline />
@@ -33,5 +36,9 @@ const PetitionTabbar = () => (
     </Div>
   </Tabbar>
 );
+
+PetitionTabbar.propTypes = {
+  openModal: PropTypes.func.isRequired
+};
 
 export default PetitionTabbar;

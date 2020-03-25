@@ -1,6 +1,5 @@
 .Petition__header .PanelHeaderSimple__in {
-  background: transparent;
-  z-index: 10; }
+  background: transparent; }
 
 .Petition__info {
   padding-bottom: 20px; }
@@ -15,9 +14,10 @@
 
 .Petition__creator {
   margin-top: 5px;
-  margin-bottom: 34px; }
+  margin-bottom: 72px; }
   .Petition__creator__link {
-    font-weight: 600; }
+    font-weight: 600;
+    margin-right: 4px; }
 
 .Petition__creator .Cell__children {
   font-size: 14px;

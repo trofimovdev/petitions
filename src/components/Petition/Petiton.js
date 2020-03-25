@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Panel,
   PanelHeaderSimple,
@@ -22,8 +22,22 @@ import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
 
 const api = new VKMiniAppAPI();
 
-const Petition = ({ id, setPage, activePanel }) => {
+const Petition = ({ id, setPage, activePanel, openModal }) => {
+  const onScroll = () => {
+    // if (window.scrollY > 400) {
+    //   this.setState({color: 'black'})
+    // } else {
+    //   this.setState({color: 'white'})
+    // }
+    console.log(window.scrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
+  });
+
   const platform = usePlatform();
+
   return (
     <Panel id={id} separator={false} className="Petition">
       <PanelHeaderSimple
@@ -31,7 +45,7 @@ const Petition = ({ id, setPage, activePanel }) => {
         left={
           <PanelHeaderButton
             onClick={() => {
-              api.setLocationHash(``).then(() => {
+              api.setLocationHash("").then(() => {
                 setPage(activePanel, "feed");
               });
             }}
@@ -146,16 +160,16 @@ const Petition = ({ id, setPage, activePanel }) => {
         }
         multiline
       >
-        <Link
-          href="https://vk.com/id165275777"
-          className="Petition__creator__link"
-        >
-          Роман Соколов
-        </Link>
-        создал петицию, адресованную Сергею Корнееву
+          <Link
+            href="https://vk.com/id165275777"
+            className="Petition__creator__link"
+          >
+            Роман Соколов
+          </Link>
+          создал петицию, адресованную Сергею Корнееву
       </Cell>
 
-      <PetitionTabbar />
+      <PetitionTabbar openModal={openModal} />
     </Panel>
   );
 };
@@ -163,7 +177,8 @@ const Petition = ({ id, setPage, activePanel }) => {
 Petition.propTypes = {
   id: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
-  activePanel: PropTypes.string.isRequired
+  activePanel: PropTypes.string.isRequired,
+  openModal: PropTypes.func.isRequired
 };
 
 export default Petition;

@@ -7,7 +7,9 @@ import {
   setPage,
   goBack,
   setStory,
-  setActiveTab
+  setActiveTab,
+  closeModal,
+  openModal
 } from "../../store/router/actions";
 import "@vkontakte/vkui/dist/vkui.css";
 import Petitions from "../../components/Petitions/Petitions";
@@ -22,8 +24,13 @@ const MobileContainer = props => {
     setActiveTab,
     activeTab,
     scrollPosition,
-    setPage
+    setPage,
+    activeModals,
+    closeModal,
+    openModal
   } = props;
+  const activeModal =
+    activeModals[activeView] === undefined ? null : activeModals[activeView];
 
   useEffect(() => {
     const pageScrollPosition = scrollPosition[
@@ -48,6 +55,9 @@ const MobileContainer = props => {
         setPage={setPage}
         activeStory={activeStory}
         setStory={setStory}
+        activeModal={activeModal}
+        closeModal={closeModal}
+        openModal={openModal}
       />
       <Management
         id="management"
@@ -68,14 +78,18 @@ const mapStateToProps = state => {
     activePanel: state.router.activePanel,
     activeStory: state.router.activeStory,
     activeTab: state.router.activeTab,
-    scrollPosition: state.router.scrollPosition
+    scrollPosition: state.router.scrollPosition,
+    activeModals: state.router.activeModals
   };
 };
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
-    ...bindActionCreators({ goBack, setPage, setStory, setActiveTab }, dispatch)
+    ...bindActionCreators(
+      { goBack, setPage, setStory, setActiveTab, closeModal, openModal },
+      dispatch
+    )
   };
 }
 
@@ -86,6 +100,9 @@ MobileContainer.propTypes = {
   activeStory: PropTypes.string,
   setActiveTab: PropTypes.func.isRequired,
   activeTab: PropTypes.object.isRequired,
+  activeModals: PropTypes.any.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
   scrollPosition: PropTypes.object
 };
 
