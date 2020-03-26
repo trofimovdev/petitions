@@ -6,9 +6,12 @@ import {
   Separator,
   Tabs,
   TabsItem,
-  FixedLayout
+  FixedLayout,
+  getClassName,
+  usePlatform
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
+import "./PetititonsFeed.css";
 import PetitionCard from "../PetitionCard/PetitionCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 
@@ -22,10 +25,11 @@ const PetitionsFeed = ({
   setStory,
   api
 }) => {
+  const platform = usePlatform();
   return (
     <Panel id={id} separator={false}>
       <PanelHeaderSimple separator={false}>Петиции</PanelHeaderSimple>
-      <FixedLayout style={{ marginTop: `-15px` }} vertical="top" id="TESTING">
+      <FixedLayout className={getClassName("PetitionsTabs", platform)} vertical="top">
         <Tabs>
           <HorizontalScroll>
             <TabsItem

@@ -17,7 +17,7 @@ api.onUpdateConfig(({ scheme }) => {
   store.dispatch(setColorScheme(scheme));
   console.log("SET COLOR SCHEME", scheme);
 });
-store.dispatch(setStory("petitions", "petition"));
+store.dispatch(setStory("petitions", "feed"));
 store.dispatch(setActiveTab("feed", "popular"));
 
 ReactDOM.render(
