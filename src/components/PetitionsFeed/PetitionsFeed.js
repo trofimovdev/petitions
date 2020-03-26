@@ -22,14 +22,16 @@ const PetitionsFeed = ({
   activePanel,
   setPage,
   activeStory,
-  setStory,
-  api
+  setStory
 }) => {
   const platform = usePlatform();
   return (
     <Panel id={id} separator={false}>
       <PanelHeaderSimple separator={false}>Петиции</PanelHeaderSimple>
-      <FixedLayout className={getClassName("PetitionsTabs", platform)} vertical="top">
+      <FixedLayout
+        className={getClassName("PetitionsTabs", platform)}
+        vertical="top"
+      >
         <Tabs>
           <HorizontalScroll>
             <TabsItem

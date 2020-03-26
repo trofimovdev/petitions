@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import ManagementFeed from "../ManagementFeed/ManagementFeed";
-import Create from "../Create/Create";
+import Create from "../EditPetition/EditPetition";
 
 const Management = ({ id, activeStory, setStory, activePanel, setPage }) => {
   return (

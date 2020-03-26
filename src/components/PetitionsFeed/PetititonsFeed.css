@@ -1,6 +1,5 @@
-.PetitionsTabs {
-  position: absolute !important; }
-  .PetitionsTabs--ios {
-    top: calc(var(--panelheader_height_ios) + var(--safe-area-inset-top) - 15px) !important; }
-  .PetitionsTabs--android {
-    top: calc(var(--panelheader_height_android) + var(--safe-area-inset-top) - 15px) !important; }
+.PetitionsTabs--ios {
+  top: calc(var(--panelheader_height_ios) + var(--safe-area-inset-top) - 15px) !important; }
+
+.PetitionsTabs--android {
+  top: calc(var(--panelheader_height_android) + var(--safe-area-inset-top) - 15px) !important; }

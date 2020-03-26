@@ -9,10 +9,6 @@
 
 .Petition__info {
   padding-bottom: 20px; }
-  .Petition__info--ios {
-    margin-top: calc(180px + var(--safe-area-inset-top)); }
-  .Petition__info--android {
-    margin-top: calc(180px + var(--safe-area-inset-top)); }
 
 .Petition__info h1 {
   font-size: 20px;
@@ -30,26 +26,18 @@
   color: #76787a; }
 
 .PullToRefresh--ios {
-  margin-top: calc(0px - var(--panelheader_height_ios) + var(--safe-area-inset-top)); }
+  margin-top: calc(var(--safe-area-inset-top) - var(--panelheader_height_ios)) !important; }
 
 .PullToRefresh--android {
-  margin-top: calc(0px - var(--panelheader_height_android)); }
+  margin-top: calc(var(--safe-area-inset-top) - var(--panelheader_height_android)) !important; }
+
+.PullToRefresh__content {
+  margin-top: calc(0px - var(--safe-area-inset-top) - var(--safe-area-inset-top)); }
 
 .test {
   width: 100%;
   height: 180px;
-  position: absolute;
-  top: 0;
   overflow: hidden; }
 
 .test img {
   width: 100%; }
-
-.test:before {
-  content: '';
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0)); }

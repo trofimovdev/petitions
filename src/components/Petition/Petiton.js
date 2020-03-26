@@ -59,7 +59,7 @@ const Petition = ({ id, setPage, activePanel, openModal }) => {
         left={
           <PanelHeaderButton
             onClick={() => {
-              api.setLocationHash("").then(() => {
+              api.setLocationHash("feed").then(() => {
                 setPage(activePanel, "feed");
               });
             }}
