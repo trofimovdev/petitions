@@ -1,0 +1,30 @@
+@import "src/style/_vars.scss";
+
+.PetitionTabbar {
+  height: 112px !important; // 68px
+  display: flex;
+  flex-direction: column;
+
+  &__signed {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    color: $petition-signed-text-color;
+
+    &__icon {
+      margin-right: 10px;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+  }
+
+  &__buttons > * {
+    margin-right: 8px;
+  }
+
+  &__buttons > *:last-child {
+    margin-right: 0;
+  }
+}

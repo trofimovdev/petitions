@@ -1,0 +1,33 @@
+@import "src/style/_vars.scss";
+
+.PetitionCard {
+  margin: 0;
+  padding-bottom: 22px;
+
+  &__title {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    line-height: 24px;
+  }
+
+  &__card {
+    height: 180px;
+    overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0 0 12px 0;
+  }
+
+  &__users_stack {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.Progress__in {
+  max-width: 100%;
+
+  &.done {
+    background: $progress-bar-done-color;
+  }
+}

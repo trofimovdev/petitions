@@ -1,0 +1,2 @@
+const SET_COLOR_SCHEME = "SET_COLOR_SCHEME";
+export default SET_COLOR_SCHEME;

@@ -1,0 +1,17 @@
+@import "src/style/_vars.scss";
+
+.PetitionProgress {
+  &__text {
+    margin: 0 0 9px 0;
+    font-size: $progress-text-font-size;
+    color: $progress-text-color;
+  }
+
+  &__bar {
+    margin: 0 0 12px 0;
+
+    &.done > .Progress__in {
+      background: $progress-bar-done-color;
+    }
+  }
+}
