@@ -11,6 +11,6 @@ class PetitionsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Petition::class, 10)->create();
+        factory(App\Models\Petition::class, 10)->create();
     }
 }

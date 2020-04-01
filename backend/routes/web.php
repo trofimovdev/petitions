@@ -16,7 +16,3 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return '#stayhome';
 });
-
-Route::get('lol', function () {
-    return 'lol web';
-});

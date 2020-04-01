@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::resource('v1/bootstrap', 'API\v1\BootstrapController', ['only' => 'index']);
+//Route::resource('v1.0/bootstrap', 'API\v1.0\BootstrapController', ['only' => 'index']);
 
-//Route::resource('v1/friends', 'FriendController', ['only' => ['index', 'store', 'show', 'destroy']]);
-//Route::resource('v1/user', 'Api\v1\UserController', ['only' => ['store', 'update']]);
-//Route::resource('v1/petition', 'API\v1\PetitionController');
-Route::get('test', function () {
-    return 'test api1';
+//Route::resource('v1.0/friends', 'FriendController', ['only' => ['index', 'store', 'show', 'destroy']]);
+//Route::resource('v1.0/user', 'Api\v1.0\UserController', ['only' => ['store', 'update']]);
+Route::resource('v1/petitions', 'API\PetitionController');
+Route::get('v1.0/test', function () {
+    return 'test api';
 });

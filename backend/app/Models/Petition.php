@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,18 +21,18 @@ class Petition extends Model
     public static function getPetition($petitionId)
     {
         $response = Petition::where('id', $petitionId)->first();
-        if ($state instanceof Petition) {
-            return $state->toUserView();
+        if ($response instanceof Petition) {
+            return $response->toPetitionView();
         } else {
             return null;
         }
     }
 
-    public function toUserView()
+    public function toPetitionView()
     {
         return [
             'id' => $this->id,
-            'title' => $this->state_date,
+            'title' => $this->title,
             'text' => $this->text,
             'need_signatures' => $this->need_signatures,
             'count_signatures' => $this->count_signatures,

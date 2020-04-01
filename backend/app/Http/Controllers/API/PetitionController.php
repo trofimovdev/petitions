@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller as Controller;
 use App\Http\Requests\SignRequest;
-use App\Http\Controllers\Controller;
 use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\OkResponse;
-use App\Petition;
+use App\Models\Petition;
 
-class PetitionController extends BaseController
+class PetitionController extends Controller
 {
-    public function show(SignRequest $request)
+    public function show($petitionId)
     {
 //        $stateDate = (int) $date;
 //        if (empty($stateDate)) {
 //            return new ErrorResponse(400, 'Invalid params');
 //        }
-        return new OkResponse(Petition::getPetition($request->userId));
+        return new OkResponse(Petition::getPetition($petitionId));
     }
 
     public function test()
@@ -25,6 +25,6 @@ class PetitionController extends BaseController
 //        if (empty($stateDate)) {
 //            return new ErrorResponse(400, 'Invalid params');
 //        }
-        return 'ok test';
+        return 'ok petition test';
     }
 }
