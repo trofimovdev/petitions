@@ -10,21 +10,25 @@ use App\Models\Petition;
 
 class PetitionController extends Controller
 {
-    public function show($petitionId)
+    public function show(SignRequest $request, $petitionId)
     {
-//        $stateDate = (int) $date;
-//        if (empty($stateDate)) {
-//            return new ErrorResponse(400, 'Invalid params');
-//        }
+        $petitionId = (int)$petitionId;
+        if (empty($petitionId)) {
+            return new ErrorResponse(400, 'Invalid params');
+        }
         return new OkResponse(Petition::getPetition($petitionId));
     }
 
-    public function test()
+    public function index(SignRequest $request)
     {
-//        $stateDate = (int) $date;
-//        if (empty($stateDate)) {
-//            return new ErrorResponse(400, 'Invalid params');
-//        }
+        $offset = (int)$request->offset;
+        if (
+            empty($request->type) ||
+            $request->type && !in_array($request->type, ['popular', 'last', 'signed', 'my']) ||
+            $request->offset && empty($offset)
+        ) {
+            return new ErrorResponse(400, 'Invalid params');
+        }
         return 'ok petition test';
     }
 }

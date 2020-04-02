@@ -18,7 +18,5 @@ use Illuminate\Support\Facades\Route;
 
 //Route::resource('v1.0/friends', 'FriendController', ['only' => ['index', 'store', 'show', 'destroy']]);
 //Route::resource('v1.0/user', 'Api\v1.0\UserController', ['only' => ['store', 'update']]);
-Route::resource('v1/petitions', 'API\PetitionController');
-Route::get('v1.0/test', function () {
-    return 'test api';
-});
+Route::resource('petitions', 'API\PetitionController');
+
