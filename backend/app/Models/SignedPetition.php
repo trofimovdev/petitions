@@ -4,21 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Petition extends Model
+class SignedPetition extends Model
 {
-    protected $table = 'petitions';
+    protected $table = 'signed_petitions';
 
     protected $fillable = [
-        'title',
-        'text',
-        'need_signatures',
-        'count_signatures',
-        'owner_id',
-        'mobile_photo_url',
-        'web_photo_url'
+        'petition_id',
+        'user_id',
+        'signed_at'
     ];
 
-    public $timestamps = true;
+    public $timestamps = false;
 
     public static function getLast(int $offset = 0)
     {

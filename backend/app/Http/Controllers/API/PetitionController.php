@@ -16,7 +16,7 @@ class PetitionController extends Controller
         if (empty($petitionId)) {
             return new ErrorResponse(400, 'Invalid params');
         }
-        return new OkResponse(Petition::getPetition($petitionId));
+        return new OkResponse(Petition::getPetitions([$petitionId]));
     }
 
     public function index(SignRequest $request)
@@ -29,6 +29,6 @@ class PetitionController extends Controller
         ) {
             return new ErrorResponse(400, 'Invalid params');
         }
-        return 'ok petition test';
+        return new OkResponse(Petition::getPetitionsByType($request->type, $offset));
     }
 }

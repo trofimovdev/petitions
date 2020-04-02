@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::resource('v1.0/bootstrap', 'API\v1.0\BootstrapController', ['only' => 'index']);
+Route::resource('bootstrap', 'API\BootstrapController', ['only' => 'index']);
 
 //Route::resource('v1.0/friends', 'FriendController', ['only' => ['index', 'store', 'show', 'destroy']]);
 //Route::resource('v1.0/user', 'Api\v1.0\UserController', ['only' => ['store', 'update']]);
