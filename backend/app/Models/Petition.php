@@ -22,7 +22,10 @@ class Petition extends Model
 
     public static function getLast(int $offset = 0)
     {
-        $petitions = Petition::latest('created_at')->offset($offset)->limit(10)->get();
+        $petitions = Petition::latest('created_at')
+            ->offset($offset)
+            ->limit(10)
+            ->get();
         $response = [];
         foreach ($petitions as $petition) {
             if ($petition instanceof Petition) {
@@ -34,27 +37,19 @@ class Petition extends Model
         return $response;
     }
 
-//    public static function getPetitions(array $petitionIds)
-//    {
-//        $petitions = Petition::where('id', $petitionIds)->get();
-//        $response = [];
-//        foreach ($petitions as $petition) {
-//            if ($petition instanceof Petition) {
-//                $response[] = $petition->toPetitionView();
-//            } else {
-//                $response[] = null;
-//            }
-//        }
-//        return $response;
-//    }
-
-
-//    public static function getPetitionsByType(string $type, int $offset)
-//    {
-//        // get {type} petitions
-//        $petitionIds = [1,2,3,4,5,6,7,8,9,10];
-//        return Petition::getPetitions($petitionIds);
-//    }
+    public static function getPetitions(array $petitionIds)
+    {
+        $petitions = Petition::whereIn('id', $petitionIds)->get();
+        $response = [];
+        foreach ($petitions as $petition) {
+            if ($petition instanceof Petition) {
+                $response[] = $petition->toPetitionView();
+            } else {
+                $response[] = null;
+            }
+        }
+        return $response;
+    }
 
     public function toPetitionView()
     {

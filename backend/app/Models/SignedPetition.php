@@ -16,53 +16,21 @@ class SignedPetition extends Model
 
     public $timestamps = false;
 
-    public static function getLast(int $offset = 0)
+    public static function getSigned(int $userId, int $offset = 0)
     {
-        $petitions = Petition::latest('created_at')->offset($offset)->limit(10)->get();
-        $response = [];
+        $petitions = SignedPetition::latest('signed_at')
+            ->where('user_id', '=', $userId)
+            ->offset($offset)
+            ->limit(10)
+            ->get();
+        $petitionIds = [];
         foreach ($petitions as $petition) {
-            if ($petition instanceof Petition) {
-                $response[] = $petition->toPetitionView();
-            } else {
-                $response[] = null;
+            if (!($petition instanceof SignedPetition)) {
+                continue;
             }
+            $petitionIds[] = $petition->petition_id;
         }
+        $response = Petition::getPetitions($petitionIds);
         return $response;
-    }
-
-//    public static function getPetitions(array $petitionIds)
-//    {
-//        $petitions = Petition::where('id', $petitionIds)->get();
-//        $response = [];
-//        foreach ($petitions as $petition) {
-//            if ($petition instanceof Petition) {
-//                $response[] = $petition->toPetitionView();
-//            } else {
-//                $response[] = null;
-//            }
-//        }
-//        return $response;
-//    }
-
-
-//    public static function getPetitionsByType(string $type, int $offset)
-//    {
-//        // get {type} petitions
-//        $petitionIds = [1,2,3,4,5,6,7,8,9,10];
-//        return Petition::getPetitions($petitionIds);
-//    }
-
-    public function toPetitionView()
-    {
-        return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'text' => $this->text,
-            'need_signatures' => $this->need_signatures,
-            'count_signatures' => $this->count_signatures,
-            'owner_id' => $this->owner_id,
-            'mobile_photo_url' => $this->mobile_photo_url,
-            'web_photo_url' => $this->web_photo_url,
-        ];
     }
 }

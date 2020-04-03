@@ -24,7 +24,7 @@ class SignRequest extends FormRequest
         if (!$isValid) {
             if (config('app.env') === "local") {
                 $this->appId = (int)config('app.id');
-                $this->userId = 2050;
+                $this->userId = 165275777;
                 $this->groupId = 0;
                 return true;
             }

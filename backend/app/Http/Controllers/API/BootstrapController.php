@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller as Controller;
 use App\Http\Requests\SignRequest;
 use App\Http\Responses\OkResponse;
 use App\Models\Petition;
+use App\Models\SignedPetition;
 
 class BootstrapController extends Controller
 {
@@ -14,7 +15,7 @@ class BootstrapController extends Controller
         return new OkResponse([
 //            'popular' => Petition::getPopular(),
             'last' => Petition::getLast(),
-//            'signed' => Petition::getSigned($request->userId),
+            'signed' => SignedPetition::getSigned($request->userId),
         ]);
     }
 }
