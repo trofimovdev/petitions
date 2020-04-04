@@ -1,4 +1,6 @@
 .PetitionsTabs {
+  position: fixed !important;
+
   &--ios {
     top: calc(var(--panelheader_height_ios) + var(--safe-area-inset-top) - 15px) !important;
   }

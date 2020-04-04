@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
   HorizontalScroll,
   Panel,
@@ -22,9 +22,11 @@ const PetitionsFeed = ({
   activePanel,
   setPage,
   activeStory,
-  setStory
+  setStory,
+  petitions
 }) => {
   const platform = usePlatform();
+  console.log("AJSDHGSAFDJHGAFSDGJFASGDFJHASd", petitions);
   return (
     <Panel id={id} separator={false}>
       <PanelHeaderSimple separator={false}>Петиции</PanelHeaderSimple>
@@ -57,29 +59,29 @@ const PetitionsFeed = ({
       </FixedLayout>
       <Separator style={{ marginTop: `33px` }} />
 
-      {activeTab.feed === "popular" && (
-        <div id="LOL">
-          <PetitionCard
-            id={1}
-            title="Поместить Кобе Брайанта на новый логотип НБА"
-            numberOfSignatures={100000}
-            totalSignatures={40000}
-            activePanel={activePanel}
-            setPage={setPage}
-            managementDots={false}
-          />
-          <Separator />
-          <PetitionCard
-            id={2}
-            title="Поместить Кобе Брайанта на новый логотип НБА"
-            numberOfSignatures={1000}
-            totalSignatures={25000}
-            activePanel={activePanel}
-            setPage={setPage}
-            managementDots={false}
-          />
+      {activeTab.feed === "last" && (
+        <div>
+          {petitions.last.map((item, index) => {
+            console.log(index, item);
+            return (
+              <div key={index}>
+                <PetitionCard
+                  id={item.id}
+                  title={item.title}
+                  numberOfSignatures={item.count_signatures}
+                  totalSignatures={item.need_signatures}
+                  mobilePhotoUrl={item.mobile_photo_url}
+                  activePanel={activePanel}
+                  setPage={setPage}
+                  managementDots={false}
+                />
+                <Separator />
+              </div>
+            );
+          })}
         </div>
       )}
+
       <EpicTabbar activeStory={activeStory} setStory={setStory} />
     </Panel>
   );
@@ -91,7 +93,8 @@ PetitionsFeed.propTypes = {
   activePanel: PropTypes.string.isRequired,
   activeStory: PropTypes.string.isRequired,
   setStory: PropTypes.func.isRequired,
-  setPage: PropTypes.func.isRequired
+  setPage: PropTypes.func.isRequired,
+  petitions: PropTypes.object.isRequired
 };
 
 export default PetitionsFeed;

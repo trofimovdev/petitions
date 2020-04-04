@@ -14,7 +14,6 @@ class CreateSignedPetitionsTable extends Migration
     public function up()
     {
         Schema::create('signed_petitions', function (Blueprint $table) {
-            $table->increments('id');
             $table->integer('petition_id');
             $table->string('user_id');
             $table->timestamp('signed_at');

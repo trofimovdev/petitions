@@ -27,8 +27,10 @@ const MobileContainer = props => {
     setPage,
     activeModals,
     closeModal,
-    openModal
+    openModal,
+    petitions
   } = props;
+  console.log("PETITIONS AAAAAAAAAAAAAAAAA", petitions);
   const activeModal =
     activeModals[activeView] === undefined ? null : activeModals[activeView];
 
@@ -58,6 +60,7 @@ const MobileContainer = props => {
         activeModal={activeModal}
         closeModal={closeModal}
         openModal={openModal}
+        petitions={petitions}
       />
       <Management
         id="management"
@@ -79,7 +82,8 @@ const mapStateToProps = state => {
     activeStory: state.router.activeStory,
     activeTab: state.router.activeTab,
     scrollPosition: state.router.scrollPosition,
-    activeModals: state.router.activeModals
+    activeModals: state.router.activeModals,
+    petitions: state.petitions
   };
 };
 
@@ -103,7 +107,8 @@ MobileContainer.propTypes = {
   activeModals: PropTypes.any.isRequired,
   closeModal: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
-  scrollPosition: PropTypes.object
+  scrollPosition: PropTypes.object,
+  petitions: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MobileContainer);

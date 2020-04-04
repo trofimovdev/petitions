@@ -14,7 +14,8 @@ const Petitions = ({
   setPage,
   activeModal,
   closeModal,
-  openModal
+  openModal,
+  petitions
 }) => {
   return (
     <View
@@ -32,6 +33,7 @@ const Petitions = ({
         activePanel={activePanel}
         activeStory={activeStory}
         setStory={setStory}
+        petitions={petitions}
       />
       <Petition
         id="petition"
@@ -52,7 +54,8 @@ Petitions.propTypes = {
   setPage: PropTypes.func.isRequired,
   activeModal: PropTypes.string,
   closeModal: PropTypes.func.isRequired,
-  openModal: PropTypes.func.isRequired
+  openModal: PropTypes.func.isRequired,
+  petitions: PropTypes.object.isRequired
 };
 
 export default Petitions;

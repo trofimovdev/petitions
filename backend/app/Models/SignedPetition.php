@@ -16,6 +16,10 @@ class SignedPetition extends Model
 
     public $timestamps = false;
 
+    protected $primaryKey = null;
+
+    public $incrementing = false;
+
     public static function getSigned(int $userId, int $offset = 0)
     {
         $petitions = SignedPetition::latest('signed_at')

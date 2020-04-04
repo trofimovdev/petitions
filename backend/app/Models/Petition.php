@@ -29,7 +29,7 @@ class Petition extends Model
         $response = [];
         foreach ($petitions as $petition) {
             if ($petition instanceof Petition) {
-                $response[] = $petition->toPetitionView();
+                $response[] = $petition->toPetitionView($text = false, $owner_id = false);
             } else {
                 $response[] = null;
             }
@@ -51,17 +51,22 @@ class Petition extends Model
         return $response;
     }
 
-    public function toPetitionView()
+    public function toPetitionView(bool $text = true, bool $owner_id = true)
     {
-        return [
+        $petition = [
             'id' => $this->id,
             'title' => $this->title,
-            'text' => $this->text,
             'need_signatures' => $this->need_signatures,
             'count_signatures' => $this->count_signatures,
-            'owner_id' => $this->owner_id,
             'mobile_photo_url' => $this->mobile_photo_url,
             'web_photo_url' => $this->web_photo_url,
         ];
+        if ($text) {
+            $petition['text'] = $this->text;
+        }
+        if ($owner_id) {
+            $petition['owner_id'] = $this->owner_id;
+        }
+        return $petition;
     }
 }
