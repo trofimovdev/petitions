@@ -1,5 +1,5 @@
 .PetitionsTabs {
-  position: fixed !important;
+  opacity: 1 !important;
 
   &--ios {
     top: calc(var(--panelheader_height_ios) + var(--safe-area-inset-top) - 15px) !important;
@@ -7,5 +7,22 @@
 
   &--android {
     top: calc(var(--panelheader_height_android) + var(--safe-area-inset-top) - 15px) !important;
+  }
+
+  &__wrapper {
+    width: 100%;
+    margin-top: -15px;
+  }
+}
+
+#feed .PanelHeaderSimple {
+  &--ios::before,
+  &--ios,
+  &__in {
+    height: calc(33px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри
+  }
+
+  &__content {
+    margin-top: -33px; // 33px - высота HorizontalScroll с Tabs внутри
   }
 }

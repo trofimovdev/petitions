@@ -29,12 +29,9 @@ const PetitionsFeed = ({
   console.log("AJSDHGSAFDJHGAFSDGJFASGDFJHASd", petitions);
   return (
     <Panel id={id} separator={false}>
-      <PanelHeaderSimple separator={false}>Петиции</PanelHeaderSimple>
-      <FixedLayout
-        className={getClassName("PetitionsTabs", platform)}
-        vertical="top"
-      >
-        <Tabs>
+      <PanelHeaderSimple separator>
+        Петиции
+        <Tabs className="PetitionsTabs__wrapper FixedLayout">
           <HorizontalScroll>
             <TabsItem
               onClick={() => setActiveTab("feed", "popular")}
@@ -56,8 +53,7 @@ const PetitionsFeed = ({
             </TabsItem>
           </HorizontalScroll>
         </Tabs>
-      </FixedLayout>
-      <Separator style={{ marginTop: `33px` }} />
+      </PanelHeaderSimple>
 
       {activeTab.feed === "last" && (
         <div>
