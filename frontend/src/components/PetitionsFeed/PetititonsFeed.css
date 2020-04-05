@@ -14,5 +14,5 @@
 #feed .PanelHeaderSimple__content {
   margin-top: -33px; }
 
-.PetitionsFeed {
+#feed .PullToRefresh {
   margin-top: calc(6px + var(--safe-area-inset-top)); }

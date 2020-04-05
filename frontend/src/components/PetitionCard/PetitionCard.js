@@ -4,6 +4,9 @@ import PropTypes from "prop-types";
 import "./PetitionCard.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
+import Backend from "../../tools/Backend";
+import store from "../../store";
+import { setLast, setPopular, setSigned } from "../../store/petitions/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -21,6 +24,28 @@ const PetitionCard = ({
     <Div
       className="PetitionCard"
       onClick={() => {
+        Backend.request(`petitions/${id.toString()}`, {})
+          .then(response => {
+            console.log(response);
+            if (response.popular) {
+              store.dispatch(setPopular(response.popular));
+            }
+            if (response.last) {
+              store.dispatch(setLast(response.last));
+            }
+            if (response.signed) {
+              store.dispatch(setSigned(response.signed));
+            }
+
+            const screenHeight = document.body.getBoundingClientRect().height;
+            if (313 * response.last.length < screenHeight) {
+              // 313 - высота одной карточки с отступами в px
+              console.log("НУЖНА ДОГРУЗКА");
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          });
         api.setLocationHash(`p${id.toString()}`).then(() => {
           setPage(activePanel, "petition");
         });
@@ -37,16 +62,16 @@ const PetitionCard = ({
           className="PetitionCard__card"
           style={{ backgroundImage: `url(${mobilePhotoUrl})` }}
         />
-        {/*<UsersStack*/}
-        {/*  className="PetitionCard__users_stack"*/}
-        {/*  photos={[*/}
-        {/*    "https://sun9-6.userapi.com/c846121/v846121540/195e4d/17NeSTKMR1o.jpg?ava=1",*/}
-        {/*    "https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1",*/}
-        {/*    "https://sun9-25.userapi.com/c849432/v849432217/18ad61/0UFtoEhCsgA.jpg?ava=1"*/}
-        {/*  ]}*/}
-        {/*>*/}
-        {/*  Подписали Дмитрий, Анастасия и еще 12 друзей*/}
-        {/*</UsersStack>*/}
+        {/* <UsersStack */}
+        {/*  className="PetitionCard__users_stack" */}
+        {/*  photos={[ */}
+        {/*    "https://sun9-6.userapi.com/c846121/v846121540/195e4d/17NeSTKMR1o.jpg?ava=1", */}
+        {/*    "https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1", */}
+        {/*    "https://sun9-25.userapi.com/c849432/v849432217/18ad61/0UFtoEhCsgA.jpg?ava=1" */}
+        {/*  ]} */}
+        {/* > */}
+        {/*  Подписали Дмитрий, Анастасия и еще 12 друзей */}
+        {/* </UsersStack> */}
       </div>
     </Div>
   );

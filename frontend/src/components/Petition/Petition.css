@@ -48,8 +48,8 @@
   font-size: 14px;
   color: #76787a; }
 
-.PullToRefresh--ios {
+.Petition .PullToRefresh--ios {
   margin-top: calc(0px - var(--safe-area-inset-top) - var(--panelheader_height_ios)) !important; }
 
-.PullToRefresh--android {
+.Petition .PullToRefresh--android {
   margin-top: calc(var(--safe-area-inset-top) - var(--panelheader_height_android)) !important; }

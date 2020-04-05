@@ -74,7 +74,7 @@
   }
 }
 
-.PullToRefresh {
+.Petition .PullToRefresh {
   &--ios {
     margin-top: calc(0px - var(--safe-area-inset-top) - var(--panelheader_height_ios)) !important;
   }

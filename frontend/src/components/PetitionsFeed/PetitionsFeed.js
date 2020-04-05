@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import {
   HorizontalScroll,
   Panel,
   PanelHeaderSimple,
+  PullToRefresh,
   Separator,
   Tabs,
   TabsItem
@@ -23,6 +24,16 @@ const PetitionsFeed = ({
   petitions
 }) => {
   const screenHeight = document.body.getBoundingClientRect().height;
+
+  const [fetchingStatus, setFetchingStatus] = useState(false);
+
+  const onRefresh = () => {
+    console.log("refresh");
+    setFetchingStatus(true);
+    setTimeout(function() {
+      setFetchingStatus(false);
+    }, 1000);
+  };
 
   const onScroll = () => {
     const scrollPosition = window.scrollY;
@@ -68,75 +79,76 @@ const PetitionsFeed = ({
           </HorizontalScroll>
         </Tabs>
       </PanelHeaderSimple>
+      <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
+        {activeTab.feed === "popular" && (
+          <div className="PetitionsFeed">
+            {petitions.popular.map((item, index) => {
+              console.log(index, item);
+              return (
+                <div key={index}>
+                  <PetitionCard
+                    id={item.id}
+                    title={item.title}
+                    numberOfSignatures={item.count_signatures}
+                    totalSignatures={item.need_signatures}
+                    mobilePhotoUrl={item.mobile_photo_url}
+                    activePanel={activePanel}
+                    setPage={setPage}
+                    managementDots={false}
+                  />
+                  {index < petitions.popular.length - 1 && <Separator />}
+                </div>
+              );
+            })}
+          </div>
+        )}
 
-      {activeTab.feed === "popular" && (
-        <div className="PetitionsFeed">
-          {petitions.popular.map((item, index) => {
-            console.log(index, item);
-            return (
-              <div key={index}>
-                <PetitionCard
-                  id={item.id}
-                  title={item.title}
-                  numberOfSignatures={item.count_signatures}
-                  totalSignatures={item.need_signatures}
-                  mobilePhotoUrl={item.mobile_photo_url}
-                  activePanel={activePanel}
-                  setPage={setPage}
-                  managementDots={false}
-                />
-                {index < petitions.popular.length - 1 && <Separator />}
-              </div>
-            );
-          })}
-        </div>
-      )}
+        {activeTab.feed === "last" && (
+          <div className="PetitionsFeed">
+            {petitions.last.map((item, index) => {
+              console.log(index, item);
+              return (
+                <div key={index}>
+                  <PetitionCard
+                    id={item.id}
+                    title={item.title}
+                    numberOfSignatures={item.count_signatures}
+                    totalSignatures={item.need_signatures}
+                    mobilePhotoUrl={item.mobile_photo_url}
+                    activePanel={activePanel}
+                    setPage={setPage}
+                    managementDots={false}
+                  />
+                  {index < petitions.last.length - 1 && <Separator />}
+                </div>
+              );
+            })}
+          </div>
+        )}
 
-      {activeTab.feed === "last" && (
-        <div className="PetitionsFeed">
-          {petitions.last.map((item, index) => {
-            console.log(index, item);
-            return (
-              <div key={index}>
-                <PetitionCard
-                  id={item.id}
-                  title={item.title}
-                  numberOfSignatures={item.count_signatures}
-                  totalSignatures={item.need_signatures}
-                  mobilePhotoUrl={item.mobile_photo_url}
-                  activePanel={activePanel}
-                  setPage={setPage}
-                  managementDots={false}
-                />
-                {index < petitions.last.length - 1 && <Separator />}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {activeTab.feed === "signed" && (
-        <div className="PetitionsFeed">
-          {petitions.signed.map((item, index) => {
-            console.log(index, item);
-            return (
-              <div key={index}>
-                <PetitionCard
-                  id={item.id}
-                  title={item.title}
-                  numberOfSignatures={item.count_signatures}
-                  totalSignatures={item.need_signatures}
-                  mobilePhotoUrl={item.mobile_photo_url}
-                  activePanel={activePanel}
-                  setPage={setPage}
-                  managementDots={false}
-                />
-                {index < petitions.signed.length - 1 && <Separator />}
-              </div>
-            );
-          })}
-        </div>
-      )}
+        {activeTab.feed === "signed" && (
+          <div className="PetitionsFeed">
+            {petitions.signed.map((item, index) => {
+              console.log(index, item);
+              return (
+                <div key={index}>
+                  <PetitionCard
+                    id={item.id}
+                    title={item.title}
+                    numberOfSignatures={item.count_signatures}
+                    totalSignatures={item.need_signatures}
+                    mobilePhotoUrl={item.mobile_photo_url}
+                    activePanel={activePanel}
+                    setPage={setPage}
+                    managementDots={false}
+                  />
+                  {index < petitions.signed.length - 1 && <Separator />}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </PullToRefresh>
 
       <EpicTabbar activeStory={activeStory} setStory={setStory} />
     </Panel>
