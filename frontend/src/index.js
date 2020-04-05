@@ -32,6 +32,12 @@ Backend.request("bootstrap", {})
     if (response.signed) {
       store.dispatch(setSigned(response.signed));
     }
+
+    const screenHeight = document.body.getBoundingClientRect().height;
+    if (313 * response.last.length < screenHeight) {
+      // 313 - высота одной карточки с отступами в px
+      console.log("НУЖНА ДОГРУЗКА");
+    }
   })
   .catch(e => {
     console.log(e);

@@ -1,8 +1,8 @@
 .PetitionTabbar {
-  height: 112px !important;
+  height: calc(112px + var(--safe-area-inset-bottom)) !important;
   display: flex;
   flex-direction: column;
-  padding-bottom: var(--safe-area-inset-bottom) !important; }
+  padding-bottom: 0 !important; }
   .PetitionTabbar::before {
     position: absolute;
     bottom: 100%;

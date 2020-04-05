@@ -11,7 +11,8 @@
   }
 
   &__card {
-    height: 180px;
+    min-height: 180px;
+    height: 48vw;
     overflow: hidden;
     background-size: cover;
     background-repeat: no-repeat;

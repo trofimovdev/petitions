@@ -1,6 +1,4 @@
 .PetitionsTabs {
-  opacity: 1 !important;
-
   &--ios {
     top: calc(var(--panelheader_height_ios) + var(--safe-area-inset-top) - 15px) !important;
   }
@@ -25,4 +23,8 @@
   &__content {
     margin-top: -33px; // 33px - высота HorizontalScroll с Tabs внутри
   }
+}
+
+.PetitionsFeed {
+  margin-top: calc(6px + var(--safe-area-inset-top));
 }

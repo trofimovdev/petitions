@@ -23,7 +23,7 @@ const PetitionProgress = ({ numberOfSignatures, totalSignatures }) => {
     <div className="PetitionProgress">
       <p className="PetitionProgress__text">
         {`${numberOfSignatures.toLocaleString()} из ${totalSignatures.toLocaleString()} ${declOfNum(
-          numberOfSignatures
+          totalSignatures
         )}`}
       </p>
       <Progress

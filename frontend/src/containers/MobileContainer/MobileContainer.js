@@ -45,7 +45,7 @@ const MobileContainer = props => {
       ? scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
       : 0;
     window.scroll(0, pageScrollPosition);
-  }, [activeStory, activeView, activePanel, activeTab, scrollPosition, props]);
+  }, [activeStory, activeView, activePanel, activeTab, scrollPosition]);
 
   return (
     <Epic activeStory={activeStory}>

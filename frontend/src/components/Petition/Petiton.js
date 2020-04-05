@@ -11,9 +11,7 @@ import {
   Link,
   PullToRefresh,
   getClassName,
-  usePlatform,
-  ANDROID,
-  IOS
+  usePlatform
 } from "@vkontakte/vkui";
 import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
@@ -39,6 +37,7 @@ const Petition = ({ id, setPage, activePanel, openModal }) => {
 
   const onScroll = () => {
     const scrollPosition = window.scrollY;
+    console.log(scrollPosition);
     if (scrollPosition > 128) {
       setHeaderStatus("shown");
     } else {
@@ -69,30 +68,27 @@ const Petition = ({ id, setPage, activePanel, openModal }) => {
         }
         separator={false}
       />
-      {/* <Touch onStartY={onStartY} onMoveY={onMoveY} onEndY={onEndY}> */}
-
 
       <PullToRefresh
         onRefresh={onRefresh}
         isFetching={fetchingStatus}
-        useCapture
       >
-        <div className="test">
+        <div className="Petition__image">
           <img src={`${test}`} />
         </div>
         <Div className={getClassName("Petition__info", platform)}>
           <h1>Поместить Кобе Брайанта на новый логотип НБА</h1>
           <PetitionProgress numberOfSignatures={100} totalSignatures={200} />
-          <UsersStack
-            className="PetitionCard__users_stack"
-            photos={[
-              "https://sun9-6.userapi.com/c846121/v846121540/195e4d/17NeSTKMR1o.jpg?ava=1",
-              "https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1",
-              "https://sun9-25.userapi.com/c849432/v849432217/18ad61/0UFtoEhCsgA.jpg?ava=1"
-            ]}
-          >
-            Подписали Дмитрий, Анастасия и еще 12 друзей
-          </UsersStack>
+          {/*<UsersStack*/}
+          {/*  className="Petition__users_stack"*/}
+          {/*  photos={[*/}
+          {/*    "https://sun9-6.userapi.com/c846121/v846121540/195e4d/17NeSTKMR1o.jpg?ava=1",*/}
+          {/*    "https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1",*/}
+          {/*    "https://sun9-25.userapi.com/c849432/v849432217/18ad61/0UFtoEhCsgA.jpg?ava=1"*/}
+          {/*  ]}*/}
+          {/*>*/}
+          {/*  Подписали Дмитрий, Анастасия и еще 12 друзей*/}
+          {/*</UsersStack>*/}
         </Div>
         <Separator />
         <Div className="Petition__text">

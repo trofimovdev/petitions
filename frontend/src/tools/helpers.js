@@ -8,11 +8,16 @@ export function devLog(any) {
   }
 }
 
-export const smoothScrollToTop = () => {
+export const smoothScrollAction = async () => {
   const c = document.documentElement.scrollTop || document.body.scrollTop;
   if (c <= 0) {
     return;
   }
-  window.requestAnimationFrame(smoothScrollToTop);
+  window.requestAnimationFrame(smoothScrollAction);
   window.scrollTo(0, c - c / 8);
+};
+
+export const smoothScrollToTop = async (f = () => {}) => {
+  await smoothScrollAction();
+  f();
 };

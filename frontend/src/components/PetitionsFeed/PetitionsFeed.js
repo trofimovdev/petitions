@@ -1,14 +1,11 @@
-import React, { Fragment } from "react";
+import React, { useEffect } from "react";
 import {
   HorizontalScroll,
   Panel,
   PanelHeaderSimple,
   Separator,
   Tabs,
-  TabsItem,
-  FixedLayout,
-  getClassName,
-  usePlatform
+  TabsItem
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./PetititonsFeed.css";
@@ -25,8 +22,25 @@ const PetitionsFeed = ({
   setStory,
   petitions
 }) => {
-  const platform = usePlatform();
-  console.log("AJSDHGSAFDJHGAFSDGJFASGDFJHASd", petitions);
+  const screenHeight = document.body.getBoundingClientRect().height;
+
+  const onScroll = () => {
+    const scrollPosition = window.scrollY;
+    console.log(scrollPosition);
+    if ((scrollPosition / 313) % 10 > 4) {
+      // 313 - высота одной карточки с отступами в px, 10 - кол-во карточек на один запрос
+      // > 4 - загружать новые карточки когда юзер переходит на каждую 5 карточку из 10
+      // alert("new cards");
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  });
+
   return (
     <Panel id={id} separator={false}>
       <PanelHeaderSimple separator>
@@ -55,8 +69,31 @@ const PetitionsFeed = ({
         </Tabs>
       </PanelHeaderSimple>
 
+      {activeTab.feed === "popular" && (
+        <div className="PetitionsFeed">
+          {petitions.popular.map((item, index) => {
+            console.log(index, item);
+            return (
+              <div key={index}>
+                <PetitionCard
+                  id={item.id}
+                  title={item.title}
+                  numberOfSignatures={item.count_signatures}
+                  totalSignatures={item.need_signatures}
+                  mobilePhotoUrl={item.mobile_photo_url}
+                  activePanel={activePanel}
+                  setPage={setPage}
+                  managementDots={false}
+                />
+                {index < petitions.popular.length - 1 && <Separator />}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {activeTab.feed === "last" && (
-        <div>
+        <div className="PetitionsFeed">
           {petitions.last.map((item, index) => {
             console.log(index, item);
             return (
@@ -71,7 +108,30 @@ const PetitionsFeed = ({
                   setPage={setPage}
                   managementDots={false}
                 />
-                <Separator />
+                {index < petitions.last.length - 1 && <Separator />}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {activeTab.feed === "signed" && (
+        <div className="PetitionsFeed">
+          {petitions.signed.map((item, index) => {
+            console.log(index, item);
+            return (
+              <div key={index}>
+                <PetitionCard
+                  id={item.id}
+                  title={item.title}
+                  numberOfSignatures={item.count_signatures}
+                  totalSignatures={item.need_signatures}
+                  mobilePhotoUrl={item.mobile_photo_url}
+                  activePanel={activePanel}
+                  setPage={setPage}
+                  managementDots={false}
+                />
+                {index < petitions.signed.length - 1 && <Separator />}
               </div>
             );
           })}
@@ -84,6 +144,7 @@ const PetitionsFeed = ({
 };
 
 PetitionsFeed.propTypes = {
+  id: PropTypes.string.isRequired,
   setActiveTab: PropTypes.func.isRequired,
   activeTab: PropTypes.object.isRequired,
   activePanel: PropTypes.string.isRequired,
