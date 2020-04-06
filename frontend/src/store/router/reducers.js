@@ -1,3 +1,6 @@
+// TODO: replace vk-bridge SwipeBack to vk-mini-apps, when PR will be accepted (https://github.com/VKCOM/vk-mini-apps-api/pull/15)
+import bridge from "@vkontakte/vk-bridge";
+
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import { smoothScrollToTop } from "../../tools/helpers";
 import {
@@ -33,6 +36,7 @@ const routerReducer = (state = initialState, action) => {
   console.log("router", state, action);
   switch (action.type) {
     case SET_PAGE: {
+      console.log("LOL KEK ADASDASDASDASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
       const View = action.payload.view;
       const Panel = action.payload.panel;
       console.log(View, Panel);
@@ -41,7 +45,7 @@ const routerReducer = (state = initialState, action) => {
 
       let panelsHistory = state.panelsHistory[View] || [];
       const viewsHistory = state.viewsHistory[state.activeStory] || [];
-      console.log(panelsHistory);
+      console.log("panelsHistory123123123", panelsHistory);
 
       const viewIndexInHistory = viewsHistory.indexOf(View);
 
@@ -52,15 +56,17 @@ const routerReducer = (state = initialState, action) => {
       if (panelsHistory.indexOf(Panel) === -1) {
         panelsHistory = [...panelsHistory, Panel];
       }
-
-      if (panelsHistory.length > 1) {
-        // VkSdk.swipeBackOn();
-        console.log("vksdk swipeBackOn");
-      }
-      console.log("panelsHistory", {
+      console.log("panelsHistory AFTER", {
         ...state.panelsHistory,
         [View]: panelsHistory
       });
+
+      if (panelsHistory.length > 1) {
+        // TODO: replace with vk-mini-apps-api
+        // api.enableSwipeBack();
+        bridge.send("VKWebAppEnableSwipeBack");
+        console.log("vksdk swipeBackOn");
+      }
 
       return {
         ...state,
@@ -177,6 +183,7 @@ const routerReducer = (state = initialState, action) => {
     }
 
     case GO_BACK: {
+      console.log("GO BACK");
       let setView = state.activeView;
       let setPanel = state.activePanel;
       let setStory = state.activeStory;
@@ -255,13 +262,15 @@ const routerReducer = (state = initialState, action) => {
           setPanel = panelsHistoryNew[0];
         }
       } else {
-        // VkSdk.closeApp();
+        api.closeApp("success");
         console.log("vksdk closeApp");
       }
 
       if (panelsHistory.length === 1) {
-        // VkSdk.swipeBackOff();
-        console.log("vksdk swipeBackOff");
+        // TODO: replace with vk-mini-apps-api
+        // api.disableSwipeBack();
+        bridge.send("VKWebAppDisableSwipeBack");
+        console.log("vksdk disableSwipeBack");
       }
 
       console.log("panelsHistory goBack", {
@@ -307,7 +316,7 @@ const routerReducer = (state = initialState, action) => {
       };
 
     case OPEN_MODAL: {
-      console.log('OPEN MODAL');
+      console.log("OPEN MODAL");
       window.history.pushState(null, null);
 
       const activeModal = action.payload.id || null;
@@ -382,7 +391,9 @@ const routerReducer = (state = initialState, action) => {
         );
         scrollPosition1 = {
           ...state.scrollPosition,
-          [`${state.activeStory}_${state.activeView}_${state.activePanel}_${state.activeTab[state.activePanel]}`]: window.pageYOffset
+          [`${state.activeStory}_${state.activeView}_${state.activePanel}_${
+            state.activeTab[state.activePanel]
+          }`]: window.pageYOffset
         };
       } else {
         scrollPosition1 = {

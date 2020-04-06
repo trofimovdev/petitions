@@ -23,7 +23,7 @@ import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
 
 const api = new VKMiniAppAPI();
 
-const Petition = ({ id, setPage, activePanel, openModal }) => {
+const Petition = ({ id, goBack, activeView, openModal }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [headerStatus, setHeaderStatus] = useState("hidden");
 
@@ -59,7 +59,7 @@ const Petition = ({ id, setPage, activePanel, openModal }) => {
           <PanelHeaderButton
             onClick={() => {
               api.setLocationHash("feed").then(() => {
-                setPage(activePanel, "feed");
+                goBack();
               });
             }}
           >
@@ -196,8 +196,8 @@ const Petition = ({ id, setPage, activePanel, openModal }) => {
 
 Petition.propTypes = {
   id: PropTypes.string.isRequired,
-  setPage: PropTypes.func.isRequired,
-  activePanel: PropTypes.string.isRequired,
+  goBack: PropTypes.func.isRequired,
+  activeView: PropTypes.string.isRequired,
   openModal: PropTypes.func.isRequired
 };
 

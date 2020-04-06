@@ -8,6 +8,7 @@ import PetitionModal from "../PetitionModal/PetititonModal";
 const Petitions = ({
   setActiveTab,
   activeTab,
+  activeView,
   activePanel,
   activeStory,
   setStory,
@@ -15,7 +16,9 @@ const Petitions = ({
   activeModal,
   closeModal,
   openModal,
-  petitions
+  petitions,
+  goBack,
+  activeViewPanelsHistory
 }) => {
   return (
     <View
@@ -24,21 +27,23 @@ const Petitions = ({
       }
       activePanel={activePanel}
       header={false}
+      onSwipeBack={goBack}
+      history={activeViewPanelsHistory}
     >
       <PetitionsFeed
         id="feed"
         setActiveTab={setActiveTab}
         activeTab={activeTab}
         setPage={setPage}
-        activePanel={activePanel}
+        activeView={activeView}
         activeStory={activeStory}
         setStory={setStory}
         petitions={petitions}
       />
       <Petition
         id="petition"
-        setPage={setPage}
-        activePanel={activePanel}
+        goBack={goBack}
+        activeView={activeView}
         openModal={openModal}
       />
     </View>
@@ -48,6 +53,7 @@ const Petitions = ({
 Petitions.propTypes = {
   setActiveTab: PropTypes.func.isRequired,
   activeTab: PropTypes.object.isRequired,
+  activeView: PropTypes.string.isRequired,
   activePanel: PropTypes.string.isRequired,
   activeStory: PropTypes.string.isRequired,
   setStory: PropTypes.func.isRequired,
@@ -55,7 +61,9 @@ Petitions.propTypes = {
   activeModal: PropTypes.string,
   closeModal: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
-  petitions: PropTypes.object.isRequired
+  petitions: PropTypes.object.isRequired,
+  goBack: PropTypes.func.isRequired,
+  activeViewPanelsHistory: PropTypes.array.isRequired
 };
 
 export default Petitions;

@@ -22,7 +22,6 @@ api.onUpdateConfig(({ scheme }) => {
 
 Backend.request("bootstrap", {})
   .then(response => {
-    console.log(response);
     if (response.popular) {
       store.dispatch(setPopular(response.popular));
     }

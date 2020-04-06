@@ -5,8 +5,8 @@ import "./PetitionCard.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import Backend from "../../tools/Backend";
-import store from "../../store";
-import { setLast, setPopular, setSigned } from "../../store/petitions/actions";
+// import store from "../../store";
+// import { setLast, setPopular, setSigned } from "../../store/petitions/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -16,7 +16,7 @@ const PetitionCard = ({
   numberOfSignatures,
   totalSignatures,
   mobilePhotoUrl,
-  activePanel,
+  activeView,
   setPage,
   managementDots
 }) => {
@@ -24,30 +24,16 @@ const PetitionCard = ({
     <Div
       className="PetitionCard"
       onClick={() => {
+        api.selectionChanged();
         Backend.request(`petitions/${id.toString()}`, {})
           .then(response => {
             console.log(response);
-            if (response.popular) {
-              store.dispatch(setPopular(response.popular));
-            }
-            if (response.last) {
-              store.dispatch(setLast(response.last));
-            }
-            if (response.signed) {
-              store.dispatch(setSigned(response.signed));
-            }
-
-            const screenHeight = document.body.getBoundingClientRect().height;
-            if (313 * response.last.length < screenHeight) {
-              // 313 - высота одной карточки с отступами в px
-              console.log("НУЖНА ДОГРУЗКА");
-            }
           })
           .catch(e => {
             console.log(e);
           });
         api.setLocationHash(`p${id.toString()}`).then(() => {
-          setPage(activePanel, "petition");
+          setPage(activeView, "petition");
         });
       }}
     >
@@ -83,7 +69,7 @@ PetitionCard.propTypes = {
   numberOfSignatures: PropTypes.number.isRequired,
   totalSignatures: PropTypes.number.isRequired,
   mobilePhotoUrl: PropTypes.string.isRequired,
-  activePanel: PropTypes.string.isRequired,
+  activeView: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
   managementDots: PropTypes.bool.isRequired
 };

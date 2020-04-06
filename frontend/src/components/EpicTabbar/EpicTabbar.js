@@ -14,18 +14,20 @@ const EpicTabbar = ({ setStory, activeStory }) => (
     <Tabbar className="EpicTabbar">
       <TabbarItem
         onClick={() => {
+          api.selectionChanged();
           api.setLocationHash("feed").then(() => {
             setStory("petitions", "feed");
           });
         }}
         selected={activeStory === "petitions"}
-        data-story="petitions"
+        data-story="petitionsTab"
         text="Петиции"
       >
         <Icon28WriteSquareOutline />
       </TabbarItem>
       <TabbarItem
         onClick={() => {
+          api.selectionChanged();
           api.setLocationHash("management").then(() => {
             setStory("management", "feed");
           });

@@ -28,11 +28,14 @@ const MobileContainer = props => {
     activeModals,
     closeModal,
     openModal,
-    petitions
+    petitions,
+    goBack,
+    panelsHistory
   } = props;
-  console.log("PETITIONS AAAAAAAAAAAAAAAAA", petitions);
   const activeModal =
     activeModals[activeView] === undefined ? null : activeModals[activeView];
+
+  const activeViewPanelsHistory = panelsHistory[activeView] || [];
 
   useEffect(() => {
     const pageScrollPosition = scrollPosition[
@@ -53,6 +56,7 @@ const MobileContainer = props => {
         id="petitions"
         setActiveTab={setActiveTab}
         activeTab={activeTab}
+        activeView={activeView}
         activePanel={activePanel}
         setPage={setPage}
         activeStory={activeStory}
@@ -61,6 +65,8 @@ const MobileContainer = props => {
         closeModal={closeModal}
         openModal={openModal}
         petitions={petitions}
+        goBack={goBack}
+        activeViewPanelsHistory={activeViewPanelsHistory}
       />
       <Management
         id="management"
@@ -83,7 +89,8 @@ const mapStateToProps = state => {
     activeTab: state.router.activeTab,
     scrollPosition: state.router.scrollPosition,
     activeModals: state.router.activeModals,
-    petitions: state.petitions
+    petitions: state.petitions,
+    panelsHistory: state.router.panelsHistory
   };
 };
 
@@ -108,7 +115,10 @@ MobileContainer.propTypes = {
   closeModal: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   scrollPosition: PropTypes.object,
-  petitions: PropTypes.object.isRequired
+  setPage: PropTypes.func.isRequired,
+  petitions: PropTypes.object.isRequired,
+  goBack: PropTypes.func.isRequired,
+  panelsHistory: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MobileContainer);

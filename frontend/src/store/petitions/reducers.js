@@ -7,7 +7,6 @@ const initialState = {
 };
 
 const petitionsReducer = (state = initialState, action) => {
-  console.log("petitions", state, action);
   switch (action.type) {
     case SET_POPULAR: {
       const petitions = action.payload.petitions;

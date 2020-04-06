@@ -17,7 +17,7 @@ const PetitionsFeed = ({
   id,
   setActiveTab,
   activeTab,
-  activePanel,
+  activeView,
   setPage,
   activeStory,
   setStory,
@@ -83,7 +83,6 @@ const PetitionsFeed = ({
         {activeTab.feed === "popular" && (
           <div className="PetitionsFeed">
             {petitions.popular.map((item, index) => {
-              console.log(index, item);
               return (
                 <div key={index}>
                   <PetitionCard
@@ -92,7 +91,7 @@ const PetitionsFeed = ({
                     numberOfSignatures={item.count_signatures}
                     totalSignatures={item.need_signatures}
                     mobilePhotoUrl={item.mobile_photo_url}
-                    activePanel={activePanel}
+                    activeView={activeView}
                     setPage={setPage}
                     managementDots={false}
                   />
@@ -106,7 +105,6 @@ const PetitionsFeed = ({
         {activeTab.feed === "last" && (
           <div className="PetitionsFeed">
             {petitions.last.map((item, index) => {
-              console.log(index, item);
               return (
                 <div key={index}>
                   <PetitionCard
@@ -115,7 +113,7 @@ const PetitionsFeed = ({
                     numberOfSignatures={item.count_signatures}
                     totalSignatures={item.need_signatures}
                     mobilePhotoUrl={item.mobile_photo_url}
-                    activePanel={activePanel}
+                    activeView={activeView}
                     setPage={setPage}
                     managementDots={false}
                   />
@@ -129,7 +127,6 @@ const PetitionsFeed = ({
         {activeTab.feed === "signed" && (
           <div className="PetitionsFeed">
             {petitions.signed.map((item, index) => {
-              console.log(index, item);
               return (
                 <div key={index}>
                   <PetitionCard
@@ -138,7 +135,7 @@ const PetitionsFeed = ({
                     numberOfSignatures={item.count_signatures}
                     totalSignatures={item.need_signatures}
                     mobilePhotoUrl={item.mobile_photo_url}
-                    activePanel={activePanel}
+                    activeView={activeView}
                     setPage={setPage}
                     managementDots={false}
                   />
@@ -159,7 +156,7 @@ PetitionsFeed.propTypes = {
   id: PropTypes.string.isRequired,
   setActiveTab: PropTypes.func.isRequired,
   activeTab: PropTypes.object.isRequired,
-  activePanel: PropTypes.string.isRequired,
+  activeView: PropTypes.string.isRequired,
   activeStory: PropTypes.string.isRequired,
   setStory: PropTypes.func.isRequired,
   setPage: PropTypes.func.isRequired,
