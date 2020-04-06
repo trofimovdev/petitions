@@ -26,7 +26,6 @@ const PetitionTabbar = ({ openModal }) => {
           mode="secondary"
           onClick={() => {
             console.log("try to open");
-            // smoothScrollToTop().then(() => openModal("share-type"));
             openModal("share-type");
             console.log("opened");
           }}

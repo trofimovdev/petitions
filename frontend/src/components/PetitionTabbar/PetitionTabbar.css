@@ -1,8 +1,10 @@
 .PetitionTabbar {
-  height: calc(112px + var(--safe-area-inset-bottom)) !important;
+  height: calc(104px + var(--safe-area-inset-bottom)) !important;
   display: flex;
   flex-direction: column;
-  padding-bottom: 0 !important; }
+  overflow: hidden;
+  justify-content: center;
+  padding-bottom: var(--safe-area-inset-bottom) !important; }
   .PetitionTabbar::before {
     position: absolute;
     bottom: 100%;
@@ -22,7 +24,8 @@
     .PetitionTabbar__signed__icon {
       margin-right: 10px; }
   .PetitionTabbar__buttons {
-    display: flex; }
+    display: flex;
+    padding-bottom: 0 !important; }
   .PetitionTabbar__buttons > * {
     margin-right: 8px; }
   .PetitionTabbar__buttons > *:last-child {

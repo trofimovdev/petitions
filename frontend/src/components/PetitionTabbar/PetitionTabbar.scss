@@ -1,10 +1,12 @@
 @import "src/style/_vars.scss";
 
 .PetitionTabbar {
-  height: calc(112px + var(--safe-area-inset-bottom)) !important; // 68px
+  height: calc(104px + var(--safe-area-inset-bottom)) !important; // 68px
   display: flex;
   flex-direction: column;
-  padding-bottom: 0 !important;
+  overflow: hidden;
+  justify-content: center;
+  padding-bottom: var(--safe-area-inset-bottom) !important;
 
   &::before {
     position: absolute;
@@ -32,6 +34,7 @@
 
   &__buttons {
     display: flex;
+    padding-bottom: 0 !important;
   }
 
   &__buttons > * {

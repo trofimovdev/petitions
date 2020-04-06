@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Redis;
 
 class Petition extends Model
 {
@@ -22,6 +23,7 @@ class Petition extends Model
 
     public static function getLast(int $offset = 0)
     {
+//        $petitions = Redis::hgetall('p' . $owner_id);
         $petitions = Petition::latest('created_at')
             ->offset($offset)
             ->limit(10)
@@ -37,12 +39,15 @@ class Petition extends Model
         return $response;
     }
 
-    public static function getPetitions(array $petitionIds)
+    public static function getPetitions(array $petitionIds, bool $with_owner = false)
     {
         $petitions = Petition::whereIn('id', $petitionIds)->get();
         $response = [];
         foreach ($petitions as $petition) {
             if ($petition instanceof Petition) {
+                if ($with_owner) {
+                    $petition->owner = User::getUser($petition->owner_id);
+                }
                 $response[] = $petition->toPetitionView();
             } else {
                 $response[] = null;
@@ -66,6 +71,9 @@ class Petition extends Model
         }
         if ($owner_id) {
             $petition['owner_id'] = $this->owner_id;
+        }
+        if ($this->owner) {
+            $petition['owner'] = $this->owner;
         }
         return $petition;
     }
