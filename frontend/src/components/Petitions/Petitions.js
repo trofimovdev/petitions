@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import PetitionsFeed from "../PetitionsFeed/PetitionsFeed";
 import Petition from "../Petition/Petiton";
 import PetitionModal from "../PetitionModal/PetititonModal";
+import { setCurrent } from "../../store/petitions/actions";
 
 const Petitions = ({
   setActiveTab,
@@ -18,8 +19,10 @@ const Petitions = ({
   openModal,
   petitions,
   goBack,
-  activeViewPanelsHistory
+  activeViewPanelsHistory,
+  setCurrent
 }) => {
+  const currentPetition = petitions.current;
   return (
     <View
       modal={
@@ -39,12 +42,16 @@ const Petitions = ({
         activeStory={activeStory}
         setStory={setStory}
         petitions={petitions}
+        setCurrent={setCurrent}
+        activePanel={activePanel}
       />
       <Petition
         id="petition"
         goBack={goBack}
         activeView={activeView}
         openModal={openModal}
+        currentPetition={currentPetition}
+        activePanel={activePanel}
       />
     </View>
   );
@@ -63,7 +70,8 @@ Petitions.propTypes = {
   openModal: PropTypes.func.isRequired,
   petitions: PropTypes.object.isRequired,
   goBack: PropTypes.func.isRequired,
-  activeViewPanelsHistory: PropTypes.array.isRequired
+  activeViewPanelsHistory: PropTypes.array.isRequired,
+  setCurrent: PropTypes.func.isRequired
 };
 
 export default Petitions;

@@ -1,4 +1,4 @@
-import { SET_POPULAR, SET_LAST, SET_SIGNED } from "./actionTypes";
+import { SET_POPULAR, SET_LAST, SET_SIGNED, SET_CURRENT } from "./actionTypes";
 
 export const setPopular = petitions => ({
   type: SET_POPULAR,
@@ -18,5 +18,12 @@ export const setSigned = petitions => ({
   type: SET_SIGNED,
   payload: {
     petitions
+  }
+});
+
+export const setCurrent = petition => ({
+  type: SET_CURRENT,
+  payload: {
+    petition
   }
 });

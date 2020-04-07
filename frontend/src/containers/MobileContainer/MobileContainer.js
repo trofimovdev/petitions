@@ -11,6 +11,7 @@ import {
   closeModal,
   openModal
 } from "../../store/router/actions";
+import { setCurrent } from "../../store/petitions/actions";
 import "@vkontakte/vkui/dist/vkui.css";
 import Petitions from "../../components/Petitions/Petitions";
 import Management from "../../components/Management/Management";
@@ -30,7 +31,8 @@ const MobileContainer = props => {
     openModal,
     petitions,
     goBack,
-    panelsHistory
+    panelsHistory,
+    setCurrent
   } = props;
   const activeModal =
     activeModals[activeView] === undefined ? null : activeModals[activeView];
@@ -47,6 +49,7 @@ const MobileContainer = props => {
       : scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
       ? scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
       : 0;
+    console.log("ACCEDPT SCROLL TO", pageScrollPosition);
     window.scroll(0, pageScrollPosition);
   }, [activeStory, activeView, activePanel, activeTab, scrollPosition]);
 
@@ -67,6 +70,7 @@ const MobileContainer = props => {
         petitions={petitions}
         goBack={goBack}
         activeViewPanelsHistory={activeViewPanelsHistory}
+        setCurrent={setCurrent}
       />
       <Management
         id="management"
@@ -98,7 +102,15 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatch,
     ...bindActionCreators(
-      { goBack, setPage, setStory, setActiveTab, closeModal, openModal },
+      {
+        goBack,
+        setPage,
+        setStory,
+        setActiveTab,
+        closeModal,
+        openModal,
+        setCurrent
+      },
       dispatch
     )
   };

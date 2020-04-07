@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   HorizontalScroll,
   Panel,
@@ -10,8 +10,12 @@ import {
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./PetititonsFeed.css";
+import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PetitionCard from "../PetitionCard/PetitionCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
+import { setCurrent } from "../../store/petitions/actions";
+
+const api = new VKMiniAppAPI();
 
 const PetitionsFeed = ({
   id,
@@ -21,10 +25,11 @@ const PetitionsFeed = ({
   setPage,
   activeStory,
   setStory,
-  petitions
+  petitions,
+  setCurrent,
+  activePanel
 }) => {
   const screenHeight = document.body.getBoundingClientRect().height;
-
   const [fetchingStatus, setFetchingStatus] = useState(false);
 
   const onRefresh = () => {
@@ -52,32 +57,41 @@ const PetitionsFeed = ({
     };
   });
 
+  useEffect(() => {
+    console.log('activePanel from feed', activePanel);
+    if (activePanel === "feed") {
+      api.setLocationHash(activeTab.feed);
+    }
+  }, [activeTab, activePanel]);
+
   return (
     <Panel id={id} separator={false}>
       <PanelHeaderSimple separator>
-        Петиции
-        <Tabs className="PetitionsTabs__wrapper FixedLayout">
-          <HorizontalScroll>
-            <TabsItem
-              onClick={() => setActiveTab("feed", "popular")}
-              selected={activeTab.feed === "popular"}
-            >
-              Популярные
-            </TabsItem>
-            <TabsItem
-              onClick={() => setActiveTab("feed", "last")}
-              selected={activeTab.feed === "last"}
-            >
-              Последние
-            </TabsItem>
-            <TabsItem
-              onClick={() => setActiveTab("feed", "signed")}
-              selected={activeTab.feed === "signed"}
-            >
-              Подписанные
-            </TabsItem>
-          </HorizontalScroll>
-        </Tabs>
+        <div id="kekes">
+          Петиции
+          <Tabs className="PetitionsTabs__wrapper FixedLayout">
+            <HorizontalScroll>
+              <TabsItem
+                onClick={() => setActiveTab("feed", "popular")}
+                selected={activeTab.feed === "popular"}
+              >
+                Популярные
+              </TabsItem>
+              <TabsItem
+                onClick={() => setActiveTab("feed", "last")}
+                selected={activeTab.feed === "last"}
+              >
+                Последние
+              </TabsItem>
+              <TabsItem
+                onClick={() => setActiveTab("feed", "signed")}
+                selected={activeTab.feed === "signed"}
+              >
+                Подписанные
+              </TabsItem>
+            </HorizontalScroll>
+          </Tabs>
+        </div>
       </PanelHeaderSimple>
       <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
         {activeTab.feed === "popular" && (
@@ -94,6 +108,7 @@ const PetitionsFeed = ({
                     activeView={activeView}
                     setPage={setPage}
                     managementDots={false}
+                    setCurrent={setCurrent}
                   />
                   {index < petitions.popular.length - 1 && <Separator />}
                 </div>
@@ -116,6 +131,7 @@ const PetitionsFeed = ({
                     activeView={activeView}
                     setPage={setPage}
                     managementDots={false}
+                    setCurrent={setCurrent}
                   />
                   {index < petitions.last.length - 1 && <Separator />}
                 </div>
@@ -138,6 +154,7 @@ const PetitionsFeed = ({
                     activeView={activeView}
                     setPage={setPage}
                     managementDots={false}
+                    setCurrent={setCurrent}
                   />
                   {index < petitions.signed.length - 1 && <Separator />}
                 </div>
@@ -160,7 +177,9 @@ PetitionsFeed.propTypes = {
   activeStory: PropTypes.string.isRequired,
   setStory: PropTypes.func.isRequired,
   setPage: PropTypes.func.isRequired,
-  petitions: PropTypes.object.isRequired
+  petitions: PropTypes.object.isRequired,
+  setCurrent: PropTypes.func.isRequired,
+  activePanel: PropTypes.string.isRequired
 };
 
 export default PetitionsFeed;

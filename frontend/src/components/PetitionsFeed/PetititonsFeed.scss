@@ -1,12 +1,15 @@
 .PetitionsTabs {
+  transition: 1s !important;
+  z-index: 999 !important;
+
   &--ios {
-    top: calc(var(--panelheader_height_ios) + var(--safe-area-inset-top) - 15px) !important;
+    margin-top: -15px !important;
   }
-
-  &--android {
-    top: calc(var(--panelheader_height_android) + var(--safe-area-inset-top) - 15px) !important;
-  }
-
+  //
+  //&--android {
+  //  top: calc(var(--panelheader_height_android) + var(--safe-area-inset-top) - 15px) !important;
+  //}
+  //
   &__wrapper {
     width: 100%;
     margin-top: -15px;
@@ -14,17 +17,30 @@
 }
 
 #feed .PanelHeaderSimple {
-  &--ios::before,
-  &--ios,
-  &__in {
+//  transition: 1s !important;
+//  &--ios::before,
+//  &--ios,
+  &__in, &__content {
     height: calc(33px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри
   }
-
-  &__content {
-    margin-top: -33px; // 33px - высота HorizontalScroll с Tabs внутри
+  &__separator {
+    margin-top: 33px !important;
   }
+//
+//  &__content {
+//    transition: 1s !important;
+//    margin-top: -33px; // 33px - высота HorizontalScroll с Tabs внутри
+//  }
 }
 
-#feed .PullToRefresh {
-  margin-top: calc(6px + var(--safe-area-inset-top));
+#feed {
+  .Panel__in {
+    padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important;
+  }
+
+}
+
+#kekes {
+  //display: flex;
+  //flex-direction: column;
 }
