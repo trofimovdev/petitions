@@ -26,12 +26,12 @@ const PetitionCard = ({
     <Div
       className="PetitionCard"
       onClick={() => {
-        api.selectionChanged().catch(() => {});
         Backend.request(`petitions/${id.toString()}`, {})
           .then(response => {
             console.log("RESPONSE PETITION", response[0]);
             setCurrent(response[0]);
             setPage(activeView, "petition");
+            api.selectionChanged().catch(() => {});
           })
           .catch(e => {
             console.log(e);

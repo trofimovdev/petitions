@@ -76,10 +76,12 @@ const MobileContainer = props => {
         id="management"
         setActiveTab={setActiveTab}
         activeTab={activeTab}
+        activeView={activeView}
         activePanel={activePanel}
         activeStory={activeStory}
         setStory={setStory}
         setPage={setPage}
+        goBack={goBack}
       />
     </Epic>
   );

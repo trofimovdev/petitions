@@ -7,11 +7,14 @@
     width: 100%;
     margin-top: -15px; }
 
-#feed .PanelHeaderSimple__in, #feed .PanelHeaderSimple__content {
+.petitions_feed .PanelHeaderSimple__in, .petitions_feed .PanelHeaderSimple__content {
   height: calc(33px + var(--panelheader_height_ios)) !important; }
 
-#feed .PanelHeaderSimple__separator {
+.petitions_feed .PanelHeaderSimple__separator {
   margin-top: 33px !important; }
 
-#feed .Panel__in {
+.petitions_feed .Panel__in {
   padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important; }
+
+.FeedFooter {
+  margin-top: 0 !important; }

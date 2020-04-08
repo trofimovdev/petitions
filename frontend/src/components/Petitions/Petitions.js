@@ -52,6 +52,7 @@ const Petitions = ({
         openModal={openModal}
         currentPetition={currentPetition}
         activePanel={activePanel}
+        setCurrent={setCurrent}
       />
     </View>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./ManagementFeed.css";
 import {
   Panel,
@@ -18,22 +18,29 @@ const ManagementFeed = ({
   id,
   activeStory,
   setStory,
+  activeView,
   activePanel,
   setPage
 }) => {
+  useEffect(() => {
+    console.log("activePanel from management", activePanel);
+    if (activePanel === "feed") {
+      api.setLocationHash("management");
+    }
+  }, [activePanel]);
+
   const platform = usePlatform();
   return (
     <Panel id={id} separator={false}>
-      <PanelHeaderSimple>Петиции</PanelHeaderSimple>
+      <PanelHeaderSimple separator>Петиции</PanelHeaderSimple>
       <Placeholder
         className={getClassName("Placeholder", platform)}
         action={
           <Button
             size="l"
             onClick={() => {
-              api.setLocationHash("create").then(() => {
-                setPage(activePanel, "create");
-              });
+              setPage(activeView, "create");
+              api.selectionChanged().catch(() => {});
             }}
           >
             Создать петицию
@@ -52,6 +59,7 @@ ManagementFeed.propTypes = {
   id: PropTypes.string.isRequired,
   activeStory: PropTypes.string.isRequired,
   setStory: PropTypes.func.isRequired,
+  activeView: PropTypes.string.isRequired,
   activePanel: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired
 };

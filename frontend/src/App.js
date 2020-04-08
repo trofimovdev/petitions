@@ -5,10 +5,15 @@ import { HashRouter as Router, Route } from "react-router-dom";
 import { ConfigProvider } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import MobileContainer from "./containers/MobileContainer/MobileContainer";
+import { isDevEnv } from "./tools/helpers";
 
 const App = ({ colorScheme }) => {
   return (
-    <ConfigProvider webviewType="vkapps" isWebView scheme={colorScheme}>
+    <ConfigProvider
+      webviewType="vkapps"
+      isWebView={isDevEnv() ? true : undefined}
+      scheme={colorScheme}
+    >
       <Router history={[]}>
         <Route component={props => <MobileContainer {...props} />} />
       </Router>

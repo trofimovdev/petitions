@@ -16,31 +16,22 @@
   }
 }
 
-#feed .PanelHeaderSimple {
-//  transition: 1s !important;
-//  &--ios::before,
-//  &--ios,
+.petitions_feed .PanelHeaderSimple {
   &__in, &__content {
     height: calc(33px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри
   }
   &__separator {
     margin-top: 33px !important;
   }
-//
-//  &__content {
-//    transition: 1s !important;
-//    margin-top: -33px; // 33px - высота HorizontalScroll с Tabs внутри
-//  }
 }
 
-#feed {
-  .Panel__in {
+.petitions_feed {
+  & .Panel__in {
     padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important;
   }
 
 }
 
-#kekes {
-  //display: flex;
-  //flex-direction: column;
+.FeedFooter {
+  margin-top: 0 !important;
 }

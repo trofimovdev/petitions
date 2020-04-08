@@ -19,10 +19,11 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
+import Backend from "../../tools/Backend";
 
 const api = new VKMiniAppAPI();
 
-const Petition = ({ id, goBack, activeView, openModal, currentPetition, activePanel }) => {
+const Petition = ({ id, goBack, activeView, openModal, currentPetition, activePanel, setCurrent }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [headerStatus, setHeaderStatus] = useState("hidden");
   console.log("CURRENT PETITION is", currentPetition);
@@ -30,9 +31,16 @@ const Petition = ({ id, goBack, activeView, openModal, currentPetition, activePa
   const onRefresh = () => {
     console.log("refresh");
     setFetchingStatus(true);
-    setTimeout(function() {
-      setFetchingStatus(false);
-    }, 1000);
+    Backend.request(`petitions/${currentPetition.id.toString()}`, {})
+      .then(response => {
+        console.log("RESPONSE PETITION", response[0]);
+        setCurrent(response[0]);
+        setFetchingStatus(false);
+        api.selectionChanged().catch(() => {});
+      })
+      .catch(e => {
+        console.log(e);
+      });
   };
 
   const onScroll = () => {
@@ -63,6 +71,7 @@ const Petition = ({ id, goBack, activeView, openModal, currentPetition, activePa
           <PanelHeaderButton
             onClick={() => {
               goBack();
+              api.selectionChanged().catch(() => {});
             }}
           >
             <Icon28ChevronBack />
