@@ -9,7 +9,10 @@ import PropTypes from "prop-types";
 
 const api = new VKMiniAppAPI();
 
-const EditPetitionTabbar = () => {
+const EditPetitionTabbar = ({ form }) => {
+  // console.log(form.title);
+  // const { title, text, signatures, file_1, file_2 } = form;
+  // console.log(form.title, title, form.text, text, form.title && form.text);
   return (
     <FixedLayout vertical="bottom" className="Tabbar EditPetitionTabbar">
       <Div>
@@ -19,6 +22,15 @@ const EditPetitionTabbar = () => {
           onClick={() => {
             api.notificationOccurred("success");
           }}
+          disabled={
+            !(
+              form.title &&
+              form.text &&
+              form.signatures &&
+              form.file_1 &&
+              form.file_2
+            )
+          }
         >
           Запустить
         </Button>
@@ -28,6 +40,7 @@ const EditPetitionTabbar = () => {
 };
 
 EditPetitionTabbar.propTypes = {
+  form: PropTypes.object.isRequired
 };
 
 export default EditPetitionTabbar;

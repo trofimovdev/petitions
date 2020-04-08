@@ -2,6 +2,7 @@ import React from "react";
 import { Div, Card, Link } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./UploadCard.css";
+import Icon16Cancel from "@vkontakte/icons/dist/16/cancel";
 
 const UploadCard = ({
   id,
@@ -16,15 +17,22 @@ const UploadCard = ({
   return (
     <Div className={`UploadCard UploadCard__${size}`}>
       <p className="UploadCard__top FormLayout__row-top">{title}</p>
-      <input
-        type="file"
-        id={`fileElem_${id}`}
-        accept="image/*"
-        style={{ display: "none" }}
-        onChange={onChange}
-      />
-      <label htmlFor={`fileElem_${id}`}>
+      {!img && (
+        <input
+          type="file"
+          id={`file_${id}`}
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={onChange}
+        />
+      )}
+      <label htmlFor={`file_${id}`}>
         <Card size="l" className="UploadCard__card">
+          {img != null && (
+            <div className="UploadCard__card__cancel-button">
+              <Icon16Cancel />
+            </div>
+          )}
           <div className="UploadCard__card__content FormField__border">
             {img ? (
               <img src={img} />

@@ -1,5 +1,14 @@
 .EditPetition {
-  & > .Panel__in {
+  & > .Panel__in,
+  & .Snackbar {
     padding-bottom: calc(68px + var(--safe-area-inset-top)) !important; // 68px - высота таббара
+  }
+}
+
+.EditForm {
+  &__input-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
 }
