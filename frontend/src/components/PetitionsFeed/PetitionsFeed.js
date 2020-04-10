@@ -15,6 +15,7 @@ import "./PetititonsFeed.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PetitionCard from "../PetitionCard/PetitionCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
+import FriendsCard from "../FriendsCard/FriendsCard";
 
 const api = new VKMiniAppAPI();
 
@@ -94,8 +95,11 @@ const PetitionsFeed = ({
           </Tabs>
         </div>
       </PanelHeaderSimple>
-      {petitions.popular !== undefined && petitions.last !== undefined && petitions.signed !== undefined ? (
+      {petitions.popular !== undefined &&
+      petitions.last !== undefined &&
+      petitions.signed !== undefined ? (
         <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
+          <FriendsCard />
           {activeTab.feed === "popular" && (
             <>
               <div className="PetitionsFeed">

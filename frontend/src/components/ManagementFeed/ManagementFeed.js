@@ -41,24 +41,7 @@ const ManagementFeed = ({
 
   useEffect(() => {
     console.log("activePanel from management", activePanel);
-    if (activePanel === "feed") {      {/* <Placeholder */}
-      {/*  className={getClassName("Placeholder", platform)} */}
-      {/*  action={ */}
-      {/*    <Button */}
-      {/*      size="l" */}
-      {/*      onClick={() => { */}
-      {/*        setPage(activeView, "create"); */}
-      {/*        api.selectionChanged().catch(() => {}); */}
-      {/*      }} */}
-      {/*    > */}
-      {/*      Создать петицию */}
-      {/*    </Button> */}
-      {/*  } */}
-      {/*  stretched */}
-      {/* > */}
-      {/*  Создавайте петиции, чтобы решать реальные проблемы */}
-      {/* </Placeholder> */}
-
+    if (activePanel === "feed") {
       api.setLocationHash("management");
     }
   }, [activePanel]);
@@ -67,7 +50,7 @@ const ManagementFeed = ({
   return (
     <Panel id={id} separator={false}>
       <PanelHeaderSimple separator>Петиции</PanelHeaderSimple>
-       <Placeholder
+      <Placeholder
         className={getClassName("Placeholder", platform)}
         action={
           <Button
@@ -81,9 +64,9 @@ const ManagementFeed = ({
           </Button>
         }
         stretched
-       >
+      >
         Создавайте петиции, чтобы решать реальные проблемы
-       </Placeholder>
+      </Placeholder>
 
       <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
         <div className="ManagementFeed">lol</div>

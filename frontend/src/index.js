@@ -20,6 +20,10 @@ api.onUpdateConfig(({ scheme }) => {
   console.log("SET COLOR SCHEME", scheme);
 });
 
+api.getAccessToken(7338958, "").then(r => {
+  console.log(r);
+});
+
 Backend.request("bootstrap", {})
   .then(response => {
     store.dispatch(setPopular(response.popular || []));
