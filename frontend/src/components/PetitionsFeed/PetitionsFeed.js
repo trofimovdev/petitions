@@ -7,14 +7,14 @@ import {
   Separator,
   Tabs,
   TabsItem,
-  Footer
+  Footer,
+  Spinner
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./PetititonsFeed.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PetitionCard from "../PetitionCard/PetitionCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
-import { setCurrent } from "../../store/petitions/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -66,7 +66,7 @@ const PetitionsFeed = ({
   }, [activeTab, activePanel]);
 
   return (
-    <Panel id={id} className="petitions_feed" separator={false}>
+    <Panel id={id} className="PetitionsFeed" separator={false}>
       <PanelHeaderSimple separator>
         <div>
           Петиции
@@ -94,100 +94,104 @@ const PetitionsFeed = ({
           </Tabs>
         </div>
       </PanelHeaderSimple>
-      <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
-        {activeTab.feed === "popular" && (
-          <>
-            <div className="PetitionsFeed">
-              {petitions.popular.map((item, index) => {
-                return (
-                  <div key={index}>
-                    <PetitionCard
-                      id={item.id}
-                      title={item.title}
-                      numberOfSignatures={item.count_signatures}
-                      totalSignatures={item.need_signatures}
-                      mobilePhotoUrl={item.mobile_photo_url}
-                      activeView={activeView}
-                      setPage={setPage}
-                      managementDots={false}
-                      setCurrent={setCurrent}
-                    />
-                    {index < petitions.popular.length - 1 && <Separator />}
-                  </div>
-                );
-              })}
-            </div>
-            {petitions.popular.length > 0 && (
-              <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
-            )}
-            {petitions.popular.length === 0 && (
-              <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
-            )}
-          </>
-        )}
+      {petitions.popular !== undefined && petitions.last !== undefined && petitions.signed !== undefined ? (
+        <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
+          {activeTab.feed === "popular" && (
+            <>
+              <div className="PetitionsFeed">
+                {petitions.popular.map((item, index) => {
+                  return (
+                    <div key={index}>
+                      <PetitionCard
+                        id={item.id}
+                        title={item.title}
+                        numberOfSignatures={item.count_signatures}
+                        totalSignatures={item.need_signatures}
+                        mobilePhotoUrl={item.mobile_photo_url}
+                        activeView={activeView}
+                        setPage={setPage}
+                        managementDots={false}
+                        setCurrent={setCurrent}
+                      />
+                      {index < petitions.popular.length - 1 && <Separator />}
+                    </div>
+                  );
+                })}
+              </div>
+              {petitions.popular.length > 0 && (
+                <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
+              )}
+              {petitions.popular.length === 0 && (
+                <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
+              )}
+            </>
+          )}
 
-        {activeTab.feed === "last" && (
-          <>
-            <div className="PetitionsFeed">
-              {petitions.last.map((item, index) => {
-                return (
-                  <div key={index}>
-                    <PetitionCard
-                      id={item.id}
-                      title={item.title}
-                      numberOfSignatures={item.count_signatures}
-                      totalSignatures={item.need_signatures}
-                      mobilePhotoUrl={item.mobile_photo_url}
-                      activeView={activeView}
-                      setPage={setPage}
-                      managementDots={false}
-                      setCurrent={setCurrent}
-                    />
-                    {index < petitions.last.length - 1 && <Separator />}
-                  </div>
-                );
-              })}
-            </div>
-            {petitions.last.length > 0 && (
-              <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
-            )}
-            {petitions.last.length === 0 && (
-              <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
-            )}
-          </>
-        )}
+          {activeTab.feed === "last" && (
+            <>
+              <div className="PetitionsFeed">
+                {petitions.last.map((item, index) => {
+                  return (
+                    <div key={index}>
+                      <PetitionCard
+                        id={item.id}
+                        title={item.title}
+                        numberOfSignatures={item.count_signatures}
+                        totalSignatures={item.need_signatures}
+                        mobilePhotoUrl={item.mobile_photo_url}
+                        activeView={activeView}
+                        setPage={setPage}
+                        managementDots={false}
+                        setCurrent={setCurrent}
+                      />
+                      {index < petitions.last.length - 1 && <Separator />}
+                    </div>
+                  );
+                })}
+              </div>
+              {petitions.last.length > 0 && (
+                <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
+              )}
+              {petitions.last.length === 0 && (
+                <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
+              )}
+            </>
+          )}
 
-        {activeTab.feed === "signed" && (
-          <>
-            <div className="PetitionsFeed">
-              {petitions.signed.map((item, index) => {
-                return (
-                  <div key={index}>
-                    <PetitionCard
-                      id={item.id}
-                      title={item.title}
-                      numberOfSignatures={item.count_signatures}
-                      totalSignatures={item.need_signatures}
-                      mobilePhotoUrl={item.mobile_photo_url}
-                      activeView={activeView}
-                      setPage={setPage}
-                      managementDots={false}
-                      setCurrent={setCurrent}
-                    />
-                    {index < petitions.signed.length - 1 && <Separator />}
-                  </div>
-                );
-              })}
-            </div>
-            {petitions.signed.length > 0 && (
-              <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
-            )}
-            {petitions.signed.length === 0 && (
-              <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
-            )}
-          </>
-        )}
-      </PullToRefresh>
+          {activeTab.feed === "signed" && (
+            <>
+              <div className="PetitionsFeed">
+                {petitions.signed.map((item, index) => {
+                  return (
+                    <div key={index}>
+                      <PetitionCard
+                        id={item.id}
+                        title={item.title}
+                        numberOfSignatures={item.count_signatures}
+                        totalSignatures={item.need_signatures}
+                        mobilePhotoUrl={item.mobile_photo_url}
+                        activeView={activeView}
+                        setPage={setPage}
+                        managementDots={false}
+                        setCurrent={setCurrent}
+                      />
+                      {index < petitions.signed.length - 1 && <Separator />}
+                    </div>
+                  );
+                })}
+              </div>
+              {petitions.signed.length > 0 && (
+                <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
+              )}
+              {petitions.signed.length === 0 && (
+                <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
+              )}
+            </>
+          )}
+        </PullToRefresh>
+      ) : (
+        <Spinner size="regular" className="PetitionsFeed__spinner" />
+      )}
 
       <EpicTabbar activeStory={activeStory} setStory={setStory} />
     </Panel>

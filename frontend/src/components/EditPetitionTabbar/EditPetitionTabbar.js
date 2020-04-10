@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 
 const api = new VKMiniAppAPI();
 
-const EditPetitionTabbar = ({ form }) => {
+const EditPetitionTabbar = ({ disabled }) => {
   // console.log(form.title);
   // const { title, text, signatures, file_1, file_2 } = form;
   // console.log(form.title, title, form.text, text, form.title && form.text);
@@ -22,15 +22,7 @@ const EditPetitionTabbar = ({ form }) => {
           onClick={() => {
             api.notificationOccurred("success");
           }}
-          disabled={
-            !(
-              form.title &&
-              form.text &&
-              form.signatures &&
-              form.file_1 &&
-              form.file_2
-            )
-          }
+          disabled={disabled}
         >
           Запустить
         </Button>
@@ -40,7 +32,7 @@ const EditPetitionTabbar = ({ form }) => {
 };
 
 EditPetitionTabbar.propTypes = {
-  form: PropTypes.object.isRequired
+  disabled: PropTypes.bool.isRequired
 };
 
 export default EditPetitionTabbar;

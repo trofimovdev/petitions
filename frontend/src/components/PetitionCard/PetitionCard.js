@@ -3,9 +3,9 @@ import { Div, Card, UsersStack, ScreenSpinner } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./PetitionCard.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
+import Icon28MoreHorizontal from "@vkontakte/icons/dist/28/more_horizontal";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import Backend from "../../tools/Backend";
-import { setCurrent } from "../../store/petitions/actions";
 // import store from "../../store";
 // import { setLast, setPopular, setSigned } from "../../store/petitions/actions";
 
@@ -22,6 +22,10 @@ const PetitionCard = ({
   managementDots,
   setCurrent
 }) => {
+  const onClick = () => {
+
+  };
+
   return (
     <Div
       className="PetitionCard"
@@ -38,6 +42,11 @@ const PetitionCard = ({
           });
       }}
     >
+      {true && (
+        <div className="PetitionCard__dots" onClick={onClick}>
+          <Icon28MoreHorizontal />
+        </div>
+      )}
       <h1 className="PetitionCard__title">{title}</h1>
       <div>
         <PetitionProgress

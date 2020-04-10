@@ -21,14 +21,16 @@
 
   &__image {
     width: 100%;
-    height: 200px;
+    height: 192px;
     overflow: hidden;
     position: relative;
     display: inline-block;
 
     & img {
       width: 100%;
-      display: block;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 0%;
     }
 
     &:after {
@@ -73,11 +75,23 @@
       font-weight: 600;
       margin-right: 4px;
     }
+
+    &__avatar {
+      //padding: 4px 12px 4px 0 !important;;
+    }
   }
 
-  &__creator .Cell__children {
-    font-size: 14px;
-    color: $petition-creator-text-color;
+  &__creator {
+    .Cell {
+      &__children {
+        font-size: 14px;
+        color: $petition-creator-text-color;
+      }
+
+      &__main {
+        margin-left: 12px;
+      }
+    }
   }
 }
 

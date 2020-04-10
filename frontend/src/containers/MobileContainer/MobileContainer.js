@@ -13,7 +13,16 @@ import {
   openPopout,
   closePopout
 } from "../../store/router/actions";
-import { setCurrent, setEdit, setCreate } from "../../store/petitions/actions";
+import {
+  setCurrent,
+  setEdit,
+  setCreate,
+  setFormType,
+  setPopular,
+  setLast,
+  setSigned,
+  setManaged
+} from "../../store/petitions/actions";
 import "@vkontakte/vkui/dist/vkui.css";
 import Petitions from "../../components/Petitions/Petitions";
 import Management from "../../components/Management/Management";
@@ -38,7 +47,12 @@ const MobileContainer = props => {
     openPopout,
     closePopout,
     setEdit,
-    setCreate
+    setCreate,
+    setFormType,
+    setPopular,
+    setLast,
+    setSigned,
+    setManaged
   } = props;
   const activeModal =
     activeModals[activeView] === undefined ? null : activeModals[activeView];
@@ -94,6 +108,10 @@ const MobileContainer = props => {
         setEdit={setEdit}
         setCreate={setCreate}
         activeViewPanelsHistory={activeViewPanelsHistory}
+        setFormType={setFormType}
+        openModal={openModal}
+        closeModal={closeModal}
+        activeModal={activeModal}
       />
     </Epic>
   );
@@ -127,7 +145,12 @@ function mapDispatchToProps(dispatch) {
         openPopout,
         closePopout,
         setEdit,
-        setCreate
+        setCreate,
+        setFormType,
+        setPopular,
+        setLast,
+        setSigned,
+        setManaged
       },
       dispatch
     )
@@ -152,7 +175,12 @@ MobileContainer.propTypes = {
   openPopout: PropTypes.func.isRequired,
   closePopout: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
-  setCreate: PropTypes.func.isRequired
+  setCreate: PropTypes.func.isRequired,
+  setFormType: PropTypes.func.isRequired,
+  setPopular: PropTypes.func.isRequired,
+  setLast: PropTypes.func.isRequired,
+  setSigned: PropTypes.func.isRequired,
+  setManaged: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MobileContainer);

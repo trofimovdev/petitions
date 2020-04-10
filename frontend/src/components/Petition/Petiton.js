@@ -23,7 +23,15 @@ import Backend from "../../tools/Backend";
 
 const api = new VKMiniAppAPI();
 
-const Petition = ({ id, goBack, activeView, openModal, currentPetition, activePanel, setCurrent }) => {
+const Petition = ({
+  id,
+  goBack,
+  activeView,
+  openModal,
+  currentPetition,
+  activePanel,
+  setCurrent
+}) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [headerStatus, setHeaderStatus] = useState("hidden");
   console.log("CURRENT PETITION is", currentPetition);
@@ -46,7 +54,7 @@ const Petition = ({ id, goBack, activeView, openModal, currentPetition, activePa
   const onScroll = () => {
     const scrollPosition = window.scrollY;
     console.log(scrollPosition);
-    if (scrollPosition > 128) {
+    if (scrollPosition > 150) {
       setHeaderStatus("shown");
     } else {
       setHeaderStatus("hidden");
@@ -106,11 +114,20 @@ const Petition = ({ id, goBack, activeView, openModal, currentPetition, activePa
         <Separator />
         <Cell
           className="Petition__creator"
-          before={<Avatar src={currentPetition.owner.photo_50} size={40} />}
+          before={
+            <a
+              className="Petition__creator__avatar"
+              href={`https://vk.com/id${currentPetition.owner_id}`}
+              target="_blank"
+            >
+              <Avatar src={currentPetition.owner.photo_50} size={40} />
+            </a>
+          }
           multiline
         >
           <Link
             href={`https://vk.com/id${currentPetition.owner_id}`}
+            target="_blank"
             className="Petition__creator__link"
           >
             {currentPetition.owner.first_name} {currentPetition.owner.last_name}

@@ -12,6 +12,7 @@ const UploadCard = ({
   text,
   size,
   bottomText,
+  onCancel,
   img = null
 }) => {
   return (
@@ -29,7 +30,11 @@ const UploadCard = ({
       <label htmlFor={`file_${id}`}>
         <Card size="l" className="UploadCard__card">
           {img != null && (
-            <div className="UploadCard__card__cancel-button">
+            <div
+              className="UploadCard__card__cancel-button"
+              id={`file_${id}`}
+              onClick={onCancel}
+            >
               <Icon16Cancel />
             </div>
           )}
@@ -58,6 +63,7 @@ UploadCard.propTypes = {
   text: PropTypes.string.isRequired,
   size: PropTypes.string.isRequired,
   bottomText: PropTypes.string,
+  onCancel: PropTypes.func.isRequired,
   img: PropTypes.string
 };
 

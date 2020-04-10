@@ -1,3 +1,5 @@
+@import "src/style/_vars.scss";
+
 .EditPetition {
   & > .Panel__in,
   & .Snackbar {
@@ -10,5 +12,21 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+  }
+
+  &__input-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    input {
+      flex-grow: 2;
+    }
+
+    .Icon {
+      z-index: 2;
+      color: $petition-create-mention-icon-color;
+      margin-right: 8px;
+    }
   }
 }

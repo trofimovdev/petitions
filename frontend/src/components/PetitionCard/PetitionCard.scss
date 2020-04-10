@@ -3,6 +3,7 @@
 .PetitionCard {
   margin: 0;
   padding-bottom: 22px;
+  position: relative;
 
   &__title {
     margin: 0 0 8px 0;
@@ -22,6 +23,13 @@
   &__users_stack {
     margin: 12px 0 0 0;
     padding: 0;
+  }
+
+  &__dots {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: $petition-card-dots-color;
   }
 }
 

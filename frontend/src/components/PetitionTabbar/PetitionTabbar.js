@@ -21,7 +21,7 @@ const PetitionTabbar = ({ openModal }) => {
           size="xl"
           mode="primary"
           onClick={() => {
-            api.notificationOccurred("success");
+            api.notificationOccurred("success").catch(() => {});
           }}
         >
           Подписать
@@ -30,7 +30,7 @@ const PetitionTabbar = ({ openModal }) => {
           size="l"
           mode="secondary"
           onClick={() => {
-            api.selectionChanged();
+            api.selectionChanged().catch(() => {});
             console.log("try to open");
             openModal("share-type");
             console.log("opened");
@@ -42,7 +42,7 @@ const PetitionTabbar = ({ openModal }) => {
           size="l"
           mode="secondary"
           onClick={() => {
-            api.selectionChanged();
+            api.selectionChanged().catch(() => {});
           }}
         >
           <Icon24Settings />

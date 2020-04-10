@@ -16,7 +16,7 @@
   }
 }
 
-.petitions_feed .PanelHeaderSimple {
+.PetitionsFeed .PanelHeaderSimple {
   &__in, &__content {
     height: calc(33px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри
   }
@@ -25,11 +25,13 @@
   }
 }
 
-.petitions_feed {
+.PetitionsFeed {
   & .Panel__in {
     padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important;
   }
-
+  &__spinner {
+    margin-top: 20px;
+  }
 }
 
 .FeedFooter {

@@ -24,7 +24,7 @@ class PetitionController extends Controller
         $offset = (int)$request->offset;
         if (
             empty($request->type) ||
-            $request->type && !in_array($request->type, ['popular', 'last', 'signed', 'my']) ||
+            $request->type && !in_array($request->type, ['popular', 'last', 'signed', 'manage']) ||
             $request->offset && empty($offset)
         ) {
             return new ErrorResponse(400, 'Invalid params');

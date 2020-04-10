@@ -22,15 +22,9 @@ api.onUpdateConfig(({ scheme }) => {
 
 Backend.request("bootstrap", {})
   .then(response => {
-    if (response.popular) {
-      store.dispatch(setPopular(response.popular));
-    }
-    if (response.last) {
-      store.dispatch(setLast(response.last));
-    }
-    if (response.signed) {
-      store.dispatch(setSigned(response.signed));
-    }
+    store.dispatch(setPopular(response.popular || []));
+    store.dispatch(setLast(response.last || []));
+    store.dispatch(setSigned(response.signed || []));
 
     const screenHeight = document.body.getBoundingClientRect().height;
     if (313 * response.last.length < screenHeight) {

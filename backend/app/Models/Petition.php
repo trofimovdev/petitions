@@ -39,6 +39,11 @@ class Petition extends Model
         return $response;
     }
 
+    public static function getManaged(int $userId, int $offset = 0)
+    {
+
+    }
+
     public static function getPetitions(array $petitionIds, bool $with_owner = false)
     {
         $petitions = Petition::whereIn('id', $petitionIds)->get();

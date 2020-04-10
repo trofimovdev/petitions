@@ -6,6 +6,11 @@ import {
   PanelHeaderButton,
   Button,
   Div,
+  List,
+  Cell,
+  Search,
+  FixedLayout,
+  Avatar,
   ANDROID,
   IOS,
   usePlatform
@@ -81,6 +86,94 @@ const PetitionModal = ({ activeModal, closeModal }) => {
             </p>
           </div>
         </Div>
+      </ModalPage>
+
+      <ModalPage
+        id="select-users"
+        onClose={closeModal}
+        header={
+          <ModalPageHeader
+            left={
+              platform === ANDROID && (
+                <PanelHeaderButton onClick={closeModal}>
+                  <Icon24Cancel />
+                </PanelHeaderButton>
+              )
+            }
+            right={
+              platform === IOS && (
+                <PanelHeaderButton onClick={closeModal}>
+                  <Icon24Dismiss />
+                </PanelHeaderButton>
+              )
+            }
+          >
+            Выберите пользователей
+          </ModalPageHeader>
+        }
+      >
+        <FixedLayout vertical="top">
+          <Search
+            value=""
+            onChange={e => {
+              console.log(e);
+            }}
+            after={null}
+          />
+        </FixedLayout>
+        <List>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Артур Стамбульцян
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Тимофей Чаптыков
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Влад Анесов
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Тимофей Чаптыков
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Влад Анесов
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Тимофей Чаптыков
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Влад Анесов
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Тимофей Чаптыков
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Влад Анесов
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Тимофей Чаптыков
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Влад Анесов
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Тимофей Чаптыков
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Влад Анесов
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Тимофей Чаптыков
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Влад Анесов
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Тимофей Чаптыков
+          </Cell>
+          <Cell selectable before={<Avatar size={40} src="" />}>
+            Влад Анесов
+          </Cell>
+        </List>
       </ModalPage>
     </ModalRoot>
   );
