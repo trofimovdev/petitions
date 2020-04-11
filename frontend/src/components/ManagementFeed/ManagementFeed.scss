@@ -7,3 +7,23 @@
     margin-top: calc(5px + var(--panelheader_height_android) + var(--safe-area-inset-top));
   }
 }
+
+.FeedFooter {
+  margin-top: 0 !important;
+}
+
+.ManagementFeed {
+  //& .Panel__in {
+  //  padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important;
+  //}
+  //&__spinner {
+  //  margin-top: 20px;
+  //}
+}
+
+.HeaderButton {
+  &__wrapper {
+    width: 100%;
+    margin-top: -15px;
+  }
+}

@@ -13,16 +13,27 @@ class BootstrapController extends Controller
 {
     public function index(SignRequest $request)
     {
+        return $this->getBootstrap($request);
+    }
+
+    public function store(SignRequest $request)
+    {
+        if ($request->with_friends) {
+            return $this->getBootstrap($request, explode(',', $request->friends));
+        }
+        return 'store';
+    }
+
+    private function getBootstrap(SignRequest $request, array $friends = []) {
         $test = Redis::lrange('popular_petitions', 0, -1);
         if (!$test) {
             $p = ["2"];
         }
-        $popular = Petition::getPetitions($p);
         return new OkResponse([
-            'test' => $popular,
-//            'popular' => Petition::getPopular(),
+            'popular' => Petition::getPetitions($p),
             'last' => Petition::getLast(),
             'signed' => SignedPetition::getSigned($request->userId),
+            'managed' => Petition::getManaged($request->userId),
         ]);
     }
 }

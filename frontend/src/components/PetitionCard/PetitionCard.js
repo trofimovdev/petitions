@@ -1,5 +1,12 @@
 import React from "react";
-import { Div, Card, UsersStack, ScreenSpinner } from "@vkontakte/vkui";
+import {
+  Div,
+  Card,
+  UsersStack,
+  ScreenSpinner,
+  Snackbar,
+  Avatar
+} from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./PetitionCard.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
@@ -19,17 +26,18 @@ const PetitionCard = ({
   mobilePhotoUrl,
   activeView,
   setPage,
-  managementDots,
-  setCurrent
+  setCurrent,
+  managementDots = false,
+  onManagement = () => {}
 }) => {
-  const onClick = () => {
-
-  };
-
   return (
     <Div
       className="PetitionCard"
-      onClick={() => {
+      onClick={e => {
+        console.log(e.target);
+        if (["svg", "use", "g", "path"].includes(e.target.tagName)) {
+          return;
+        }
         Backend.request(`petitions/${id.toString()}`, {})
           .then(response => {
             console.log("RESPONSE PETITION", response[0]);
@@ -37,13 +45,13 @@ const PetitionCard = ({
             setPage(activeView, "petition");
             api.selectionChanged().catch(() => {});
           })
-          .catch(e => {
-            console.log(e);
+          .catch(error => {
+            console.log(error);
           });
       }}
     >
-      {true && (
-        <div className="PetitionCard__dots" onClick={onClick}>
+      {managementDots && (
+        <div className="PetitionCard__dots" onClick={onManagement}>
           <Icon28MoreHorizontal />
         </div>
       )}
@@ -81,8 +89,9 @@ PetitionCard.propTypes = {
   mobilePhotoUrl: PropTypes.string.isRequired,
   activeView: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
-  managementDots: PropTypes.bool.isRequired,
-  setCurrent: PropTypes.func.isRequired
+  setCurrent: PropTypes.func.isRequired,
+  managementDots: PropTypes.bool,
+  onManagement: PropTypes.func
 };
 
 export default PetitionCard;

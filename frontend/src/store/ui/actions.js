@@ -1,8 +1,11 @@
-import SET_COLOR_SCHEME from "./actionTypes";
+import { SET_COLOR_SCHEME, SET_PETITIONS_FEED_CARD } from "./actionTypes";
 
-const setColorScheme = scheme => ({
+export const setColorScheme = scheme => ({
   type: SET_COLOR_SCHEME,
   payload: scheme
 });
 
-export default setColorScheme;
+export const setPetitionsFeedCard = card => ({
+  type: SET_PETITIONS_FEED_CARD,
+  payload: card
+});

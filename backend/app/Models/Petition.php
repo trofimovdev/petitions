@@ -23,7 +23,6 @@ class Petition extends Model
 
     public static function getLast(int $offset = 0)
     {
-//        $petitions = Redis::hgetall('p' . $owner_id);
         $petitions = Petition::latest('created_at')
             ->offset($offset)
             ->limit(10)
@@ -31,7 +30,7 @@ class Petition extends Model
         $response = [];
         foreach ($petitions as $petition) {
             if ($petition instanceof Petition) {
-                $response[] = $petition->toPetitionView($text = false, $owner_id = false);
+                $response[] = $petition->toPetitionView($text = false, $owner_id = true);
             } else {
                 $response[] = null;
             }
@@ -41,7 +40,19 @@ class Petition extends Model
 
     public static function getManaged(int $userId, int $offset = 0)
     {
-
+        $petitions = Petition::where('owner_id', '=', $userId)
+            ->offset($offset)
+            ->limit(10)
+            ->get();
+        $response = [];
+        foreach ($petitions as $petition) {
+            if ($petition instanceof Petition) {
+                $response[] = $petition->toPetitionView($text = false, $owner_id = true);
+            } else {
+                $response[] = null;
+            }
+        }
+        return $response;
     }
 
     public static function getPetitions(array $petitionIds, bool $with_owner = false)

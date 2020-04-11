@@ -1,10 +1,9 @@
 import ConnectionError from "./ConnectionError";
 
 export default class Backend {
-  static __call(method, params, httpMethod = "GET") {
+  static __call(method, params = {}, httpMethod = "GET") {
     let url = `https://petitions.trofimov.dev/api/${method}`;
-    // let url = `https://dummy.restapiexample.com/api/${method}`;
-
+    console.log("PARAMS __CALL", params);
     const requestParams = {
       method: httpMethod || "GET",
       cache: "no-cache",
@@ -13,7 +12,6 @@ export default class Backend {
         "X-vk-sign": window.location.search
       }
     };
-    console.log("requestParams", requestParams);
 
     if (httpMethod.toString().toUpperCase() !== "GET") {
       if (!(params instanceof FormData)) {
@@ -21,9 +19,13 @@ export default class Backend {
       }
       requestParams.body =
         params instanceof FormData ? params : JSON.stringify(params);
+      console.log("BODY", requestParams.body);
     } else {
-      url += `?${Backend.stringify(params)}`;
+      const paramsString = new URLSearchParams(params).toString();
+      console.log("paramsString", paramsString);
+      url += `?${paramsString}`;
     }
+
     return new Promise((resolve, reject) => {
       try {
         fetch(url, requestParams)
@@ -96,38 +98,5 @@ export default class Backend {
         }
       }
     });
-  }
-
-  static stringify(object, asRaw = false, prefix = false) {
-    const arr = [];
-    for (const key in object) {
-      if (object.hasOwnProperty(key)) {
-        const value = object[key];
-        if (value === undefined) {
-          continue;
-        }
-        if (typeof value.forEach === "function") {
-          value.forEach(i =>
-            arr.push({
-              k: `${prefix ? `${prefix}[${key}]` : key}[]`,
-              v: i
-            })
-          );
-        } else if (typeof value === "object") {
-          const resolve = Backend.stringify(
-            value,
-            true,
-            prefix ? `${prefix}[${key}]` : key
-          );
-          resolve.forEach(i => arr.push(i));
-        } else {
-          arr.push({ k: prefix ? `${prefix}[${key}]` : key, v: value });
-        }
-      }
-    }
-    if (asRaw) {
-      return arr;
-    }
-    return arr.map(e => `${e.k}=${encodeURIComponent(e.v)}`).join("&");
   }
 }

@@ -33,8 +33,6 @@ const EditPetition = ({
   activePanel,
   setPage,
   goBack,
-  openPopout,
-  closePopout,
   petitions,
   setEdit,
   setCreate,
@@ -140,12 +138,7 @@ const EditPetition = ({
       <FormLayout className="EditForm">
         <Input
           type="text"
-          top={
-            <div className="EditForm__input-top">
-              <span>Название</span>
-              <span>{form.title ? form.title.length : 0}/150</span>
-            </div>
-          }
+          top="Название"
           // TODO: вынести в константу с бэкенда
           status={form.title && form.title.length > 150 ? "error" : ""}
           bottom={
@@ -159,12 +152,7 @@ const EditPetition = ({
         />
         <Textarea
           name="text"
-          top={
-            <div className="EditForm__input-top">
-              <span>Текст петиции</span>
-              <span>{form.text ? form.text.length : 0}/5000</span>
-            </div>
-          }
+          top="Текст петиции"
           // TODO: вынести в константу с бэкенда
           status={form.text && form.text.length > 150 ? "error" : ""}
           bottom={
@@ -198,15 +186,7 @@ const EditPetition = ({
           }
           onChange={onChange}
         />
-        {/* <div> */}
-        {/* <Input */}
-        {/*  type="text" */}
-        {/*  top="Кому направлена петиция" */}
-        {/*  name="directedTo" */}
-        {/*  value={form.directedTo ? form.directedTo : ""} */}
-        {/*  onChange={onChange} */}
-        {/* /> */}
-        {/* </div> */}
+
         <>
           <div className="FormLayout__row-top">Кому направлена петиция</div>
           <div
@@ -232,6 +212,7 @@ const EditPetition = ({
             <div className="FormField__border" />
           </div>
         </>
+
         <UploadCard
           id={1}
           title="Обложка для мобильной версии"
@@ -283,8 +264,6 @@ EditPetition.propTypes = {
   activePanel: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
   goBack: PropTypes.func.isRequired,
-  openPopout: PropTypes.func.isRequired,
-  closePopout: PropTypes.func.isRequired,
   petitions: PropTypes.object.isRequired,
   setEdit: PropTypes.func.isRequired,
   setCreate: PropTypes.func.isRequired,

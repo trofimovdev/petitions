@@ -8,6 +8,10 @@
     align-items: center;
     width: calc(100% / 3);
     text-align: center; }
+    .PetitionModal__button-wrapper__button {
+      width: 76px;
+      height: 52px;
+      border-radius: 26px; }
     .PetitionModal__button-wrapper__text {
       font-size: 14px;
       margin: 10px auto 0 auto; }

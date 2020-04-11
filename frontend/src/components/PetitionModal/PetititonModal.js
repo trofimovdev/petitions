@@ -90,7 +90,7 @@ const PetitionModal = ({ activeModal, closeModal }) => {
           <div className="PetitionModal__button-wrapper">
             <Button
               mode="secondary"
-              style={{ width: "76px", height: "52px", borderRadius: "26px" }}
+              className="PetitionModal__button-wrapper__button"
             >
               <Icon28StoryOutline />
             </Button>
@@ -100,7 +100,7 @@ const PetitionModal = ({ activeModal, closeModal }) => {
           <div className="PetitionModal__button-wrapper">
             <Button
               mode="secondary"
-              style={{ width: "76px", height: "52px", borderRadius: "26px" }}
+              className="PetitionModal__button-wrapper__button"
             >
               <Icon28ArrowUturnRightOutline />
             </Button>
@@ -112,7 +112,7 @@ const PetitionModal = ({ activeModal, closeModal }) => {
           <div className="PetitionModal__button-wrapper">
             <Button
               mode="secondary"
-              style={{ width: "76px", height: "52px", borderRadius: "26px" }}
+              className="PetitionModal__button-wrapper__button"
             >
               <Icon28ChainOutline />
             </Button>

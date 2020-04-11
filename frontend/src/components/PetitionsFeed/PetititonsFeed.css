@@ -4,13 +4,20 @@
   .PetitionsTabs--ios {
     margin-top: -15px !important; }
   .PetitionsTabs__wrapper {
-    width: 100%;
-    margin-top: -15px; }
+    width: 100%; }
+    .PetitionsTabs__wrapper--ios {
+      margin-top: -15px; }
 
-.PetitionsFeed .PanelHeaderSimple__in, .PetitionsFeed .PanelHeaderSimple__content {
+.PetitionsFeed .PanelHeaderSimple--android__in, .PetitionsFeed .PanelHeaderSimple--android__content {
+  height: calc(48px + var(--panelheader_height_android)) !important; }
+
+.PetitionsFeed .PanelHeaderSimple--android .PanelHeaderSimple__separator {
+  margin-top: 28px !important; }
+
+.PetitionsFeed .PanelHeaderSimple--ios__in, .PetitionsFeed .PanelHeaderSimple--ios__content {
   height: calc(33px + var(--panelheader_height_ios)) !important; }
 
-.PetitionsFeed .PanelHeaderSimple__separator {
+.PetitionsFeed .PanelHeaderSimple--ios .PanelHeaderSimple__separator {
   margin-top: 33px !important; }
 
 .PetitionsFeed .Panel__in {

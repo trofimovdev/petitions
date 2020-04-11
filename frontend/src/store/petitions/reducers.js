@@ -23,85 +23,64 @@ const initialState = {
 const petitionsReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_POPULAR: {
-      const { petitions } = action.payload;
       return {
         ...state,
-        popular: petitions
+        popular: action.payload
       };
     }
 
     case SET_LAST: {
-      const { petitions } = action.payload;
       return {
         ...state,
-        last: petitions
+        last: action.payload
       };
     }
 
     case SET_SIGNED: {
-      const { petitions } = action.payload;
       return {
         ...state,
-        signed: petitions
+        signed: action.payload
       };
     }
 
     case SET_MANAGED: {
-      const { petitions } = action.payload;
       return {
         ...state,
-        managed: petitions
+        managed: action.payload
       };
     }
 
     case SET_CURRENT: {
-      const { petition } = action.payload;
       return {
         ...state,
-        current: petition
+        current: action.payload
       };
     }
 
     case SET_CREATE: {
-      const { field } = action.payload;
-      console.log("NEXT TWO LINES");
-      console.log(field);
-      console.log({
-        ...state,
-        create: {
-          ...state.create,
-          ...field
-        }
-      });
       return {
         ...state,
         create: {
           ...state.create,
-          ...field
+          ...action.payload
         }
       };
     }
 
     case SET_EDIT: {
-      const { field } = action.payload;
-      console.log("NEXT TWO LINES");
-      console.log(field);
-      console.log({ ...state, ...field });
       return {
         ...state,
         edit: {
           ...state.edit,
-          ...field
+          ...action.payload
         }
       };
     }
 
     case SET_FORM_TYPE: {
-      const { formType } = action.payload;
-      console.log(formType);
       return {
         ...state,
-        formType
+        ...action.payload
       };
     }
 

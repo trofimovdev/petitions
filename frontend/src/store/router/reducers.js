@@ -295,26 +295,6 @@ const routerReducer = (state = initialState, action) => {
       };
     }
 
-    case OPEN_POPOUT:
-      window.history.pushState(null, null);
-
-      return {
-        ...state,
-        popouts: {
-          ...state.popouts,
-          [state.activeView]: action.payload.popout
-        }
-      };
-
-    case CLOSE_POPOUT:
-      return {
-        ...state,
-        popouts: {
-          ...state.popouts,
-          [state.activeView]: null
-        }
-      };
-
     case OPEN_MODAL: {
       console.log("OPEN MODAL");
       window.history.pushState(null, null);

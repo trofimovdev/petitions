@@ -8,7 +8,9 @@ import {
   Tabs,
   TabsItem,
   Footer,
-  Spinner
+  Spinner,
+  getClassName,
+  usePlatform
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./PetititonsFeed.css";
@@ -16,6 +18,7 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PetitionCard from "../PetitionCard/PetitionCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import FriendsCard from "../FriendsCard/FriendsCard";
+import { setLaunchParameters } from "../../store/data/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -29,10 +32,13 @@ const PetitionsFeed = ({
   setStory,
   petitions,
   setCurrent,
-  activePanel
+  activePanel,
+  data
 }) => {
   const screenHeight = document.body.getBoundingClientRect().height;
   const [fetchingStatus, setFetchingStatus] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState(false);
+  const [isFriendsCardVisibile, setIsFriendsCardVisibile] = useState(true);
 
   const onRefresh = () => {
     console.log("refresh");
@@ -45,11 +51,41 @@ const PetitionsFeed = ({
   const onScroll = () => {
     const scrollPosition = window.scrollY;
     console.log(scrollPosition);
-    if ((scrollPosition / 313) % 10 > 4) {
-      // 313 - высота одной карточки с отступами в px, 10 - кол-во карточек на один запрос
-      // > 4 - загружать новые карточки когда юзер переходит на каждую 5 карточку из 10
-      // alert("new cards");
+    const cardHeight = 313; // 313 - высота одной карточки в px (с отступами)
+    if (
+      petitions[activeTab.feed].length * cardHeight - scrollPosition <
+      cardHeight * 5
+    ) {
+      // загружать новые карточки когда юзер пролистнет 5 карточку
+      console.log(
+        "new cards",
+        activeTab.feed,
+        petitions[activeTab.feed].length
+      );
     }
+  };
+
+  const friendsCardOnClose = () => {
+    setIsFriendsCardVisibile(false);
+  };
+
+  const friendsCardOnClick = () => {
+    api
+      .getAccessToken(7338958, "friends")
+      .then(r => {
+        if (!r.scope.includes("friends")) {
+          return;
+        }
+        setLaunchParameters({
+          ...data.launchParameters,
+          vk_access_token_settings: data.launchParameters.vk_access_token_settings
+            .split(",")
+            .concat("friends")
+            .join(",")
+        });
+        setIsFriendsCardVisibile(false);
+      })
+      .catch(() => {});
   };
 
   useEffect(() => {
@@ -66,12 +102,19 @@ const PetitionsFeed = ({
     }
   }, [activeTab, activePanel]);
 
+  const platform = usePlatform();
+
   return (
     <Panel id={id} className="PetitionsFeed" separator={false}>
       <PanelHeaderSimple separator>
         <div>
           Петиции
-          <Tabs className="PetitionsTabs__wrapper FixedLayout">
+          <Tabs
+            className={`${getClassName(
+              "PetitionsTabs__wrapper",
+              platform
+            )} FixedLayout`}
+          >
             <HorizontalScroll>
               <TabsItem
                 onClick={() => setActiveTab("feed", "popular")}
@@ -99,7 +142,15 @@ const PetitionsFeed = ({
       petitions.last !== undefined &&
       petitions.signed !== undefined ? (
         <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
-          <FriendsCard />
+          {!isFriendsCardVisibile ||
+            (!data.launchParameters.vk_access_token_settings.includes(
+              "friends"
+            ) && (
+              <FriendsCard
+                onClose={friendsCardOnClose}
+                onClick={friendsCardOnClick}
+              />
+            ))}
           {activeTab.feed === "popular" && (
             <>
               <div className="PetitionsFeed">
@@ -114,8 +165,6 @@ const PetitionsFeed = ({
                         mobilePhotoUrl={item.mobile_photo_url}
                         activeView={activeView}
                         setPage={setPage}
-                        managementDots={false}
-                        setCurrent={setCurrent}
                       />
                       {index < petitions.popular.length - 1 && <Separator />}
                     </div>
@@ -145,7 +194,6 @@ const PetitionsFeed = ({
                         mobilePhotoUrl={item.mobile_photo_url}
                         activeView={activeView}
                         setPage={setPage}
-                        managementDots={false}
                         setCurrent={setCurrent}
                       />
                       {index < petitions.last.length - 1 && <Separator />}
@@ -176,7 +224,6 @@ const PetitionsFeed = ({
                         mobilePhotoUrl={item.mobile_photo_url}
                         activeView={activeView}
                         setPage={setPage}
-                        managementDots={false}
                         setCurrent={setCurrent}
                       />
                       {index < petitions.signed.length - 1 && <Separator />}
@@ -212,7 +259,9 @@ PetitionsFeed.propTypes = {
   setPage: PropTypes.func.isRequired,
   petitions: PropTypes.object.isRequired,
   setCurrent: PropTypes.func.isRequired,
-  activePanel: PropTypes.string.isRequired
+  activePanel: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired,
+  setPopout: PropTypes.func.isRequired
 };
 
 export default PetitionsFeed;

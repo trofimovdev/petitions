@@ -9,9 +9,7 @@ import {
   setStory,
   setActiveTab,
   closeModal,
-  openModal,
-  openPopout,
-  closePopout
+  openModal
 } from "../../store/router/actions";
 import {
   setCurrent,
@@ -44,15 +42,14 @@ const MobileContainer = props => {
     goBack,
     panelsHistory,
     setCurrent,
-    openPopout,
-    closePopout,
     setEdit,
     setCreate,
     setFormType,
     setPopular,
     setLast,
     setSigned,
-    setManaged
+    setManaged,
+    data
   } = props;
   const activeModal =
     activeModals[activeView] === undefined ? null : activeModals[activeView];
@@ -91,6 +88,7 @@ const MobileContainer = props => {
         goBack={goBack}
         activeViewPanelsHistory={activeViewPanelsHistory}
         setCurrent={setCurrent}
+        data={data}
       />
       <Management
         id="management"
@@ -102,8 +100,6 @@ const MobileContainer = props => {
         setStory={setStory}
         setPage={setPage}
         goBack={goBack}
-        openPopout={openPopout}
-        closePopout={closePopout}
         petitions={petitions}
         setEdit={setEdit}
         setCreate={setCreate}
@@ -112,6 +108,7 @@ const MobileContainer = props => {
         openModal={openModal}
         closeModal={closeModal}
         activeModal={activeModal}
+        setCurrent={setCurrent}
       />
     </Epic>
   );
@@ -126,7 +123,8 @@ const mapStateToProps = state => {
     scrollPosition: state.router.scrollPosition,
     activeModals: state.router.activeModals,
     petitions: state.petitions,
-    panelsHistory: state.router.panelsHistory
+    panelsHistory: state.router.panelsHistory,
+    data: state.data
   };
 };
 
@@ -142,8 +140,6 @@ function mapDispatchToProps(dispatch) {
         closeModal,
         openModal,
         setCurrent,
-        openPopout,
-        closePopout,
         setEdit,
         setCreate,
         setFormType,
@@ -172,15 +168,14 @@ MobileContainer.propTypes = {
   petitions: PropTypes.object.isRequired,
   goBack: PropTypes.func.isRequired,
   panelsHistory: PropTypes.object.isRequired,
-  openPopout: PropTypes.func.isRequired,
-  closePopout: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setCreate: PropTypes.func.isRequired,
   setFormType: PropTypes.func.isRequired,
   setPopular: PropTypes.func.isRequired,
   setLast: PropTypes.func.isRequired,
   setSigned: PropTypes.func.isRequired,
-  setManaged: PropTypes.func.isRequired
+  setManaged: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MobileContainer);

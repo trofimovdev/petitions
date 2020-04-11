@@ -1,18 +1,28 @@
-import SET_COLOR_SCHEME from "./actionTypes";
+import { SET_COLOR_SCHEME, SET_PETITIONS_FEED_CARD } from "./actionTypes";
 
 const initialState = {
-  colorScheme: "bright_light"
+  colorScheme: "bright_light",
+  petitionsFeedCard: undefined
 };
 
 const uiReducer = (state = initialState, action) => {
   console.log("ui", state, action);
-  if (action.type === SET_COLOR_SCHEME) {
-    return {
-      ...state,
-      colorScheme: action.payload
-    };
+  switch (action.type) {
+    case SET_COLOR_SCHEME:
+      return {
+        ...state,
+        colorScheme: action.payload
+      };
+
+    case SET_PETITIONS_FEED_CARD:
+      return {
+        ...state,
+        petitionsFeedCard: action.payload
+      };
+
+    default:
+      return state;
   }
-  return state;
 };
 
 export default uiReducer;

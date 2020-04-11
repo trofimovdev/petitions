@@ -3,3 +3,10 @@
 
 .Placeholder--android {
   margin-top: calc(5px + var(--panelheader_height_android) + var(--safe-area-inset-top)); }
+
+.FeedFooter {
+  margin-top: 0 !important; }
+
+.HeaderButton__wrapper {
+  width: 100%;
+  margin-top: -15px; }

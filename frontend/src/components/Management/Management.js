@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import ManagementFeed from "../ManagementFeed/ManagementFeed";
@@ -13,16 +13,17 @@ const Management = ({
   activePanel,
   setPage,
   goBack,
-  openPopout,
-  closePopout,
   petitions,
   setEdit,
   setCreate,
   activeViewPanelsHistory,
   openModal,
   closeModal,
-  activeModal
+  activeModal,
+  setCurrent
 }) => {
+  const [popout, setPopout] = useState(null);
+
   return (
     <View
       id={id}
@@ -33,6 +34,7 @@ const Management = ({
       header={false}
       onSwipeBack={goBack}
       history={activeViewPanelsHistory}
+      popout={popout}
     >
       <ManagementFeed
         id="feed"
@@ -44,6 +46,8 @@ const Management = ({
         openModal={openModal}
         closeModal={closeModal}
         petitions={petitions}
+        setCurrent={setCurrent}
+        setPopout={setPopout}
       />
       <EditPetition
         id={petitions.formType}
@@ -52,8 +56,6 @@ const Management = ({
         setStory={setStory}
         setPage={setPage}
         goBack={goBack}
-        openPopout={openPopout}
-        closePopout={closePopout}
         petitions={petitions}
         setEdit={setEdit}
         setCreate={setCreate}
@@ -72,15 +74,14 @@ Management.propTypes = {
   activePanel: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
   goBack: PropTypes.func.isRequired,
-  openPopout: PropTypes.func.isRequired,
-  closePopout: PropTypes.func.isRequired,
   petitions: PropTypes.object.isRequired,
   setEdit: PropTypes.func.isRequired,
   setCreate: PropTypes.func.isRequired,
   activeViewPanelsHistory: PropTypes.array.isRequired,
   openModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
-  activeModal: PropTypes.string
+  activeModal: PropTypes.string,
+  setCurrent: PropTypes.func.isRequired
 };
 
 export default Management;

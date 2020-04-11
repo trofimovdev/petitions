@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { View } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import PetitionsFeed from "../PetitionsFeed/PetitionsFeed";
 import Petition from "../Petition/Petiton";
 import PetitionModal from "../PetitionModal/PetititonModal";
-import { setCurrent } from "../../store/petitions/actions";
 
 const Petitions = ({
   setActiveTab,
@@ -20,8 +19,11 @@ const Petitions = ({
   petitions,
   goBack,
   activeViewPanelsHistory,
-  setCurrent
+  setCurrent,
+  data
 }) => {
+  const [popout, setPopout] = useState(null);
+
   const currentPetition = petitions.current;
   return (
     <View
@@ -32,6 +34,7 @@ const Petitions = ({
       header={false}
       onSwipeBack={goBack}
       history={activeViewPanelsHistory}
+      popout={popout}
     >
       <PetitionsFeed
         id="feed"
@@ -44,6 +47,8 @@ const Petitions = ({
         petitions={petitions}
         setCurrent={setCurrent}
         activePanel={activePanel}
+        data={data}
+        setPopout={setPopout}
       />
       <Petition
         id="petition"
@@ -72,7 +77,8 @@ Petitions.propTypes = {
   petitions: PropTypes.object.isRequired,
   goBack: PropTypes.func.isRequired,
   activeViewPanelsHistory: PropTypes.array.isRequired,
-  setCurrent: PropTypes.func.isRequired
+  setCurrent: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired
 };
 
 export default Petitions;

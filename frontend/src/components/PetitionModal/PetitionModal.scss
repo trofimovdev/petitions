@@ -10,6 +10,12 @@
     width: calc(100% / 3);
     text-align: center;
 
+    &__button {
+      width: 76px;
+      height: 52px;
+      border-radius: 26px;
+    }
+
     &__text {
       font-size: 14px;
       margin: 10px auto 0 auto;

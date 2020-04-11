@@ -1,0 +1,2 @@
+export const SET_ACCESS_TOKEN = "data.SET_ACCESS_TOKEN";
+export const SET_LAUNCH_PARAMETERS = "data.SET_LAUNCH_PARAMETERS";

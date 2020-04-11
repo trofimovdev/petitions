@@ -2,8 +2,6 @@ import {
   SET_PAGE,
   SET_STORY,
   GO_BACK,
-  OPEN_POPOUT,
-  CLOSE_POPOUT,
   OPEN_MODAL,
   CLOSE_MODAL,
   SET_ACTIVE_TAB
@@ -27,17 +25,6 @@ export const setPage = (view, panel) => ({
 
 export const goBack = () => ({
   type: GO_BACK
-});
-
-export const openPopout = popout => ({
-  type: OPEN_POPOUT,
-  payload: {
-    popout
-  }
-});
-
-export const closePopout = () => ({
-  type: CLOSE_POPOUT
 });
 
 export const openModal = id => ({
