@@ -8,4 +8,8 @@ body {
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-tap-highlight-color: transparent; }
+  -webkit-tap-highlight-color: transparent;
+  -ms-overflow-style: none; }
+
+body::-webkit-scrollbar {
+  display: none; }

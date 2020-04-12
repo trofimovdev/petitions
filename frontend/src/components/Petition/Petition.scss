@@ -14,7 +14,8 @@
       background: transparent !important;
     }
 
-    &__shown .PanelHeaderSimple__in {
+    &__shown .PanelHeaderSimple__in,
+    .View__swiping-back .PanelHeaderSimple__in {
       background: var(--background_content) !important;
     }
   }

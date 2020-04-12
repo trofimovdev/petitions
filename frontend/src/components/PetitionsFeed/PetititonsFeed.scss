@@ -2,14 +2,6 @@
   transition: 1s !important;
   z-index: 999 !important;
 
-  &--ios {
-    margin-top: -15px !important;
-  }
-  //
-  //&--android {
-  //  top: calc(var(--panelheader_height_android) + var(--safe-area-inset-top) - 15px) !important;
-  //}
-  //
   &__wrapper {
     width: 100%;
     &--ios {
@@ -19,23 +11,23 @@
 }
 
 .PetitionsFeed .PanelHeaderSimple--android {
-  &__in, &__content {
+  .PanelHeaderSimple__in, .PanelHeaderSimple__content {
     height: calc(48px + var(--panelheader_height_android)) !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
-  }
-
-  .PanelHeaderSimple__separator {
-    margin-top: 28px !important;
   }
 }
 
 .PetitionsFeed .PanelHeaderSimple--ios {
-  &__in, &__content {
+  .PanelHeaderSimple__in, .PanelHeaderSimple__content {
     height: calc(33px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
   }
+}
 
-  .PanelHeaderSimple__separator {
-    margin-top: 33px !important;
-  }
+.Separator--ios.PanelHeaderSimple__separator {
+  padding-top: 33px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
+}
+
+.Separator--android.PanelHeaderSimple__separator {
+  padding-top: 48px !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
 }
 
 .PetitionsFeed {
