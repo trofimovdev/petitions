@@ -15,10 +15,14 @@ import {
 import PropTypes from "prop-types";
 import "./PetititonsFeed.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import PetitionCard from "../PetitionCard/PetitionCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import FriendsCard from "../FriendsCard/FriendsCard";
 import { setLaunchParameters } from "../../store/data/actions";
+import { setActiveTab, setPage, setStory } from "../../store/router/actions";
+import { setCurrent } from "../../store/petitions/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -39,6 +43,7 @@ const PetitionsFeed = ({
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [isFriendsCardVisibile, setIsFriendsCardVisibile] = useState(true);
+  const currentPetitions = petitions[activeTab.feed];
 
   const onRefresh = () => {
     console.log("refresh");
@@ -138,9 +143,7 @@ const PetitionsFeed = ({
           </Tabs>
         </div>
       </PanelHeaderSimple>
-      {petitions.popular !== undefined &&
-      petitions.last !== undefined &&
-      petitions.signed !== undefined ? (
+      {currentPetitions !== undefined ? (
         <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
           {!isFriendsCardVisibile ||
             (!data.launchParameters.vk_access_token_settings.includes(
@@ -151,93 +154,27 @@ const PetitionsFeed = ({
                 onClick={friendsCardOnClick}
               />
             ))}
-          {activeTab.feed === "popular" && (
-            <>
-              <div className="PetitionsFeed">
-                {petitions.popular.map((item, index) => {
-                  return (
-                    <div key={index}>
-                      <PetitionCard
-                        id={item.id}
-                        title={item.title}
-                        numberOfSignatures={item.count_signatures}
-                        totalSignatures={item.need_signatures}
-                        mobilePhotoUrl={item.mobile_photo_url}
-                        activeView={activeView}
-                        setPage={setPage}
-                      />
-                      {index < petitions.popular.length - 1 && <Separator />}
-                    </div>
-                  );
-                })}
-              </div>
-              {petitions.popular.length > 0 && (
-                <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
-              )}
-              {petitions.popular.length === 0 && (
-                <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
-              )}
-            </>
+          <div className="PetitionsFeed">
+            {currentPetitions.map((item, index) => {
+              return (
+                <div key={index}>
+                  <PetitionCard
+                    id={item.id}
+                    title={item.title}
+                    countSignatures={item.count_signatures}
+                    needSignatures={item.need_signatures}
+                    mobilePhotoUrl={item.mobile_photo_url}
+                  />
+                  {index < currentPetitions.length - 1 && <Separator />}
+                </div>
+              );
+            })}
+          </div>
+          {currentPetitions.length > 0 && (
+            <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
           )}
-
-          {activeTab.feed === "last" && (
-            <>
-              <div className="PetitionsFeed">
-                {petitions.last.map((item, index) => {
-                  return (
-                    <div key={index}>
-                      <PetitionCard
-                        id={item.id}
-                        title={item.title}
-                        numberOfSignatures={item.count_signatures}
-                        totalSignatures={item.need_signatures}
-                        mobilePhotoUrl={item.mobile_photo_url}
-                        activeView={activeView}
-                        setPage={setPage}
-                        setCurrent={setCurrent}
-                      />
-                      {index < petitions.last.length - 1 && <Separator />}
-                    </div>
-                  );
-                })}
-              </div>
-              {petitions.last.length > 0 && (
-                <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
-              )}
-              {petitions.last.length === 0 && (
-                <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
-              )}
-            </>
-          )}
-
-          {activeTab.feed === "signed" && (
-            <>
-              <div className="PetitionsFeed">
-                {petitions.signed.map((item, index) => {
-                  return (
-                    <div key={index}>
-                      <PetitionCard
-                        id={item.id}
-                        title={item.title}
-                        numberOfSignatures={item.count_signatures}
-                        totalSignatures={item.need_signatures}
-                        mobilePhotoUrl={item.mobile_photo_url}
-                        activeView={activeView}
-                        setPage={setPage}
-                        setCurrent={setCurrent}
-                      />
-                      {index < petitions.signed.length - 1 && <Separator />}
-                    </div>
-                  );
-                })}
-              </div>
-              {petitions.signed.length > 0 && (
-                <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
-              )}
-              {petitions.signed.length === 0 && (
-                <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
-              )}
-            </>
+          {currentPetitions.length === 0 && (
+            <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
           )}
         </PullToRefresh>
       ) : (
@@ -247,6 +184,31 @@ const PetitionsFeed = ({
       <EpicTabbar activeStory={activeStory} setStory={setStory} />
     </Panel>
   );
+};
+
+const mapStateToProps = state => {
+  return {
+    activeView: state.router.activeView,
+    activeStory: state.router.activeStory,
+    activePanel: state.router.activePanel,
+    petitions: state.petitions,
+    data: state.data
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    ...bindActionCreators(
+      {
+        setActiveTab,
+        setStory,
+        setPage,
+        setCurrent
+      },
+      dispatch
+    )
+  };
 };
 
 PetitionsFeed.propTypes = {
@@ -260,8 +222,7 @@ PetitionsFeed.propTypes = {
   petitions: PropTypes.object.isRequired,
   setCurrent: PropTypes.func.isRequired,
   activePanel: PropTypes.string.isRequired,
-  data: PropTypes.object.isRequired,
-  setPopout: PropTypes.func.isRequired
+  data: PropTypes.object.isRequired
 };
 
-export default PetitionsFeed;
+export default connect(mapStateToProps, mapDispatchToProps)(PetitionsFeed);

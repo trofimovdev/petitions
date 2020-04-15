@@ -3,7 +3,7 @@ import { Progress } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./PetitionProgress.css";
 
-const PetitionProgress = ({ numberOfSignatures, totalSignatures }) => {
+const PetitionProgress = ({ countSignatures, needSignatures }) => {
   const declOfNum = n => {
     const titles = ["подписи", "подписей", "подписей"];
     return titles[
@@ -16,19 +16,19 @@ const PetitionProgress = ({ numberOfSignatures, totalSignatures }) => {
   };
 
   const getProgressBarValue = () => {
-    return Math.floor((numberOfSignatures / totalSignatures) * 100);
+    return Math.floor((countSignatures / needSignatures) * 100);
   };
 
   return (
     <div className="PetitionProgress">
       <p className="PetitionProgress__text">
-        {`${numberOfSignatures.toLocaleString()} из ${totalSignatures.toLocaleString()} ${declOfNum(
-          totalSignatures
+        {`${countSignatures.toLocaleString()} из ${needSignatures.toLocaleString()} ${declOfNum(
+          needSignatures
         )}`}
       </p>
       <Progress
         className={`PetitionProgress__bar ${
-          numberOfSignatures >= totalSignatures ? "done" : ""
+          countSignatures >= needSignatures ? "done" : ""
         }`}
         value={getProgressBarValue()}
       />
@@ -37,8 +37,8 @@ const PetitionProgress = ({ numberOfSignatures, totalSignatures }) => {
 };
 
 PetitionProgress.propTypes = {
-  numberOfSignatures: PropTypes.number.isRequired,
-  totalSignatures: PropTypes.number.isRequired
+  countSignatures: PropTypes.number.isRequired,
+  needSignatures: PropTypes.number.isRequired
 };
 
 export default PetitionProgress;

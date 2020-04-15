@@ -17,16 +17,19 @@ import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
 import Backend from "../../tools/Backend";
+import { goBack, openModal } from "../../store/router/actions";
+import { setCurrent } from "../../store/petitions/actions";
 
 const api = new VKMiniAppAPI();
 
 const Petition = ({
   id,
   goBack,
-  activeView,
   openModal,
   currentPetition,
   activePanel,
@@ -61,9 +64,9 @@ const Petition = ({
     }
   };
 
-  useEffect(() => {
-    window.addEventListener("scroll", onScroll);
-  }, [currentPetition]);
+  // useEffect(() => {
+  //   window.addEventListener("scroll", onScroll);
+  // }, [currentPetition]);
 
   if (activePanel === "petition") {
     api.setLocationHash(`p${currentPetition.id.toString()}`);
@@ -95,8 +98,8 @@ const Petition = ({
         <Div className={getClassName("Petition__info", platform)}>
           <h1>{currentPetition.title}</h1>
           <PetitionProgress
-            numberOfSignatures={currentPetition.count_signatures}
-            totalSignatures={currentPetition.need_signatures}
+            countSignatures={currentPetition.count_signatures}
+            needSignatures={currentPetition.need_signatures}
           />
           {/* <UsersStack */}
           {/*  className="Petition__users_stack" */}
@@ -119,6 +122,7 @@ const Petition = ({
               className="Petition__creator__avatar"
               href={`https://vk.com/id${currentPetition.owner_id}`}
               target="_blank"
+              rel="noopener noreferrer"
             >
               <Avatar src={currentPetition.owner.photo_50} size={40} />
             </a>
@@ -128,6 +132,7 @@ const Petition = ({
           <Link
             href={`https://vk.com/id${currentPetition.owner_id}`}
             target="_blank"
+            rel="noopener noreferrer"
             className="Petition__creator__link"
           >
             {currentPetition.owner.first_name} {currentPetition.owner.last_name}
@@ -136,18 +141,39 @@ const Petition = ({
         </Cell>
       </PullToRefresh>
       {/* </Touch> */}
-      <PetitionTabbar openModal={openModal} />
+      <PetitionTabbar />
     </Panel>
   );
+};
+
+const mapStateToProps = state => {
+  return {
+    activePanel: state.router.activePanel,
+    currentPetition: state.petitions.current
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    ...bindActionCreators(
+      {
+        goBack,
+        openModal,
+        setCurrent
+      },
+      dispatch
+    )
+  };
 };
 
 Petition.propTypes = {
   id: PropTypes.string.isRequired,
   goBack: PropTypes.func.isRequired,
-  activeView: PropTypes.string.isRequired,
   openModal: PropTypes.func.isRequired,
   currentPetition: PropTypes.object.isRequired,
-  activePanel: PropTypes.string.isRequired
+  activePanel: PropTypes.string.isRequired,
+  setCurrent: PropTypes.func.isRequired
 };
 
-export default Petition;
+export default connect(mapStateToProps, mapDispatchToProps)(Petition);

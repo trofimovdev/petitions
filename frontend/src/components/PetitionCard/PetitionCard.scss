@@ -9,11 +9,13 @@
     margin: 0 28px 8px 0;
     font-size: 20px;
     line-height: 24px;
+    text-align: left;
+    color: $petition-card-title-color;
   }
 
   &__card {
     min-height: 180px;
-    height: 48vw;
+    //height: 48vw;
     overflow: hidden;
     background-size: cover;
     background-repeat: no-repeat;

@@ -24,38 +24,17 @@ import {
 import "@vkontakte/vkui/dist/vkui.css";
 import Petitions from "../../components/Petitions/Petitions";
 import Management from "../../components/Management/Management";
+import SplashScreen from "../../components/SplashScreen/SplashScreen";
 
-const MobileContainer = props => {
-  const {
-    activeView,
-    activePanel,
-    setStory,
-    activeStory,
-    setActiveTab,
-    activeTab,
-    scrollPosition,
-    setPage,
-    activeModals,
-    closeModal,
-    openModal,
-    petitions,
-    goBack,
-    panelsHistory,
-    setCurrent,
-    setEdit,
-    setCreate,
-    setFormType,
-    setPopular,
-    setLast,
-    setSigned,
-    setManaged,
-    data
-  } = props;
-  const activeModal =
-    activeModals[activeView] === undefined ? null : activeModals[activeView];
-
-  const activeViewPanelsHistory = panelsHistory[activeView] || [];
-
+const MobileContainer = ({
+  activeView,
+  activePanel,
+  activeStory,
+  activeTab,
+  scrollPosition,
+  goBack,
+  history
+}) => {
   useEffect(() => {
     const pageScrollPosition = scrollPosition[
       `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
@@ -74,42 +53,30 @@ const MobileContainer = props => {
     <Epic activeStory={activeStory}>
       <Petitions
         id="petitions"
-        setActiveTab={setActiveTab}
         activeTab={activeTab}
-        activeView={activeView}
-        activePanel={activePanel}
-        setPage={setPage}
-        activeStory={activeStory}
-        setStory={setStory}
-        activeModal={activeModal}
-        closeModal={closeModal}
-        openModal={openModal}
-        petitions={petitions}
         goBack={goBack}
-        activeViewPanelsHistory={activeViewPanelsHistory}
-        setCurrent={setCurrent}
-        data={data}
+        history={history}
       />
-      <Management
-        id="management"
-        setActiveTab={setActiveTab}
-        activeTab={activeTab}
-        activeView={activeView}
-        activePanel={activePanel}
-        activeStory={activeStory}
-        setStory={setStory}
-        setPage={setPage}
-        goBack={goBack}
-        petitions={petitions}
-        setEdit={setEdit}
-        setCreate={setCreate}
-        activeViewPanelsHistory={activeViewPanelsHistory}
-        setFormType={setFormType}
-        openModal={openModal}
-        closeModal={closeModal}
-        activeModal={activeModal}
-        setCurrent={setCurrent}
-      />
+      {/* <Management */}
+      {/*  id="management" */}
+      {/*  setActiveTab={setActiveTab} */}
+      {/*  activeTab={activeTab} */}
+      {/*  activeView={activeView} */}
+      {/*  activePanel={activePanel} */}
+      {/*  activeStory={activeStory} */}
+      {/*  setStory={setStory} */}
+      {/*  setPage={setPage} */}
+      {/*  goBack={goBack} */}
+      {/*  petitions={petitions} */}
+      {/*  setEdit={setEdit} */}
+      {/*  setCreate={setCreate} */}
+      {/*  activeViewPanelsHistory={activeViewPanelsHistory} */}
+      {/*  setFormType={setFormType} */}
+      {/*  openModal={openModal} */}
+      {/*  closeModal={closeModal} */}
+      {/*  activeModal={activeModal} */}
+      {/*  setCurrent={setCurrent} */}
+      {/* /> */}
     </Epic>
   );
 };
@@ -121,61 +88,30 @@ const mapStateToProps = state => {
     activeStory: state.router.activeStory,
     activeTab: state.router.activeTab,
     scrollPosition: state.router.scrollPosition,
-    activeModals: state.router.activeModals,
-    petitions: state.petitions,
-    panelsHistory: state.router.panelsHistory,
-    data: state.data
+    history: state.router.panelsHistory[state.router.activeView] || []
   };
 };
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
     ...bindActionCreators(
       {
-        goBack,
-        setPage,
-        setStory,
-        setActiveTab,
-        closeModal,
-        openModal,
-        setCurrent,
-        setEdit,
-        setCreate,
-        setFormType,
-        setPopular,
-        setLast,
-        setSigned,
-        setManaged
+        goBack
       },
       dispatch
     )
   };
-}
+};
 
 MobileContainer.propTypes = {
-  activeView: PropTypes.string,
-  activePanel: PropTypes.string,
-  setStory: PropTypes.func,
-  activeStory: PropTypes.string,
-  setActiveTab: PropTypes.func.isRequired,
+  activeView: PropTypes.string.isRequired,
+  activePanel: PropTypes.string.isRequired,
+  activeStory: PropTypes.string.isRequired,
   activeTab: PropTypes.object.isRequired,
-  activeModals: PropTypes.any.isRequired,
-  closeModal: PropTypes.func.isRequired,
-  openModal: PropTypes.func.isRequired,
-  scrollPosition: PropTypes.object,
-  setPage: PropTypes.func.isRequired,
-  petitions: PropTypes.object.isRequired,
+  scrollPosition: PropTypes.object.isRequired,
   goBack: PropTypes.func.isRequired,
-  panelsHistory: PropTypes.object.isRequired,
-  setEdit: PropTypes.func.isRequired,
-  setCreate: PropTypes.func.isRequired,
-  setFormType: PropTypes.func.isRequired,
-  setPopular: PropTypes.func.isRequired,
-  setLast: PropTypes.func.isRequired,
-  setSigned: PropTypes.func.isRequired,
-  setManaged: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired
+  history: PropTypes.array.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MobileContainer);

@@ -11,24 +11,26 @@ import PropTypes from "prop-types";
 import "./PetitionCard.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon28MoreHorizontal from "@vkontakte/icons/dist/28/more_horizontal";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import Backend from "../../tools/Backend";
-// import store from "../../store";
-// import { setLast, setPopular, setSigned } from "../../store/petitions/actions";
+import { setPage } from "../../store/router/actions";
+import { setCurrent } from "../../store/petitions/actions";
 
 const api = new VKMiniAppAPI();
 
 const PetitionCard = ({
   id,
   title,
-  numberOfSignatures,
-  totalSignatures,
+  countSignatures,
+  needSignatures,
   mobilePhotoUrl,
   activeView,
   setPage,
   setCurrent,
-  managementDots = false,
-  onManagement = () => {}
+  managementDots,
+  onManagement
 }) => {
   return (
     <Div
@@ -58,8 +60,8 @@ const PetitionCard = ({
       <h1 className="PetitionCard__title">{title}</h1>
       <div>
         <PetitionProgress
-          numberOfSignatures={numberOfSignatures}
-          totalSignatures={totalSignatures}
+          countSignatures={countSignatures}
+          needSignatures={needSignatures}
         />
         <Card
           size="l"
@@ -81,11 +83,30 @@ const PetitionCard = ({
   );
 };
 
+const mapStateToProps = state => {
+  return {
+    activeView: state.router.activeView
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    ...bindActionCreators(
+      {
+        setPage,
+        setCurrent
+      },
+      dispatch
+    )
+  };
+};
+
 PetitionCard.propTypes = {
   id: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
-  numberOfSignatures: PropTypes.number.isRequired,
-  totalSignatures: PropTypes.number.isRequired,
+  countSignatures: PropTypes.number.isRequired,
+  needSignatures: PropTypes.number.isRequired,
   mobilePhotoUrl: PropTypes.string.isRequired,
   activeView: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
@@ -94,4 +115,9 @@ PetitionCard.propTypes = {
   onManagement: PropTypes.func
 };
 
-export default PetitionCard;
+PetitionCard.defaultProps = {
+  managementDots: false,
+  onManagement: () => {}
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PetitionCard);

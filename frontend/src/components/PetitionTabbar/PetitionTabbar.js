@@ -12,6 +12,9 @@ import Icon24DoneOutline from "@vkontakte/icons/dist/24/done_outline";
 import "./PetitionTabbar.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
+import { bindActionCreators } from "redux";
+import { openModal } from "../../store/router/actions";
+import {connect} from "react-redux";
 
 const api = new VKMiniAppAPI();
 
@@ -66,8 +69,20 @@ const PetitionTabbar = ({ openModal }) => {
   );
 };
 
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    ...bindActionCreators(
+      {
+        openModal
+      },
+      dispatch
+    )
+  };
+};
+
 PetitionTabbar.propTypes = {
   openModal: PropTypes.func.isRequired
 };
 
-export default PetitionTabbar;
+export default connect(null, mapDispatchToProps)(PetitionTabbar);

@@ -15,11 +15,12 @@ export const setStory = (story, initialPanel) => ({
   }
 });
 
-export const setPage = (view, panel) => ({
+export const setPage = (view, panel, withHistory = true) => ({
   type: SET_PAGE,
   payload: {
     view,
-    panel
+    panel,
+    withHistory
   }
 });
 

@@ -1,0 +1,35 @@
+.SplashScreen {
+  &__buttons {
+    &__install {
+      margin-top: 8px;
+    }
+  }
+
+  .Placeholder {
+    &__icon {
+      width: 100%;
+      margin-bottom: 32px !important;
+    }
+
+    &__in {
+      margin-top: -25%;
+    }
+
+    &__header {
+      font-weight: 800;
+      font-family: var(--font-tt);
+      font-size: 21px;
+    }
+  }
+  .PetitionCard {
+    border-radius: 14px;
+    box-shadow: 0 2px 40px 0 rgba(0, 0, 0, 0.12);
+    padding: 18px 16px 13px 16px !important;
+    width: 100%;
+    margin-left: -15px;
+  }
+
+  .FixedLayout--bottom {
+    padding-bottom: 0 !important;
+  }
+}

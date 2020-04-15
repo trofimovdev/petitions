@@ -36,19 +36,7 @@ const Management = ({
       history={activeViewPanelsHistory}
       popout={popout}
     >
-      <ManagementFeed
-        id="feed"
-        activeStory={activeStory}
-        setStory={setStory}
-        activeView={activeView}
-        activePanel={activePanel}
-        setPage={setPage}
-        openModal={openModal}
-        closeModal={closeModal}
-        petitions={petitions}
-        setCurrent={setCurrent}
-        setPopout={setPopout}
-      />
+      <ManagementFeed id="feed" setPopout={setPopout} />
       <EditPetition
         id={petitions.formType}
         activeStory={activeStory}

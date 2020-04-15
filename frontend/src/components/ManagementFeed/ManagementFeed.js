@@ -21,8 +21,17 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon28EditOutline from "@vkontakte/icons/dist/28/edit_outline";
 import Icon28BlockOutline from "@vkontakte/icons/dist/28/block_outline";
 import Icon28DeleteOutline from "@vkontakte/icons/dist/28/delete_outline";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import PetitionCard from "../PetitionCard/PetitionCard";
+import {
+  setStory,
+  setPage,
+  openModal,
+  closeModal
+} from "../../store/router/actions";
+import { setCurrent } from "../../store/petitions/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -35,7 +44,7 @@ const ManagementFeed = ({
   setPage,
   openModal,
   closeModal,
-  petitions,
+  managedPetitions,
   setCurrent,
   setPopout
 }) => {
@@ -85,7 +94,6 @@ const ManagementFeed = ({
       api.setLocationHash("management");
     }
   }, [activePanel]);
-  console.log(petitions.managed);
   return (
     <Panel id={id} separator={false}>
       <PanelHeaderSimple separator>
@@ -99,8 +107,8 @@ const ManagementFeed = ({
         </div>
       </PanelHeaderSimple>
 
-      {petitions.managed !== undefined ? (
-        petitions.managed.length === 0 ? (
+      {managedPetitions !== undefined ? (
+        managedPetitions.length === 0 ? (
           <Placeholder
             className={getClassName("Placeholder", platform)}
             action={
@@ -121,31 +129,28 @@ const ManagementFeed = ({
         ) : (
           <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
             <div className="ManagementFeed">
-              {petitions.managed.map((item, index) => {
+              {managedPetitions.map((item, index) => {
                 return (
                   <div key={index}>
                     <PetitionCard
                       id={item.id}
                       title={item.title}
-                      numberOfSignatures={item.count_signatures}
-                      totalSignatures={item.need_signatures}
+                      countSignatures={item.count_signatures}
+                      needSignatures={item.need_signatures}
                       mobilePhotoUrl={item.mobile_photo_url}
-                      activeView={activeView}
-                      setPage={setPage}
                       managementDots
-                      setCurrent={setCurrent}
                       onManagement={onManagement}
                     />
-                    {index < petitions.last.length - 1 && <Separator />}
+                    {index < managedPetitions.length - 1 && <Separator />}
                   </div>
                 );
               })}
             </div>
 
-            {petitions.managed.length > 0 && (
+            {managedPetitions.length > 0 && (
               <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
             )}
-            {petitions.managed.length === 0 && (
+            {managedPetitions.length === 0 && (
               <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
             )}
           </PullToRefresh>
@@ -159,6 +164,31 @@ const ManagementFeed = ({
   );
 };
 
+const mapStateToProps = state => {
+  return {
+    activeStory: state.router.activeStory,
+    activeView: state.router.activeView,
+    activePanel: state.router.activePanel,
+    managedPetitions: state.petitions.managed
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    ...bindActionCreators(
+      {
+        setStory,
+        setPage,
+        setCurrent,
+        openModal,
+        closeModal
+      },
+      dispatch
+    )
+  };
+};
+
 ManagementFeed.propTypes = {
   id: PropTypes.string.isRequired,
   activeStory: PropTypes.string.isRequired,
@@ -168,9 +198,9 @@ ManagementFeed.propTypes = {
   setPage: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
-  petitions: PropTypes.object.isRequired,
+  managedPetitions: PropTypes.object.isRequired,
   setCurrent: PropTypes.func.isRequired,
   setPopout: PropTypes.func.isRequired
 };
 
-export default ManagementFeed;
+export default connect(mapStateToProps, mapDispatchToProps)(ManagementFeed);

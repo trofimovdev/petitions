@@ -45,21 +45,23 @@ const routerReducer = (state = initialState, action) => {
 
       let panelsHistory = state.panelsHistory[View] || [];
       const viewsHistory = state.viewsHistory[state.activeStory] || [];
-      console.log("panelsHistory123123123", panelsHistory);
+      if (action.payload.withHistory) {
+        console.log("panelsHistory123123123", panelsHistory);
 
-      const viewIndexInHistory = viewsHistory.indexOf(View);
+        const viewIndexInHistory = viewsHistory.indexOf(View);
 
-      if (viewIndexInHistory !== -1) {
-        viewsHistory.splice(viewIndexInHistory, 1);
+        if (viewIndexInHistory !== -1) {
+          viewsHistory.splice(viewIndexInHistory, 1);
+        }
+
+        if (panelsHistory.indexOf(Panel) === -1) {
+          panelsHistory = [...panelsHistory, Panel];
+        }
+        console.log("panelsHistory AFTER", {
+          ...state.panelsHistory,
+          [View]: panelsHistory
+        });
       }
-
-      if (panelsHistory.indexOf(Panel) === -1) {
-        panelsHistory = [...panelsHistory, Panel];
-      }
-      console.log("panelsHistory AFTER", {
-        ...state.panelsHistory,
-        [View]: panelsHistory
-      });
 
       if (panelsHistory.length > 1) {
         // TODO: replace with vk-mini-apps-api

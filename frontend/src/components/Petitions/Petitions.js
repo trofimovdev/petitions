@@ -1,30 +1,31 @@
 import React, { useState } from "react";
 import { View } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import PetitionsFeed from "../PetitionsFeed/PetitionsFeed";
 import Petition from "../Petition/Petiton";
 import PetitionModal from "../PetitionModal/PetititonModal";
+import SplashScreen from "../SplashScreen/SplashScreen";
+import {
+  setActiveTab,
+  setPage,
+  setStory,
+  closeModal,
+  goBack
+} from "../../store/router/actions";
+import { setCurrent } from "../../store/petitions/actions";
 
 const Petitions = ({
-  setActiveTab,
   activeTab,
-  activeView,
   activePanel,
-  activeStory,
-  setStory,
-  setPage,
   activeModal,
   closeModal,
-  openModal,
-  petitions,
   goBack,
-  activeViewPanelsHistory,
-  setCurrent,
-  data
+  history
 }) => {
   const [popout, setPopout] = useState(null);
 
-  const currentPetition = petitions.current;
   return (
     <View
       modal={
@@ -33,52 +34,51 @@ const Petitions = ({
       activePanel={activePanel}
       header={false}
       onSwipeBack={goBack}
-      history={activeViewPanelsHistory}
+      history={history}
       popout={popout}
     >
-      <PetitionsFeed
-        id="feed"
-        setActiveTab={setActiveTab}
-        activeTab={activeTab}
-        setPage={setPage}
-        activeView={activeView}
-        activeStory={activeStory}
-        setStory={setStory}
-        petitions={petitions}
-        setCurrent={setCurrent}
-        activePanel={activePanel}
-        data={data}
-        setPopout={setPopout}
-      />
-      <Petition
-        id="petition"
-        goBack={goBack}
-        activeView={activeView}
-        openModal={openModal}
-        currentPetition={currentPetition}
-        activePanel={activePanel}
-        setCurrent={setCurrent}
-      />
+      <SplashScreen id="splashscreen" />
+      <PetitionsFeed id="feed" activeTab={activeTab} />
+      <Petition id="petition" />
     </View>
   );
 };
 
-Petitions.propTypes = {
-  setActiveTab: PropTypes.func.isRequired,
-  activeTab: PropTypes.object.isRequired,
-  activeView: PropTypes.string.isRequired,
-  activePanel: PropTypes.string.isRequired,
-  activeStory: PropTypes.string.isRequired,
-  setStory: PropTypes.func.isRequired,
-  setPage: PropTypes.func.isRequired,
-  activeModal: PropTypes.string,
-  closeModal: PropTypes.func.isRequired,
-  openModal: PropTypes.func.isRequired,
-  petitions: PropTypes.object.isRequired,
-  goBack: PropTypes.func.isRequired,
-  activeViewPanelsHistory: PropTypes.array.isRequired,
-  setCurrent: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired
+const mapStateToProps = state => {
+  return {
+    activeTab: state.router.activeTab,
+    activePanel: state.router.activePanel,
+    activeModal:
+      state.router.activeModals[state.router.activeView] === undefined
+        ? null
+        : state.router.activeModals[state.router.activeView]
+  };
 };
 
-export default Petitions;
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    ...bindActionCreators(
+      {
+        setActiveTab,
+        setStory,
+        setPage,
+        setCurrent,
+        closeModal,
+        goBack
+      },
+      dispatch
+    )
+  };
+};
+
+Petitions.propTypes = {
+  activeTab: PropTypes.object.isRequired,
+  activePanel: PropTypes.string.isRequired,
+  activeModal: PropTypes.string,
+  closeModal: PropTypes.func.isRequired,
+  goBack: PropTypes.func.isRequired,
+  history: PropTypes.array.isRequired
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Petitions);
