@@ -22,7 +22,7 @@ import { bindActionCreators } from "redux";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
 import Backend from "../../tools/Backend";
-import { goBack, openModal } from "../../store/router/actions";
+import { goBack } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
 
 const api = new VKMiniAppAPI();
@@ -30,7 +30,6 @@ const api = new VKMiniAppAPI();
 const Petition = ({
   id,
   goBack,
-  openModal,
   currentPetition,
   activePanel,
   setCurrent
@@ -159,7 +158,6 @@ const mapDispatchToProps = dispatch => {
     ...bindActionCreators(
       {
         goBack,
-        openModal,
         setCurrent
       },
       dispatch
@@ -170,7 +168,6 @@ const mapDispatchToProps = dispatch => {
 Petition.propTypes = {
   id: PropTypes.string.isRequired,
   goBack: PropTypes.func.isRequired,
-  openModal: PropTypes.func.isRequired,
   currentPetition: PropTypes.object.isRequired,
   activePanel: PropTypes.string.isRequired,
   setCurrent: PropTypes.func.isRequired

@@ -7,20 +7,20 @@ import {
   SET_ACTIVE_TAB
 } from "./actionTypes";
 
-export const setStory = (story, initialPanel) => ({
+export const setStory = (story, initialPanel, withHistory = true) => ({
   type: SET_STORY,
   payload: {
     story,
-    initialPanel
+    initialPanel,
+    withHistory
   }
 });
 
-export const setPage = (view, panel, withHistory = true) => ({
+export const setPage = (view, panel) => ({
   type: SET_PAGE,
   payload: {
     view,
-    panel,
-    withHistory
+    panel
   }
 });
 
@@ -30,9 +30,7 @@ export const goBack = () => ({
 
 export const openModal = id => ({
   type: OPEN_MODAL,
-  payload: {
-    id
-  }
+  payload: id
 });
 
 export const closeModal = () => ({

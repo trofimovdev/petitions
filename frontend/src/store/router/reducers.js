@@ -45,23 +45,21 @@ const routerReducer = (state = initialState, action) => {
 
       let panelsHistory = state.panelsHistory[View] || [];
       const viewsHistory = state.viewsHistory[state.activeStory] || [];
-      if (action.payload.withHistory) {
-        console.log("panelsHistory123123123", panelsHistory);
+      console.log("panelsHistory123123123", panelsHistory);
 
-        const viewIndexInHistory = viewsHistory.indexOf(View);
+      const viewIndexInHistory = viewsHistory.indexOf(View);
 
-        if (viewIndexInHistory !== -1) {
-          viewsHistory.splice(viewIndexInHistory, 1);
-        }
-
-        if (panelsHistory.indexOf(Panel) === -1) {
-          panelsHistory = [...panelsHistory, Panel];
-        }
-        console.log("panelsHistory AFTER", {
-          ...state.panelsHistory,
-          [View]: panelsHistory
-        });
+      if (viewIndexInHistory !== -1) {
+        viewsHistory.splice(viewIndexInHistory, 1);
       }
+
+      if (panelsHistory.indexOf(Panel) === -1) {
+        panelsHistory = [...panelsHistory, Panel];
+      }
+      console.log("panelsHistory AFTER", {
+        ...state.panelsHistory,
+        [View]: panelsHistory
+      });
 
       if (panelsHistory.length > 1) {
         // TODO: replace with vk-mini-apps-api
@@ -99,24 +97,30 @@ const routerReducer = (state = initialState, action) => {
 
       let { storiesHistory } = state;
       let activeView = viewsHistory[viewsHistory.length - 1];
-      let panelsHistory = state.panelsHistory[activeView] || [
-        action.payload.initialPanel
-      ];
-      let activePanel = panelsHistory[panelsHistory.length - 1];
+      let panelsHistory = action.payload.withHistory
+        ? state.panelsHistory[activeView] || [action.payload.initialPanel]
+        : [];
+      let activePanel = action.payload.withHistory
+        ? panelsHistory[panelsHistory.length - 1]
+        : action.payload.initialPanel;
+      console.log("panelsHistory 1", panelsHistory);
 
-      if (action.payload.story === state.activeStory) {
-        if (panelsHistory.length > 1) {
-          const firstPanel = panelsHistory.shift();
-          panelsHistory = [firstPanel];
+      if (action.payload.withHistory) {
+        console.log("set to history STORY", action);
+        if (action.payload.story === state.activeStory) {
+          if (panelsHistory.length > 1) {
+            const firstPanel = panelsHistory.shift();
+            panelsHistory = [firstPanel];
 
-          activePanel = panelsHistory[panelsHistory.length - 1];
-        } else if (viewsHistory.length > 1) {
-          const firstView = viewsHistory.shift();
-          viewsHistory = [firstView];
+            activePanel = panelsHistory[panelsHistory.length - 1];
+          } else if (viewsHistory.length > 1) {
+            const firstView = viewsHistory.shift();
+            viewsHistory = [firstView];
 
-          activeView = viewsHistory[viewsHistory.length - 1];
-          panelsHistory = state.panelsHistory[activeView];
-          activePanel = panelsHistory[panelsHistory.length - 1];
+            activeView = viewsHistory[viewsHistory.length - 1];
+            panelsHistory = state.panelsHistory[activeView];
+            activePanel = panelsHistory[panelsHistory.length - 1];
+          }
         }
       }
 
@@ -139,6 +143,7 @@ const routerReducer = (state = initialState, action) => {
       ) {
         storiesHistory = [...storiesHistory, action.payload.story];
       }
+
       console.log("setStory", {
         ...state,
         activeStory: action.payload.story,
@@ -298,10 +303,10 @@ const routerReducer = (state = initialState, action) => {
     }
 
     case OPEN_MODAL: {
-      console.log("OPEN MODAL");
+      console.log("OPEN MODAL", action.payload);
       window.history.pushState(null, null);
 
-      const activeModal = action.payload.id || null;
+      const activeModal = action.payload || null;
       let modalsHistory = state.modalHistory[state.activeView]
         ? [...state.modalHistory[state.activeView]]
         : [];

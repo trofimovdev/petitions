@@ -4,9 +4,12 @@ import "./SplashScreen.css";
 import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PetitionCard from "../PetitionCard/PetitionCard";
 import kanye from "../../img/kanye.png";
 import { setPage } from "../../store/router/actions";
+
+const api = new VKMiniAppAPI();
 
 const SplashScreen = ({ id, activeView, setPage }) => {
   console.log(activeView);
@@ -33,7 +36,7 @@ const SplashScreen = ({ id, activeView, setPage }) => {
             size="xl"
             mode="primary"
             onClick={() => {
-              setPage(activeView, "feed", false);
+              setPage(activeView, "feed");
             }}
           >
             Далее
@@ -42,6 +45,9 @@ const SplashScreen = ({ id, activeView, setPage }) => {
             size="xl"
             mode="secondary"
             className="SplashScreen__buttons__install"
+            onClick={() => {
+              api.addAppToCommunity();
+            }}
           >
             Установить в сообщество
           </Button>

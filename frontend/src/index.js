@@ -35,7 +35,7 @@ api.onUpdateConfig(({ scheme }) => {
 
 const launchParameters = new URLSearchParams(window.location.search);
 store.dispatch(setLaunchParameters(Object.fromEntries(launchParameters)));
-store.dispatch(setStory("petitions", "splashscreen"));
+store.dispatch(setStory("petitions", "splashscreen", false));
 store.dispatch(setActiveTab("feed", "last"));
 
 if (launchParameters.get("vk_access_token_settings").includes("friends")) {

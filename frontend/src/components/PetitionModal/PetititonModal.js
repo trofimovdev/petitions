@@ -25,11 +25,15 @@ import Icon28ChainOutline from "@vkontakte/icons/dist/28/chain_outline";
 import "./PetitionModal.css";
 import PropTypes from "prop-types";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
+// TODO: move to vk-mini-apps-api
 import bridge from "@vkontakte/vk-bridge";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { closeModal } from "../../store/router/actions";
 
 const api = new VKMiniAppAPI();
 
-const PetitionModal = ({ activeModal, closeModal }) => {
+const PetitionModal = ({ currentPetition, closeModal, activeModal }) => {
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState([]);
 
@@ -279,59 +283,9 @@ const PetitionModal = ({ activeModal, closeModal }) => {
           <div
             className="PetitionModal__button-wrapper"
             onClick={() => {
-              // bridge
-              //   .send("VKWebAppShare", {
-              //     link: "https://vk.com/app6909581#hello"
-              //   })
-              //   .catch(e => console.log(e));
-              const canvas = document.createElement("canvas");
-              canvas.width = 1440;
-              canvas.height = 1100;
-              const ctx = canvas.getContext("2d");
-              ctx.fillStyle = "#9ea7b8";
-              ctx.fillRect(0, 0, canvas.width, canvas.height);
-              bridge
-                .send("VKWebAppShowStoryBox", {
-                  background_type: "none",
-                  stickers: [
-                    {
-                      sticker_type: "renderable",
-                      sticker: {
-                        can_delete: false,
-                        content_type: "image",
-                        blob: canvas.toDataURL(),
-                        clickable_zones: [
-                          {
-                            action_type: "link",
-                            action: {
-                              link: "https://vk.com/wall-166562603_1192",
-                              tooltip_text_key: "tooltip_open_post"
-                            },
-                            clickable_area: [
-                              {
-                                x: 17,
-                                y: 110
-                              },
-                              {
-                                x: 97,
-                                y: 110
-                              },
-                              {
-                                x: 97,
-                                y: 132
-                              },
-                              {
-                                x: 17,
-                                y: 132
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                })
-                .catch(e => console.log("error", e));
+              bridge.send("VKWebAppCopyText", {
+                text: `https://vk.com/app7338958#p${currentPetition.id}`
+              });
             }}
           >
             <Button
@@ -547,9 +501,28 @@ const PetitionModal = ({ activeModal, closeModal }) => {
   );
 };
 
-PetitionModal.propTypes = {
-  activeModal: PropTypes.string,
-  closeModal: PropTypes.func.isRequired
+const mapStateToProps = state => {
+  return {
+    currentPetition: state.petitions.current
+  };
 };
 
-export default PetitionModal;
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    ...bindActionCreators(
+      {
+        closeModal
+      },
+      dispatch
+    )
+  };
+};
+
+PetitionModal.propTypes = {
+  currentPetition: PropTypes.object.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  activeModal: PropTypes.string
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PetitionModal);

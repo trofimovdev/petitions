@@ -13,8 +13,8 @@ import "./PetitionTabbar.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import { openModal } from "../../store/router/actions";
-import {connect} from "react-redux";
 
 const api = new VKMiniAppAPI();
 
@@ -49,6 +49,7 @@ const PetitionTabbar = ({ openModal }) => {
           onClick={() => {
             api.selectionChanged().catch(() => {});
             console.log("try to open");
+            console.log("active MODALKA", );
             openModal("share-type");
             console.log("opened");
           }}

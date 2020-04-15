@@ -11,7 +11,6 @@ import {
   setActiveTab,
   setPage,
   setStory,
-  closeModal,
   goBack
 } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
@@ -19,18 +18,15 @@ import { setCurrent } from "../../store/petitions/actions";
 const Petitions = ({
   activeTab,
   activePanel,
-  activeModal,
-  closeModal,
   goBack,
-  history
+  history,
+  activeModal
 }) => {
   const [popout, setPopout] = useState(null);
 
   return (
     <View
-      modal={
-        <PetitionModal activeModal={activeModal} closeModal={closeModal} />
-      }
+      modal={<PetitionModal activeModal={activeModal} />}
       activePanel={activePanel}
       header={false}
       onSwipeBack={goBack}
@@ -64,7 +60,6 @@ const mapDispatchToProps = dispatch => {
         setStory,
         setPage,
         setCurrent,
-        closeModal,
         goBack
       },
       dispatch
@@ -76,7 +71,6 @@ Petitions.propTypes = {
   activeTab: PropTypes.object.isRequired,
   activePanel: PropTypes.string.isRequired,
   activeModal: PropTypes.string,
-  closeModal: PropTypes.func.isRequired,
   goBack: PropTypes.func.isRequired,
   history: PropTypes.array.isRequired
 };

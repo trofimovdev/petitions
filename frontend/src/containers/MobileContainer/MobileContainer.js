@@ -33,7 +33,8 @@ const MobileContainer = ({
   activeTab,
   scrollPosition,
   goBack,
-  history
+  history,
+  activeModal
 }) => {
   useEffect(() => {
     const pageScrollPosition = scrollPosition[
@@ -49,6 +50,8 @@ const MobileContainer = ({
     window.scroll(0, pageScrollPosition);
   }, [activeStory, activeView, activePanel, activeTab, scrollPosition]);
 
+  // const activeModal =
+  //   activeModals[activeView] === undefined ? null : activeModals[activeView];
   return (
     <Epic activeStory={activeStory}>
       <Petitions
