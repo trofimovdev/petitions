@@ -283,6 +283,7 @@ const PetitionModal = ({ currentPetition, closeModal, activeModal }) => {
           <div
             className="PetitionModal__button-wrapper"
             onClick={() => {
+              console.log("copy to clipboard petition id", currentPetition.id);
               bridge.send("VKWebAppCopyText", {
                 text: `https://vk.com/app7338958#p${currentPetition.id}`
               });

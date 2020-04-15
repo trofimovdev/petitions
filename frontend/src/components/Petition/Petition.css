@@ -7,8 +7,7 @@
 .Petition__header__hidden .PanelHeaderSimple__in {
   background: transparent !important; }
 
-.Petition__header__shown .PanelHeaderSimple__in,
-.Petition__header .View__swiping-back .PanelHeaderSimple__in {
+.Petition__header__shown .PanelHeaderSimple__in {
   background: var(--background_content) !important; }
 
 .Petition__image {

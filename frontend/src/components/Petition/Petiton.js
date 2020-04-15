@@ -63,9 +63,9 @@ const Petition = ({
     }
   };
 
-  // useEffect(() => {
-  //   window.addEventListener("scroll", onScroll);
-  // }, [currentPetition]);
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
+  }, [currentPetition]);
 
   if (activePanel === "petition") {
     api.setLocationHash(`p${currentPetition.id.toString()}`);

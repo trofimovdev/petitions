@@ -34,7 +34,7 @@ const PetitionsFeed = ({
   setPage,
   activeStory,
   setStory,
-  petitions,
+  currentPetitions,
   setCurrent,
   activePanel,
   data
@@ -43,7 +43,6 @@ const PetitionsFeed = ({
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [isFriendsCardVisibile, setIsFriendsCardVisibile] = useState(true);
-  const currentPetitions = petitions[activeTab.feed];
 
   const onRefresh = () => {
     console.log("refresh");
@@ -191,7 +190,7 @@ const mapStateToProps = state => {
     activeView: state.router.activeView,
     activeStory: state.router.activeStory,
     activePanel: state.router.activePanel,
-    petitions: state.petitions,
+    currentPetitions: state.petitions[state.router.activeTab.feed],
     data: state.data
   };
 };
@@ -219,7 +218,7 @@ PetitionsFeed.propTypes = {
   activeStory: PropTypes.string.isRequired,
   setStory: PropTypes.func.isRequired,
   setPage: PropTypes.func.isRequired,
-  petitions: PropTypes.object.isRequired,
+  currentPetitions: PropTypes.object.isRequired,
   setCurrent: PropTypes.func.isRequired,
   activePanel: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired
