@@ -1,8 +1,7 @@
-import { SET_COLOR_SCHEME, SET_PETITIONS_FEED_CARD } from "./actionTypes";
+import { SET_COLOR_SCHEME } from "./actionTypes";
 
 const initialState = {
-  colorScheme: "bright_light",
-  petitionsFeedCard: undefined
+  colorScheme: "bright_light"
 };
 
 const uiReducer = (state = initialState, action) => {
@@ -12,12 +11,6 @@ const uiReducer = (state = initialState, action) => {
       return {
         ...state,
         colorScheme: action.payload
-      };
-
-    case SET_PETITIONS_FEED_CARD:
-      return {
-        ...state,
-        petitionsFeedCard: action.payload
       };
 
     default:

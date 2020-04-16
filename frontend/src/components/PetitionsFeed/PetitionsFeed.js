@@ -20,7 +20,6 @@ import { bindActionCreators } from "redux";
 import PetitionCard from "../PetitionCard/PetitionCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import FriendsCard from "../FriendsCard/FriendsCard";
-import { setLaunchParameters } from "../../store/data/actions";
 import { setActiveTab, setPage, setStory } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
 
@@ -71,25 +70,6 @@ const PetitionsFeed = ({
 
   const friendsCardOnClose = () => {
     setIsFriendsCardVisibile(false);
-  };
-
-  const friendsCardOnClick = () => {
-    api
-      .getAccessToken(7338958, "friends")
-      .then(r => {
-        if (!r.scope.includes("friends")) {
-          return;
-        }
-        setLaunchParameters({
-          ...data.launchParameters,
-          vk_access_token_settings: data.launchParameters.vk_access_token_settings
-            .split(",")
-            .concat("friends")
-            .join(",")
-        });
-        setIsFriendsCardVisibile(false);
-      })
-      .catch(() => {});
   };
 
   useEffect(() => {
@@ -144,31 +124,21 @@ const PetitionsFeed = ({
       </PanelHeaderSimple>
       {currentPetitions !== undefined ? (
         <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
-          {!isFriendsCardVisibile ||
-            (!data.launchParameters.vk_access_token_settings.includes(
-              "friends"
-            ) && (
-              <FriendsCard
-                onClose={friendsCardOnClose}
-                onClick={friendsCardOnClick}
-              />
-            ))}
-          <div className="PetitionsFeed">
-            {currentPetitions.map((item, index) => {
-              return (
-                <div key={index}>
-                  <PetitionCard
-                    id={item.id}
-                    title={item.title}
-                    countSignatures={item.count_signatures}
-                    needSignatures={item.need_signatures}
-                    mobilePhotoUrl={item.mobile_photo_url}
-                  />
-                  {index < currentPetitions.length - 1 && <Separator />}
-                </div>
-              );
-            })}
-          </div>
+          <FriendsCard />
+          {currentPetitions.map((item, index) => {
+            return (
+              <div key={index}>
+                <PetitionCard
+                  id={item.id}
+                  title={item.title}
+                  countSignatures={item.count_signatures}
+                  needSignatures={item.need_signatures}
+                  mobilePhotoUrl={item.mobile_photo_url}
+                />
+                {index < currentPetitions.length - 1 && <Separator />}
+              </div>
+            );
+          })}
           {currentPetitions.length > 0 && (
             <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
           )}

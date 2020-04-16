@@ -8,6 +8,7 @@ import EditPetition from "../EditPetition/EditPetition";
 import PetitionModal from "../PetitionModal/PetititonModal";
 import { goBack } from "../../store/router/actions";
 import Petition from "../Petition/Petiton";
+import "./Management.css";
 
 const Management = ({
   id,

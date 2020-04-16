@@ -12,18 +12,30 @@
   margin-top: 0 !important;
 }
 
-.ManagementFeed {
-  //& .Panel__in {
-  //  padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important;
-  //}
-  //&__spinner {
-  //  margin-top: 20px;
-  //}
-}
-
 .HeaderButton {
   &__wrapper {
     width: 100%;
     margin-top: -15px;
   }
+}
+
+
+.ManagementFeed .PanelHeaderSimple--android {
+  .PanelHeaderSimple__in, .PanelHeaderSimple__content {
+    height: calc(48px + var(--panelheader_height_android)) !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
+  }
+}
+
+.ManagementFeed .PanelHeaderSimple--ios {
+  .PanelHeaderSimple__in, .PanelHeaderSimple__content {
+    height: calc(52px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
+  }
+}
+
+.ManagementFeed .Separator--ios.PanelHeaderSimple__separator {
+  padding-top: 52px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
+}
+
+.ManagementFeed .Separator--android.PanelHeaderSimple__separator {
+  padding-top: 48px !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
 }

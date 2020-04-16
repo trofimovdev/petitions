@@ -1,16 +1,16 @@
-import { SET_ACCESS_TOKEN, SET_LAUNCH_PARAMETERS } from "./actionTypes";
+import { SET_FRIENDS_CARD_STATUS, SET_LAUNCH_PARAMETERS } from "./actionTypes";
 
 const initialState = {
-  accessToken: undefined,
+  friendsCardStatus: true,
   launchParameters: undefined
 };
 
 const dataReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_ACCESS_TOKEN: {
+    case SET_FRIENDS_CARD_STATUS: {
       return {
         ...state,
-        accessToken: action.payload
+        friendsCardStatus: action.payload
       };
     }
 

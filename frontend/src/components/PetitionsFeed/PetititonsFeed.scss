@@ -22,11 +22,11 @@
   }
 }
 
-.Separator--ios.PanelHeaderSimple__separator {
+.PetitionsFeed .Separator--ios.PanelHeaderSimple__separator {
   padding-top: 33px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
 }
 
-.Separator--android.PanelHeaderSimple__separator {
+.PetitionsFeed .Separator--android.PanelHeaderSimple__separator {
   padding-top: 48px !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
 }
 

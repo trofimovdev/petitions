@@ -1,8 +1,8 @@
-import { SET_ACCESS_TOKEN, SET_LAUNCH_PARAMETERS } from "./actionTypes";
+import { SET_FRIENDS_CARD_STATUS, SET_LAUNCH_PARAMETERS } from "./actionTypes";
 
-export const setAccessToken = token => ({
-  type: SET_ACCESS_TOKEN,
-  payload: token
+export const setFriendsCardStatus = status => ({
+  type: SET_FRIENDS_CARD_STATUS,
+  payload: status
 });
 
 export const setLaunchParameters = parameters => ({

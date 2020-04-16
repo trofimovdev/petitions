@@ -21,6 +21,7 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon28EditOutline from "@vkontakte/icons/dist/28/edit_outline";
 import Icon28BlockOutline from "@vkontakte/icons/dist/28/block_outline";
 import Icon28DeleteOutline from "@vkontakte/icons/dist/28/delete_outline";
+import Icon24Add from '@vkontakte/icons/dist/24/add';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
@@ -32,6 +33,7 @@ import {
   closeModal
 } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
+import FriendsCard from "../FriendsCard/FriendsCard";
 
 const api = new VKMiniAppAPI();
 
@@ -95,13 +97,13 @@ const ManagementFeed = ({
     }
   }, [activePanel]);
   return (
-    <Panel id={id} separator={false}>
+    <Panel id={id} separator={false} className="ManagementFeed">
       <PanelHeaderSimple separator>
         <div>
           Петиции
           <Div className="HeaderButton__wrapper FixedLayout">
-            <Button size="xl" mode="secondary">
-              Запустить
+            <Button size="xl" mode="secondary" before={<Icon24Add />}>
+              Создать петицию
             </Button>
           </Div>
         </div>
@@ -128,24 +130,23 @@ const ManagementFeed = ({
           </Placeholder>
         ) : (
           <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
-            <div className="ManagementFeed">
-              {managedPetitions.map((item, index) => {
-                return (
-                  <div key={index}>
-                    <PetitionCard
-                      id={item.id}
-                      title={item.title}
-                      countSignatures={item.count_signatures}
-                      needSignatures={item.need_signatures}
-                      mobilePhotoUrl={item.mobile_photo_url}
-                      managementDots
-                      onManagement={onManagement}
-                    />
-                    {index < managedPetitions.length - 1 && <Separator />}
-                  </div>
-                );
-              })}
-            </div>
+            <FriendsCard />
+            {managedPetitions.map((item, index) => {
+              return (
+                <div key={index}>
+                  <PetitionCard
+                    id={item.id}
+                    title={item.title}
+                    countSignatures={item.count_signatures}
+                    needSignatures={item.need_signatures}
+                    mobilePhotoUrl={item.mobile_photo_url}
+                    managementDots
+                    onManagement={onManagement}
+                  />
+                  {index < managedPetitions.length - 1 && <Separator />}
+                </div>
+              );
+            })}
 
             {managedPetitions.length > 0 && (
               <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
@@ -198,7 +199,7 @@ ManagementFeed.propTypes = {
   setPage: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
-  managedPetitions: PropTypes.object.isRequired,
+  managedPetitions: PropTypes.array.isRequired,
   setCurrent: PropTypes.func.isRequired,
   setPopout: PropTypes.func.isRequired
 };

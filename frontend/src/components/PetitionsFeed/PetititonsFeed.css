@@ -12,10 +12,10 @@
 .PetitionsFeed .PanelHeaderSimple--ios .PanelHeaderSimple__in, .PetitionsFeed .PanelHeaderSimple--ios .PanelHeaderSimple__content {
   height: calc(33px + var(--panelheader_height_ios)) !important; }
 
-.Separator--ios.PanelHeaderSimple__separator {
+.PetitionsFeed .Separator--ios.PanelHeaderSimple__separator {
   padding-top: 33px !important; }
 
-.Separator--android.PanelHeaderSimple__separator {
+.PetitionsFeed .Separator--android.PanelHeaderSimple__separator {
   padding-top: 48px !important; }
 
 .PetitionsFeed .Panel__in {
