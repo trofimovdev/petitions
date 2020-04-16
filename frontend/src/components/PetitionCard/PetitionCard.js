@@ -14,7 +14,6 @@ import Icon28MoreHorizontal from "@vkontakte/icons/dist/28/more_horizontal";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
-import Backend from "../../tools/Backend";
 import { setPage } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
 
@@ -40,16 +39,9 @@ const PetitionCard = ({
         if (["svg", "use", "g", "path"].includes(e.target.tagName)) {
           return;
         }
-        Backend.request(`petitions/${id.toString()}`, {})
-          .then(response => {
-            console.log("RESPONSE PETITION", response[0]);
-            setCurrent(response[0]);
-            setPage(activeView, "petition");
-            api.selectionChanged().catch(() => {});
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        api.selectionChanged().catch(error => console.log(error));
+        setCurrent({ id });
+        setPage(activeView, "petition");
       }}
     >
       {managementDots && (

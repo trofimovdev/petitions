@@ -21,48 +21,50 @@ import Icon48Camera from "@vkontakte/icons/dist/48/camera";
 import Icon24Error from "@vkontakte/icons/dist/24/error";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import Icon28Mention from "@vkontakte/icons/dist/28/mention";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import UploadCard from "../UploadCard/UploadCard";
 import EditPetitionTabbar from "../EditPetitionTabbar/EditPetitionTabbar";
+import { goBack, openModal } from "../../store/router/actions";
+import { setEdit, setCreate } from "../../store/petitions/actions";
 
 const api = new VKMiniAppAPI();
 
 const EditPetition = ({
   id,
-  activeStory,
-  setStory,
   activePanel,
-  setPage,
   goBack,
-  petitions,
+  formType,
   setEdit,
   setCreate,
-  type,
-  openModal
+  openModal,
+  editPetitions,
+  createPetitions
 }) => {
   const [snackbar, setSnackbar] = useState(null);
 
   let setForm = () => {};
   let form = {};
   let panelTitle = "";
-  console.log(type);
-  switch (type) {
+  console.log(formType);
+  switch (formType) {
     case "edit": {
       setForm = setEdit;
-      form = petitions.edit;
+      form = editPetitions;
       panelTitle = "Редактирование";
       break;
     }
 
     case "create": {
       setForm = setCreate;
-      form = petitions.create;
+      form = createPetitions;
       panelTitle = "Создание";
       break;
     }
 
     default: {
       setForm = setCreate;
-      form = petitions.create;
+      form = createPetitions;
       panelTitle = "Создание";
     }
   }
@@ -257,18 +259,41 @@ const EditPetition = ({
   );
 };
 
-EditPetition.propTypes = {
-  id: PropTypes.string.isRequired,
-  activeStory: PropTypes.string.isRequired,
-  setStory: PropTypes.func.isRequired,
-  activePanel: PropTypes.string.isRequired,
-  setPage: PropTypes.func.isRequired,
-  goBack: PropTypes.func.isRequired,
-  petitions: PropTypes.object.isRequired,
-  setEdit: PropTypes.func.isRequired,
-  setCreate: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired,
-  openModal: PropTypes.func.isRequired
+const mapStateToProps = state => {
+  return {
+    activeStory: state.router.activeStory,
+    activePanel: state.router.activePanel,
+    formType: state.petitions.formType,
+    editPetitions: state.petitions.edit,
+    createPetitions: state.petitions.create
+  };
 };
 
-export default EditPetition;
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    ...bindActionCreators(
+      {
+        goBack,
+        setEdit,
+        setCreate,
+        openModal
+      },
+      dispatch
+    )
+  };
+};
+
+EditPetition.propTypes = {
+  id: PropTypes.string.isRequired,
+  activePanel: PropTypes.string.isRequired,
+  goBack: PropTypes.func.isRequired,
+  formType: PropTypes.string.isRequired,
+  setEdit: PropTypes.func.isRequired,
+  setCreate: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
+  editPetitions: PropTypes.object.isRequired,
+  createPetitions: PropTypes.object.isRequired
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditPetition);

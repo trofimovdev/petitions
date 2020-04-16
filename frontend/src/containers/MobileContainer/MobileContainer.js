@@ -33,8 +33,7 @@ const MobileContainer = ({
   activeTab,
   scrollPosition,
   goBack,
-  history,
-  activeModal
+  history
 }) => {
   useEffect(() => {
     const pageScrollPosition = scrollPosition[
@@ -50,8 +49,6 @@ const MobileContainer = ({
     window.scroll(0, pageScrollPosition);
   }, [activeStory, activeView, activePanel, activeTab, scrollPosition]);
 
-  // const activeModal =
-  //   activeModals[activeView] === undefined ? null : activeModals[activeView];
   return (
     <Epic activeStory={activeStory}>
       <Petitions
@@ -60,26 +57,7 @@ const MobileContainer = ({
         goBack={goBack}
         history={history}
       />
-      {/* <Management */}
-      {/*  id="management" */}
-      {/*  setActiveTab={setActiveTab} */}
-      {/*  activeTab={activeTab} */}
-      {/*  activeView={activeView} */}
-      {/*  activePanel={activePanel} */}
-      {/*  activeStory={activeStory} */}
-      {/*  setStory={setStory} */}
-      {/*  setPage={setPage} */}
-      {/*  goBack={goBack} */}
-      {/*  petitions={petitions} */}
-      {/*  setEdit={setEdit} */}
-      {/*  setCreate={setCreate} */}
-      {/*  activeViewPanelsHistory={activeViewPanelsHistory} */}
-      {/*  setFormType={setFormType} */}
-      {/*  openModal={openModal} */}
-      {/*  closeModal={closeModal} */}
-      {/*  activeModal={activeModal} */}
-      {/*  setCurrent={setCurrent} */}
-      {/* /> */}
+      <Management id="management" goBack={goBack} history={history} />
     </Epic>
   );
 };

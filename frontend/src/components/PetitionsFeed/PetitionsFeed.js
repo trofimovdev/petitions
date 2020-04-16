@@ -56,17 +56,17 @@ const PetitionsFeed = ({
     const scrollPosition = window.scrollY;
     console.log(scrollPosition);
     const cardHeight = 313; // 313 - высота одной карточки в px (с отступами)
-    if (
-      petitions[activeTab.feed].length * cardHeight - scrollPosition <
-      cardHeight * 5
-    ) {
-      // загружать новые карточки когда юзер пролистнет 5 карточку
-      console.log(
-        "new cards",
-        activeTab.feed,
-        petitions[activeTab.feed].length
-      );
-    }
+    // if (
+    //   petitions[activeTab.feed].length * cardHeight - scrollPosition <
+    //   cardHeight * 5
+    // ) {
+    //   // загружать новые карточки когда юзер пролистнет 5 карточку
+    //   console.log(
+    //     "new cards",
+    //     activeTab.feed,
+    //     petitions[activeTab.feed].length
+    //   );
+    // }
   };
 
   const friendsCardOnClose = () => {
@@ -218,7 +218,7 @@ PetitionsFeed.propTypes = {
   activeStory: PropTypes.string.isRequired,
   setStory: PropTypes.func.isRequired,
   setPage: PropTypes.func.isRequired,
-  currentPetitions: PropTypes.object.isRequired,
+  currentPetitions: PropTypes.array.isRequired,
   setCurrent: PropTypes.func.isRequired,
   activePanel: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired

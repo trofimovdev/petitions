@@ -1,75 +1,71 @@
 import React, { useState } from "react";
 import { View } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import ManagementFeed from "../ManagementFeed/ManagementFeed";
 import EditPetition from "../EditPetition/EditPetition";
 import PetitionModal from "../PetitionModal/PetititonModal";
+import { goBack } from "../../store/router/actions";
+import Petition from "../Petition/Petiton";
 
 const Management = ({
   id,
-  activeStory,
-  setStory,
-  activeView,
   activePanel,
-  setPage,
   goBack,
-  petitions,
-  setEdit,
-  setCreate,
-  activeViewPanelsHistory,
-  openModal,
-  closeModal,
+  history,
   activeModal,
-  setCurrent
+  formType
 }) => {
   const [popout, setPopout] = useState(null);
 
   return (
     <View
       id={id}
-      modal={
-        <PetitionModal activeModal={activeModal} closeModal={closeModal} />
-      }
+      modal={<PetitionModal activeModal={activeModal} />}
       activePanel={activePanel}
       header={false}
       onSwipeBack={goBack}
-      history={activeViewPanelsHistory}
+      history={history}
       popout={popout}
     >
       <ManagementFeed id="feed" setPopout={setPopout} />
-      <EditPetition
-        id={petitions.formType}
-        activeStory={activeStory}
-        activePanel={activePanel}
-        setStory={setStory}
-        setPage={setPage}
-        goBack={goBack}
-        petitions={petitions}
-        setEdit={setEdit}
-        setCreate={setCreate}
-        type={petitions.formType}
-        openModal={openModal}
-      />
+      <EditPetition id={formType} />
+      <Petition id="petition" />
     </View>
   );
 };
 
-Management.propTypes = {
-  id: PropTypes.string.isRequired,
-  activeStory: PropTypes.string.isRequired,
-  setStory: PropTypes.func.isRequired,
-  activeView: PropTypes.string.isRequired,
-  activePanel: PropTypes.string.isRequired,
-  setPage: PropTypes.func.isRequired,
-  goBack: PropTypes.func.isRequired,
-  petitions: PropTypes.object.isRequired,
-  setEdit: PropTypes.func.isRequired,
-  setCreate: PropTypes.func.isRequired,
-  activeViewPanelsHistory: PropTypes.array.isRequired,
-  openModal: PropTypes.func.isRequired,
-  closeModal: PropTypes.func.isRequired,
-  activeModal: PropTypes.string,
-  setCurrent: PropTypes.func.isRequired
+const mapStateToProps = state => {
+  return {
+    activePanel: state.router.activePanel,
+    activeModal:
+      state.router.activeModals[state.router.activeView] === undefined
+        ? null
+        : state.router.activeModals[state.router.activeView],
+    formType: state.petitions.formType
+  };
 };
 
-export default Management;
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    ...bindActionCreators(
+      {
+        goBack
+      },
+      dispatch
+    )
+  };
+};
+
+Management.propTypes = {
+  id: PropTypes.string.isRequired,
+  activePanel: PropTypes.string.isRequired,
+  goBack: PropTypes.func.isRequired,
+  history: PropTypes.array.isRequired,
+  activeModal: PropTypes.string,
+  formType: PropTypes.string.isRequired
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Management);

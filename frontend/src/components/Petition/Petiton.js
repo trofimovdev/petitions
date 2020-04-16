@@ -11,7 +11,8 @@ import {
   Link,
   PullToRefresh,
   getClassName,
-  usePlatform
+  usePlatform,
+  Spinner
 } from "@vkontakte/vkui";
 import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
@@ -27,15 +28,11 @@ import { setCurrent } from "../../store/petitions/actions";
 
 const api = new VKMiniAppAPI();
 
-const Petition = ({
-  id,
-  goBack,
-  currentPetition,
-  activePanel,
-  setCurrent
-}) => {
+const Petition = ({ id, goBack, currentPetition, activePanel, setCurrent }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState(true);
   const [headerStatus, setHeaderStatus] = useState("hidden");
+  const platform = usePlatform();
   console.log("CURRENT PETITION is", currentPetition);
 
   const onRefresh = () => {
@@ -69,9 +66,18 @@ const Petition = ({
 
   if (activePanel === "petition") {
     api.setLocationHash(`p${currentPetition.id.toString()}`);
+    if (loadingStatus) {
+      Backend.request(`petitions/${currentPetition.id.toString()}`, {})
+        .then(response => {
+          setLoadingStatus(false);
+          setCurrent(response[0]);
+          console.log("from petition RESPONSE PETITION", response[0]);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
   }
-
-  const platform = usePlatform();
 
   return (
     <Panel id={id} separator={false} className="Petition">
@@ -89,58 +95,63 @@ const Petition = ({
         }
         separator={false}
       />
-
-      <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
-        <div className="Petition__image">
-          <img src={`${currentPetition.mobile_photo_url}`} />
-        </div>
-        <Div className={getClassName("Petition__info", platform)}>
-          <h1>{currentPetition.title}</h1>
-          <PetitionProgress
-            countSignatures={currentPetition.count_signatures}
-            needSignatures={currentPetition.need_signatures}
-          />
-          {/* <UsersStack */}
-          {/*  className="Petition__users_stack" */}
-          {/*  photos={[ */}
-          {/*    "https://sun9-6.userapi.com/c846121/v846121540/195e4d/17NeSTKMR1o.jpg?ava=1", */}
-          {/*    "https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1", */}
-          {/*    "https://sun9-25.userapi.com/c849432/v849432217/18ad61/0UFtoEhCsgA.jpg?ava=1" */}
-          {/*  ]} */}
-          {/* > */}
-          {/*  Подписали Дмитрий, Анастасия и еще 12 друзей */}
-          {/* </UsersStack> */}
-        </Div>
-        <Separator />
-        <Div className="Petition__text">{currentPetition.text}</Div>
-        <Separator />
-        <Cell
-          className="Petition__creator"
-          before={
-            <a
-              className="Petition__creator__avatar"
-              href={`https://vk.com/id${currentPetition.owner_id}`}
-              target="_blank"
-              rel="noopener noreferrer"
+      {Object.keys(currentPetition).length > 1 ? (
+        <>
+          <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
+            <div className="Petition__image">
+              <img src={`${currentPetition.mobile_photo_url}`} />
+            </div>
+            <Div className={getClassName("Petition__info", platform)}>
+              <h1>{currentPetition.title}</h1>
+              <PetitionProgress
+                countSignatures={currentPetition.count_signatures}
+                needSignatures={currentPetition.need_signatures}
+              />
+              {/* <UsersStack */}
+              {/*  className="Petition__users_stack" */}
+              {/*  photos={[ */}
+              {/*    "https://sun9-6.userapi.com/c846121/v846121540/195e4d/17NeSTKMR1o.jpg?ava=1", */}
+              {/*    "https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1", */}
+              {/*    "https://sun9-25.userapi.com/c849432/v849432217/18ad61/0UFtoEhCsgA.jpg?ava=1" */}
+              {/*  ]} */}
+              {/* > */}
+              {/*  Подписали Дмитрий, Анастасия и еще 12 друзей */}
+              {/* </UsersStack> */}
+            </Div>
+            <Separator />
+            <Div className="Petition__text">{currentPetition.text}</Div>
+            <Separator />
+            <Cell
+              className="Petition__creator"
+              before={
+                <a
+                  className="Petition__creator__avatar"
+                  href={`https://vk.com/id${currentPetition.owner_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Avatar src={currentPetition.owner.photo_50} size={40} />
+                </a>
+              }
+              multiline
             >
-              <Avatar src={currentPetition.owner.photo_50} size={40} />
-            </a>
-          }
-          multiline
-        >
-          <Link
-            href={`https://vk.com/id${currentPetition.owner_id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="Petition__creator__link"
-          >
-            {currentPetition.owner.first_name} {currentPetition.owner.last_name}
-          </Link>
-          создал петицию, адресованную Сергею Корнееву
-        </Cell>
-      </PullToRefresh>
-      {/* </Touch> */}
-      <PetitionTabbar />
+              <Link
+                href={`https://vk.com/id${currentPetition.owner_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="Petition__creator__link"
+              >
+                {currentPetition.owner.first_name}{" "}
+                {currentPetition.owner.last_name}
+              </Link>
+              создал петицию, адресованную Сергею Корнееву
+            </Cell>
+          </PullToRefresh>
+          <PetitionTabbar />
+        </>
+      ) : (
+        <Spinner size="regular" className="ManagementFeed__spinner" />
+      )}
     </Panel>
   );
 };
