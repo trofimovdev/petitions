@@ -41,7 +41,6 @@ const PetitionsFeed = ({
   const screenHeight = document.body.getBoundingClientRect().height;
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
-  const [isFriendsCardVisibile, setIsFriendsCardVisibile] = useState(true);
 
   const onRefresh = () => {
     console.log("refresh");
@@ -67,11 +66,6 @@ const PetitionsFeed = ({
     //   );
     // }
   };
-
-  const friendsCardOnClose = () => {
-    setIsFriendsCardVisibile(false);
-  };
-
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
     return () => {

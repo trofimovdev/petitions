@@ -74,6 +74,5 @@ export const loadPetitionCards = (method, withFriends = true, offset = 0) => {
           .catch(e => reject(e));
       })
       .catch(e => reject(e));
-    return;
   });
 };
