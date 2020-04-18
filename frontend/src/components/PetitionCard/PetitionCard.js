@@ -36,7 +36,10 @@ const PetitionCard = ({
       className="PetitionCard"
       onClick={e => {
         console.log(e.target);
-        if (["svg", "use", "g", "path"].includes(e.target.tagName)) {
+        if (
+          ["svg", "use", "g", "path"].includes(e.target.tagName) ||
+          id === 0
+        ) {
           return;
         }
         api.selectionChanged().catch(error => console.log(error));

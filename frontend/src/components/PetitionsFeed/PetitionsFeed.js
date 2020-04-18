@@ -22,6 +22,7 @@ import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import FriendsCard from "../FriendsCard/FriendsCard";
 import { setActiveTab, setPage, setStory } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
+import { loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -54,17 +55,15 @@ const PetitionsFeed = ({
     const scrollPosition = window.scrollY;
     console.log(scrollPosition);
     const cardHeight = 313; // 313 - высота одной карточки в px (с отступами)
-    // if (
-    //   petitions[activeTab.feed].length * cardHeight - scrollPosition <
-    //   cardHeight * 5
-    // ) {
-    //   // загружать новые карточки когда юзер пролистнет 5 карточку
-    //   console.log(
-    //     "new cards",
-    //     activeTab.feed,
-    //     petitions[activeTab.feed].length
-    //   );
-    // }
+    if (
+      currentPetitions.length * cardHeight - scrollPosition < cardHeight * 5 &&
+      !loadingStatus
+    ) {
+      // загружать новые карточки когда юзер пролистнет 5 карточку
+      console.log("new cards", activeTab.feed, currentPetitions.length);
+      setLoadingStatus(true);
+      loadPetitions("petition");
+    }
   };
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
@@ -182,7 +181,7 @@ PetitionsFeed.propTypes = {
   activeStory: PropTypes.string.isRequired,
   setStory: PropTypes.func.isRequired,
   setPage: PropTypes.func.isRequired,
-  currentPetitions: PropTypes.array.isRequired,
+  currentPetitions: PropTypes.array,
   setCurrent: PropTypes.func.isRequired,
   activePanel: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired

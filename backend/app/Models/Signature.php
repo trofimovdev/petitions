@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SignedPetition extends Model
+class Signature extends Model
 {
-    protected $table = 'signed_petitions';
+    protected $table = 'signatures';
 
     protected $fillable = [
         'petition_id',
@@ -20,21 +20,20 @@ class SignedPetition extends Model
 
     public $incrementing = false;
 
-    public static function getSigned(int $userId, int $offset = 0)
+    public static function get(int $userId, int $offset = 0)
     {
-        $petitions = SignedPetition::latest('signed_at')
+        $petitionIds = Signature::latest('signed_at')
             ->where('user_id', '=', $userId)
             ->offset($offset)
             ->limit(10)
             ->get();
-        $petitionIds = [];
-        foreach ($petitions as $petition) {
-            if (!($petition instanceof SignedPetition)) {
+        $response = [];
+        foreach ($petitionIds as $petition) {
+            if (!($petition instanceof Signature)) {
                 continue;
             }
-            $petitionIds[] = $petition->petition_id;
+            $response[] = $petition->petition_id;
         }
-        $response = Petition::getPetitions($petitionIds);
         return $response;
     }
 }

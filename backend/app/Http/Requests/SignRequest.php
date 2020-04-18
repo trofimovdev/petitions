@@ -9,7 +9,6 @@ class SignRequest extends FormRequest
     public $groupId;
     public $userId;
     public $appId;
-    public $launchParameters;
 
     /**
      * Determine if the user is authorized to make this request.

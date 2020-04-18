@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class SignedPetitionsTableSeeder extends Seeder
+class SignaturesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,6 +11,6 @@ class SignedPetitionsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Models\SignedPetition::class, 1)->create();
+        factory(App\Models\Signature::class, 10000)->create();
     }
 }

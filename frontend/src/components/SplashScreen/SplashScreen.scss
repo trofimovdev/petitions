@@ -20,7 +20,7 @@ body[scheme="space_gray"] {
     }
 
     &__in {
-      margin-top: -25%;
+      //margin-top: -20%;
     }
 
     &__header {
@@ -38,6 +38,6 @@ body[scheme="space_gray"] {
   }
 
   .FixedLayout--bottom {
-    padding-bottom: 0 !important;
+    padding-bottom: var(--safe-area-inset-bottom) !important;
   }
 }

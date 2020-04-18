@@ -28,9 +28,9 @@ export const smoothScrollToTop = async (f = () => {}) => {
   f();
 };
 
-export const loadPetitionCards = (method, withFriends = true, offset = 0) => {
+export const loadPetitions = (method, withFriends = true, params = {}) => {
   return new Promise((resolve, reject) => {
-    if (!["bootstrap"].includes(method)) {
+    if (!["bootstrap", "petition"].includes(method)) {
       reject(new ConnectionError("Invalid method"));
       return;
     }
@@ -38,7 +38,7 @@ export const loadPetitionCards = (method, withFriends = true, offset = 0) => {
 
     if (!withFriends) {
       console.log("WITHOUT friends");
-      Backend.request(method, { offset })
+      Backend.request(method, params)
         .then(r => {
           resolve(r);
         })
@@ -61,10 +61,12 @@ export const loadPetitionCards = (method, withFriends = true, offset = 0) => {
             Backend.request(
               method,
               {
-                with_friends: true,
-                friends: r.items.join(","),
-                // friends: [1, 14, 15],//r.items.join(","),
-                offset
+                ...params,
+                ...{
+                  with_friends: true,
+                  friends: r.items.join(",")
+                  // friends: [1, 14, 15],//r.items.join(","),
+                }
               },
               "POST"
             )

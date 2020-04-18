@@ -1,5 +1,5 @@
 import React from "react";
-import {FixedLayout, Tabbar, TabbarItem} from "@vkontakte/vkui";
+import { FixedLayout, Tabbar, TabbarItem } from "@vkontakte/vkui";
 import "./EpicTabbar.css";
 import PropTypes from "prop-types";
 

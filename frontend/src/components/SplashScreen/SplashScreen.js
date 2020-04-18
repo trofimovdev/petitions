@@ -36,6 +36,7 @@ const SplashScreen = ({ id, activeView, setPage }) => {
             size="xl"
             mode="primary"
             onClick={() => {
+              api.selectionChanged().catch(() => {});
               setPage(activeView, "feed");
             }}
           >
@@ -46,6 +47,7 @@ const SplashScreen = ({ id, activeView, setPage }) => {
             mode="secondary"
             className="SplashScreen__buttons__install"
             onClick={() => {
+              api.selectionChanged().catch(() => {});
               api.addAppToCommunity();
             }}
           >

@@ -7,6 +7,7 @@ use App\Http\Requests\SignRequest;
 use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\OkResponse;
 use App\Models\Petition;
+use App\Models\Signature;
 
 class PetitionController extends Controller
 {
@@ -28,6 +29,18 @@ class PetitionController extends Controller
             $request->offset && empty($offset)
         ) {
             return new ErrorResponse(400, 'Invalid params');
+        }
+
+        $petitions = [];
+        switch ($request->type) {
+            // TODO: вынести в константы
+            case 'last':
+                $petitions = Petition::getLast($request->offset);
+                break;
+
+            case 'signed':
+                $petitions = Signature::get($request->offset);
+                break;
         }
         return new OkResponse(Petition::getPetitionsByType($request->type, $offset));
     }
