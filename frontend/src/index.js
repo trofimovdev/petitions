@@ -76,14 +76,13 @@ const launchParameters = new URLSearchParams(window.location.search);
 store.dispatch(setLaunchParameters(Object.fromEntries(launchParameters)));
 if (launchParameters.get("vk_access_token_settings").includes("friends")) {
   console.log("with friends");
-  loadPetitions("bootstrap", true)
+  loadPetitions("petitions", true)
     .then(r => onLoad(r))
     .catch(e => console.log(e));
 } else {
   console.log("without friends");
-  loadPetitions("bootstrap", false)
+  loadPetitions("petitions", false)
     .then(r => {
-      console.log(r);
       onLoad(r);
     })
     .catch(e => console.log(e));
