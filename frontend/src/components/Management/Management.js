@@ -9,6 +9,7 @@ import PetitionModal from "../PetitionModal/PetititonModal";
 import { goBack } from "../../store/router/actions";
 import Petition from "../Petition/Petiton";
 import "./Management.css";
+import SplashScreen from "../SplashScreen/SplashScreen";
 
 const Management = ({
   id,
@@ -30,6 +31,7 @@ const Management = ({
       history={history}
       popout={popout}
     >
+      <SplashScreen id="splashscreen" />
       <ManagementFeed id="feed" setPopout={setPopout} />
       <EditPetition id={formType} />
       <Petition id="petition" />

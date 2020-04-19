@@ -36,15 +36,17 @@ const MobileContainer = ({
   history
 }) => {
   useEffect(() => {
-    const pageScrollPosition = scrollPosition[
-      `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
-    ]
-      ? scrollPosition[
-          `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
-        ]
-      : scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
-      ? scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
-      : 0;
+    const pageScrollPosition =
+      activeTab &&
+      scrollPosition[
+        `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
+      ]
+        ? scrollPosition[
+            `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
+          ]
+        : scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
+        ? scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
+        : 0;
     console.log("ACCEDPT SCROLL TO", pageScrollPosition);
     window.scroll(0, pageScrollPosition);
   }, [activeStory, activeView, activePanel, activeTab, scrollPosition]);

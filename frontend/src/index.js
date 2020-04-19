@@ -39,37 +39,42 @@ api.onUpdateConfig(({ scheme }) => {
   store.dispatch(setColorScheme(scheme));
 });
 
+let isAppUser = false;
+api.storageGet("is_app_user").then(r => {
+  isAppUser = r;
+  console.log("is_app_user", r);
+});
+
 const petitionRegExp = new RegExp("^#p\\d+$");
 const feedRegExp = new RegExp("^#(popular|last|signed)$");
 const managementRegExp = new RegExp("^#management$");
-if (window.location.hash) {
-  console.log("HASH", window.location.hash);
-  const petitionId = window.location.hash.match(petitionRegExp);
-  const feedTab = window.location.hash.match(feedRegExp);
-  const management = window.location.hash.match(managementRegExp);
-  if (petitionId) {
-    setCurrent({ id: petitionId[1] });
-  }
+const petitionId = window.location.hash.match(petitionRegExp);
+const feedTab = window.location.hash.match(feedRegExp);
+const management = window.location.hash.match(managementRegExp);
+
+console.log(
+  "WINDOWS HASH",
+  window.location.hash,
+  petitionId,
+  feedTab,
+  management
+);
+
+if (petitionId) {
+  console.log("petitionId");
+  store.dispatch(setActiveTab("feed", "last"));
+  store.dispatch(setStory("petitions", "petition"));
+  setCurrent({ id: petitionId[1] });
+} else if (!isAppUser) {
+  console.log("!isAppUser");
   if (feedTab) {
-    console.log("SET ACTIVE TAB", feedTab);
-    store.dispatch(setStory("petitions", "feed"));
     store.dispatch(setActiveTab("feed", feedTab[1]));
-  }
-  if (management) {
-    store.dispatch(setStory("management", "feed"));
-  }
-} else {
-  let isAppUser = false;
-  api.storageGet("is_app_user").then(r => {
-    isAppUser = r;
-    console.log("is_app_user", r);
-  });
-  if (isAppUser) {
-    store.dispatch(setStory("petitions", "feed"));
-  } else {
     store.dispatch(setStory("petitions", "splashscreen", false));
   }
-  store.dispatch(setActiveTab("feed", "last"));
+  if (management) {
+    store.dispatch(setActiveTab("feed", "last"));
+    store.dispatch(setStory("management", "splashscreen", false));
+  }
 }
 
 const launchParameters = new URLSearchParams(window.location.search);
