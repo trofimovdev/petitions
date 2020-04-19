@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Div,
   Button,
   FixedLayout,
+  Spinner,
   getClassName,
   usePlatform
 } from "@vkontakte/vkui";
@@ -15,10 +16,64 @@ import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { openModal } from "../../store/router/actions";
+import { setCurrent, setSigned } from "../../store/petitions/actions";
+import Backend from "../../tools/Backend";
 
 const api = new VKMiniAppAPI();
 
-const PetitionTabbar = ({ openModal }) => {
+const PetitionTabbar = ({
+  openModal,
+  currentPetition,
+  launchParameters,
+  setCurrent,
+  setSigned,
+  signedPetitions
+}) => {
+  const [fetchingStatus, setFetchingStatus] = useState(false);
+
+  const signPetition = () => {
+    api.notificationOccurred("success").catch(() => {});
+    setFetchingStatus(true);
+    Backend.request(`signatures/${currentPetition.id}`, {}, "PUT").then(r => {
+      if (r) {
+        setCurrent({ ...currentPetition, ...{ signed: true } });
+        signedPetitions.unshift(currentPetition);
+        setSigned(signedPetitions);
+        setFetchingStatus(false);
+      }
+    });
+  };
+
+  const unsignPetition = () => {
+    api.notificationOccurred("success").catch(() => {});
+    setFetchingStatus(true);
+    Backend.request(`signatures/${currentPetition.id}`, {}, "DELETE").then(
+      r => {
+        if (r) {
+          setCurrent({ ...currentPetition, ...{ signed: false } });
+          console.log(
+            "SET SIGNED",
+            signedPetitions.filter(item => {
+              console.log(
+                item,
+                currentPetition,
+                item.id !== currentPetition.id
+              );
+              return item.id !== currentPetition.id;
+            })
+          );
+          setSigned(
+            signedPetitions.filter(item => {
+              return item.id !== currentPetition.id;
+            })
+          );
+
+          setFetchingStatus(false);
+        }
+      }
+    );
+  };
+
   const platform = usePlatform();
 
   return (
@@ -27,21 +82,37 @@ const PetitionTabbar = ({ openModal }) => {
       className={`PetitionTabbar Tabbar--shadow ${getClassName(
         "Tabbar",
         platform
-      )}`}
+      )} ${
+        currentPetition.completed && currentPetition.signed
+          ? "PetitionTabbar--signed"
+          : ""
+      }`}
     >
-      <div className="PetitionTabbar__signed">
-        <Icon24DoneOutline className="PetitionTabbar__signed__icon" />
-        Вы подписали эту петицию
-      </div>
+      {currentPetition.completed && currentPetition.signed && (
+        <div className="PetitionTabbar__signed">
+          <Icon24DoneOutline className="PetitionTabbar__signed__icon" />
+          Вы подписали эту петицию
+        </div>
+      )}
       <Div className="PetitionTabbar__buttons">
         <Button
           size="xl"
-          mode="primary"
+          mode={currentPetition.signed ? "secondary" : "primary"}
           onClick={() => {
-            api.notificationOccurred("success").catch(() => {});
+            if (currentPetition.signed) {
+              unsignPetition();
+            } else {
+              signPetition();
+            }
           }}
         >
-          Подписать
+          {fetchingStatus ? (
+            <Spinner size="small" />
+          ) : currentPetition.signed ? (
+            "Вы подписали"
+          ) : (
+            "Подписать"
+          )}
         </Button>
         <Button
           size="l"
@@ -49,25 +120,35 @@ const PetitionTabbar = ({ openModal }) => {
           onClick={() => {
             api.selectionChanged().catch(() => {});
             console.log("try to open");
-            console.log("active MODALKA", );
+            console.log("active MODALKA");
             openModal("share-type");
             console.log("opened");
           }}
         >
           <Icon24ShareOutline />
         </Button>
-        <Button
-          size="l"
-          mode="secondary"
-          onClick={() => {
-            api.selectionChanged().catch(() => {});
-          }}
-        >
-          <Icon24Settings />
-        </Button>
+        {currentPetition.owner_id == launchParameters.vk_user_id && (
+          <Button
+            size="l"
+            mode="secondary"
+            onClick={() => {
+              api.selectionChanged().catch(() => {});
+            }}
+          >
+            <Icon24Settings />
+          </Button>
+        )}
       </Div>
     </FixedLayout>
   );
+};
+
+const mapStateToProps = state => {
+  return {
+    currentPetition: state.petitions.current,
+    launchParameters: state.data.launchParameters,
+    signedPetitions: state.petitions.signed
+  };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -75,7 +156,9 @@ const mapDispatchToProps = dispatch => {
     dispatch,
     ...bindActionCreators(
       {
-        openModal
+        openModal,
+        setCurrent,
+        setSigned
       },
       dispatch
     )
@@ -83,7 +166,12 @@ const mapDispatchToProps = dispatch => {
 };
 
 PetitionTabbar.propTypes = {
-  openModal: PropTypes.func.isRequired
+  openModal: PropTypes.func.isRequired,
+  currentPetition: PropTypes.object.isRequired,
+  launchParameters: PropTypes.object.isRequired,
+  setCurrent: PropTypes.func.isRequired,
+  setSigned: PropTypes.func.isRequired,
+  signedPetitions: PropTypes.array
 };
 
-export default connect(null, mapDispatchToProps)(PetitionTabbar);
+export default connect(mapStateToProps, mapDispatchToProps)(PetitionTabbar);

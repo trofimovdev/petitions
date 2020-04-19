@@ -25,10 +25,18 @@ import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
 import Backend from "../../tools/Backend";
 import { goBack } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
+import { loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
-const Petition = ({ id, goBack, currentPetition, activePanel, setCurrent }) => {
+const Petition = ({
+  id,
+  goBack,
+  currentPetition,
+  activePanel,
+  setCurrent,
+  launchParameters
+}) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [headerStatus, setHeaderStatus] = useState("hidden");
@@ -67,20 +75,35 @@ const Petition = ({ id, goBack, currentPetition, activePanel, setCurrent }) => {
   if (activePanel === "petition") {
     api.setLocationHash(`p${currentPetition.id.toString()}`);
     if (loadingStatus) {
-      Backend.request(`petitions/${currentPetition.id.toString()}`, {})
-        .then(response => {
-          setLoadingStatus(false);
-          setCurrent(response[0]);
-          console.log("from petition RESPONSE PETITION", response[0]);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      if (launchParameters.vk_access_token_settings.includes("friends")) {
+        console.log("with friends");
+        loadPetitions(`petitions/${currentPetition.id.toString()}`, true)
+          .then(response => {
+            setLoadingStatus(false);
+            setCurrent(response[0]);
+          })
+          .catch(e => console.log(e));
+      } else {
+        console.log("without friends");
+        loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
+          .then(r => {
+            console.log(r);
+          })
+          .catch(e => console.log(e));
+      }
     }
   }
 
   return (
-    <Panel id={id} separator={false} className="Petition">
+    <Panel
+      id={id}
+      separator={false}
+      className={`Petition ${
+        currentPetition.completed && currentPetition.signed
+          ? "Petition--signed"
+          : ""
+      }`}
+    >
       <PanelHeaderSimple
         className={`Petition__header Petition__header__${headerStatus}`}
         left={
@@ -107,16 +130,18 @@ const Petition = ({ id, goBack, currentPetition, activePanel, setCurrent }) => {
                 countSignatures={currentPetition.count_signatures}
                 needSignatures={currentPetition.need_signatures}
               />
-              {/* <UsersStack */}
-              {/*  className="Petition__users_stack" */}
-              {/*  photos={[ */}
-              {/*    "https://sun9-6.userapi.com/c846121/v846121540/195e4d/17NeSTKMR1o.jpg?ava=1", */}
-              {/*    "https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1", */}
-              {/*    "https://sun9-25.userapi.com/c849432/v849432217/18ad61/0UFtoEhCsgA.jpg?ava=1" */}
-              {/*  ]} */}
-              {/* > */}
-              {/*  Подписали Дмитрий, Анастасия и еще 12 друзей */}
-              {/* </UsersStack> */}
+              {currentPetition.friends && (
+                <UsersStack
+                  className="Petition__users_stack"
+                  photos={[
+                    "https://sun9-6.userapi.com/c846121/v846121540/195e4d/17NeSTKMR1o.jpg?ava=1",
+                    "https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1",
+                    "https://sun9-25.userapi.com/c849432/v849432217/18ad61/0UFtoEhCsgA.jpg?ava=1"
+                  ]}
+                >
+                  Подписали Дмитрий, Анастасия и еще 12 друзей
+                </UsersStack>
+              )}
             </Div>
             <Separator />
             <Div className="Petition__text">{currentPetition.text}</Div>
@@ -144,7 +169,8 @@ const Petition = ({ id, goBack, currentPetition, activePanel, setCurrent }) => {
                 {currentPetition.owner.first_name}{" "}
                 {currentPetition.owner.last_name}
               </Link>
-              создал петицию, адресованную Сергею Корнееву
+              {currentPetition.owner.sex === "2" ? "создал " : "создала "}
+              петицию, адресованную Сергею Корнееву
             </Cell>
           </PullToRefresh>
           <PetitionTabbar />
@@ -159,7 +185,8 @@ const Petition = ({ id, goBack, currentPetition, activePanel, setCurrent }) => {
 const mapStateToProps = state => {
   return {
     activePanel: state.router.activePanel,
-    currentPetition: state.petitions.current
+    currentPetition: state.petitions.current,
+    launchParameters: state.data.launchParameters
   };
 };
 
@@ -181,7 +208,8 @@ Petition.propTypes = {
   goBack: PropTypes.func.isRequired,
   currentPetition: PropTypes.object.isRequired,
   activePanel: PropTypes.string.isRequired,
-  setCurrent: PropTypes.func.isRequired
+  setCurrent: PropTypes.func.isRequired,
+  launchParameters: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Petition);

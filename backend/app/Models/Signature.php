@@ -20,20 +20,73 @@ class Signature extends Model
 
     public $incrementing = false;
 
-    public static function get(int $userId, int $offset = 0)
+    public static function getSignatures(array $userIds, int $offset = 0)
     {
-        $petitionIds = Signature::latest('signed_at')
-            ->where('user_id', '=', $userId)
+        $signatures = Signature::latest('signed_at')
+            ->whereIn('user_id', $userIds)
             ->offset($offset)
             ->limit(10)
             ->get();
         $response = [];
-        foreach ($petitionIds as $petition) {
-            if (!($petition instanceof Signature)) {
-                continue;
+        foreach ($signatures as $signature) {
+            if ($signature instanceof Signature) {
+                $response[] = $signature->toSignatureView($signatureId = true);
+            } else {
+                $response[] = null;
             }
-            $response[] = $petition->petition_id;
         }
         return $response;
+    }
+
+    public static function getUsers(int $petitionId, array $userIds = [])
+    {
+        $friendIds = [];
+        if ($userIds) {
+            $signatures = Signature::latest('signed_at')
+                ->where('petition_id', '=', $petitionId)
+                ->whereIn('user_id', $userIds)
+                ->get();
+            foreach ($signatures as $signature) {
+                if (!$signature instanceof Signature) {
+                    continue;
+                }
+                $friendIds[] = $signature->user_id;
+            }
+        } else {
+            $signatures = Signature::latest('signed_at')
+                ->where('petition_id', '=', $petitionId)
+                ->get();
+        }
+        $users = User::getUsers($friendIds);
+
+        $response = [];
+        foreach ($signatures as $signature) {
+            if ($signature instanceof Signature) {
+                if ($friendIds) {
+                    $signature->user = $users[$signature->user_id];
+                }
+                $response[] = $signature->toSignatureView();
+            } else {
+                $response[] = null;
+            }
+        }
+        return $response;
+    }
+
+    public function toSignatureView(bool $signatureId = false, bool $signedAt = false)
+    {
+        $signature = [
+            'user_id' => $this->user_id
+        ];
+        if ($signatureId) {
+            $signature['petition_id'] = $this->petition_id;
+        }
+        if ($signedAt) {
+            $signature['signed_at'] = $this->signed_at;
+        }
+        if ($this->user) {
+            $signature['user'] = $this->user;
+        }
+        return $signature;
     }
 }

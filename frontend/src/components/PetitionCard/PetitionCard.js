@@ -16,6 +16,7 @@ import { bindActionCreators } from "redux";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import { setPage } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
+import { declOfNum } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -29,8 +30,10 @@ const PetitionCard = ({
   setPage,
   setCurrent,
   managementDots,
-  onManagement
+  onManagement,
+  friends
 }) => {
+  console.log("FRIENDS", friends);
   return (
     <Div
       className="PetitionCard"
@@ -63,16 +66,38 @@ const PetitionCard = ({
           className="PetitionCard__card"
           style={{ backgroundImage: `url(${mobilePhotoUrl})` }}
         />
-        {/* <UsersStack */}
-        {/*  className="PetitionCard__users_stack" */}
-        {/*  photos={[ */}
-        {/*    "https://sun9-6.userapi.com/c846121/v846121540/195e4d/17NeSTKMR1o.jpg?ava=1", */}
-        {/*    "https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1", */}
-        {/*    "https://sun9-25.userapi.com/c849432/v849432217/18ad61/0UFtoEhCsgA.jpg?ava=1" */}
-        {/*  ]} */}
-        {/* > */}
-        {/*  Подписали Дмитрий, Анастасия и еще 12 друзей */}
-        {/* </UsersStack> */}
+        {friends.length > 0 && (
+          <UsersStack
+            className="PetitionCard__users_stack"
+            photos={friends.slice(0, 3).map(item => {
+              return item.user.photo_50;
+            })}
+          >
+            {friends.length === 1
+              ? (friends[0].user.sex === "2" ? "Подписал " : "Подписала ") +
+                friends[0].user.first_name
+              : `Подписали ${
+                  friends.length === 2
+                    ? `${friends[0].user.first_name} и ${friends[1].user.first_name}`
+                    : friends
+                        .slice(0, 2)
+                        .map(item => {
+                          return item.user.first_name;
+                        })
+                        .join(", ")
+                }${
+                  friends.length > 3
+                    ? `, ${friends[2].user.first_name} и еще ${friends.length -
+                        3} ${declOfNum(friends.length - 3, [
+                        "друг",
+                        "друга",
+                        "друзей"
+                      ])}`
+                    : `и ${friends[2].user.first_name}`
+                }`}
+            {}
+          </UsersStack>
+        )}
       </div>
     </Div>
   );
@@ -107,12 +132,14 @@ PetitionCard.propTypes = {
   setPage: PropTypes.func.isRequired,
   setCurrent: PropTypes.func.isRequired,
   managementDots: PropTypes.bool,
-  onManagement: PropTypes.func
+  onManagement: PropTypes.func,
+  friends: PropTypes.array
 };
 
 PetitionCard.defaultProps = {
   managementDots: false,
-  onManagement: () => {}
+  onManagement: () => {},
+  friends: []
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionCard);

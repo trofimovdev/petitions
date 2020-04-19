@@ -2,6 +2,10 @@
 
 .Petition {
   & > .Panel__in {
+    padding-bottom: calc(68px + var(--safe-area-inset-top)) !important; // 68px - высота таббара
+  }
+
+  &--signed > .Panel__in {
     padding-bottom: calc(102px + var(--safe-area-inset-top)) !important; // 102px - высота таббара
   }
 
@@ -47,14 +51,6 @@
 
   &__info {
     padding-bottom: 0;
-
-    &--ios {
-      //margin-top: calc(180px - var(--safe-area-inset-top) - var(--panelheader_height_ios));
-    }
-
-    &--android {
-      //margin-top: calc(180px - var(--safe-area-inset-top) - var(--panelheader_height_android));
-    }
   }
 
   &__info h1 {
@@ -74,10 +70,6 @@
     &__link {
       font-weight: 600;
       margin-right: 4px;
-    }
-
-    &__avatar {
-      //padding: 4px 12px 4px 0 !important;;
     }
   }
 

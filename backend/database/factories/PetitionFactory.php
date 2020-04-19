@@ -14,5 +14,6 @@ $factory->define(Petition::class, function (Faker $faker) {
         'owner_id' => '165275777',
         'mobile_photo_url' => 'https://petitions.trofimov.dev/static/1440x768.png',
         'web_photo_url' => 'https://petitions.trofimov.dev/static/1360x300.png',
+        'completed' => false
     ];
 });

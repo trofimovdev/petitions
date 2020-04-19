@@ -30,7 +30,7 @@ export const smoothScrollToTop = async (f = () => {}) => {
 
 export const loadPetitions = (method, withFriends = true, params = {}) => {
   return new Promise((resolve, reject) => {
-    if (!["bootstrap", "petition"].includes(method)) {
+    if (!["bootstrap", "petitions"].includes(method.split("/")[0])) {
       reject(new ConnectionError("Invalid method"));
       return;
     }
@@ -77,4 +77,14 @@ export const loadPetitions = (method, withFriends = true, params = {}) => {
       })
       .catch(e => reject(e));
   });
+};
+
+export const declOfNum = (n, titles) => {
+  return titles[
+    n % 10 === 1 && n % 100 !== 11
+      ? 0
+      : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)
+      ? 1
+      : 2
+  ];
 };

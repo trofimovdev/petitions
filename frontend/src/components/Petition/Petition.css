@@ -1,4 +1,7 @@
 .Petition > .Panel__in {
+  padding-bottom: calc(68px + var(--safe-area-inset-top)) !important; }
+
+.Petition--signed > .Panel__in {
   padding-bottom: calc(102px + var(--safe-area-inset-top)) !important; }
 
 .Petition__header .PanelHeaderSimple__in {

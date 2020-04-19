@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::resource('bootstrap', 'API\BootstrapController', ['only' => ['index', 'store']]);
-
-//Route::resource('v1.0/friends', 'FriendController', ['only' => ['index', 'store', 'show', 'destroy']]);
-//Route::resource('v1.0/user', 'Api\v1.0\UserController', ['only' => ['store', 'update']]);
-Route::resource('petitions', 'API\PetitionController');
+Route::resource('petitions', 'API\PetitionController', ['only' => ['store', 'show']]);
+Route::resource('signatures', 'API\SignatureController', ['only' => ['show', 'update', 'destroy']]);
 

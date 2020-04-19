@@ -37,7 +37,7 @@ const PetitionsFeed = ({
   currentPetitions,
   setCurrent,
   activePanel,
-  data
+  launchParameters
 }) => {
   const screenHeight = document.body.getBoundingClientRect().height;
   const [fetchingStatus, setFetchingStatus] = useState(false);
@@ -46,6 +46,19 @@ const PetitionsFeed = ({
   const onRefresh = () => {
     console.log("refresh");
     setFetchingStatus(true);
+    if (launchParameters.vk_access_token_settings.includes("friends")) {
+      console.log("with friends");
+      loadPetitions("petitions", true, { type: activeTab.feed })
+        .then(r => console.log(r))
+        .catch(e => console.log(e));
+    } else {
+      console.log("without friends");
+      loadPetitions("petitions", false, { type: activeTab.feed })
+        .then(r => {
+          console.log(r);
+        })
+        .catch(e => console.log(e));
+    }
     setTimeout(function() {
       setFetchingStatus(false);
     }, 1000);
@@ -62,7 +75,19 @@ const PetitionsFeed = ({
       // загружать новые карточки когда юзер пролистнет 5 карточку
       console.log("new cards", activeTab.feed, currentPetitions.length);
       setLoadingStatus(true);
-      loadPetitions("petition");
+      // if (launchParameters.vk_access_token_settings.includes("friends")) {
+      //   console.log("with friends");
+      //   loadPetitions("petitions", true, { type: activeTab.feed })
+      //     .then(r => console.log(r))
+      //     .catch(e => console.log(e));
+      // } else {
+      //   console.log("without friends");
+      //   loadPetitions("petitions", false, { type: activeTab.feed })
+      //     .then(r => {
+      //       console.log(r);
+      //     })
+      //     .catch(e => console.log(e));
+      // }
     }
   };
   useEffect(() => {
@@ -127,6 +152,7 @@ const PetitionsFeed = ({
                   countSignatures={item.count_signatures}
                   needSignatures={item.need_signatures}
                   mobilePhotoUrl={item.mobile_photo_url}
+                  friends={item.friends || []}
                 />
                 {index < currentPetitions.length - 1 && <Separator />}
               </div>
@@ -154,7 +180,7 @@ const mapStateToProps = state => {
     activeStory: state.router.activeStory,
     activePanel: state.router.activePanel,
     currentPetitions: state.petitions[state.router.activeTab.feed],
-    data: state.data
+    launchParameters: state.data.launchParameters
   };
 };
 
@@ -184,7 +210,7 @@ PetitionsFeed.propTypes = {
   currentPetitions: PropTypes.array,
   setCurrent: PropTypes.func.isRequired,
   activePanel: PropTypes.string.isRequired,
-  data: PropTypes.object.isRequired
+  launchParameters: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionsFeed);

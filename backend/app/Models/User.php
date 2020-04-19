@@ -8,19 +8,51 @@ class User
 {
     const CACHE_TTL = 900;
 
-    public static function getUser(int $owner_id)
+    public static function getUsers(array $userIds = [])
     {
-        $user = Redis::hgetall('u' . $owner_id);
-        if (!$user) {
-            $user = [];
-            $userData = json_decode(file_get_contents('https://api.vk.com/method/users.get?user_ids=' . $owner_id . '&fields=photo_50&access_token=' . config('app.service') . '&v=5.103'))->response[0];
-            $user['id'] = (string)$userData->id;
-            $user['first_name'] = (string)$userData->first_name;
-            $user['last_name'] = (string)$userData->last_name;
-            $user['photo_50'] = (string)$userData->photo_50;
-            Redis::hmset('u' . $owner_id, $user);
-            Redis::expire('u' . $owner_id, User::CACHE_TTL);
+        $missingUserIds = [];
+        $users = [];
+        foreach ($userIds as $userId) {
+            $user = Redis::hgetall('u' . $userId);
+            if (!$user) {
+                $missingUserIds[] = $userId;
+                continue;
+            }
+            $users[$userId] = $user;
         }
-        return $user;
+
+        $tempMissingUserIds = [];
+        foreach ($missingUserIds as $missingUserId) {
+            if (sizeof($tempMissingUserIds) === 1000) {
+                $users = $users + User::getUsersFromAPI($tempMissingUserIds);
+                $tempMissingUserIds = [];
+            }
+            $tempMissingUserIds[] = $missingUserId;
+        }
+        $users = $users + User::getUsersFromAPI($tempMissingUserIds);
+        return $users;
+    }
+
+    public static function getUsersFromAPI(array $userIds, bool $cache = true)
+    {
+        if (!$userIds) {
+            return [];
+        }
+
+        $users = [];
+        $usersData = json_decode(file_get_contents('https://api.vk.com/method/users.get?user_ids=' . join(',', $userIds) . '&fields=photo_50,sex&access_token=' . config('app.service') . '&v=5.103'))->response;
+        foreach ($usersData as $userData) {
+            $user = [];
+            $user['first_name'] = $userData->first_name;
+            $user['last_name'] = $userData->last_name;
+            $user['photo_50'] = $userData->photo_50;
+            $user['sex'] = $userData->sex;
+            $users[$userData->id] = $user;
+            if ($cache) {
+                Redis::hmset('u' . $userData->id, $user);
+                Redis::expire('u' . $userData->id, User::CACHE_TTL);
+            }
+        }
+        return $users;
     }
 }
