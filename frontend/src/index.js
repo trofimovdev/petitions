@@ -7,7 +7,7 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import store from "./store";
 import "./style/index.css";
 import App from "./App";
-import { setActiveTab, setStory } from "./store/router/actions";
+import { setActiveTab, setStory, setPage } from "./store/router/actions";
 import { setColorScheme } from "./store/ui/actions";
 import { loadPetitions } from "./tools/helpers";
 import {
@@ -45,7 +45,7 @@ api.storageGet("is_app_user").then(r => {
   console.log("is_app_user", r);
 });
 
-const petitionRegExp = new RegExp("^#p\\d+$");
+const petitionRegExp = new RegExp("^#p(\\d+)$");
 const feedRegExp = new RegExp("^#(popular|last|signed)$");
 const managementRegExp = new RegExp("^#management$");
 const petitionId = window.location.hash.match(petitionRegExp);
@@ -61,19 +61,24 @@ console.log(
 );
 
 if (petitionId) {
-  console.log("petitionId");
+  console.log("petitionId", petitionId);
+  store.dispatch(setCurrent({ id: petitionId[1] }));
   store.dispatch(setActiveTab("feed", "last"));
-  store.dispatch(setStory("petitions", "petition"));
-  setCurrent({ id: petitionId[1] });
+  store.dispatch(setStory("petitions", "feed"));
+  store.dispatch(setPage("petitions", "petition"));
 } else if (!isAppUser) {
   console.log("!isAppUser");
   if (feedTab) {
-    store.dispatch(setActiveTab("feed", feedTab[1]));
+    console.log("feedTab");
     store.dispatch(setStory("petitions", "splashscreen", false));
-  }
-  if (management) {
-    store.dispatch(setActiveTab("feed", "last"));
+    store.dispatch(setActiveTab("feed", feedTab[1]));
+  } else if (management) {
+    console.log("management");
     store.dispatch(setStory("management", "splashscreen", false));
+    store.dispatch(setActiveTab("feed", "last"));
+  } else {
+    store.dispatch(setStory("petitions", "splashscreen", false));
+    store.dispatch(setActiveTab("feed", "last"));
   }
 }
 

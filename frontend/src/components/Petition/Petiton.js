@@ -79,15 +79,16 @@ const Petition = ({
         console.log("with friends");
         loadPetitions(`petitions/${currentPetition.id.toString()}`, true)
           .then(response => {
-            setLoadingStatus(false);
             setCurrent(response[0]);
+            setLoadingStatus(false);
           })
           .catch(e => console.log(e));
       } else {
         console.log("without friends");
         loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
-          .then(r => {
-            console.log(r);
+          .then(response => {
+            setCurrent(response[0]);
+            setLoadingStatus(false);
           })
           .catch(e => console.log(e));
       }
