@@ -22,6 +22,7 @@ import { setLaunchParameters } from "./store/data/actions";
 const api = new VKMiniAppAPI();
 
 const onLoad = response => {
+  console.log("INDEX RESPONSE", response);
   store.dispatch(setPopular(response.popular || []));
   store.dispatch(setLast(response.last || []));
   store.dispatch(setSigned(response.signed || []));
@@ -92,9 +93,7 @@ if (launchParameters.get("vk_access_token_settings").includes("friends")) {
 } else {
   console.log("without friends");
   loadPetitions("petitions", false)
-    .then(r => {
-      onLoad(r);
-    })
+    .then(r => onLoad(r))
     .catch(e => console.log(e));
 }
 

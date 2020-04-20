@@ -10,6 +10,13 @@ import {
   setFriendsCardStatus,
   setLaunchParameters
 } from "../../store/data/actions";
+import {
+  setPopular,
+  setLast,
+  setSigned,
+  setManaged
+} from "../../store/petitions/actions";
+import { loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -17,9 +24,40 @@ const FriendsCard = ({
   friendsCardStatus,
   setFriendsCardStatus,
   launchParameters,
-  setLaunchParameters
+  setLaunchParameters,
+  setLoadingStatus,
+  setPopular,
+  setLast,
+  setSigned,
+  setManaged,
+  activeView,
+  activeTab
 }) => {
+  const setCurrentPetitions = petitions => {
+    if (activeView === "management") {
+      setManaged(petitions);
+      return;
+    }
+    switch (activeTab.feed) {
+      case "popular":
+        setPopular(petitions);
+        break;
+
+      case "last":
+        setLast(petitions);
+        break;
+
+      case "signed":
+        setSigned(petitions);
+        break;
+
+      default:
+        setLast(petitions);
+    }
+  };
+
   const onClick = () => {
+    setLoadingStatus(true);
     api
       .getAccessToken(7338958, "friends")
       .then(r => {
@@ -33,9 +71,17 @@ const FriendsCard = ({
             .concat("friends")
             .join(",")
         });
-        setFriendsCardStatus(false);
+        loadPetitions("petitions", true, {
+          type: activeView === "management" ? "managed" : activeTab.feed
+        })
+          .then(response => {
+            setFriendsCardStatus(false);
+            setLoadingStatus(false);
+            setCurrentPetitions(response);
+          })
+          .catch(e => console.log(e));
       })
-      .catch(() => {});
+      .catch(e => console.log(e));
   };
 
   const onClose = () => {
@@ -45,9 +91,7 @@ const FriendsCard = ({
   return (
     <>
       {!friendsCardStatus ||
-        (!launchParameters.vk_access_token_settings.includes(
-          "friends"
-        ) && (
+        (!launchParameters.vk_access_token_settings.includes("friends") && (
           <Div className="FriendsCard">
             <Card size="l" className="FriendsCard__card">
               <div
@@ -76,7 +120,9 @@ const FriendsCard = ({
 const mapStateToProps = state => {
   return {
     friendsCardStatus: state.data.friendsCardStatus,
-    launchParameters: state.data.launchParameters
+    launchParameters: state.data.launchParameters,
+    activeView: state.router.activeView,
+    activeTab: state.router.activeTab
   };
 };
 
@@ -86,7 +132,11 @@ const mapDispatchToProps = dispatch => {
     ...bindActionCreators(
       {
         setFriendsCardStatus,
-        setLaunchParameters
+        setLaunchParameters,
+        setPopular,
+        setLast,
+        setSigned,
+        setManaged
       },
       dispatch
     )
@@ -96,7 +146,14 @@ FriendsCard.propTypes = {
   friendsCardStatus: PropTypes.bool.isRequired,
   setFriendsCardStatus: PropTypes.func.isRequired,
   launchParameters: PropTypes.object.isRequired,
-  setLaunchParameters: PropTypes.func.isRequired
+  setLaunchParameters: PropTypes.func.isRequired,
+  setLoadingStatus: PropTypes.func.isRequired,
+  setPopular: PropTypes.func.isRequired,
+  setLast: PropTypes.func.isRequired,
+  setSigned: PropTypes.func.isRequired,
+  setManaged: PropTypes.func.isRequired,
+  activeView: PropTypes.string.isRequired,
+  activeTab: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FriendsCard);

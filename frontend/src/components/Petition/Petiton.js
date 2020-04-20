@@ -25,7 +25,7 @@ import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
 import Backend from "../../tools/Backend";
 import { goBack } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
-import { loadPetitions } from "../../tools/helpers";
+import { declOfNum, loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -46,16 +46,27 @@ const Petition = ({
   const onRefresh = () => {
     console.log("refresh");
     setFetchingStatus(true);
-    Backend.request(`petitions/${currentPetition.id.toString()}`, {})
-      .then(response => {
-        console.log("RESPONSE PETITION", response[0]);
-        setCurrent(response[0]);
-        setFetchingStatus(false);
-        api.selectionChanged().catch(() => {});
+    if (launchParameters.vk_access_token_settings.includes("friends")) {
+      console.log("with friends");
+      loadPetitions(`petitions`, true, {
+        petition_id: currentPetition.id.toString()
       })
-      .catch(e => {
-        console.log(e);
-      });
+        .then(response => {
+          setFetchingStatus(false);
+          setCurrent(response[0]);
+          api.selectionChanged().catch(() => {});
+        })
+        .catch(e => console.log(e));
+    } else {
+      console.log("without friends");
+      loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
+        .then(response => {
+          setFetchingStatus(false);
+          setCurrent(response[0]);
+          api.selectionChanged().catch(() => {});
+        })
+        .catch(e => console.log(e));
+    }
   };
 
   const onScroll = () => {
@@ -77,18 +88,20 @@ const Petition = ({
     if (loadingStatus) {
       if (launchParameters.vk_access_token_settings.includes("friends")) {
         console.log("with friends");
-        loadPetitions(`petitions/${currentPetition.id.toString()}`, true)
+        loadPetitions(`petitions`, true, {
+          petition_id: currentPetition.id.toString()
+        })
           .then(response => {
-            setCurrent(response[0]);
             setLoadingStatus(false);
+            setCurrent(response[0]);
           })
           .catch(e => console.log(e));
       } else {
         console.log("without friends");
         loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
           .then(response => {
-            setCurrent(response[0]);
             setLoadingStatus(false);
+            setCurrent(response[0]);
           })
           .catch(e => console.log(e));
       }
@@ -131,16 +144,39 @@ const Petition = ({
                 countSignatures={currentPetition.count_signatures}
                 needSignatures={currentPetition.need_signatures}
               />
-              {currentPetition.friends && (
+              {currentPetition.friends && currentPetition.friends.length > 0 && (
                 <UsersStack
                   className="Petition__users_stack"
-                  photos={[
-                    "https://sun9-6.userapi.com/c846121/v846121540/195e4d/17NeSTKMR1o.jpg?ava=1",
-                    "https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1",
-                    "https://sun9-25.userapi.com/c849432/v849432217/18ad61/0UFtoEhCsgA.jpg?ava=1"
-                  ]}
+                  photos={currentPetition.friends.slice(0, 3).map(item => {
+                    return item.user.photo_50;
+                  })}
                 >
-                  Подписали Дмитрий, Анастасия и еще 12 друзей
+                  {currentPetition.friends.length === 1
+                    ? (currentPetition.friends[0].user.sex === "2"
+                        ? "Подписал "
+                        : "Подписала ") +
+                      currentPetition.friends[0].user.first_name
+                    : `Подписали ${
+                        currentPetition.friends.length === 2
+                          ? `${currentPetition.friends[0].user.first_name} и ${currentPetition.friends[1].user.first_name}`
+                          : currentPetition.friends
+                              .slice(0, 2)
+                              .map(item => {
+                                return item.user.first_name;
+                              })
+                              .join(", ")
+                      }${
+                        currentPetition.friends.length > 3
+                          ? `, ${
+                              currentPetition.friends[2].user.first_name
+                            } и еще ${currentPetition.friends.length -
+                              3} ${declOfNum(
+                              currentPetition.friends.length - 3,
+                              ["друг", "друга", "друзей"]
+                            )}`
+                          : `и ${currentPetition.friends[2].user.first_name}`
+                      }`}
+                  {}
                 </UsersStack>
               )}
             </Div>

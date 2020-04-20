@@ -31,22 +31,15 @@ class PetitionController extends Controller
         $offset = (int)$request->offset;
         $petitionId = (int)$request->petition_id;
         $friendIds = [];
-        if (empty($petitionId) && !$type) {
-            return new ErrorResponse(400, 'Invalid params');
-        }
         if ($request->friends) {
             $friendIds = explode(",", $request->friends);
         }
+
+        if (empty($petitionId) && !$type) {
+            return $this->getPetitions($request, '', 0, 0, $friendIds);
+        }
         return $this->getPetitions($request, $type, $offset, $petitionId, $friendIds);
     }
-
-
-//$friendIds = [];
-//if ($request->friends) {
-//$friendIds = explode(",", $request->friends);
-//}
-
-
 
     private function getPetitions(SignRequest $request, string $type = '', int $offset = 0, int $petitionId = 0, array $friendIds = [])
     {

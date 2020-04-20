@@ -21,7 +21,7 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon28EditOutline from "@vkontakte/icons/dist/28/edit_outline";
 import Icon28BlockOutline from "@vkontakte/icons/dist/28/block_outline";
 import Icon28DeleteOutline from "@vkontakte/icons/dist/28/delete_outline";
-import Icon24Add from '@vkontakte/icons/dist/24/add';
+import Icon24Add from "@vkontakte/icons/dist/24/add";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
@@ -101,11 +101,13 @@ const ManagementFeed = ({
       <PanelHeaderSimple separator>
         <div>
           Петиции
-          <Div className="HeaderButton__wrapper FixedLayout">
-            <Button size="xl" mode="secondary" before={<Icon24Add />}>
-              Создать петицию
-            </Button>
-          </Div>
+          {managedPetitions !== undefined && managedPetitions.length > 0 && (
+            <Div className="HeaderButton__wrapper FixedLayout">
+              <Button size="xl" mode="secondary" before={<Icon24Add />}>
+                Создать петицию
+              </Button>
+            </Div>
+          )}
         </div>
       </PanelHeaderSimple>
 

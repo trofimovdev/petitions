@@ -33,7 +33,7 @@ const Management = ({
     >
       <SplashScreen id="splashscreen" />
       <ManagementFeed id="feed" setPopout={setPopout} />
-      <EditPetition id={formType} />
+      <EditPetition id="create" formType={formType} />
       <Petition id="petition" />
     </View>
   );

@@ -14,6 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::resource('petitions', 'API\PetitionController', ['only' => ['index', 'store', 'show']]);
+Route::resource('petitions', 'API\PetitionController');
 Route::resource('signatures', 'API\SignatureController', ['only' => ['show', 'update', 'destroy']]);
 

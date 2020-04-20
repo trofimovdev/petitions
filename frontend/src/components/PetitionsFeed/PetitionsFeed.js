@@ -21,7 +21,12 @@ import PetitionCard from "../PetitionCard/PetitionCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import FriendsCard from "../FriendsCard/FriendsCard";
 import { setActiveTab, setPage, setStory } from "../../store/router/actions";
-import { setCurrent } from "../../store/petitions/actions";
+import {
+  setCurrent,
+  setPopular,
+  setLast,
+  setSigned
+} from "../../store/petitions/actions";
 import { loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
@@ -37,11 +42,48 @@ const PetitionsFeed = ({
   currentPetitions,
   setCurrent,
   activePanel,
-  launchParameters
+  launchParameters,
+  setPopular,
+  setLast,
+  setSigned
 }) => {
   const screenHeight = document.body.getBoundingClientRect().height;
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  });
+
+  useEffect(() => {
+    console.log("activePanel from feed", activePanel);
+    if (activePanel === "feed") {
+      api.setLocationHash(activeTab.feed);
+    }
+  }, [activeTab, activePanel]);
+
+  const setCurrentPetitions = petitions => {
+    switch (activeTab.feed) {
+      case "popular":
+        setPopular(petitions);
+        break;
+
+      case "last":
+        setLast(petitions);
+        break;
+
+      case "signed":
+        setSigned(petitions);
+        break;
+
+      default:
+        setLast(petitions);
+    }
+  };
+
 
   const onRefresh = () => {
     console.log("refresh");
@@ -49,19 +91,24 @@ const PetitionsFeed = ({
     if (launchParameters.vk_access_token_settings.includes("friends")) {
       console.log("with friends");
       loadPetitions("petitions", true, { type: activeTab.feed })
-        .then(r => console.log(r))
+        .then(response => {
+          console.log("SET CURRENT PETITIONS FROM REFRESH", response);
+          setFetchingStatus(false);
+          setCurrentPetitions(response);
+          api.selectionChanged().catch(() => {});
+        })
         .catch(e => console.log(e));
     } else {
       console.log("without friends");
       loadPetitions("petitions", false, { type: activeTab.feed })
-        .then(r => {
-          console.log(r);
+        .then(response => {
+          console.log("SET CURRENT PETITIONS FROM REFRESH WITHOUT FRINEDS", response);
+          setFetchingStatus(false);
+          setCurrentPetitions(response);
+          api.selectionChanged().catch(() => {});
         })
         .catch(e => console.log(e));
     }
-    setTimeout(function() {
-      setFetchingStatus(false);
-    }, 1000);
   };
 
   const onScroll = () => {
@@ -90,19 +137,6 @@ const PetitionsFeed = ({
       // }
     }
   };
-  useEffect(() => {
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  });
-
-  useEffect(() => {
-    console.log("activePanel from feed", activePanel);
-    if (activePanel === "feed") {
-      api.setLocationHash(activeTab.feed);
-    }
-  }, [activeTab, activePanel]);
 
   const platform = usePlatform();
 
@@ -142,8 +176,9 @@ const PetitionsFeed = ({
       </PanelHeaderSimple>
       {currentPetitions !== undefined ? (
         <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
-          <FriendsCard />
+          <FriendsCard setLoadingStatus={setLoadingStatus} />
           {currentPetitions.map((item, index) => {
+            console.log(item);
             return (
               <div key={index}>
                 <PetitionCard
@@ -192,7 +227,10 @@ const mapDispatchToProps = dispatch => {
         setActiveTab,
         setStory,
         setPage,
-        setCurrent
+        setCurrent,
+        setPopular,
+        setLast,
+        setSigned
       },
       dispatch
     )
@@ -210,7 +248,10 @@ PetitionsFeed.propTypes = {
   currentPetitions: PropTypes.array,
   setCurrent: PropTypes.func.isRequired,
   activePanel: PropTypes.string.isRequired,
-  launchParameters: PropTypes.object.isRequired
+  launchParameters: PropTypes.object.isRequired,
+  setPopular: PropTypes.func.isRequired,
+  setLast: PropTypes.func.isRequired,
+  setSigned: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionsFeed);

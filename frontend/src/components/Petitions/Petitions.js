@@ -14,13 +14,15 @@ import {
   goBack
 } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
+import EditPetition from "../EditPetition/EditPetition";
 
 const Petitions = ({
   activeTab,
   activePanel,
   goBack,
   history,
-  activeModal
+  activeModal,
+  formType
 }) => {
   const [popout, setPopout] = useState(null);
 
@@ -35,6 +37,7 @@ const Petitions = ({
     >
       <SplashScreen id="splashscreen" />
       <PetitionsFeed id="feed" activeTab={activeTab} />
+      <EditPetition id="edit" formType={formType} />
       <Petition id="petition" />
     </View>
   );
@@ -47,7 +50,8 @@ const mapStateToProps = state => {
     activeModal:
       state.router.activeModals[state.router.activeView] === undefined
         ? null
-        : state.router.activeModals[state.router.activeView]
+        : state.router.activeModals[state.router.activeView],
+    formType: state.petitions.formType
   };
 };
 
@@ -72,7 +76,8 @@ Petitions.propTypes = {
   activePanel: PropTypes.string.isRequired,
   activeModal: PropTypes.string,
   goBack: PropTypes.func.isRequired,
-  history: PropTypes.array.isRequired
+  history: PropTypes.array.isRequired,
+  formType: PropTypes.string.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Petitions);
