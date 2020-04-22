@@ -38,6 +38,11 @@ class PetitionController extends Controller
         if (empty($petitionId) && !$type) {
             return $this->getPetitions($request, '', 0, 0, $friendIds);
         }
+
+        if ($type === 'create') {
+            return new OkResponse(Petition::create($request));
+        }
+
         return $this->getPetitions($request, $type, $offset, $petitionId, $friendIds);
     }
 
@@ -47,6 +52,7 @@ class PetitionController extends Controller
         if (empty($petitionId)) {
             return new ErrorResponse(400, 'Invalid params');
         }
+
         $petition = Petition::where('id', '=', $petitionId)
             ->first();
         if (!$petition) {
@@ -68,7 +74,7 @@ class PetitionController extends Controller
         // TODO: move to consts
         switch ($type) {
             case 'popular':
-                return [];
+                return new OkResponse(Petition::getPetitions([22]));
 
             case 'last':
                 return new OkResponse(Petition::getLast($offset, $friendIds));
@@ -81,7 +87,7 @@ class PetitionController extends Controller
         }
 
         return new OkResponse([
-            'popular' => Petition::getPetitions([2]),
+            'popular' => Petition::getPetitions([22]),
             'last' => Petition::getLast(0, $friendIds),
             'signed' => Petition::getSigned($request->userId, 0, $friendIds),
             'managed' => Petition::getManaged($request->userId, 0, $friendIds)

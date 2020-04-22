@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Signature;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
 
@@ -99,6 +98,11 @@ class Petition extends Model
             $response[] = $loadedPetitions[$petitionId];
         }
         return $response;
+    }
+
+    public static function create($request)
+    {
+        return $request;
     }
 
     public function toPetitionView(bool $text = true, bool $ownerId = true)

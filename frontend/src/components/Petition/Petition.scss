@@ -9,16 +9,16 @@
     padding-bottom: calc(102px + var(--safe-area-inset-top)) !important; // 102px - высота таббара
   }
 
-  &__header .PanelHeaderSimple__in {
+  &__header .PanelHeader__in {
     transition: .15s;
   }
 
   &__header {
-    &__hidden .PanelHeaderSimple__in {
+    &__hidden .PanelHeader__in {
       background: transparent !important;
     }
 
-    &__shown .PanelHeaderSimple__in {
+    &__shown .PanelHeader__in {
       background: var(--background_content) !important;
     }
   }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   Panel,
   PanelHeaderButton,
-  PanelHeaderSimple,
+  PanelHeader,
   FormLayout,
   Input,
   Div,
@@ -124,7 +124,7 @@ const EditPetition = ({
 
   return (
     <Panel id={id} separator={false} className="EditPetition">
-      <PanelHeaderSimple
+      <PanelHeader
         left={
           <PanelHeaderButton
             onClick={() => {
@@ -137,7 +137,7 @@ const EditPetition = ({
         }
       >
         {panelTitle}
-      </PanelHeaderSimple>
+      </PanelHeader>
       <FormLayout className="EditForm">
         <Input
           type="text"

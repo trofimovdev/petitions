@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ManagementFeed.css";
 import {
   Panel,
-  PanelHeaderSimple,
+  PanelHeader,
   Button,
   Placeholder,
   usePlatform,
@@ -199,7 +199,7 @@ const ManagementFeed = ({
       separator={false}
       className={`${managedPetitions !== undefined ? "ManagementFeed" : ""}`}
     >
-      <PanelHeaderSimple separator>
+      <PanelHeader separator>
         <div>
           Петиции
           {managedPetitions !== undefined && managedPetitions.length > 0 && (
@@ -218,7 +218,7 @@ const ManagementFeed = ({
             </Div>
           )}
         </div>
-      </PanelHeaderSimple>
+      </PanelHeader>
 
       {managedPetitions !== undefined ? (
         managedPetitions.length === 0 ? (

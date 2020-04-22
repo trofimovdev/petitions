@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Panel,
-  PanelHeaderSimple,
+  PanelHeader,
   PanelHeaderButton,
   Separator,
   Div,
@@ -118,7 +118,7 @@ const Petition = ({
           : ""
       }`}
     >
-      <PanelHeaderSimple
+      <PanelHeader
         className={`Petition__header Petition__header__${headerStatus}`}
         left={
           <PanelHeaderButton

@@ -10,23 +10,23 @@
   }
 }
 
-.PetitionsFeed .PanelHeaderSimple--android {
-  .PanelHeaderSimple__in, .PanelHeaderSimple__content {
+.PetitionsFeed .PanelHeader--android {
+  .PanelHeader__in, .PanelHeader__content {
     height: calc(48px + var(--panelheader_height_android)) !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
   }
 }
 
-.PetitionsFeed .PanelHeaderSimple--ios {
-  .PanelHeaderSimple__in, .PanelHeaderSimple__content {
+.PetitionsFeed .PanelHeader--ios {
+  .PanelHeader__in, .PanelHeader__content {
     height: calc(33px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
   }
 }
 
-.PetitionsFeed .Separator--ios.PanelHeaderSimple__separator {
+.PetitionsFeed .Separator--ios.PanelHeader__separator {
   padding-top: 33px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
 }
 
-.PetitionsFeed .Separator--android.PanelHeaderSimple__separator {
+.PetitionsFeed .Separator--android.PanelHeader__separator {
   padding-top: 48px !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
 }
 

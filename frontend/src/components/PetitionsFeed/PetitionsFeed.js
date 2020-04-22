@@ -96,7 +96,7 @@ const PetitionsFeed = ({
           setCurrentPetitions(response);
           api.selectionChanged().catch(() => {});
         })
-        .catch(e => console.log(e));
+        .catch(e => console.log("error>", e));
     } else {
       console.log("without friends");
       loadPetitions("petitions", false, { type: activeTab.feed })
@@ -153,26 +153,26 @@ const PetitionsFeed = ({
               platform
             )} FixedLayout`}
           >
-            <HorizontalScroll>
-              <TabsItem
-                onClick={() => setActiveTab("feed", "popular")}
-                selected={activeTab.feed === "popular"}
-              >
-                Популярные
-              </TabsItem>
-              <TabsItem
-                onClick={() => setActiveTab("feed", "last")}
-                selected={activeTab.feed === "last"}
-              >
-                Последние
-              </TabsItem>
-              <TabsItem
-                onClick={() => setActiveTab("feed", "signed")}
-                selected={activeTab.feed === "signed"}
-              >
-                Подписанные
-              </TabsItem>
-            </HorizontalScroll>
+            {/*<HorizontalScroll>*/}
+            <TabsItem
+              onClick={() => setActiveTab("feed", "popular")}
+              selected={activeTab.feed === "popular"}
+            >
+              Популярные
+            </TabsItem>
+            <TabsItem
+              onClick={() => setActiveTab("feed", "last")}
+              selected={activeTab.feed === "last"}
+            >
+              Последние
+            </TabsItem>
+            <TabsItem
+              onClick={() => setActiveTab("feed", "signed")}
+              selected={activeTab.feed === "signed"}
+            >
+              Подписанные
+            </TabsItem>
+            {/*</HorizontalScroll>*/}
           </Tabs>
         </div>
       </PanelHeaderSimple>

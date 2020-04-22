@@ -85,6 +85,7 @@ if (petitionId) {
 
 const launchParameters = new URLSearchParams(window.location.search);
 store.dispatch(setLaunchParameters(Object.fromEntries(launchParameters)));
+console.log("LAUNCH PARAMS", Object.fromEntries(launchParameters));
 if (launchParameters.get("vk_access_token_settings").includes("friends")) {
   console.log("with friends");
   loadPetitions("petitions", true)

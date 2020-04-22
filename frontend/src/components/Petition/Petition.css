@@ -4,13 +4,13 @@
 .Petition--signed > .Panel__in {
   padding-bottom: calc(102px + var(--safe-area-inset-top)) !important; }
 
-.Petition__header .PanelHeaderSimple__in {
+.Petition__header .PanelHeader__in {
   transition: .15s; }
 
-.Petition__header__hidden .PanelHeaderSimple__in {
+.Petition__header__hidden .PanelHeader__in {
   background: transparent !important; }
 
-.Petition__header__shown .PanelHeaderSimple__in {
+.Petition__header__shown .PanelHeader__in {
   background: var(--background_content) !important; }
 
 .Petition__image {
