@@ -18,3 +18,6 @@
 
 .SelectUsers__search, .SelectUsers__list {
   margin-top: var(--panelheader_height_ios) !important; }
+
+.SelectUsers__spinner > .Placeholder__in {
+  padding-top: 20px !important; }

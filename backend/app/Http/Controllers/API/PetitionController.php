@@ -41,6 +41,24 @@ class PetitionController extends Controller
         return $this->getPetitions($request, $type, $offset, $petitionId, $friendIds);
     }
 
+    public function destroy(SignRequest $request, $petitionId)
+    {
+        $petitionId = (int)$petitionId;
+        if (empty($petitionId)) {
+            return new ErrorResponse(400, 'Invalid params');
+        }
+        $petition = Petition::where('id', '=', $petitionId)
+            ->first();
+        if (!$petition) {
+            return new ErrorResponse(404, 'Petition not found');
+        }
+        if (!$petition['owner_id'] === $request->userId) {
+            return new ErrorResponse(403, 'Access denied');
+        }
+        $petition->delete();
+        return new OkResponse(true);
+    }
+
     private function getPetitions(SignRequest $request, string $type = '', int $offset = 0, int $petitionId = 0, array $friendIds = [])
     {
         if ($petitionId) {
@@ -66,7 +84,7 @@ class PetitionController extends Controller
             'popular' => Petition::getPetitions([2]),
             'last' => Petition::getLast(0, $friendIds),
             'signed' => Petition::getSigned($request->userId, 0, $friendIds),
-            'managed' => Petition::getManaged($request->userId, 0)
+            'managed' => Petition::getManaged($request->userId, 0, $friendIds)
         ]);
     }
 }

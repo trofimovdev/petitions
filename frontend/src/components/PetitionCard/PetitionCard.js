@@ -51,7 +51,7 @@ const PetitionCard = ({
       }}
     >
       {managementDots && (
-        <div className="PetitionCard__dots" onClick={onManagement}>
+        <div className="PetitionCard__dots" onClick={() => onManagement(id)}>
           <Icon28MoreHorizontal />
         </div>
       )}

@@ -22,3 +22,6 @@
 
 .ManagementFeed .Separator--android.PanelHeaderSimple__separator {
   padding-top: 48px !important; }
+
+.ManagementFeed__spinner {
+  padding-top: 20px !important; }

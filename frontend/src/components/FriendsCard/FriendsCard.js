@@ -25,7 +25,6 @@ const FriendsCard = ({
   setFriendsCardStatus,
   launchParameters,
   setLaunchParameters,
-  setLoadingStatus,
   setPopular,
   setLast,
   setSigned,
@@ -57,7 +56,6 @@ const FriendsCard = ({
   };
 
   const onClick = () => {
-    setLoadingStatus(true);
     api
       .getAccessToken(7338958, "friends")
       .then(r => {
@@ -76,7 +74,6 @@ const FriendsCard = ({
         })
           .then(response => {
             setFriendsCardStatus(false);
-            setLoadingStatus(false);
             setCurrentPetitions(response);
           })
           .catch(e => console.log(e));
@@ -147,7 +144,6 @@ FriendsCard.propTypes = {
   setFriendsCardStatus: PropTypes.func.isRequired,
   launchParameters: PropTypes.object.isRequired,
   setLaunchParameters: PropTypes.func.isRequired,
-  setLoadingStatus: PropTypes.func.isRequired,
   setPopular: PropTypes.func.isRequired,
   setLast: PropTypes.func.isRequired,
   setSigned: PropTypes.func.isRequired,

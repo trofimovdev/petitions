@@ -85,10 +85,6 @@ const EditPetition = ({
     e.preventDefault();
   };
 
-  const redBackground = {
-    backgroundColor: "var(--destructive)"
-  };
-
   const platform = usePlatform();
 
   const handleFiles = e => {
@@ -107,7 +103,12 @@ const EditPetition = ({
               layout="vertical"
               onClose={() => setSnackbar()}
               before={
-                <Avatar size={24} style={redBackground}>
+                <Avatar
+                  size={24}
+                  style={{
+                    backgroundColor: "var(--destructive)"
+                  }}
+                >
                   <Icon24Cancel fill="#fff" width={14} height={14} />
                 </Avatar>
               }

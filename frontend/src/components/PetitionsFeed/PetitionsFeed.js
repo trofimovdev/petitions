@@ -84,7 +84,6 @@ const PetitionsFeed = ({
     }
   };
 
-
   const onRefresh = () => {
     console.log("refresh");
     setFetchingStatus(true);
@@ -102,7 +101,10 @@ const PetitionsFeed = ({
       console.log("without friends");
       loadPetitions("petitions", false, { type: activeTab.feed })
         .then(response => {
-          console.log("SET CURRENT PETITIONS FROM REFRESH WITHOUT FRINEDS", response);
+          console.log(
+            "SET CURRENT PETITIONS FROM REFRESH WITHOUT FRINEDS",
+            response
+          );
           setFetchingStatus(false);
           setCurrentPetitions(response);
           api.selectionChanged().catch(() => {});
@@ -176,7 +178,7 @@ const PetitionsFeed = ({
       </PanelHeaderSimple>
       {currentPetitions !== undefined ? (
         <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
-          <FriendsCard setLoadingStatus={setLoadingStatus} />
+          <FriendsCard />
           {currentPetitions.map((item, index) => {
             console.log(item);
             return (
