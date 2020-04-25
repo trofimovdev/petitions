@@ -4,7 +4,9 @@ import {
   GO_BACK,
   OPEN_MODAL,
   CLOSE_MODAL,
-  SET_ACTIVE_TAB
+  SET_ACTIVE_TAB,
+  OPEN_POPOUT,
+  CLOSE_POPOUT
 } from "./actionTypes";
 
 export const setStory = (story, initialPanel, withHistory = true) => ({
@@ -43,4 +45,15 @@ export const setActiveTab = (component, tab) => ({
     component,
     tab
   }
+});
+
+export const openPopout = popout => ({
+  type: OPEN_POPOUT,
+  payload: {
+    popout
+  }
+});
+
+export const closePopout = () => ({
+  type: CLOSE_POPOUT
 });

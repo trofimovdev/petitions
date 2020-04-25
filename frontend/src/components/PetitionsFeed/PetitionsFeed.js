@@ -51,20 +51,6 @@ const PetitionsFeed = ({
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
 
-  useEffect(() => {
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  });
-
-  useEffect(() => {
-    console.log("activePanel from feed", activePanel);
-    if (activePanel === "feed") {
-      api.setLocationHash(activeTab.feed);
-    }
-  }, [activeTab, activePanel]);
-
   const setCurrentPetitions = petitions => {
     switch (activeTab.feed) {
       case "popular":
@@ -118,6 +104,7 @@ const PetitionsFeed = ({
     console.log(scrollPosition);
     const cardHeight = 313; // 313 - высота одной карточки в px (с отступами)
     if (
+      currentPetitions &&
       currentPetitions.length * cardHeight - scrollPosition < cardHeight * 5 &&
       !loadingStatus
     ) {
@@ -140,6 +127,21 @@ const PetitionsFeed = ({
     }
   };
 
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  });
+
+  useEffect(() => {
+    console.log("activePanel from feed", activePanel);
+    if (activePanel === "feed") {
+      console.log("forceUpdate");
+      api.setLocationHash(activeTab.feed);
+    }
+  }, [activeTab, activePanel]);
+
   const platform = usePlatform();
 
   return (
@@ -153,26 +155,26 @@ const PetitionsFeed = ({
               platform
             )} FixedLayout`}
           >
-            {/*<HorizontalScroll>*/}
-            <TabsItem
-              onClick={() => setActiveTab("feed", "popular")}
-              selected={activeTab.feed === "popular"}
-            >
-              Популярные
-            </TabsItem>
-            <TabsItem
-              onClick={() => setActiveTab("feed", "last")}
-              selected={activeTab.feed === "last"}
-            >
-              Последние
-            </TabsItem>
-            <TabsItem
-              onClick={() => setActiveTab("feed", "signed")}
-              selected={activeTab.feed === "signed"}
-            >
-              Подписанные
-            </TabsItem>
-            {/*</HorizontalScroll>*/}
+            <HorizontalScroll>
+              <TabsItem
+                onClick={() => setActiveTab("feed", "popular")}
+                selected={activeTab.feed === "popular"}
+              >
+                Популярные
+              </TabsItem>
+              <TabsItem
+                onClick={() => setActiveTab("feed", "last")}
+                selected={activeTab.feed === "last"}
+              >
+                Последние
+              </TabsItem>
+              <TabsItem
+                onClick={() => setActiveTab("feed", "signed")}
+                selected={activeTab.feed === "signed"}
+              >
+                Подписанные
+              </TabsItem>
+            </HorizontalScroll>
           </Tabs>
         </div>
       </PanelHeaderSimple>

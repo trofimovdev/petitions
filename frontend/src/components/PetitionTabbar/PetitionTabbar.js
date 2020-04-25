@@ -32,7 +32,6 @@ const PetitionTabbar = ({
   const [fetchingStatus, setFetchingStatus] = useState(false);
 
   const signPetition = () => {
-    api.notificationOccurred("success").catch(() => {});
     setFetchingStatus(true);
     Backend.request(`signatures/${currentPetition.id}`, {}, "PUT").then(r => {
       if (r) {
@@ -40,12 +39,12 @@ const PetitionTabbar = ({
         signedPetitions.unshift(currentPetition);
         setSigned(signedPetitions);
         setFetchingStatus(false);
+        api.notificationOccurred("success").catch(() => {});
       }
     });
   };
 
   const unsignPetition = () => {
-    api.notificationOccurred("success").catch(() => {});
     setFetchingStatus(true);
     Backend.request(`signatures/${currentPetition.id}`, {}, "DELETE").then(
       r => {
@@ -67,8 +66,8 @@ const PetitionTabbar = ({
               return item.id !== currentPetition.id;
             })
           );
-
           setFetchingStatus(false);
+          api.notificationOccurred("success").catch(() => {});
         }
       }
     );

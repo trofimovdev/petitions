@@ -20,23 +20,23 @@
 }
 
 
-.ManagementFeed .PanelHeaderSimple--android {
-  .PanelHeaderSimple__in, .PanelHeaderSimple__content {
+.ManagementFeed .PanelHeader--android {
+  .PanelHeader__in, .PanelHeader__content {
     height: calc(48px + var(--panelheader_height_android)) !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
   }
 }
 
-.ManagementFeed .PanelHeaderSimple--ios {
-  .PanelHeaderSimple__in, .PanelHeaderSimple__content {
+.ManagementFeed .PanelHeader--ios {
+  .PanelHeader__in, .PanelHeader__content {
     height: calc(52px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
   }
 }
 
-.ManagementFeed .Separator--ios.PanelHeaderSimple__separator {
+.ManagementFeed .Separator--ios.PanelHeader__separator {
   padding-top: 52px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
 }
 
-.ManagementFeed .Separator--android.PanelHeaderSimple__separator {
+.ManagementFeed .Separator--android.PanelHeader__separator {
   padding-top: 48px !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
 }
 

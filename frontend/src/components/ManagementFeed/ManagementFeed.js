@@ -35,7 +35,9 @@ import {
   setStory,
   setPage,
   openModal,
-  closeModal
+  closeModal,
+  openPopout,
+  closePopout
 } from "../../store/router/actions";
 import { setCurrent, setManaged } from "../../store/petitions/actions";
 import FriendsCard from "../FriendsCard/FriendsCard";
@@ -57,16 +59,18 @@ const ManagementFeed = ({
   setCurrent,
   setPopout,
   launchParameters,
-  setManaged
+  setManaged,
+  openPopout,
+  closePopout
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
   const platform = usePlatform();
 
-  const onManagement = id => {
-    console.log("manage petition", id);
-    setPopout(
-      <ActionSheet onClose={() => setPopout()}>
+  const onManagement = petitionId => {
+    console.log("manage petition", petitionId);
+    openPopout(
+      <ActionSheet onClose={() => closePopout()}>
         <ActionSheetItem autoclose before={<Icon28EditOutline />}>
           Редактировать петицию
         </ActionSheetItem>
@@ -82,26 +86,26 @@ const ManagementFeed = ({
           before={<Icon28DeleteOutline />}
           mode="destructive"
           onClick={() => {
-            setPopout(
+            openPopout(
               <Alert
                 actionsLayout="vertical"
-                onClose={() => setPopout()}
+                onClose={() => closePopout()}
                 actions={[
                   {
                     title: "Удалить",
                     autoclose: true,
                     mode: "destructive",
                     action: () => {
-                      console.log("DELETE PETITION", id);
+                      console.log("DELETE PETITION", petitionId);
                       console.log("PETITIONs", managedPetitions);
-                      setPopout(<ScreenSpinner />);
-                      Backend.request(`petitions/${id}`, {}, "DELETE")
+                      openPopout(<ScreenSpinner />);
+                      Backend.request(`petitions/${petitionId}`, {}, "DELETE")
                         .then(r => {
                           console.log(r);
-                          setPopout();
+                          closePopout();
                           setManaged(
                             managedPetitions.filter(item => {
-                              return item.id !== id;
+                              return item.id !== petitionId;
                             })
                           );
                           setSnackbar(
@@ -297,7 +301,9 @@ const mapDispatchToProps = dispatch => {
         setCurrent,
         openModal,
         closeModal,
-        setManaged
+        setManaged,
+        openPopout,
+        closePopout
       },
       dispatch
     )
@@ -315,9 +321,10 @@ ManagementFeed.propTypes = {
   closeModal: PropTypes.func.isRequired,
   managedPetitions: PropTypes.array,
   setCurrent: PropTypes.func.isRequired,
-  setPopout: PropTypes.func.isRequired,
   launchParameters: PropTypes.object.isRequired,
-  setManaged: PropTypes.func.isRequired
+  setManaged: PropTypes.func.isRequired,
+  openPopout: PropTypes.func.isRequired,
+  closePopout: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManagementFeed);

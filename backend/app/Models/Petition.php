@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use CURLFile;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
 
 class Petition extends Model
 {
@@ -72,6 +74,22 @@ class Petition extends Model
         return $response;
     }
 
+    public static function upload(int $petitionId, string $uploadUrl)
+    {
+        $options = array(
+            CURLOPT_POST        => 1,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POSTFIELDS     => ['file1' => new CurlFile(Storage::path('public/static/1440x768.png'))]
+        );
+
+        $ch = curl_init($uploadUrl);
+        curl_setopt_array($ch, $options);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        return json_decode($response);
+    }
+
     public static function getPetitions(array $petitionIds, bool $withOwner = false, array $friendIds = [], bool $withSignedStatus = false, int $userId = 0)
     {
         $petitions = Petition::whereIn('id', $petitionIds)->get();
@@ -95,6 +113,9 @@ class Petition extends Model
 
         $response = [];
         foreach ($petitionIds as $petitionId) {
+            if (!array_key_exists($petitionId, $loadedPetitions)) {
+                continue;
+            }
             $response[] = $loadedPetitions[$petitionId];
         }
         return $response;

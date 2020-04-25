@@ -30,6 +30,7 @@ class PetitionController extends Controller
         $type = (string)$request->type;
         $offset = (int)$request->offset;
         $petitionId = (int)$request->petition_id;
+        $uploadUrl = (string)$request->upload_url;
         $friendIds = [];
         if ($request->friends) {
             $friendIds = explode(",", $request->friends);
@@ -39,8 +40,15 @@ class PetitionController extends Controller
             return $this->getPetitions($request, '', 0, 0, $friendIds);
         }
 
-        if ($type === 'create') {
-            return new OkResponse(Petition::create($request));
+        switch ($type) {
+            case 'create':
+                return new OkResponse(Petition::create($request));
+
+            case 'upload':
+                if (empty($petitionId) || !$uploadUrl) {
+                    return new ErrorResponse(400, 'Invalid params');
+                }
+                return new OkResponse(Petition::upload($petitionId, $uploadUrl));
         }
 
         return $this->getPetitions($request, $type, $offset, $petitionId, $friendIds);

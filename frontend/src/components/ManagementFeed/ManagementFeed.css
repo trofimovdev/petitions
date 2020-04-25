@@ -11,16 +11,16 @@
   width: 100%;
   margin-top: -15px; }
 
-.ManagementFeed .PanelHeaderSimple--android .PanelHeaderSimple__in, .ManagementFeed .PanelHeaderSimple--android .PanelHeaderSimple__content {
+.ManagementFeed .PanelHeader--android .PanelHeader__in, .ManagementFeed .PanelHeader--android .PanelHeader__content {
   height: calc(48px + var(--panelheader_height_android)) !important; }
 
-.ManagementFeed .PanelHeaderSimple--ios .PanelHeaderSimple__in, .ManagementFeed .PanelHeaderSimple--ios .PanelHeaderSimple__content {
+.ManagementFeed .PanelHeader--ios .PanelHeader__in, .ManagementFeed .PanelHeader--ios .PanelHeader__content {
   height: calc(52px + var(--panelheader_height_ios)) !important; }
 
-.ManagementFeed .Separator--ios.PanelHeaderSimple__separator {
+.ManagementFeed .Separator--ios.PanelHeader__separator {
   padding-top: 52px !important; }
 
-.ManagementFeed .Separator--android.PanelHeaderSimple__separator {
+.ManagementFeed .Separator--android.PanelHeader__separator {
   padding-top: 48px !important; }
 
 .ManagementFeed__spinner {

@@ -12,7 +12,7 @@ import {
   PullToRefresh,
   getClassName,
   usePlatform,
-  Spinner
+  Spinner, Button, Placeholder
 } from "@vkontakte/vkui";
 import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
@@ -83,37 +83,39 @@ const Petition = ({
     window.addEventListener("scroll", onScroll);
   }, [currentPetition]);
 
-  if (activePanel === "petition") {
-    api.setLocationHash(`p${currentPetition.id.toString()}`);
-    if (loadingStatus) {
-      if (launchParameters.vk_access_token_settings.includes("friends")) {
-        console.log("with friends");
-        loadPetitions(`petitions`, true, {
-          petition_id: currentPetition.id.toString()
-        })
-          .then(response => {
-            setLoadingStatus(false);
-            setCurrent(response[0]);
+  useEffect(() => {
+    if (activePanel === "petition") {
+      api.setLocationHash(`p${currentPetition.id.toString()}`);
+      if (loadingStatus) {
+        if (launchParameters.vk_access_token_settings.includes("friends")) {
+          console.log("with friends");
+          loadPetitions(`petitions`, true, {
+            petition_id: currentPetition.id.toString()
           })
-          .catch(e => console.log(e));
-      } else {
-        console.log("without friends");
-        loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
-          .then(response => {
-            setLoadingStatus(false);
-            setCurrent(response[0]);
-          })
-          .catch(e => console.log(e));
+            .then(response => {
+              setLoadingStatus(false);
+              setCurrent(response[0]);
+            })
+            .catch(e => console.log(e));
+        } else {
+          console.log("without friends");
+          loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
+            .then(response => {
+              setLoadingStatus(false);
+              setCurrent(response[0]);
+            })
+            .catch(e => console.log(e));
+        }
       }
     }
-  }
+  }, [activePanel]);
 
   return (
     <Panel
       id={id}
       separator={false}
       className={`Petition ${
-        currentPetition.completed && currentPetition.signed
+        currentPetition && currentPetition.completed && currentPetition.signed
           ? "Petition--signed"
           : ""
       }`}
@@ -132,7 +134,24 @@ const Petition = ({
         }
         separator={false}
       />
-      {Object.keys(currentPetition).length > 1 ? (
+      {!currentPetition ? (
+        <Placeholder
+          action={
+            <Button
+              size="l"
+              onClick={() => {
+                goBack();
+                api.selectionChanged().catch(() => {});
+              }}
+            >
+              На главную
+            </Button>
+          }
+          stretched
+        >
+          Кажется, эта петиция была удалена.
+        </Placeholder>
+      ) : Object.keys(currentPetition).length > 1 ? (
         <>
           <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
             <div className="Petition__image">
@@ -243,7 +262,7 @@ const mapDispatchToProps = dispatch => {
 Petition.propTypes = {
   id: PropTypes.string.isRequired,
   goBack: PropTypes.func.isRequired,
-  currentPetition: PropTypes.object.isRequired,
+  currentPetition: PropTypes.object,
   activePanel: PropTypes.string.isRequired,
   setCurrent: PropTypes.func.isRequired,
   launchParameters: PropTypes.object.isRequired

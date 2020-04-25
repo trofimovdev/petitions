@@ -49,7 +49,7 @@ api.storageGet("is_app_user").then(r => {
 const petitionRegExp = new RegExp("^#p(\\d+)$");
 const feedRegExp = new RegExp("^#(popular|last|signed)$");
 const managementRegExp = new RegExp("^#management$");
-const petitionId = window.location.hash.match(petitionRegExp);
+let petitionId = window.location.hash.match(petitionRegExp);
 const feedTab = window.location.hash.match(feedRegExp);
 const management = window.location.hash.match(managementRegExp);
 
@@ -61,6 +61,38 @@ console.log(
   management
 );
 
+const launchParameters = Object.fromEntries(
+  new URLSearchParams(window.location.search)
+);
+store.dispatch(setLaunchParameters(launchParameters));
+console.log("LAUNCH PARAMS", launchParameters);
+if (launchParameters.vk_access_token_settings.includes("friends")) {
+  console.log("with friends");
+  loadPetitions("petitions", true)
+    .then(r => onLoad(r))
+    .catch(e => console.log(e));
+} else {
+  console.log("without friends");
+  loadPetitions("petitions", false)
+    .then(r => onLoad(r))
+    .catch(e => console.log(e));
+}
+
+if (launchParameters.vk_ref.startsWith("story") && !petitionId) {
+  const context = atob(launchParameters.vk_ref.split("_")[4]).match(
+    petitionRegExp
+  );
+  console.log(
+    "Context",
+    launchParameters.vk_ref.split("_"),
+    atob(launchParameters.vk_ref.split("_")[4]),
+    context
+  );
+  if (context) {
+    petitionId = context;
+    console.log("SET PETITITON FROM STORY", petitionId);
+  }
+}
 if (petitionId) {
   console.log("petitionId", petitionId);
   store.dispatch(setCurrent({ id: petitionId[1] }));
@@ -81,21 +113,6 @@ if (petitionId) {
     store.dispatch(setStory("petitions", "splashscreen", false));
     store.dispatch(setActiveTab("feed", "last"));
   }
-}
-
-const launchParameters = new URLSearchParams(window.location.search);
-store.dispatch(setLaunchParameters(Object.fromEntries(launchParameters)));
-console.log("LAUNCH PARAMS", Object.fromEntries(launchParameters));
-if (launchParameters.get("vk_access_token_settings").includes("friends")) {
-  console.log("with friends");
-  loadPetitions("petitions", true)
-    .then(r => onLoad(r))
-    .catch(e => console.log(e));
-} else {
-  console.log("without friends");
-  loadPetitions("petitions", false)
-    .then(r => onLoad(r))
-    .catch(e => console.log(e));
 }
 
 ReactDOM.render(

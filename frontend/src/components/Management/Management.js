@@ -17,10 +17,9 @@ const Management = ({
   goBack,
   history,
   activeModal,
-  formType
+  formType,
+  popout
 }) => {
-  const [popout, setPopout] = useState(null);
-
   return (
     <View
       id={id}
@@ -32,7 +31,7 @@ const Management = ({
       popout={popout}
     >
       <SplashScreen id="splashscreen" />
-      <ManagementFeed id="feed" setPopout={setPopout} />
+      <ManagementFeed id="feed" />
       <EditPetition id="create" formType={formType} />
       <Petition id="petition" />
     </View>
@@ -46,7 +45,11 @@ const mapStateToProps = state => {
       state.router.activeModals[state.router.activeView] === undefined
         ? null
         : state.router.activeModals[state.router.activeView],
-    formType: state.petitions.formType
+    formType: state.petitions.formType,
+    popout:
+      state.router.popouts[state.router.activeView] === undefined
+        ? null
+        : state.router.popouts[state.router.activeView]
   };
 };
 
@@ -68,7 +71,8 @@ Management.propTypes = {
   goBack: PropTypes.func.isRequired,
   history: PropTypes.array.isRequired,
   activeModal: PropTypes.string,
-  formType: PropTypes.string.isRequired
+  formType: PropTypes.string.isRequired,
+  popout: PropTypes.object
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Management);

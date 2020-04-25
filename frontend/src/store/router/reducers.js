@@ -6,12 +6,12 @@ import { smoothScrollToTop } from "../../tools/helpers";
 import {
   SET_PAGE,
   GO_BACK,
-  OPEN_POPOUT,
-  CLOSE_POPOUT,
   OPEN_MODAL,
   CLOSE_MODAL,
   SET_STORY,
-  SET_ACTIVE_TAB
+  SET_ACTIVE_TAB,
+  OPEN_POPOUT,
+  CLOSE_POPOUT
 } from "./actionTypes";
 
 const api = new VKMiniAppAPI();
@@ -403,6 +403,28 @@ const routerReducer = (state = initialState, action) => {
           [action.payload.component]: action.payload.tab
         },
         scrollPosition: scrollPosition1
+      };
+    }
+
+    case OPEN_POPOUT: {
+      window.history.pushState(null, null);
+
+      return {
+        ...state,
+        popouts: {
+          ...state.popouts,
+          [state.activeView]: action.payload.popout
+        }
+      };
+    }
+
+    case CLOSE_POPOUT: {
+      return {
+        ...state,
+        popouts: {
+          ...state.popouts,
+          [state.activeView]: null
+        }
       };
     }
 

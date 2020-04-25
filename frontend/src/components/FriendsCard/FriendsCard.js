@@ -83,6 +83,7 @@ const FriendsCard = ({
 
   const onClose = () => {
     setFriendsCardStatus(false);
+    api.selectionChanged().catch(() => {});
   };
   console.log(launchParameters, friendsCardStatus);
   return (

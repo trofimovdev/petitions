@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -22,10 +22,9 @@ const Petitions = ({
   goBack,
   history,
   activeModal,
-  formType
+  formType,
+                     popout
 }) => {
-  const [popout, setPopout] = useState(null);
-
   return (
     <View
       modal={<PetitionModal activeModal={activeModal} />}
@@ -51,7 +50,11 @@ const mapStateToProps = state => {
       state.router.activeModals[state.router.activeView] === undefined
         ? null
         : state.router.activeModals[state.router.activeView],
-    formType: state.petitions.formType
+    formType: state.petitions.formType,
+    popout:
+      state.router.popouts[state.router.activeView] === undefined
+        ? null
+        : state.router.popouts[state.router.activeView]
   };
 };
 
@@ -77,7 +80,8 @@ Petitions.propTypes = {
   activeModal: PropTypes.string,
   goBack: PropTypes.func.isRequired,
   history: PropTypes.array.isRequired,
-  formType: PropTypes.string.isRequired
+  formType: PropTypes.string.isRequired,
+  popout: PropTypes.object
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Petitions);
