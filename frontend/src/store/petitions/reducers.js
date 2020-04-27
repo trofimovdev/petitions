@@ -80,7 +80,7 @@ const petitionsReducer = (state = initialState, action) => {
     case SET_FORM_TYPE: {
       return {
         ...state,
-        ...action.payload
+        formType: action.payload
       };
     }
 

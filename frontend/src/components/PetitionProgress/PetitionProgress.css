@@ -8,3 +8,8 @@
   margin: 0 0 12px 0; }
   .PetitionProgress__bar.done > .Progress__in {
     background: #4bb34b; }
+  .PetitionProgress__bar.completed > .Progress__in {
+    background: #99a2ad; }
+
+.Progress__in {
+  max-width: 100%; }

@@ -26,7 +26,8 @@ class Petition extends Model
 
     public static function getLast(int $offset = 0, array $friendIds = [])
     {
-        $petitions = Petition::latest('created_at')
+        $petitions = Petition::where('completed', '=', 'false')
+            ->latest('created_at')
             ->offset($offset)
             ->limit(10)
             ->get();
@@ -136,7 +137,26 @@ class Petition extends Model
             'mobile_photo_url' => $this->mobile_photo_url,
             'web_photo_url' => $this->web_photo_url,
             'completed' => $this->completed,
+            'directed_to' => []
         ];
+        foreach (explode(',', $this->directed_to) as $item) {
+            $petition['directed_to'][] = $item;
+//            preg_match('/^@\S+ \(.+\)$/', $item, $matches);
+//            if (!$matches) {
+//                $petition['directed_to'][] = $item;
+//                continue;
+//            }
+//            preg_match('/^@(\S+)/', $matches[0], $link);
+//            preg_match('/\((.+)\)$/', $matches[0], $name);
+//            if (!$link || !$name) {
+//                $petition['directed_to'][] = $item;
+//                continue;
+//            }
+//            $petition['directed_to'][] = [
+//                'link' => 'https://vk.com/' . $link[1],
+//                'name' => $name[1]
+//            ];
+        }
         if ($text) {
             $petition['text'] = $this->text;
         }

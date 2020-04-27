@@ -35,11 +35,3 @@
     color: $petition-card-dots-color;
   }
 }
-
-.Progress__in {
-  max-width: 100%;
-
-  &.done {
-    background: $progress-bar-done-color;
-  }
-}

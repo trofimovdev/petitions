@@ -14,5 +14,13 @@
     &.done > .Progress__in {
       background: $progress-bar-done-color;
     }
+
+    &.completed > .Progress__in {
+      background: $progress-bar-completed-color;
+    }
   }
+}
+
+.Progress__in {
+  max-width: 100%;
 }

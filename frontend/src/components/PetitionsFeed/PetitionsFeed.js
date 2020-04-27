@@ -192,6 +192,7 @@ const PetitionsFeed = ({
                   needSignatures={item.need_signatures}
                   mobilePhotoUrl={item.mobile_photo_url}
                   friends={item.friends || []}
+                  completed={item.completed}
                 />
                 {index < currentPetitions.length - 1 && <Separator />}
               </div>

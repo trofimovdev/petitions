@@ -23,6 +23,7 @@ class CreatePetitionsTable extends Migration
             $table->string('mobile_photo_url');
             $table->string('web_photo_url');
             $table->boolean('completed');
+            $table->longText('directed_to');
             $table->timestamps();
         });
     }

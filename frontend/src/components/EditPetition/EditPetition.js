@@ -18,7 +18,6 @@ import "./EditPetition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon48Camera from "@vkontakte/icons/dist/48/camera";
-import Icon24Error from "@vkontakte/icons/dist/24/error";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import Icon28Mention from "@vkontakte/icons/dist/28/mention";
 import { bindActionCreators } from "redux";
@@ -157,7 +156,7 @@ const EditPetition = ({
           name="text"
           top="Текст петиции"
           // TODO: вынести в константу с бэкенда
-          status={form.text && form.text.length > 150 ? "error" : ""}
+          status={form.text && form.text.length > 5000 ? "error" : ""}
           bottom={
             form.text && form.text.length > 5000
               ? "Слишком длинный текст петиции"
@@ -203,14 +202,12 @@ const EditPetition = ({
                 value={form.directedTo ? form.directedTo : ""}
                 onChange={onChange}
               />
-              <Icon28Mention
-                onClick={() => {
-                  api.selectionChanged().catch(() => {});
-                  console.log("try to open");
-                  openModal("select-users");
-                  console.log("opened");
-                }}
-              />
+              {/*<Icon28Mention*/}
+              {/*  onClick={() => {*/}
+              {/*    api.selectionChanged().catch(() => {});*/}
+              {/*    openModal("select-users");*/}
+              {/*  }}*/}
+              {/*/>*/}
             </div>
             <div className="FormField__border" />
           </div>
@@ -289,7 +286,7 @@ EditPetition.propTypes = {
   id: PropTypes.string.isRequired,
   activePanel: PropTypes.string.isRequired,
   goBack: PropTypes.func.isRequired,
-  formType: PropTypes.string.isRequired,
+  formType: PropTypes.string,
   setEdit: PropTypes.func.isRequired,
   setCreate: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,

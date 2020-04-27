@@ -36,8 +36,8 @@ const Petitions = ({
     >
       <SplashScreen id="splashscreen" />
       <PetitionsFeed id="feed" activeTab={activeTab} />
-      <EditPetition id="edit" formType={formType} />
       <Petition id="petition" />
+      <EditPetition id="edit" />
     </View>
   );
 };

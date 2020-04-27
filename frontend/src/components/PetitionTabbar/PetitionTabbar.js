@@ -15,8 +15,13 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { openModal } from "../../store/router/actions";
-import { setCurrent, setSigned } from "../../store/petitions/actions";
+import { openModal, setPage } from "../../store/router/actions";
+import {
+  setCurrent,
+  setSigned,
+  setFormType,
+  setEdit
+} from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
 
 const api = new VKMiniAppAPI();
@@ -27,7 +32,11 @@ const PetitionTabbar = ({
   launchParameters,
   setCurrent,
   setSigned,
-  signedPetitions
+  signedPetitions,
+  activeView,
+  setPage,
+  setFormType,
+  setEdit
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
 
@@ -95,9 +104,13 @@ const PetitionTabbar = ({
       )}
       <Div className="PetitionTabbar__buttons">
         <Button
+          className="PetitionTabbar__buttons__sign"
           size="xl"
-          mode={currentPetition.signed ? "secondary" : "primary"}
+          mode={currentPetition.signed || currentPetition.completed ? "secondary" : "primary"}
           onClick={() => {
+            if (currentPetition.completed) {
+              return;
+            }
             if (currentPetition.signed) {
               unsignPetition();
             } else {
@@ -105,12 +118,16 @@ const PetitionTabbar = ({
             }
           }}
         >
-          {fetchingStatus ? (
-            <Spinner size="small" />
-          ) : currentPetition.signed ? (
-            "Вы подписали"
+          {!fetchingStatus ? (
+            currentPetition.completed ? (
+              "Сбор завершен"
+            ) : currentPetition.signed ? (
+              "Вы подписали"
+            ) : (
+              "Подписать"
+            )
           ) : (
-            "Подписать"
+            <Spinner size="small" />
           )}
         </Button>
         <Button
@@ -132,6 +149,13 @@ const PetitionTabbar = ({
             mode="secondary"
             onClick={() => {
               api.selectionChanged().catch(() => {});
+              setFormType("edit");
+              setEdit({
+                title: currentPetition.title,
+                text: currentPetition.text,
+                signatures: currentPetition.need_signatures
+              });
+              setPage(activeView, "edit");
             }}
           >
             <Icon24Settings />
@@ -146,7 +170,8 @@ const mapStateToProps = state => {
   return {
     currentPetition: state.petitions.current,
     launchParameters: state.data.launchParameters,
-    signedPetitions: state.petitions.signed
+    signedPetitions: state.petitions.signed,
+    activeView: state.router.activeView
   };
 };
 
@@ -157,7 +182,10 @@ const mapDispatchToProps = dispatch => {
       {
         openModal,
         setCurrent,
-        setSigned
+        setSigned,
+        setPage,
+        setFormType,
+        setEdit
       },
       dispatch
     )
@@ -170,7 +198,11 @@ PetitionTabbar.propTypes = {
   launchParameters: PropTypes.object.isRequired,
   setCurrent: PropTypes.func.isRequired,
   setSigned: PropTypes.func.isRequired,
-  signedPetitions: PropTypes.array
+  signedPetitions: PropTypes.array,
+  activeView: PropTypes.string.isRequired,
+  setPage: PropTypes.func.isRequired,
+  setFormType: PropTypes.func.isRequired,
+  setEdit: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionTabbar);

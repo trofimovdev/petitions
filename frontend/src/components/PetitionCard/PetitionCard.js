@@ -31,7 +31,8 @@ const PetitionCard = ({
   setCurrent,
   managementDots,
   onManagement,
-  friends
+  friends,
+  completed
 }) => {
   console.log("FRIENDS", friends);
   return (
@@ -60,6 +61,7 @@ const PetitionCard = ({
         <PetitionProgress
           countSignatures={countSignatures}
           needSignatures={needSignatures}
+          completed={completed}
         />
         <Card
           size="l"
@@ -133,7 +135,8 @@ PetitionCard.propTypes = {
   setCurrent: PropTypes.func.isRequired,
   managementDots: PropTypes.bool,
   onManagement: PropTypes.func,
-  friends: PropTypes.array
+  friends: PropTypes.array,
+  completed: PropTypes.bool.isRequired
 };
 
 PetitionCard.defaultProps = {

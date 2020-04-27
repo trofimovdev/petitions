@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller as Controller;
 use App\Http\Requests\SignRequest;
 use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\OkResponse;
+use App\Models\Petition;
 use App\Models\Signature;
 
 class SignatureController extends Controller
@@ -22,11 +23,23 @@ class SignatureController extends Controller
     public function update(SignRequest $request, $petitionId)
     {
         $petitionId = (int)$petitionId;
+        if (empty($petitionId)) {
+            return new ErrorResponse(400, 'Invalid params');
+        }
+
         $signature = Signature::where('petition_id', '=', $petitionId)
             ->where('user_id', '=', $request->userId)
             ->exists();
         if ($signature) {
             return new ErrorResponse(409, 'Already signed');
+        }
+
+        $petition = Petition::getPetitions([$petitionId]);
+        if (count($petition) !== 1) {
+            return new ErrorResponse(404, 'Petition not found');
+        }
+        if ($petition[0]['completed'] === true) {
+            return new ErrorResponse(403, 'Signature completed');
         }
 
         $signature = new Signature;
@@ -42,6 +55,9 @@ class SignatureController extends Controller
     public function destroy(SignRequest $request, $petitionId)
     {
         $petitionId = (int)$petitionId;
+        if (empty($petitionId)) {
+            return new ErrorResponse(400, 'Invalid params');
+        }
 
         $signature = Signature::where('petition_id', '=', $petitionId)
             ->where('user_id', '=', $request->userId)
@@ -49,6 +65,14 @@ class SignatureController extends Controller
 
         if (!$signature) {
             return new ErrorResponse(404, 'Signature not found');
+        }
+
+        $petition = Petition::getPetitions([$petitionId]);
+        if (count($petition) !== 1) {
+            return new ErrorResponse(404, 'Petition not found');
+        }
+        if ($petition[0]['completed'] === true) {
+            return new ErrorResponse(403, 'Signature completed');
         }
 
         return new OkResponse(true);

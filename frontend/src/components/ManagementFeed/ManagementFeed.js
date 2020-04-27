@@ -258,6 +258,7 @@ const ManagementFeed = ({
                     managementDots
                     onManagement={onManagement}
                     friends={item.friends || []}
+                    completed={item.completed}
                   />
                   {index < managedPetitions.length - 1 && <Separator />}
                 </div>

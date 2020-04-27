@@ -79,6 +79,9 @@ body[scheme="space_gray"] {
 .Petition__creator .Cell__main {
   margin-left: 12px; }
 
+.Petition__link {
+  font-weight: 600; }
+
 .Petition .PullToRefresh--ios {
   margin-top: calc(0px - var(--safe-area-inset-top) - var(--panelheader_height_ios)) !important; }
 

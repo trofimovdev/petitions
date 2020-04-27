@@ -12,7 +12,9 @@ import {
   PullToRefresh,
   getClassName,
   usePlatform,
-  Spinner, Button, Placeholder
+  Spinner,
+  Button,
+  Placeholder
 } from "@vkontakte/vkui";
 import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
@@ -41,6 +43,14 @@ const Petition = ({
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [headerStatus, setHeaderStatus] = useState("hidden");
   const platform = usePlatform();
+
+  const getName = item => {
+    if (item instanceof String) {
+      return item;
+    }
+    return item.name;
+  };
+
   console.log("CURRENT PETITION is", currentPetition);
 
   const onRefresh = () => {
@@ -108,7 +118,13 @@ const Petition = ({
         }
       }
     }
-  }, [activePanel]);
+  }, [
+    activePanel,
+    currentPetition.id,
+    launchParameters.vk_access_token_settings,
+    loadingStatus,
+    setCurrent
+  ]);
 
   return (
     <Panel
@@ -162,6 +178,7 @@ const Petition = ({
               <PetitionProgress
                 countSignatures={currentPetition.count_signatures}
                 needSignatures={currentPetition.need_signatures}
+                completed={currentPetition.completed}
               />
               {currentPetition.friends && currentPetition.friends.length > 0 && (
                 <UsersStack
@@ -222,11 +239,38 @@ const Petition = ({
                 rel="noopener noreferrer"
                 className="Petition__creator__link"
               >
-                {currentPetition.owner.first_name}{" "}
-                {currentPetition.owner.last_name}
+                {`${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
               </Link>
-              {currentPetition.owner.sex === "2" ? "создал " : "создала "}
-              петицию, адресованную Сергею Корнееву
+              {`${
+                currentPetition.owner.sex === "2" ? "создал " : "создала "
+              } петицию${currentPetition.directed_to ? `, адресованную ` : ""}`}
+              {currentPetition.directed_to &&
+                currentPetition.directed_to.map((item, index) => {
+                  let ending = ", ";
+                  if (index === currentPetition.directed_to.length - 1) {
+                    ending = "";
+                  }
+                  if (index === currentPetition.directed_to.length - 2) {
+                    ending = " и ";
+                  }
+                  if (typeof item === "string") {
+                    return `${item}${ending}`;
+                  }
+
+                  return (
+                    <React.Fragment key={index}>
+                      <Link
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="Petition__link"
+                      >
+                        {item.name}
+                      </Link>
+                      <span>{ending}</span>
+                    </React.Fragment>
+                  );
+                })}
             </Cell>
           </PullToRefresh>
           <PetitionTabbar />

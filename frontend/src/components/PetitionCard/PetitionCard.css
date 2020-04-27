@@ -24,8 +24,3 @@
     top: 12px;
     right: 12px;
     color: #aaaeb3; }
-
-.Progress__in {
-  max-width: 100%; }
-  .Progress__in.done {
-    background: #4bb34b; }
