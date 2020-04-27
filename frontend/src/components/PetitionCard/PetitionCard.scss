@@ -14,11 +14,12 @@
   }
 
   &__card {
-    min-height: 180px;
-    //height: 48vw;
+    min-height: 187px;
+    height: 50vw;
     overflow: hidden;
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: 50% 0%;
     margin: 0;
   }
 

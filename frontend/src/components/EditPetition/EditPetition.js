@@ -182,7 +182,7 @@ const EditPetition = ({
           bottom={
             form.signatures &&
             (form.signatures > 10000000
-              ? `Максимально можно собрать ${(10000000).toLocaleString()} подписей`
+              ? `Максимально можно собрать ${(10000000).toLocaleString("ru")} подписей`
               : form.signatures < 1
               ? `Минимально можно собрать 1 подпись`
               : "")

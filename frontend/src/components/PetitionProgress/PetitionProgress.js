@@ -12,7 +12,7 @@ const PetitionProgress = ({ countSignatures, needSignatures }) => {
   return (
     <div className="PetitionProgress">
       <p className="PetitionProgress__text">
-        {`${countSignatures.toLocaleString()} из ${needSignatures.toLocaleString()} ${declOfNum(
+        {`${countSignatures.toLocaleString("ru")} из ${needSignatures.toLocaleString("ru")} ${declOfNum(
           needSignatures,
           ["подписи", "подписей", "подписей"]
         )}`}
