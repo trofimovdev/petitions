@@ -9,10 +9,6 @@
 
   &--signed {
     height: calc(102px + var(--safe-area-inset-bottom)) !important;
-
-    & .PetitionTabbar__buttons__sign {
-      color: $petition-signed-button-text-color;
-    }
   }
 
   &__signed {
@@ -29,6 +25,12 @@
   &__buttons {
     display: flex;
     height: 44px !important;
+
+    &__sign {
+      &--completed {
+        color: $petition-signed-button-text-color;
+      }
+    }
 
     & > * {
       margin-right: 8px;

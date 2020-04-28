@@ -1,6 +1,6 @@
 .EditPetition > .Panel__in,
 .EditPetition .Snackbar {
-  padding-bottom: calc(68px + var(--safe-area-inset-top)) !important; }
+  padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; }
 
 .EditForm__input-top {
   display: flex;

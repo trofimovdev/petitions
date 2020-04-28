@@ -6,8 +6,6 @@
   padding-bottom: var(--safe-area-inset-bottom) !important; }
   .PetitionTabbar--signed {
     height: calc(102px + var(--safe-area-inset-bottom)) !important; }
-    .PetitionTabbar--signed .PetitionTabbar__buttons__sign {
-      color: #818c99; }
   .PetitionTabbar__signed {
     display: flex;
     align-items: center;
@@ -18,6 +16,8 @@
   .PetitionTabbar__buttons {
     display: flex;
     height: 44px !important; }
+    .PetitionTabbar__buttons__sign--completed {
+      color: #818c99; }
     .PetitionTabbar__buttons > * {
       margin-right: 8px; }
     .PetitionTabbar__buttons > *:last-child {

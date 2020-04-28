@@ -1,0 +1,25 @@
+@import "src/style/_vars.scss";
+
+.DonePetition {
+  .Placeholder__text {
+    font-size: 20px !important;
+    color: #000 !important;
+    font-weight: 600 !important;
+  }
+
+  &__icon {
+    color: $petition-done-icon-color;
+  }
+
+  &__fixed-layout {
+    padding-bottom: var(--safe-area-inset-bottom) !important;
+  }
+
+  &__buttons > * {
+    margin-bottom: 12px;
+  }
+
+  &__buttons > *:last-child {
+    margin-bottom: 0;
+  }
+}

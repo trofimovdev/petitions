@@ -22,7 +22,7 @@ const UploadCard = ({
         <input
           type="file"
           id={`file_${id}`}
-          accept="image/*"
+          accept="image/png,image/jpeg,image/jpg"
           style={{ display: "none" }}
           onChange={onChange}
         />

@@ -18,10 +18,10 @@ body[scheme="space_gray"] {
   --background_page: #0a0a0a; }
 
 .Petition > .Panel__in {
-  padding-bottom: calc(68px + var(--safe-area-inset-top)) !important; }
+  padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; }
 
 .Petition--signed > .Panel__in {
-  padding-bottom: calc(102px + var(--safe-area-inset-top)) !important; }
+  padding-bottom: calc(102px + var(--safe-area-inset-bottom)) !important; }
 
 .Petition__header .PanelHeader__in {
   transition: .15s; }

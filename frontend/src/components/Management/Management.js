@@ -10,6 +10,7 @@ import { goBack } from "../../store/router/actions";
 import Petition from "../Petition/Petiton";
 import "./Management.css";
 import SplashScreen from "../SplashScreen/SplashScreen";
+import DonePetition from "../DonePetition/DonePetition";
 
 const Management = ({
   id,
@@ -33,6 +34,7 @@ const Management = ({
       <SplashScreen id="splashscreen" />
       <ManagementFeed id="feed" />
       <EditPetition id="create" formType={formType} />
+      <DonePetition id="done" />
       <Petition id="petition" />
     </View>
   );

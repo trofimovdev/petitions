@@ -23,7 +23,7 @@ const Petitions = ({
   history,
   activeModal,
   formType,
-                     popout
+  popout
 }) => {
   return (
     <View

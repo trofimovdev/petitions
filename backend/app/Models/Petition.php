@@ -122,9 +122,59 @@ class Petition extends Model
         return $response;
     }
 
-    public static function create($request)
+    public static function create(string $title, string $text, int $needSignatures, string $directedTo, string $mobilePhoto, string $webPhoto, int $userId)
     {
-        return $request;
+        $name = bin2hex(random_bytes(5));
+        $mobilePhoto = explode(',', $mobilePhoto)[1];
+        $webPhoto = explode(',', $webPhoto)[1];
+//        file_put_contents(storage_path() . '/public/static/' . $name . '_mobile.png', base64_decode($mobilePhoto));
+        Storage::put('public/static/' . $name . '_mobile.png', base64_decode($mobilePhoto));
+        Storage::put('public/static/' . $name . '_web.png', base64_decode($webPhoto));
+        $row = [
+            'title' => $title,
+            'text' => $text,
+            'need_signatures' => $needSignatures,
+            'count_signatures' => 1,
+            'owner_id' => $userId,
+            'mobile_photo_url' => $mobilePhoto,
+            'web_photo_url' => $webPhoto,
+            'completed' => false,
+            'storage_path' => storage_path(),
+            'name' => $name
+        ];
+        return $row;
+    }
+
+    public static function filterString(string $string)
+    {
+        return preg_replace("/[^\Wa-zA-Z0-9 ]/", "", $string);
+    }
+
+    public static function isBase64Image(string $base64)
+    {
+        $explode = explode(',', $base64);
+        $allow = ['png', 'jpg', 'jpeg'];
+        $format = str_replace(
+            [
+                'data:image/',
+                ';',
+                'base64',
+            ],
+            [
+                '', '', '',
+            ],
+            $explode[0]
+        );
+
+        if (!in_array($format, $allow)) {
+            return false;
+        }
+
+        if (!preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $explode[1])) {
+            return false;
+        }
+
+        return true;
     }
 
     public function toPetitionView(bool $text = true, bool $ownerId = true)

@@ -41,6 +41,32 @@ const EditPetition = ({
   createPetitions
 }) => {
   const [snackbar, setSnackbar] = useState(null);
+  const MAX_FILE_SIZE = 15 * (10 ** 6); // максимальный размер - 15 мегабайт
+
+  const checkFileSize = fileSize => {
+    if (fileSize > MAX_FILE_SIZE) {
+      setSnackbar(
+        <Snackbar
+          layout="vertical"
+          onClose={() => setSnackbar()}
+          before={
+            <Avatar
+              size={24}
+              style={{
+                backgroundColor: "var(--destructive)"
+              }}
+            >
+              <Icon24Cancel fill="#fff" width={14} height={14} />
+            </Avatar>
+          }
+        >
+          Слишком большой размер файла
+        </Snackbar>
+      );
+      return false;
+    }
+    return true;
+  };
 
   let setForm = () => {};
   let form = {};
@@ -95,26 +121,8 @@ const EditPetition = ({
       reader.onload = j => {
         const fileSize = j.total; // в байтах
         console.log("fileSize", fileSize);
-        if (fileSize > 1 * 10 ** 6) {
-          // максимальный размер - 10 мегабайт
-          setSnackbar(
-            <Snackbar
-              layout="vertical"
-              onClose={() => setSnackbar()}
-              before={
-                <Avatar
-                  size={24}
-                  style={{
-                    backgroundColor: "var(--destructive)"
-                  }}
-                >
-                  <Icon24Cancel fill="#fff" width={14} height={14} />
-                </Avatar>
-              }
-            >
-              Слишком большой размер файла
-            </Snackbar>
-          );
+        if (!checkFileSize(fileSize)) {
+          return;
         }
         setForm({ [file_id]: j.target.result });
       };
@@ -181,7 +189,9 @@ const EditPetition = ({
           bottom={
             form.signatures &&
             (form.signatures > 10000000
-              ? `Максимально можно собрать ${(10000000).toLocaleString("ru")} подписей`
+              ? `Максимально можно собрать ${(10000000).toLocaleString(
+                  "ru"
+                )} подписей`
               : form.signatures < 1
               ? `Минимально можно собрать 1 подпись`
               : "")
@@ -197,17 +207,17 @@ const EditPetition = ({
             <div className="EditForm__input-wrapper">
               <input
                 type="text"
-                name="directedTo"
+                name="directed_to"
                 className="Input__el"
-                value={form.directedTo ? form.directedTo : ""}
+                value={form.directed_to ? form.directed_to : ""}
                 onChange={onChange}
               />
-              {/*<Icon28Mention*/}
-              {/*  onClick={() => {*/}
-              {/*    api.selectionChanged().catch(() => {});*/}
-              {/*    openModal("select-users");*/}
-              {/*  }}*/}
-              {/*/>*/}
+              {/* <Icon28Mention */}
+              {/*  onClick={() => { */}
+              {/*    api.selectionChanged().catch(() => {}); */}
+              {/*    openModal("select-users"); */}
+              {/*  }} */}
+              {/* /> */}
             </div>
             <div className="FormField__border" />
           </div>
@@ -252,6 +262,7 @@ const EditPetition = ({
             form.file_2
           )
         }
+        setSnackbar={setSnackbar}
       />
     </Panel>
   );

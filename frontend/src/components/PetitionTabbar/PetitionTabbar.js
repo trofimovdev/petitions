@@ -104,7 +104,7 @@ const PetitionTabbar = ({
       )}
       <Div className="PetitionTabbar__buttons">
         <Button
-          className="PetitionTabbar__buttons__sign"
+          className={`PetitionTabbar__buttons__sign ${currentPetition.completed ? "PetitionTabbar__buttons__sign--completed" : ""}`}
           size="xl"
           mode={currentPetition.signed || currentPetition.completed ? "secondary" : "primary"}
           onClick={() => {

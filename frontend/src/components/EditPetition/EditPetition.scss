@@ -3,7 +3,7 @@
 .EditPetition {
   & > .Panel__in,
   & .Snackbar {
-    padding-bottom: calc(68px + var(--safe-area-inset-top)) !important; // 68px - высота таббара
+    padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
   }
 }
 

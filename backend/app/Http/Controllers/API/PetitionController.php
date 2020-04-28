@@ -30,21 +30,56 @@ class PetitionController extends Controller
         $type = (string)$request->type;
         $offset = (int)$request->offset;
         $petitionId = (int)$request->petition_id;
-        $uploadUrl = (string)$request->upload_url;
         $friendIds = [];
         if ($request->friends) {
             $friendIds = explode(",", $request->friends);
         }
 
         if (empty($petitionId) && !$type) {
-            return $this->getPetitions($request, '', 0, 0, $friendIds);
+            return $this->getPetitions($request, '', $offset, 0, $friendIds);
         }
 
         switch ($type) {
             case 'create':
-                return new OkResponse(Petition::create($request));
+                $title = (string)$request->title;
+                $text = (string)$request->text;
+                $needSignatures = (int)$request->signatures;
+                $directedTo = (string)$request->directed_to;
+                $mobilePhoto = (string)$request->file_1;
+                $webPhoto = (string)$request->file_2;
+                $photo = (string)$request->file;
+
+                $title = Petition::filterString($title);
+                $text = Petition::filterString($text);
+                $directedTo = Petition::filterString($directedTo);
+                if (
+                    empty($title) || empty($text) || empty($needSignatures) || ((empty($mobilePhoto) || empty($webPhoto)) && empty($photo)) ||
+                    !Petition::filterString($title) || !Petition::filterString($text) || ($directedTo && !Petition::filterString($directedTo))
+                ) {
+                    return new ErrorResponse(400, 'Invalid params');
+                }
+                if (empty($mobilePhoto) || empty($webPhoto)) {
+                    $mobilePhoto = $photo;
+                    $webPhoto = $photo;
+                }
+
+                if (!Petition::isBase64Image($mobilePhoto) || !Petition::isBase64Image($webPhoto)) {
+                    return new ErrorResponse(400, 'Invalid image');
+                }
+
+                $mobilePhotoSize = getimagesize($mobilePhoto);
+                $mobilePhotoSize = $mobilePhotoSize[0] * $mobilePhotoSize[1] * $mobilePhotoSize["bits"];
+                $webPhotoSize = getimagesize($webPhoto);
+                $webPhotoSize = $webPhotoSize[0] * $webPhotoSize[1] * $webPhotoSize["bits"];
+
+                if (strlen($title) > 150 || strlen($text) > 5000 || $needSignatures > 10000000 || $mobilePhotoSize / 8 / 1024 / 1024 > 15 || $webPhotoSize / 8 / 1024 / 1024 > 15) {
+                    return new ErrorResponse(400, 'Too large');
+                }
+
+                return new OkResponse(Petition::create($title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto, $request->userId));
 
             case 'upload':
+                $uploadUrl = (string)$request->upload_url;
                 if (empty($petitionId) || !$uploadUrl) {
                     return new ErrorResponse(400, 'Invalid params');
                 }

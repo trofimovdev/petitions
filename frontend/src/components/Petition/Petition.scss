@@ -3,11 +3,11 @@
 
 .Petition {
   & > .Panel__in {
-    padding-bottom: calc(68px + var(--safe-area-inset-top)) !important; // 68px - высота таббара
+    padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
   }
 
   &--signed > .Panel__in {
-    padding-bottom: calc(102px + var(--safe-area-inset-top)) !important; // 102px - высота таббара
+    padding-bottom: calc(102px + var(--safe-area-inset-bottom)) !important; // 102px - высота таббара
   }
 
   &__header .PanelHeader__in {
