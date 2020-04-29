@@ -33,9 +33,9 @@ const Management = ({
     >
       <SplashScreen id="splashscreen" />
       <ManagementFeed id="feed" />
-      <EditPetition id="create" formType={formType} />
-      <DonePetition id="done" />
       <Petition id="petition" />
+      <EditPetition id="edit" formType={formType} />
+      <DonePetition id="done" />
     </View>
   );
 };

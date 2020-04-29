@@ -58,6 +58,7 @@ class Petition extends Model
     public static function getManaged(int $userId, int $offset = 0, array $friendIds = [])
     {
         $petitions = Petition::where('owner_id', '=', $userId)
+            ->latest('created_at')
             ->offset($offset)
             ->limit(10)
             ->get();
@@ -75,12 +76,21 @@ class Petition extends Model
         return $response;
     }
 
-    public static function upload(int $petitionId, string $uploadUrl)
+    public static function upload(int $petitionId, string $uploadUrl, string $type)
     {
+        $petition = Petition::getPetitions([$petitionId])[0];
+
+        switch ($type) {
+            case 'mobile':
+            default:
+                $imgPath = explode('https://petitions.trofimov.dev/', $petition['mobile_photo_url'])[1];
+                break;
+        }
+
         $options = array(
             CURLOPT_POST        => 1,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS     => ['file1' => new CurlFile(Storage::path('public/static/1440x768.png'))]
+            CURLOPT_POSTFIELDS     => ['file1' => new CurlFile(Storage::path('public/' . $imgPath))]
         );
 
         $ch = curl_init($uploadUrl);
@@ -122,12 +132,11 @@ class Petition extends Model
         return $response;
     }
 
-    public static function create(string $title, string $text, int $needSignatures, string $directedTo, string $mobilePhoto, string $webPhoto, int $userId)
+    public static function createPetition(string $title, string $text, int $needSignatures, string $directedTo, string $mobilePhoto, string $webPhoto, int $userId)
     {
         $name = bin2hex(random_bytes(5));
         $mobilePhoto = explode(',', $mobilePhoto)[1];
         $webPhoto = explode(',', $webPhoto)[1];
-//        file_put_contents(storage_path() . '/public/static/' . $name . '_mobile.png', base64_decode($mobilePhoto));
         Storage::put('public/static/' . $name . '_mobile.png', base64_decode($mobilePhoto));
         Storage::put('public/static/' . $name . '_web.png', base64_decode($webPhoto));
         $row = [
@@ -136,13 +145,18 @@ class Petition extends Model
             'need_signatures' => $needSignatures,
             'count_signatures' => 1,
             'owner_id' => $userId,
-            'mobile_photo_url' => $mobilePhoto,
-            'web_photo_url' => $webPhoto,
-            'completed' => false,
-            'storage_path' => storage_path(),
-            'name' => $name
+            'mobile_photo_url' => 'https://petitions.trofimov.dev/static/' . $name . '_mobile.png',
+            'web_photo_url' => 'https://petitions.trofimov.dev/static/' . $name . '_web.png',
+            'completed' => false
         ];
-        return $row;
+        $petition = Petition::create($row);
+        $signature_row = [
+            'user_id' => $userId,
+            'petition_id' => $petition['id'],
+            'signed_at' => now()
+        ];
+        Signature::create($signature_row);
+        return $petition;
     }
 
     public static function filterString(string $string)
@@ -189,8 +203,9 @@ class Petition extends Model
             'completed' => $this->completed,
             'directed_to' => []
         ];
-        foreach (explode(',', $this->directed_to) as $item) {
-            $petition['directed_to'][] = $item;
+        if ($this->directed_to) {
+            foreach (explode(',', $this->directed_to) as $item) {
+                $petition['directed_to'][] = $item;
 //            preg_match('/^@\S+ \(.+\)$/', $item, $matches);
 //            if (!$matches) {
 //                $petition['directed_to'][] = $item;
@@ -206,6 +221,7 @@ class Petition extends Model
 //                'link' => 'https://vk.com/' . $link[1],
 //                'name' => $name[1]
 //            ];
+            }
         }
         if ($text) {
             $petition['text'] = $this->text;

@@ -6,7 +6,8 @@ import {
   SET_CURRENT,
   SET_CREATE,
   SET_EDIT,
-  SET_FORM_TYPE
+  SET_FORM_TYPE,
+  SET_INITIAL_EDIT
 } from "./actionTypes";
 
 const initialState = {
@@ -17,6 +18,7 @@ const initialState = {
   current: {},
   create: {},
   edit: {},
+  initialEdit: {},
   formType: "create"
 };
 
@@ -74,6 +76,13 @@ const petitionsReducer = (state = initialState, action) => {
           ...state.edit,
           ...action.payload
         }
+      };
+    }
+
+    case SET_INITIAL_EDIT: {
+      return {
+        ...state,
+        initialEdit: action.payload
       };
     }
 

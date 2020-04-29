@@ -5,33 +5,30 @@ import {
   Link,
   FixedLayout,
   Button,
-  Div,
-  usePlatform
+  Div
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon56CheckCircleOutline from "@vkontakte/icons/dist/56/check_circle_outline";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { goBack, openModal } from "../../store/router/actions";
-import { setEdit, setCreate } from "../../store/petitions/actions";
+import {
+  setPage,
+  openModal
+} from "../../store/router/actions";
+import { setCurrent } from "../../store/petitions/actions";
 import "./DonePetition.css";
 
 const api = new VKMiniAppAPI();
 
 const DonePetition = ({
   id,
-  activePanel,
-  goBack,
-  formType,
-  setEdit,
-  setCreate,
+  setPage,
   openModal,
-  editPetitions,
-  createPetitions
+  currentPetition,
+  setCurrent,
+  activeView
 }) => {
-  const platform = usePlatform();
-
   return (
     <Panel id={id} separator={false} className="DonePetition">
       <Placeholder
@@ -39,8 +36,14 @@ const DonePetition = ({
         stretched
       >
         Петиция{" "}
-        <Link className="DonePetition__title">
-          «Поместить Кобе Брайанта на новый логотип НБА»
+        <Link
+          className="DonePetition__title"
+          onClick={() => {
+            setCurrent({ id: currentPetition.id });
+            setPage(activeView, "petition", false, true, ["feed", "petition"]);
+          }}
+        >
+          {`«${currentPetition.title}»`}
         </Link>{" "}
         запущена
       </Placeholder>
@@ -61,7 +64,7 @@ const DonePetition = ({
             mode="secondary"
             onClick={() => {
               api.selectionChanged().catch(() => {});
-              goBack();
+              setPage("management", "feed");
             }}
           >
             Вернуться к списку петиций
@@ -74,11 +77,8 @@ const DonePetition = ({
 
 const mapStateToProps = state => {
   return {
-    activeStory: state.router.activeStory,
-    activePanel: state.router.activePanel,
-    formType: state.petitions.formType,
-    editPetitions: state.petitions.edit,
-    createPetitions: state.petitions.create
+    currentPetition: state.petitions.current,
+    activeView: state.router.activeView
   };
 };
 
@@ -87,9 +87,8 @@ const mapDispatchToProps = dispatch => {
     dispatch,
     ...bindActionCreators(
       {
-        goBack,
-        setEdit,
-        setCreate,
+        setPage,
+        setCurrent,
         openModal
       },
       dispatch
@@ -99,14 +98,11 @@ const mapDispatchToProps = dispatch => {
 
 DonePetition.propTypes = {
   id: PropTypes.string.isRequired,
-  activePanel: PropTypes.string.isRequired,
-  goBack: PropTypes.func.isRequired,
-  formType: PropTypes.string,
-  setEdit: PropTypes.func.isRequired,
-  setCreate: PropTypes.func.isRequired,
+  setPage: PropTypes.func.isRequired,
+  currentPetition: PropTypes.object.isRequired,
   openModal: PropTypes.func.isRequired,
-  editPetitions: PropTypes.object.isRequired,
-  createPetitions: PropTypes.object.isRequired
+  setCurrent: PropTypes.func.isRequired,
+  activeView: PropTypes.string.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DonePetition);

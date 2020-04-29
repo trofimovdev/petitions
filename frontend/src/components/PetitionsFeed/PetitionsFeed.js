@@ -102,7 +102,7 @@ const PetitionsFeed = ({
   const onScroll = () => {
     const scrollPosition = window.scrollY;
     console.log(scrollPosition);
-    const cardHeight = 313; // 313 - высота одной карточки в px (с отступами)
+    const cardHeight = 375; // высота одной карточки в px (с отступами)
     if (
       currentPetitions &&
       currentPetitions.length * cardHeight - scrollPosition < cardHeight * 5 &&
@@ -111,19 +111,53 @@ const PetitionsFeed = ({
       // загружать новые карточки когда юзер пролистнет 5 карточку
       console.log("new cards", activeTab.feed, currentPetitions.length);
       setLoadingStatus(true);
-      // if (launchParameters.vk_access_token_settings.includes("friends")) {
-      //   console.log("with friends");
-      //   loadPetitions("petitions", true, { type: activeTab.feed })
-      //     .then(r => console.log(r))
-      //     .catch(e => console.log(e));
-      // } else {
-      //   console.log("without friends");
-      //   loadPetitions("petitions", false, { type: activeTab.feed })
-      //     .then(r => {
-      //       console.log(r);
-      //     })
-      //     .catch(e => console.log(e));
-      // }
+      let setCurrentPetitions = () => {};
+      switch (activeTab.feed) {
+        case "popular":
+          setCurrentPetitions = setPopular;
+          break;
+
+        case "last":
+          setCurrentPetitions = setLast;
+          break;
+
+        case "signed":
+          setCurrentPetitions = setSigned;
+          break;
+      }
+      if (launchParameters.vk_access_token_settings.includes("friends")) {
+        console.log("with friends");
+        loadPetitions("petitions", true, {
+          offset: currentPetitions.length,
+          type: activeTab.feed
+        })
+          .then(r => {
+            console.log(r, currentPetitions);
+            setCurrentPetitions(
+              (currentPetitions + r).filter((value, index, self) => {
+                return self.indexOf(value) === index;
+              })
+            );
+            setLoadingStatus(false);
+          })
+          .catch(e => console.log(e));
+      } else {
+        console.log("without friends");
+        loadPetitions("petitions", false, {
+          offset: currentPetitions.length,
+          type: activeTab.feed
+        })
+          .then(r => {
+            console.log(r, currentPetitions);
+            setCurrentPetitions(
+              (currentPetitions + r).filter((value, index, self) => {
+                return self.indexOf(value) === index;
+              })
+            );
+            setLoadingStatus(false);
+          })
+          .catch(e => console.log(e));
+      }
     }
   };
 

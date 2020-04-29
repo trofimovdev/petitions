@@ -242,9 +242,9 @@ const Petition = ({
                 {`${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
               </Link>
               {`${
-                currentPetition.owner.sex === "2" ? "создал " : "создала "
-              } петицию${currentPetition.directed_to ? `, адресованную ` : ""}`}
-              {currentPetition.directed_to &&
+                currentPetition.owner.sex.toString() === "2" ? "создал " : "создала "
+              } петицию${currentPetition.directed_to.length > 0 ? `, адресованную ` : ""}`}
+              {currentPetition.directed_to.length > 0 &&
                 currentPetition.directed_to.map((item, index) => {
                   let ending = ", ";
                   if (index === currentPetition.directed_to.length - 1) {

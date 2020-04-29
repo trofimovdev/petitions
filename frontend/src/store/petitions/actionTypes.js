@@ -5,4 +5,5 @@ export const SET_MANAGED = "petitions.SET_MANAGE";
 export const SET_CURRENT = "petitions.SET_CURRENT";
 export const SET_CREATE = "petitions.SET_CREATE";
 export const SET_EDIT = "petitions.SET_EDIT";
+export const SET_INITIAL_EDIT = "petitions.SET_INITIAL_EDIT";
 export const SET_FORM_TYPE = "petitions.SET_FORM_TYPE";

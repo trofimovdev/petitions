@@ -11,6 +11,10 @@
     color: $petition-done-icon-color;
   }
 
+  &__title {
+    word-break: break-all;
+  }
+
   &__fixed-layout {
     padding-bottom: var(--safe-area-inset-bottom) !important;
   }

@@ -27,6 +27,7 @@ import Icon28BlockOutline from "@vkontakte/icons/dist/28/block_outline";
 import Icon28DeleteOutline from "@vkontakte/icons/dist/28/delete_outline";
 import Icon24Add from "@vkontakte/icons/dist/24/add";
 import Icon24DoneOutline from "@vkontakte/icons/dist/24/done_outline";
+import Icon28ChevronRightCircleOutline from "@vkontakte/icons/dist/28/chevron_right_circle_outline";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
@@ -39,7 +40,13 @@ import {
   openPopout,
   closePopout
 } from "../../store/router/actions";
-import { setCurrent, setManaged } from "../../store/petitions/actions";
+import {
+  setCurrent,
+  setManaged,
+  setFormType,
+  setEdit,
+  setInitialEdit
+} from "../../store/petitions/actions";
 import FriendsCard from "../FriendsCard/FriendsCard";
 import { loadPetitions } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
@@ -61,26 +68,115 @@ const ManagementFeed = ({
   launchParameters,
   setManaged,
   openPopout,
-  closePopout
+  closePopout,
+  setFormType,
+  setEdit,
+  setInitialEdit
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
   const platform = usePlatform();
 
-  const onManagement = petitionId => {
-    console.log("manage petition", petitionId);
+  const onManagement = (petitionId, completed) => {
+    console.log("manage petition", petitionId, completed);
     openPopout(
       <ActionSheet onClose={() => closePopout()}>
-        <ActionSheetItem autoclose before={<Icon28EditOutline />}>
-          Редактировать петицию
-        </ActionSheetItem>
         <ActionSheetItem
           autoclose
-          before={<Icon28BlockOutline />}
-          mode="destructive"
+          before={<Icon28EditOutline />}
+          onClick={() => {
+            api.selectionChanged().catch(() => {});
+            openPopout(<ScreenSpinner />);
+            loadPetitions(`petitions/${petitionId.toString()}`, false)
+              .then(response => {
+                // TODO: remove eslint problems
+                response = response[0];
+                console.log("SET EDIT", response);
+
+                const file_1 = new Image();
+                file_1.crossOrigin = "Anonymous";
+                file_1.onload = () => {
+                  const canvas1 = document.createElement("canvas");
+                  const ctx1 = canvas1.getContext("2d");
+                  canvas1.height = file_1.height;
+                  canvas1.width = file_1.width;
+                  ctx1.drawImage(file_1, 0, 0);
+                  const dataURL_file_1 = canvas1.toDataURL("image/png");
+                  const file_2 = new Image();
+                  file_2.crossOrigin = "Anonymous";
+                  file_2.onload = () => {
+                    const canvas2 = document.createElement("canvas");
+                    const ctx2 = canvas2.getContext("2d");
+                    canvas2.height = file_2.height;
+                    canvas2.width = file_2.width;
+                    ctx2.drawImage(file_2, 0, 0);
+                    const dataURL_file_2 = canvas2.toDataURL("image/png");
+                    const editForm = {
+                      id: response.id,
+                      title: response.title,
+                      text: response.text,
+                      signatures: response.count_signatures,
+                      directed_to: response.directed_to,
+                      file_1: dataURL_file_1,
+                      file_2: dataURL_file_2
+                    };
+                    closePopout();
+                    setInitialEdit(editForm);
+                    setEdit(editForm);
+                    setFormType("edit");
+                    setPage(activeView, "edit");
+                  };
+                  file_2.src = `${response.web_photo_url}?12`;
+                };
+                file_1.src = `${response.mobile_photo_url}?12`;
+              })
+              .catch(e => console.log(e));
+          }}
         >
-          Завершить сбор
+          Редактировать петицию
         </ActionSheetItem>
+        {completed ? (
+          <ActionSheetItem
+            autoclose
+            before={<Icon28ChevronRightCircleOutline />}
+            onClick={() => {
+              Backend.request(
+                `petitions/${petitionId}`,
+                { completed: false },
+                "PATCH"
+              )
+                .then(response => {
+                  console.log(response);
+                })
+                .catch(error => {
+                  console.log(error);
+                });
+            }}
+          >
+            Продолжить сбор
+          </ActionSheetItem>
+        ) : (
+          <ActionSheetItem
+            autoclose
+            before={<Icon28BlockOutline />}
+            mode="destructive"
+            onClick={() => {
+              Backend.request(
+                `petitions/${petitionId}`,
+                { completed: true },
+                "PATCH"
+              )
+                .then(response => {
+                  console.log(response);
+                })
+                .catch(error => {
+                  console.log(error);
+                });
+            }}
+          >
+            Завершить сбор
+          </ActionSheetItem>
+        )}
         <ActionSheetItem
           autoclose
           before={<Icon28DeleteOutline />}
@@ -162,25 +258,19 @@ const ManagementFeed = ({
       </ActionSheet>
     );
   };
-  console.log("managedPetitions", managedPetitions);
+
   const onRefresh = () => {
-    console.log("refresh");
     setFetchingStatus(true);
     if (launchParameters.vk_access_token_settings.includes("friends")) {
       console.log("with friends");
       loadPetitions("petitions", true, { type: "managed" })
         .then(response => {
-          console.log(
-            "SET MANAGED PETITIONS FROM MANAGEMENT FEED REQUEST",
-            response
-          );
           setFetchingStatus(false);
           setManaged(response);
           api.selectionChanged().catch(() => {});
         })
         .catch(e => console.log(e));
     } else {
-      console.log("without friends");
       loadPetitions("petitions", false, { type: "managed" })
         .then(response => {
           setFetchingStatus(false);
@@ -192,7 +282,6 @@ const ManagementFeed = ({
   };
 
   useEffect(() => {
-    console.log("activePanel from management", activePanel);
     if (activePanel === "feed") {
       api.setLocationHash("management");
     }
@@ -213,7 +302,8 @@ const ManagementFeed = ({
                 mode="secondary"
                 before={<Icon24Add />}
                 onClick={() => {
-                  setPage(activeView, "create");
+                  setFormType("create");
+                  setPage(activeView, "edit");
                   api.selectionChanged().catch(() => {});
                 }}
               >
@@ -304,7 +394,10 @@ const mapDispatchToProps = dispatch => {
         closeModal,
         setManaged,
         openPopout,
-        closePopout
+        closePopout,
+        setFormType,
+        setEdit,
+        setInitialEdit
       },
       dispatch
     )
@@ -325,7 +418,10 @@ ManagementFeed.propTypes = {
   launchParameters: PropTypes.object.isRequired,
   setManaged: PropTypes.func.isRequired,
   openPopout: PropTypes.func.isRequired,
-  closePopout: PropTypes.func.isRequired
+  closePopout: PropTypes.func.isRequired,
+  setFormType: PropTypes.func.isRequired,
+  setEdit: PropTypes.func.isRequired,
+  setInitialEdit: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManagementFeed);

@@ -6,7 +6,8 @@ import {
   SET_CURRENT,
   SET_CREATE,
   SET_EDIT,
-  SET_FORM_TYPE
+  SET_FORM_TYPE,
+  SET_INITIAL_EDIT
 } from "./actionTypes";
 
 export const setPopular = petitions => ({
@@ -41,6 +42,11 @@ export const setCreate = field => ({
 
 export const setEdit = field => ({
   type: SET_EDIT,
+  payload: field
+});
+
+export const setInitialEdit = field => ({
+  type: SET_INITIAL_EDIT,
   payload: field
 });
 

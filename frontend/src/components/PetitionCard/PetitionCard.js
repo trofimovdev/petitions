@@ -52,7 +52,7 @@ const PetitionCard = ({
       }}
     >
       {managementDots && (
-        <div className="PetitionCard__dots" onClick={() => onManagement(id)}>
+        <div className="PetitionCard__dots" onClick={() => onManagement(id, completed)}>
           <Icon28MoreHorizontal />
         </div>
       )}

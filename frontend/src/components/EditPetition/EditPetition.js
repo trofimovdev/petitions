@@ -41,7 +41,7 @@ const EditPetition = ({
   createPetitions
 }) => {
   const [snackbar, setSnackbar] = useState(null);
-  const MAX_FILE_SIZE = 15 * (10 ** 6); // максимальный размер - 15 мегабайт
+  const MAX_FILE_SIZE = 5 * (10 ** 6); // максимальный размер - 5 мегабайт
 
   const checkFileSize = fileSize => {
     if (fileSize > MAX_FILE_SIZE) {
@@ -93,6 +93,8 @@ const EditPetition = ({
       panelTitle = "Создание";
     }
   }
+
+  const initialEditForm = { ...form };
 
   useEffect(() => {
     if (activePanel === "create") {

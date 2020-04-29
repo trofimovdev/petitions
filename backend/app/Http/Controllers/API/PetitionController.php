@@ -7,13 +7,15 @@ use App\Http\Requests\SignRequest;
 use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\OkResponse;
 use App\Models\Petition;
+use Illuminate\Support\Facades\Storage;
 
 class PetitionController extends Controller
 {
     public function index(SignRequest $request)
     {
         $type = (string)$request->type;
-        return $this->getPetitions($request, $type);
+        $offset = (int)$request->offset;
+        return $this->getPetitions($request, $type, $offset);
     }
 
     public function show(SignRequest $request, $petitionId)
@@ -72,18 +74,18 @@ class PetitionController extends Controller
                 $webPhotoSize = getimagesize($webPhoto);
                 $webPhotoSize = $webPhotoSize[0] * $webPhotoSize[1] * $webPhotoSize["bits"];
 
-                if (strlen($title) > 150 || strlen($text) > 5000 || $needSignatures > 10000000 || $mobilePhotoSize / 8 / 1024 / 1024 > 15 || $webPhotoSize / 8 / 1024 / 1024 > 15) {
+                if (mb_strlen($title) === 0 || mb_strlen($title) > 150 || mb_strlen($text) === 0 || mb_strlen($text) > 5000 || $needSignatures === 0 || $needSignatures > 10000000 || $mobilePhotoSize / 8 / 1024 / 1024 > 7 || $webPhotoSize / 8 / 1024 / 1024 > 7) {
                     return new ErrorResponse(400, 'Too large');
                 }
 
-                return new OkResponse(Petition::create($title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto, $request->userId));
+                return new OkResponse(Petition::createPetition($title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto, $request->userId));
 
             case 'upload':
                 $uploadUrl = (string)$request->upload_url;
                 if (empty($petitionId) || !$uploadUrl) {
                     return new ErrorResponse(400, 'Invalid params');
                 }
-                return new OkResponse(Petition::upload($petitionId, $uploadUrl));
+                return new OkResponse(Petition::upload($petitionId, $uploadUrl, 'mobile'));
         }
 
         return $this->getPetitions($request, $type, $offset, $petitionId, $friendIds);
@@ -108,6 +110,70 @@ class PetitionController extends Controller
         return new OkResponse(true);
     }
 
+    public function update(SignRequest $request, $petitionId)
+    {
+        $petitionId = (int)$petitionId;
+        if (empty($petitionId)) {
+            return new ErrorResponse(400, 'Invalid params');
+        }
+
+        $petition = Petition::where('id', '=', $petitionId)
+            ->first();
+        if (!$petition) {
+            return new ErrorResponse(404, 'Petition not found');
+        }
+        if (!$petition['owner_id'] === $request->userId) {
+            return new ErrorResponse(403, 'Access denied');
+        }
+
+        $data = [];
+        if (!is_null($request->title)) {
+            $data['title'] = Petition::filterString((string)$request->title);
+        }
+        if (!is_null($request->text)) {
+            $data['text'] = Petition::filterString((string)$request->text);
+        }
+        if (!is_null($request->signatures)) {
+            $data['need_signatures'] = (integer)$request->signatures;
+        }
+//        if ($request->directed_to === "") {
+        $data['directed_to'] = Petition::filterString((string)$request->directed_to);
+//        }
+        if (!is_null($request->images)) {
+            if (is_null($request->file_1) && is_null($request->file_2) && is_null($request->file)) {
+                return new ErrorResponse(400, 'Invalid params');
+            } else if (!is_null($request->file)) {
+                if (!Petition::isBase64Image($request->file)) {
+                    return new ErrorResponse(400, 'Invalid image');
+                }
+                $name = bin2hex(random_bytes(5));
+                $photo = explode(',', $request->file)[1];
+                Storage::put('public/static/' . $name . '_mobile.png', base64_decode($photo));
+                Storage::put('public/static/' . $name . '_web.png', base64_decode($photo));
+                $data['mobile_photo_url'] = 'https://petitions.trofimov.dev/static/' . $name . '_mobile.png';
+                $data['web_photo_url'] = 'https://petitions.trofimov.dev/static/' . $name . '_web.png';
+            } else if (!is_null($request->file_1) && !is_null($request->file_2)) {
+                if (!Petition::isBase64Image($request->file_1) || !Petition::isBase64Image($request->file_2)) {
+                    return new ErrorResponse(400, 'Invalid image');
+                }
+                $name = bin2hex(random_bytes(5));
+                $mobilePhoto = explode(',', $request->file_1)[1];
+                $webPhoto = explode(',', $request->file_2)[1];
+                Storage::put('public/static/' . $name . '_mobile.png', base64_decode($mobilePhoto));
+                Storage::put('public/static/' . $name . '_web.png', base64_decode($webPhoto));
+                $data['mobile_photo_url'] = 'https://petitions.trofimov.dev/static/' . $name . '_mobile.png';
+                $data['web_photo_url'] = 'https://petitions.trofimov.dev/static/' . $name . '_web.png';
+            }
+        }
+        if (!is_null($request->completed)) {
+            $data['completed'] = (bool)$request->completed;
+        }
+        $petition = Petition::where('id', '=', $petitionId)
+            ->update($data);
+
+        return new OkResponse($data);
+    }
+
     private function getPetitions(SignRequest $request, string $type = '', int $offset = 0, int $petitionId = 0, array $friendIds = [])
     {
         if ($petitionId) {
@@ -120,7 +186,7 @@ class PetitionController extends Controller
                 return new OkResponse(Petition::getPetitions([22]));
 
             case 'last':
-                return new OkResponse(Petition::getLast($offset, $friendIds));
+                return new OkResponse(Petition::getLast(1, $friendIds));
 
             case 'signed':
                 return new OkResponse(Petition::getSigned($request->userId, $offset, $friendIds));

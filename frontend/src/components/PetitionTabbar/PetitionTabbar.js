@@ -5,7 +5,8 @@ import {
   FixedLayout,
   Spinner,
   getClassName,
-  usePlatform
+  usePlatform,
+  ScreenSpinner
 } from "@vkontakte/vkui";
 import Icon24ShareOutline from "@vkontakte/icons/dist/24/share_outline";
 import Icon24Settings from "@vkontakte/icons/dist/24/settings";
@@ -15,14 +16,21 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { openModal, setPage } from "../../store/router/actions";
+import {
+  openModal,
+  setPage,
+  openPopout,
+  closePopout
+} from "../../store/router/actions";
 import {
   setCurrent,
   setSigned,
   setFormType,
-  setEdit
+  setEdit,
+  setInitialEdit
 } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
+import { loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -36,7 +44,10 @@ const PetitionTabbar = ({
   activeView,
   setPage,
   setFormType,
-  setEdit
+  setEdit,
+  setInitialEdit,
+  openPopout,
+  closePopout
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
 
@@ -104,9 +115,17 @@ const PetitionTabbar = ({
       )}
       <Div className="PetitionTabbar__buttons">
         <Button
-          className={`PetitionTabbar__buttons__sign ${currentPetition.completed ? "PetitionTabbar__buttons__sign--completed" : ""}`}
+          className={`PetitionTabbar__buttons__sign ${
+            currentPetition.completed
+              ? "PetitionTabbar__buttons__sign--completed"
+              : ""
+          }`}
           size="xl"
-          mode={currentPetition.signed || currentPetition.completed ? "secondary" : "primary"}
+          mode={
+            currentPetition.signed || currentPetition.completed
+              ? "secondary"
+              : "primary"
+          }
           onClick={() => {
             if (currentPetition.completed) {
               return;
@@ -149,13 +168,51 @@ const PetitionTabbar = ({
             mode="secondary"
             onClick={() => {
               api.selectionChanged().catch(() => {});
-              setFormType("edit");
-              setEdit({
-                title: currentPetition.title,
-                text: currentPetition.text,
-                signatures: currentPetition.need_signatures
-              });
-              setPage(activeView, "edit");
+              openPopout(<ScreenSpinner />);
+              loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
+                .then(response => {
+                  // TODO: remove eslint problems
+                  response = response[0];
+                  console.log("SET EDIT", response);
+
+                  const file_1 = new Image();
+                  file_1.crossOrigin = "Anonymous";
+                  file_1.onload = () => {
+                    const canvas1 = document.createElement("canvas");
+                    const ctx1 = canvas1.getContext("2d");
+                    canvas1.height = file_1.height;
+                    canvas1.width = file_1.width;
+                    ctx1.drawImage(file_1, 0, 0);
+                    const dataURL_file_1 = canvas1.toDataURL("image/png");
+                    const file_2 = new Image();
+                    file_2.crossOrigin = "Anonymous";
+                    file_2.onload = () => {
+                      const canvas2 = document.createElement("canvas");
+                      const ctx2 = canvas2.getContext("2d");
+                      canvas2.height = file_2.height;
+                      canvas2.width = file_2.width;
+                      ctx2.drawImage(file_2, 0, 0);
+                      const dataURL_file_2 = canvas2.toDataURL("image/png");
+                      const editForm = {
+                        id: response.id,
+                        title: response.title,
+                        text: response.text,
+                        signatures: response.count_signatures,
+                        directed_to: response.directed_to,
+                        file_1: dataURL_file_1,
+                        file_2: dataURL_file_2
+                      };
+                      closePopout();
+                      setInitialEdit(editForm);
+                      setEdit(editForm);
+                      setFormType("edit");
+                      setPage(activeView, "edit");
+                    };
+                    file_2.src = `${response.web_photo_url}?12`;
+                  };
+                  file_1.src = `${response.mobile_photo_url}?12`;
+                })
+                .catch(e => console.log(e));
             }}
           >
             <Icon24Settings />
@@ -185,7 +242,10 @@ const mapDispatchToProps = dispatch => {
         setSigned,
         setPage,
         setFormType,
-        setEdit
+        setEdit,
+        setInitialEdit,
+        openPopout,
+        closePopout
       },
       dispatch
     )
@@ -202,7 +262,10 @@ PetitionTabbar.propTypes = {
   activeView: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
   setFormType: PropTypes.func.isRequired,
-  setEdit: PropTypes.func.isRequired
+  setEdit: PropTypes.func.isRequired,
+  setInitialEdit: PropTypes.func.isRequired,
+  openPopout: PropTypes.func.isRequired,
+  closePopout: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionTabbar);

@@ -1,6 +1,3 @@
-// TODO: replace vk-bridge SwipeBack to vk-mini-apps, when PR will be accepted (https://github.com/VKCOM/vk-mini-apps-api/pull/15)
-import bridge from "@vkontakte/vk-bridge";
-
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import { smoothScrollToTop } from "../../tools/helpers";
 import {
@@ -39,6 +36,9 @@ const routerReducer = (state = initialState, action) => {
       console.log("LOL KEK ADASDASDASDASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
       const View = action.payload.view;
       const Panel = action.payload.panel;
+      const { disableSwipeBack } = action.payload;
+      const { rewriteHistory } = action.payload;
+      const { history } = action.payload;
       console.log(View, Panel);
 
       window.history.pushState(null, null);
@@ -61,11 +61,12 @@ const routerReducer = (state = initialState, action) => {
         [View]: panelsHistory
       });
 
-      if (panelsHistory.length > 1) {
-        // TODO: replace with vk-mini-apps-api
-        // api.enableSwipeBack();
-        bridge.send("VKWebAppEnableSwipeBack");
-        console.log("vksdk swipeBackOn");
+      console.log("disableSwipeBack", disableSwipeBack);
+      if (panelsHistory.length > 1 && !disableSwipeBack) {
+        api.enableSwipeBack();
+      } else {
+        console.log("DISABLE SWIPE BACK PLS");
+        api.disableSwipeBack();
       }
 
       return {
@@ -75,7 +76,7 @@ const routerReducer = (state = initialState, action) => {
 
         panelsHistory: {
           ...state.panelsHistory,
-          [View]: panelsHistory
+          [View]: rewriteHistory ? history : panelsHistory
         },
         viewsHistory: {
           ...state.viewsHistory,
@@ -274,10 +275,7 @@ const routerReducer = (state = initialState, action) => {
       }
 
       if (panelsHistory.length === 1) {
-        // TODO: replace with vk-mini-apps-api
-        // api.disableSwipeBack();
-        bridge.send("VKWebAppDisableSwipeBack");
-        console.log("vksdk disableSwipeBack");
+        api.disableSwipeBack();
       }
 
       console.log("panelsHistory goBack", {
