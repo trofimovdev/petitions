@@ -70,8 +70,12 @@ class PetitionController extends Controller
                 }
 
                 $mobilePhotoSize = getimagesize($mobilePhoto);
-                $mobilePhotoSize = $mobilePhotoSize[0] * $mobilePhotoSize[1] * $mobilePhotoSize["bits"];
                 $webPhotoSize = getimagesize($webPhoto);
+                if ($mobilePhotoSize[0] < 100 || $mobilePhotoSize[1] < 100 || $webPhotoSize[0] < 100 || $webPhotoSize[1] < 100) {
+                    return new ErrorResponse(400, 'Слишком маленькое изображение');
+                }
+
+                $mobilePhotoSize = $mobilePhotoSize[0] * $mobilePhotoSize[1] * $mobilePhotoSize["bits"];
                 $webPhotoSize = $webPhotoSize[0] * $webPhotoSize[1] * $webPhotoSize["bits"];
 
                 if (mb_strlen($title) === 0 || mb_strlen($title) > 150 || mb_strlen($text) === 0 || mb_strlen($text) > 3000 || $needSignatures === 0 || $needSignatures > 10000000 || $mobilePhotoSize / 8 / 1024 / 1024 > 7 || $webPhotoSize / 8 / 1024 / 1024 > 7) {
@@ -107,6 +111,7 @@ class PetitionController extends Controller
             return new ErrorResponse(403, 'Access denied');
         }
         $petition->delete();
+        unlink();
         return new OkResponse(true);
     }
 
@@ -136,9 +141,9 @@ class PetitionController extends Controller
         if (!is_null($request->signatures)) {
             $data['need_signatures'] = (integer)$request->signatures;
         }
-//        if ($request->directed_to === "") {
-        $data['directed_to'] = Petition::filterString((string)$request->directed_to);
-//        }
+        if ($request->directed_to && !is_null($request->signatures)) {
+            $data['directed_to'] = Petition::filterString((string)$request->directed_to);
+        }
         if (!is_null($request->images)) {
             if (is_null($request->file_1) && is_null($request->file_2) && is_null($request->file)) {
                 return new ErrorResponse(400, 'Invalid params');
@@ -146,17 +151,18 @@ class PetitionController extends Controller
                 if (!Petition::isBase64Image($request->file)) {
                     return new ErrorResponse(400, 'Invalid image');
                 }
-                $name = bin2hex(random_bytes(5));
-                $photo = explode(',', $request->file)[1];
-                Storage::put('public/static/' . $name . '_mobile.png', base64_decode($photo));
-                Storage::put('public/static/' . $name . '_web.png', base64_decode($photo));
+                $photoSize = getimagesize($request->file);
+                if ($photoSize[0] < 100 || $photoSize[1] < 100) {
+                    return new ErrorResponse(400, 'Слишком маленькое изображение');
+                }
+                $name = Petition::saveImages($request->file, $request->file);
                 $data['mobile_photo_url'] = 'https://petitions.trofimov.dev/static/' . $name . '_mobile.png';
                 $data['web_photo_url'] = 'https://petitions.trofimov.dev/static/' . $name . '_web.png';
             } else if (!is_null($request->file_1) && !is_null($request->file_2)) {
                 if (!Petition::isBase64Image($request->file_1) || !Petition::isBase64Image($request->file_2)) {
                     return new ErrorResponse(400, 'Invalid image');
                 }
-                $name = bin2hex(random_bytes(5));
+                $name = time() . bin2hex(random_bytes(5));
                 $mobilePhoto = explode(',', $request->file_1)[1];
                 $webPhoto = explode(',', $request->file_2)[1];
                 Storage::put('public/static/' . $name . '_mobile.png', base64_decode($mobilePhoto));

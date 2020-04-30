@@ -72,7 +72,6 @@ const PetitionsFeed = ({
   };
 
   const onRefresh = () => {
-    console.log("refresh");
     setFetchingStatus(true);
     if (launchParameters.vk_access_token_settings.includes("friends")) {
       console.log("with friends");
@@ -100,7 +99,6 @@ const PetitionsFeed = ({
     const petitionsContainerHeight = document.getElementById(
       "petitionsContainer"
     ).offsetHeight;
-    console.log(scrollPosition, petitionsContainerHeight);
     if (
       currentPetitions &&
       scrollPosition + 1300 > petitionsContainerHeight &&

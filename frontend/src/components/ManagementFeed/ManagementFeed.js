@@ -75,6 +75,8 @@ const ManagementFeed = ({
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
+  const [loadingStatus, setLoadingStatus] = useState(false);
+  const [endStatus, setEndStatus] = useState(false);
   const platform = usePlatform();
 
   const onManagement = (petitionId, completed) => {
@@ -91,7 +93,6 @@ const ManagementFeed = ({
               .then(response => {
                 // TODO: remove eslint problems
                 response = response[0];
-                console.log("SET EDIT", response);
 
                 const file_1 = new Image();
                 file_1.crossOrigin = "Anonymous";
@@ -146,7 +147,16 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(response => {
-                  console.log(response);
+                  setManaged(
+                    managedPetitions.map((item, index) => {
+                      if (item.id === petitionId) {
+                        item.completed = true;
+                        console.log(item);
+                        return item;
+                      }
+                      return item;
+                    })
+                  );
                 })
                 .catch(error => {
                   console.log(error);
@@ -167,7 +177,14 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(response => {
-                  console.log(response);
+                  managedPetitions.map((item, index) => {
+                    if (item.id === petitionId) {
+                      item.completed = true;
+                      console.log(item);
+                      return item;
+                    }
+                    return item;
+                  })
                 })
                 .catch(error => {
                   console.log(error);
@@ -192,8 +209,6 @@ const ManagementFeed = ({
                     autoclose: true,
                     mode: "destructive",
                     action: () => {
-                      console.log("DELETE PETITION", petitionId);
-                      console.log("PETITIONs", managedPetitions);
                       openPopout(<ScreenSpinner />);
                       Backend.request(`petitions/${petitionId}`, {}, "DELETE")
                         .then(r => {
@@ -281,11 +296,78 @@ const ManagementFeed = ({
     }
   };
 
+  const onScroll = () => {
+    const scrollPosition = window.scrollY;
+    const petitionsContainerHeight = document.getElementById(
+      "managedPetitionsContainer"
+    ).offsetHeight;
+    if (
+      managedPetitions &&
+      scrollPosition + 1300 > petitionsContainerHeight &&
+      !loadingStatus &&
+      !endStatus
+    ) {
+      // загружать новые карточки когда юзер пролистнет 5 карточку
+      setLoadingStatus(true);
+      if (launchParameters.vk_access_token_settings.includes("friends")) {
+        console.log("with friends");
+        loadPetitions("petitions", true, {
+          offset: managedPetitions.length,
+          type: "managed"
+        })
+          .then(r => {
+            console.log("THIS IS MY r", r);
+            if (r.length === 0) {
+              setEndStatus(true);
+              return;
+            }
+            const petitions = managedPetitions
+              .concat(r)
+              .filter((value, index, self) => {
+                return self.indexOf(value) === index;
+              });
+            setManaged(petitions);
+            setLoadingStatus(false);
+          })
+          .catch(e => console.log(e));
+      } else {
+        console.log("without friends");
+        loadPetitions("petitions", false, {
+          offset: managedPetitions.length,
+          type: "managed"
+        })
+          .then(r => {
+            console.log("THIS IS MY r", r);
+            if (r.length === 0) {
+              setEndStatus(true);
+              return;
+            }
+            const petitions = managedPetitions
+              .concat(r)
+              .filter((value, index, self) => {
+                return self.indexOf(value) === index;
+              });
+            setManaged(petitions);
+            setLoadingStatus(false);
+          })
+          .catch(e => console.log(e));
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  });
+
   useEffect(() => {
     if (activePanel === "feed") {
       api.setLocationHash("management");
     }
   }, [activePanel]);
+
   return (
     <Panel
       id={id}
@@ -339,7 +421,11 @@ const ManagementFeed = ({
             Создавайте петиции, чтобы решать реальные проблемы
           </Placeholder>
         ) : (
-          <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
+          <PullToRefresh
+            onRefresh={onRefresh}
+            isFetching={fetchingStatus}
+            id="managedPetitionsContainer"
+          >
             <FriendsCard />
             {managedPetitions.map((item, index) => {
               return (
@@ -359,12 +445,18 @@ const ManagementFeed = ({
                 </div>
               );
             })}
-
-            {managedPetitions.length > 0 && (
-              <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
-            )}
-            {managedPetitions.length === 0 && (
+            {managedPetitions.length === 0 ? (
               <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
+            ) : (managedPetitions.length > 0 && endStatus) ||
+              (managedPetitions.length > 0 &&
+                managedPetitions.length < 10 &&
+                !endStatus) ? (
+              <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
+            ) : (
+              <Spinner
+                size="regular"
+                className="ManagementFeed__spinner__bottom"
+              />
             )}
           </PullToRefresh>
         )

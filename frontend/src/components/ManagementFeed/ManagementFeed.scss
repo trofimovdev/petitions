@@ -43,5 +43,9 @@
 .ManagementFeed {
   &__spinner {
     padding-top: 20px !important;
+
+    &__bottom {
+      margin-bottom: 30px;
+    }
   }
 }

@@ -134,11 +134,7 @@ class Petition extends Model
 
     public static function createPetition(string $title, string $text, int $needSignatures, string $directedTo, string $mobilePhoto, string $webPhoto, int $userId)
     {
-        $name = bin2hex(random_bytes(5));
-        $mobilePhoto = explode(',', $mobilePhoto)[1];
-        $webPhoto = explode(',', $webPhoto)[1];
-        Storage::put('public/static/' . $name . '_mobile.png', base64_decode($mobilePhoto));
-        Storage::put('public/static/' . $name . '_web.png', base64_decode($webPhoto));
+        $name = Petition::saveImages($mobilePhoto, $webPhoto);
         $row = [
             'title' => $title,
             'text' => $text,
@@ -162,6 +158,47 @@ class Petition extends Model
     public static function filterString(string $string)
     {
         return preg_replace("/[^\Wa-zA-Z0-9 ]/", "", $string);
+    }
+
+    public static function saveImages(string $mobilePhoto, string $webPhoto)
+    {
+        $name = time() . bin2hex(random_bytes(5));
+        $mobilePhotoBase64 = base64_decode(explode(',', $mobilePhoto)[1]);
+        $webPhotoBase64 = base64_decode(explode(',', $webPhoto)[1]);
+        $mobilePhoto = imagecreatefromstring($mobilePhotoBase64);
+        $webPhoto = imagecreatefromstring($webPhotoBase64);
+
+        $mobilePhotoWidth = imagesx($mobilePhoto);
+        $mobilePhotoHeight = imagesy($mobilePhoto);
+        $webPhotoWidth = imagesx($webPhoto);
+        $webPhotoHeight = imagesy($webPhoto);
+
+        if ($mobilePhotoWidth > $mobilePhotoHeight || round($mobilePhotoHeight * 1.875) < $mobilePhotoWidth) {
+            $height = $mobilePhotoHeight;
+            $width = round($mobilePhotoHeight * 1.875);
+        } else {
+            $width = $mobilePhotoWidth;
+            $height = round($mobilePhotoWidth / 1.875);
+        }
+        $mobilePhoto = imagecrop($mobilePhoto, ['x' => round(($mobilePhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
+
+        if ($webPhotoWidth > $webPhotoHeight || round($webPhotoHeight * 4.25) < $webPhotoWidth) {
+            $height = $webPhotoHeight;
+            $width = round($webPhotoHeight * 4.25);
+        } else {
+            $width = $mobilePhotoWidth;
+            $height = round($mobilePhotoWidth / 4.25);
+        }
+        $webPhoto = imagecrop($webPhoto, ['x' => round(($webPhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
+
+        imagepng($mobilePhoto, base_path() . '/storage/app/public/static/' . $name . '_mobile.png');
+        imagepng($webPhoto, base_path() . '/storage/app/public/static/' . $name . '_web.png');
+//        file_put_contents('/home/anatoly/petitions/storage/app/public/static/' . $name . '_mobile.png', $mobilePhoto);
+//        file_put_contents('/home/anatoly/petitions/storage/app/public/static/' . $name . '_web.png', $webPhoto);
+//        Storage::put('public/static/' . $name . '_mobile.png', $mobilePhotoBase64);
+//        Storage::put('public/static/' . $name . '_web.png', $webPhotoBase64);
+
+        return $name;
     }
 
     public static function isBase64Image(string $base64)

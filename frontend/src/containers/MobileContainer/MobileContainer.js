@@ -88,11 +88,11 @@ const mapDispatchToProps = dispatch => {
 };
 
 MobileContainer.propTypes = {
-  activeView: PropTypes.string.isRequired,
-  activePanel: PropTypes.string.isRequired,
-  activeStory: PropTypes.string.isRequired,
-  activeTab: PropTypes.object.isRequired,
-  scrollPosition: PropTypes.object.isRequired,
+  activeView: PropTypes.string,
+  activePanel: PropTypes.string,
+  activeStory: PropTypes.string,
+  activeTab: PropTypes.object,
+  scrollPosition: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   goBack: PropTypes.func.isRequired,
   history: PropTypes.array.isRequired
 };
