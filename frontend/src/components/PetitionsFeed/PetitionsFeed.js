@@ -97,7 +97,9 @@ const PetitionsFeed = ({
 
   const onScroll = () => {
     const scrollPosition = window.scrollY;
-    const petitionsContainerHeight = document.getElementById("petitionsContainer").offsetHeight;
+    const petitionsContainerHeight = document.getElementById(
+      "petitionsContainer"
+    ).offsetHeight;
     console.log(scrollPosition, petitionsContainerHeight);
     if (
       currentPetitions &&
@@ -106,7 +108,6 @@ const PetitionsFeed = ({
       !endStatus
     ) {
       // загружать новые карточки когда юзер пролистнет 5 карточку
-      console.log("new cards", activeTab.feed, currentPetitions.length);
       setLoadingStatus(true);
       let setCurrentPetitions = () => {};
       switch (activeTab.feed) {
@@ -131,7 +132,6 @@ const PetitionsFeed = ({
           .then(r => {
             console.log("THIS IS MY r", r);
             if (r.length === 0) {
-              console.log("SET END STATUS");
               setEndStatus(true);
               return;
             }
@@ -153,7 +153,6 @@ const PetitionsFeed = ({
           .then(r => {
             console.log("THIS IS MY r", r);
             if (r.length === 0) {
-              console.log("SET END STATUS");
               setEndStatus(true);
               return;
             }
@@ -222,7 +221,11 @@ const PetitionsFeed = ({
         </div>
       </PanelHeaderSimple>
       {currentPetitions !== undefined ? (
-        <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus} id="petitionsContainer">
+        <PullToRefresh
+          onRefresh={onRefresh}
+          isFetching={fetchingStatus}
+          id="petitionsContainer"
+        >
           <FriendsCard />
           {currentPetitions.map((item, index) => {
             return (
@@ -240,13 +243,15 @@ const PetitionsFeed = ({
               </div>
             );
           })}
-          {currentPetitions.length > 0 && endStatus ? (
+          {currentPetitions.length === 0 ? (
+            <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
+          ) : currentPetitions.length > 0 && endStatus || currentPetitions.length > 0 && currentPetitions.length < 10 && !endStatus ? (
             <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
           ) : (
-            <Spinner size="regular" className="PetitionsFeed__spinner" />
-          )}
-          {currentPetitions.length === 0 && (
-            <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
+            <Spinner
+              size="regular"
+              className="PetitionsFeed__spinner__bottom"
+            />
           )}
         </PullToRefresh>
       ) : (

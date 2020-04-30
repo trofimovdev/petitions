@@ -84,31 +84,20 @@ api.storageGet("is_app_user").then(r => {
     const context = atob(launchParameters.vk_ref.split("_")[4]).match(
       petitionRegExp
     );
-    console.log(
-      "Context",
-      launchParameters.vk_ref.split("_"),
-      atob(launchParameters.vk_ref.split("_")[4]),
-      context
-    );
     if (context) {
       petitionId = context;
-      console.log("SET PETITITON FROM STORY", petitionId);
     }
   }
   if (petitionId) {
-    console.log("petitionId", petitionId);
     store.dispatch(setCurrent({ id: petitionId[1] }));
     store.dispatch(setActiveTab("feed", "last"));
     store.dispatch(setStory("petitions", "feed"));
     store.dispatch(setPage("petitions", "petition"));
   } else if (!isAppUser) {
-    console.log("!isAppUser");
     if (feedTab) {
-      console.log("feedTab");
       store.dispatch(setActiveTab("feed", feedTab[1]));
       store.dispatch(setStory("petitions", "splashscreen", false));
     } else if (management) {
-      console.log("management");
       store.dispatch(setActiveTab("feed", "last"));
       store.dispatch(setStory("management", "splashscreen", false));
     } else {
@@ -117,15 +106,12 @@ api.storageGet("is_app_user").then(r => {
     }
   } else {
     if (feedTab) {
-      console.log("ASDASDASD", feedTab[1]);
       store.dispatch(setActiveTab("feed", feedTab[1]));
       store.dispatch(setStory("petitions", "feed"));
     } else if (management) {
-      console.log("QWEQWEQWEWE");
       store.dispatch(setActiveTab("feed", "last"));
       store.dispatch(setStory("management", "feed"));
     } else {
-      console.log("ZXCZXCZXC");
       store.dispatch(setActiveTab("feed", "last"));
       store.dispatch(setStory("petitions", "feed"));
     }

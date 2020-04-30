@@ -23,6 +23,8 @@
 
 .PetitionsFeed__spinner {
   margin-top: 20px; }
+  .PetitionsFeed__spinner__bottom {
+    margin-bottom: 30px; }
 
 .FeedFooter {
   margin-top: 0 !important; }
