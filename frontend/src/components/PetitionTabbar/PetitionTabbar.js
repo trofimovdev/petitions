@@ -54,8 +54,11 @@ const PetitionTabbar = ({
   const signPetition = () => {
     setFetchingStatus(true);
     Backend.request(`signatures/${currentPetition.id}`, {}, "PUT").then(r => {
-      if (r) {
-        setCurrent({ ...currentPetition, ...{ signed: true } });
+      if (r || r === 0) {
+        setCurrent({
+          ...currentPetition,
+          ...{ signed: true, count_signatures: parseInt(r) }
+        });
         signedPetitions.unshift(currentPetition);
         setSigned(signedPetitions);
         setFetchingStatus(false);
@@ -68,19 +71,11 @@ const PetitionTabbar = ({
     setFetchingStatus(true);
     Backend.request(`signatures/${currentPetition.id}`, {}, "DELETE").then(
       r => {
-        if (r) {
-          setCurrent({ ...currentPetition, ...{ signed: false } });
-          console.log(
-            "SET SIGNED",
-            signedPetitions.filter(item => {
-              console.log(
-                item,
-                currentPetition,
-                item.id !== currentPetition.id
-              );
-              return item.id !== currentPetition.id;
-            })
-          );
+        if (r || r === 0) {
+          setCurrent({
+            ...currentPetition,
+            ...{ signed: false, count_signatures: parseInt(r) }
+          });
           setSigned(
             signedPetitions.filter(item => {
               return item.id !== currentPetition.id;
@@ -154,10 +149,7 @@ const PetitionTabbar = ({
           mode="secondary"
           onClick={() => {
             api.selectionChanged().catch(() => {});
-            console.log("try to open");
-            console.log("active MODALKA");
             openModal("share-type");
-            console.log("opened");
           }}
         >
           <Icon24ShareOutline />

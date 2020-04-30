@@ -34,11 +34,12 @@ class SignatureController extends Controller
             return new ErrorResponse(409, 'Already signed');
         }
 
-        $petition = Petition::getPetitions([$petitionId]);
-        if (count($petition) !== 1) {
+        $petitions = Petition::getPetitions([$petitionId]);
+        if (count($petitions) !== 1) {
             return new ErrorResponse(404, 'Petition not found');
         }
-        if ($petition[0]['completed'] === true) {
+        $petition = $petitions[0];
+        if ($petition['completed'] === true) {
             return new ErrorResponse(403, 'Signature completed');
         }
 
@@ -46,10 +47,11 @@ class SignatureController extends Controller
         $signature->user_id = $request->userId;
         $signature->petition_id = $petitionId;
         $signature->signed_at = now();
-
         $signature->save();
+        Petition::where('id', '=', $petitionId)
+            ->update(['count_signatures' => $petition['count_signatures'] + 1]);
 
-        return new OkResponse(true);
+        return new OkResponse($petition['count_signatures'] + 1);
     }
 
     public function destroy(SignRequest $request, $petitionId)
@@ -60,21 +62,24 @@ class SignatureController extends Controller
         }
 
         $signature = Signature::where('petition_id', '=', $petitionId)
-            ->where('user_id', '=', $request->userId)
-            ->delete();
-
+            ->where('user_id', '=', $request->userId);
         if (!$signature) {
             return new ErrorResponse(404, 'Signature not found');
         }
 
-        $petition = Petition::getPetitions([$petitionId]);
-        if (count($petition) !== 1) {
+        $petitions = Petition::getPetitions([$petitionId]);
+        if (count($petitions) !== 1) {
             return new ErrorResponse(404, 'Petition not found');
         }
-        if ($petition[0]['completed'] === true) {
+        $petition = $petitions[0];
+        if ($petition['completed'] === true) {
             return new ErrorResponse(403, 'Signature completed');
         }
 
-        return new OkResponse(true);
+        $signature->delete();
+        Petition::where('id', '=', $petitionId)
+            ->update(['count_signatures' => $petition['count_signatures'] - 1]);
+
+        return new OkResponse($petition['count_signatures'] - 1);
     }
 }

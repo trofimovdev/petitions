@@ -150,7 +150,7 @@ const ManagementFeed = ({
                   setManaged(
                     managedPetitions.map((item, index) => {
                       if (item.id === petitionId) {
-                        item.completed = true;
+                        item.completed = false;
                         console.log(item);
                         return item;
                       }
@@ -177,14 +177,16 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(response => {
-                  managedPetitions.map((item, index) => {
-                    if (item.id === petitionId) {
-                      item.completed = true;
-                      console.log(item);
+                  setManaged(
+                    managedPetitions.map((item, index) => {
+                      if (item.id === petitionId) {
+                        item.completed = true;
+                        console.log(item);
+                        return item;
+                      }
                       return item;
-                    }
-                    return item;
-                  })
+                    })
+                  );
                 })
                 .catch(error => {
                   console.log(error);

@@ -193,11 +193,6 @@ class Petition extends Model
 
         imagepng($mobilePhoto, base_path() . '/storage/app/public/static/' . $name . '_mobile.png');
         imagepng($webPhoto, base_path() . '/storage/app/public/static/' . $name . '_web.png');
-//        file_put_contents('/home/anatoly/petitions/storage/app/public/static/' . $name . '_mobile.png', $mobilePhoto);
-//        file_put_contents('/home/anatoly/petitions/storage/app/public/static/' . $name . '_web.png', $webPhoto);
-//        Storage::put('public/static/' . $name . '_mobile.png', $mobilePhotoBase64);
-//        Storage::put('public/static/' . $name . '_web.png', $webPhotoBase64);
-
         return $name;
     }
 
