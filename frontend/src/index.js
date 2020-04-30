@@ -54,15 +54,6 @@ api.storageGet("is_app_user").then(r => {
   let petitionId = window.location.hash.match(petitionRegExp);
   const feedTab = window.location.hash.match(feedRegExp);
   const management = window.location.hash.match(managementRegExp);
-
-  console.log(
-    "WINDOWS HASH",
-    window.location.hash,
-    petitionId,
-    feedTab,
-    management
-  );
-
   const launchParameters = Object.fromEntries(
     new URLSearchParams(window.location.search)
   );

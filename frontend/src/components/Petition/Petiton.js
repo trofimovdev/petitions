@@ -63,7 +63,9 @@ const Petition = ({
       })
         .then(response => {
           setFetchingStatus(false);
-          setCurrent(response[0]);
+          if (response) {
+            setCurrent(response[0]);
+          }
           api.selectionChanged().catch(() => {});
         })
         .catch(e => console.log(e));
@@ -72,7 +74,9 @@ const Petition = ({
       loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
         .then(response => {
           setFetchingStatus(false);
-          setCurrent(response[0]);
+          if (response) {
+            setCurrent(response[0]);
+          }
           api.selectionChanged().catch(() => {});
         })
         .catch(e => console.log(e));
@@ -104,7 +108,10 @@ const Petition = ({
           })
             .then(response => {
               setLoadingStatus(false);
-              setCurrent(response[0]);
+              console.log("PETITION1", response);
+              if (response.length > 0) {
+                setCurrent(response[0]);
+              }
             })
             .catch(e => console.log(e));
         } else {
@@ -112,7 +119,10 @@ const Petition = ({
           loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
             .then(response => {
               setLoadingStatus(false);
-              setCurrent(response[0]);
+              console.log("PETITION3", response);
+              if (response.length > 0) {
+                setCurrent(response[0]);
+              }
             })
             .catch(e => console.log(e));
         }
@@ -150,7 +160,7 @@ const Petition = ({
         }
         separator={false}
       />
-      {!currentPetition ? (
+      {Object.keys(currentPetition).length === 1 && !loadingStatus ? (
         <Placeholder
           action={
             <Button
@@ -242,8 +252,12 @@ const Petition = ({
                 {`${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
               </Link>
               {`${
-                currentPetition.owner.sex.toString() === "2" ? "создал " : "создала "
-              } петицию${currentPetition.directed_to.length > 0 ? `, адресованную ` : ""}`}
+                currentPetition.owner.sex.toString() === "2"
+                  ? "создал "
+                  : "создала "
+              } петицию${
+                currentPetition.directed_to.length > 0 ? `, адресованную ` : ""
+              }`}
               {currentPetition.directed_to.length > 0 &&
                 currentPetition.directed_to.map((item, index) => {
                   let ending = ", ";
