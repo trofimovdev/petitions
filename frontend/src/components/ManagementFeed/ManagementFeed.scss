@@ -28,7 +28,7 @@
 
 .ManagementFeed .PanelHeader--ios {
   .PanelHeader__in, .PanelHeader__content {
-    height: calc(52px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
+    height: calc(52px + var(--panelheader_height_ios)) !important; // 52px - высота кнопки на iOS
   }
 }
 

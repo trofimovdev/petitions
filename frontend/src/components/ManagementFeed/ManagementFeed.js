@@ -126,9 +126,9 @@ const ManagementFeed = ({
                     setFormType("edit");
                     setPage(activeView, "edit");
                   };
-                  file_2.src = `${response.web_photo_url}?12`;
+                  file_2.src = response.web_photo_url;
                 };
-                file_1.src = `${response.mobile_photo_url}?12`;
+                file_1.src = response.mobile_photo_url;
               })
               .catch(e => console.log(e));
           }}
@@ -290,7 +290,11 @@ const ManagementFeed = ({
     <Panel
       id={id}
       separator={false}
-      className={`${managedPetitions !== undefined ? "ManagementFeed" : ""}`}
+      className={`${
+        managedPetitions !== undefined && managedPetitions.length > 0
+          ? "ManagementFeed"
+          : ""
+      }`}
     >
       <PanelHeader separator>
         <div>
@@ -322,7 +326,8 @@ const ManagementFeed = ({
               <Button
                 size="l"
                 onClick={() => {
-                  setPage(activeView, "create");
+                  setFormType("create");
+                  setPage(activeView, "edit");
                   api.selectionChanged().catch(() => {});
                 }}
               >

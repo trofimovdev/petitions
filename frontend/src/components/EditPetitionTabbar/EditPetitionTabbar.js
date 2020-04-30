@@ -24,7 +24,6 @@ import {
 import {
   setCreate,
   setCurrent,
-  setEdit,
   setManaged
 } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
@@ -44,7 +43,8 @@ const EditPetitionTabbar = ({
   activeView,
   setCurrent,
   setManaged,
-  managedPetitions
+  managedPetitions,
+  setCreate
 }) => {
   return (
     <FixedLayout vertical="bottom" className="Tabbar EditPetitionTabbar">
@@ -160,7 +160,8 @@ const EditPetitionTabbar = ({
                   ].concat(managedPetitions)
                 );
                 closePopout();
-                setPage(activeView, "done", true);
+                setCreate();
+                setPage(activeView, "done", false, true, ["done"]);
               })
               .catch(({ code, message }) => {
                 closePopout();
@@ -210,7 +211,6 @@ const mapDispatchToProps = dispatch => {
     ...bindActionCreators(
       {
         goBack,
-        setEdit,
         setCreate,
         openModal,
         openPopout,
@@ -237,7 +237,8 @@ EditPetitionTabbar.propTypes = {
   activeView: PropTypes.string.isRequired,
   setCurrent: PropTypes.func.isRequired,
   setManaged: PropTypes.func.isRequired,
-  managedPetitions: PropTypes.array.isRequired
+  managedPetitions: PropTypes.array.isRequired,
+  setCreate: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditPetitionTabbar);

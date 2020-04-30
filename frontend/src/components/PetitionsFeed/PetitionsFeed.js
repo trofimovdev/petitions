@@ -50,6 +50,7 @@ const PetitionsFeed = ({
   const screenHeight = document.body.getBoundingClientRect().height;
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
+  const [endStatus, setEndStatus] = useState(false);
 
   const setCurrentPetitions = petitions => {
     switch (activeTab.feed) {
@@ -77,7 +78,6 @@ const PetitionsFeed = ({
       console.log("with friends");
       loadPetitions("petitions", true, { type: activeTab.feed })
         .then(response => {
-          console.log("SET CURRENT PETITIONS FROM REFRESH", response);
           setFetchingStatus(false);
           setCurrentPetitions(response);
           api.selectionChanged().catch(() => {});
@@ -87,10 +87,6 @@ const PetitionsFeed = ({
       console.log("without friends");
       loadPetitions("petitions", false, { type: activeTab.feed })
         .then(response => {
-          console.log(
-            "SET CURRENT PETITIONS FROM REFRESH WITHOUT FRINEDS",
-            response
-          );
           setFetchingStatus(false);
           setCurrentPetitions(response);
           api.selectionChanged().catch(() => {});
@@ -101,12 +97,13 @@ const PetitionsFeed = ({
 
   const onScroll = () => {
     const scrollPosition = window.scrollY;
-    console.log(scrollPosition);
-    const cardHeight = 375; // высота одной карточки в px (с отступами)
+    const petitionsContainerHeight = document.getElementById("petitionsContainer").offsetHeight;
+    console.log(scrollPosition, petitionsContainerHeight);
     if (
       currentPetitions &&
-      currentPetitions.length * cardHeight - scrollPosition < cardHeight * 5 &&
-      !loadingStatus
+      scrollPosition + 1300 > petitionsContainerHeight &&
+      !loadingStatus &&
+      !endStatus
     ) {
       // загружать новые карточки когда юзер пролистнет 5 карточку
       console.log("new cards", activeTab.feed, currentPetitions.length);
@@ -132,12 +129,18 @@ const PetitionsFeed = ({
           type: activeTab.feed
         })
           .then(r => {
-            console.log(r, currentPetitions);
-            setCurrentPetitions(
-              (currentPetitions + r).filter((value, index, self) => {
+            console.log("THIS IS MY r", r);
+            if (r.length === 0) {
+              console.log("SET END STATUS");
+              setEndStatus(true);
+              return;
+            }
+            const petitions = currentPetitions
+              .concat(r)
+              .filter((value, index, self) => {
                 return self.indexOf(value) === index;
-              })
-            );
+              });
+            setCurrentPetitions(petitions);
             setLoadingStatus(false);
           })
           .catch(e => console.log(e));
@@ -148,12 +151,18 @@ const PetitionsFeed = ({
           type: activeTab.feed
         })
           .then(r => {
-            console.log(r, currentPetitions);
-            setCurrentPetitions(
-              (currentPetitions + r).filter((value, index, self) => {
+            console.log("THIS IS MY r", r);
+            if (r.length === 0) {
+              console.log("SET END STATUS");
+              setEndStatus(true);
+              return;
+            }
+            const petitions = currentPetitions
+              .concat(r)
+              .filter((value, index, self) => {
                 return self.indexOf(value) === index;
-              })
-            );
+              });
+            setCurrentPetitions(petitions);
             setLoadingStatus(false);
           })
           .catch(e => console.log(e));
@@ -213,10 +222,9 @@ const PetitionsFeed = ({
         </div>
       </PanelHeaderSimple>
       {currentPetitions !== undefined ? (
-        <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
+        <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus} id="petitionsContainer">
           <FriendsCard />
           {currentPetitions.map((item, index) => {
-            console.log(item);
             return (
               <div key={index}>
                 <PetitionCard
@@ -232,8 +240,10 @@ const PetitionsFeed = ({
               </div>
             );
           })}
-          {currentPetitions.length > 0 && (
+          {currentPetitions.length > 0 && endStatus ? (
             <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
+          ) : (
+            <Spinner size="regular" className="PetitionsFeed__spinner" />
           )}
           {currentPetitions.length === 0 && (
             <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>

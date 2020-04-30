@@ -166,9 +166,9 @@ const EditPetition = ({
           name="text"
           top="Текст петиции"
           // TODO: вынести в константу с бэкенда
-          status={form.text && form.text.length > 5000 ? "error" : ""}
+          status={form.text && form.text.length > 3000 ? "error" : ""}
           bottom={
-            form.text && form.text.length > 5000
+            form.text && form.text.length > 3000
               ? "Слишком длинный текст петиции"
               : ""
           }
@@ -256,7 +256,7 @@ const EditPetition = ({
             form.title &&
             form.title.length <= 150 &&
             form.text &&
-            form.text.length <= 5000 &&
+            form.text.length <= 3000 &&
             form.signatures &&
             form.signatures >= 1 &&
             form.signatures <= 10000000 &&

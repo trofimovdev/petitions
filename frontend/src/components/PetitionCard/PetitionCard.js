@@ -34,12 +34,10 @@ const PetitionCard = ({
   friends,
   completed
 }) => {
-  console.log("FRIENDS", friends);
   return (
     <Div
       className="PetitionCard"
       onClick={e => {
-        console.log(e.target);
         if (
           ["svg", "use", "g", "path"].includes(e.target.tagName) ||
           id === 0

@@ -74,7 +74,7 @@ class PetitionController extends Controller
                 $webPhotoSize = getimagesize($webPhoto);
                 $webPhotoSize = $webPhotoSize[0] * $webPhotoSize[1] * $webPhotoSize["bits"];
 
-                if (mb_strlen($title) === 0 || mb_strlen($title) > 150 || mb_strlen($text) === 0 || mb_strlen($text) > 5000 || $needSignatures === 0 || $needSignatures > 10000000 || $mobilePhotoSize / 8 / 1024 / 1024 > 7 || $webPhotoSize / 8 / 1024 / 1024 > 7) {
+                if (mb_strlen($title) === 0 || mb_strlen($title) > 150 || mb_strlen($text) === 0 || mb_strlen($text) > 3000 || $needSignatures === 0 || $needSignatures > 10000000 || $mobilePhotoSize / 8 / 1024 / 1024 > 7 || $webPhotoSize / 8 / 1024 / 1024 > 7) {
                     return new ErrorResponse(400, 'Too large');
                 }
 
@@ -186,7 +186,7 @@ class PetitionController extends Controller
                 return new OkResponse(Petition::getPetitions([22]));
 
             case 'last':
-                return new OkResponse(Petition::getLast(1, $friendIds));
+                return new OkResponse(Petition::getLast($offset, $friendIds));
 
             case 'signed':
                 return new OkResponse(Petition::getSigned($request->userId, $offset, $friendIds));
