@@ -54,13 +54,11 @@ const EditPetitionTabbar = ({
           mode="primary"
           onClick={() => {
             openPopout(<ScreenSpinner />);
-            console.log(formType, editPetitions, createPetitions);
             const form =
               formType === "edit"
                 ? { ...editPetitions }
                 : { ...createPetitions };
             if (form.file_1 === form.file_2) {
-              console.log("THE SAME IMAGE");
               form.file = form.file_1;
               delete form.file_1;
               delete form.file_2;
@@ -68,7 +66,6 @@ const EditPetitionTabbar = ({
             if (formType === "edit") {
               const changed = {};
               for (const [key, value] of Object.entries(initialEditPetitions)) {
-                console.log(`${key}: ${value}; ${form[key]}`);
                 if (form[key] === value) {
                   continue;
                 }
@@ -80,7 +77,6 @@ const EditPetitionTabbar = ({
                   changed.images = true;
                 }
               }
-              console.log("CHANGED", changed);
               Backend.request(
                 `petitions/${form.id}`,
                 { ...changed, type: "edit" },
@@ -136,10 +132,8 @@ const EditPetitionTabbar = ({
                 });
               return;
             }
-            console.log(form);
             Backend.request("petitions", { ...form, type: "create" }, "POST")
               .then(response => {
-                console.log("RESPONSE CREATE", response);
                 setCurrent({
                   id: response.id,
                   title: response.title,

@@ -12,7 +12,6 @@ import { setPage } from "../../store/router/actions";
 const api = new VKMiniAppAPI();
 
 const SplashScreen = ({ id, activeView, setPage }) => {
-  console.log(activeView);
   return (
     <Panel id={id} separator={false} className="SplashScreen">
       <Placeholder

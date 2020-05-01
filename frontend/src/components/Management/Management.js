@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";

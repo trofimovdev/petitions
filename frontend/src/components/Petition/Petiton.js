@@ -24,7 +24,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
-import Backend from "../../tools/Backend";
 import { goBack } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
 import { declOfNum, loadPetitions } from "../../tools/helpers";
@@ -44,20 +43,9 @@ const Petition = ({
   const [headerStatus, setHeaderStatus] = useState("hidden");
   const platform = usePlatform();
 
-  const getName = item => {
-    if (item instanceof String) {
-      return item;
-    }
-    return item.name;
-  };
-
-  console.log("CURRENT PETITION is", currentPetition);
-
   const onRefresh = () => {
-    console.log("refresh");
     setFetchingStatus(true);
     if (launchParameters.vk_access_token_settings.includes("friends")) {
-      console.log("with friends");
       loadPetitions(`petitions`, true, {
         petition_id: currentPetition.id.toString()
       })
@@ -68,9 +56,8 @@ const Petition = ({
           }
           api.selectionChanged().catch(() => {});
         })
-        .catch(e => console.log(e));
+        .catch(() => {});
     } else {
-      console.log("without friends");
       loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
         .then(response => {
           setFetchingStatus(false);
@@ -79,13 +66,12 @@ const Petition = ({
           }
           api.selectionChanged().catch(() => {});
         })
-        .catch(e => console.log(e));
+        .catch(() => {});
     }
   };
 
   const onScroll = () => {
     const scrollPosition = window.scrollY;
-    console.log(scrollPosition);
     if (scrollPosition > 150) {
       setHeaderStatus("shown");
     } else {
@@ -102,29 +88,25 @@ const Petition = ({
       api.setLocationHash(`p${currentPetition.id.toString()}`);
       if (loadingStatus) {
         if (launchParameters.vk_access_token_settings.includes("friends")) {
-          console.log("with friends");
           loadPetitions(`petitions`, true, {
             petition_id: currentPetition.id.toString()
           })
             .then(response => {
               setLoadingStatus(false);
-              console.log("PETITION1", response);
               if (response.length > 0) {
                 setCurrent(response[0]);
               }
             })
-            .catch(e => console.log(e));
+            .catch(() => {});
         } else {
-          console.log("without friends");
           loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
             .then(response => {
               setLoadingStatus(false);
-              console.log("PETITION3", response);
               if (response.length > 0) {
                 setCurrent(response[0]);
               }
             })
-            .catch(e => console.log(e));
+            .catch(() => {});
         }
       }
     }

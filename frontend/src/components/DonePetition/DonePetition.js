@@ -12,10 +12,7 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon56CheckCircleOutline from "@vkontakte/icons/dist/56/check_circle_outline";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import {
-  setPage,
-  openModal
-} from "../../store/router/actions";
+import { setPage, openModal } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
 import "./DonePetition.css";
 

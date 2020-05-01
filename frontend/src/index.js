@@ -22,17 +22,10 @@ import { setLaunchParameters } from "./store/data/actions";
 const api = new VKMiniAppAPI();
 
 const onLoad = response => {
-  console.log("INDEX RESPONSE", response);
   store.dispatch(setPopular(response.popular || []));
   store.dispatch(setLast(response.last || []));
   store.dispatch(setSigned(response.signed || []));
   store.dispatch(setManaged(response.managed || []));
-
-  const screenHeight = document.body.getBoundingClientRect().height;
-  if (313 * response.last.length < screenHeight) {
-    // 313 - высота одной карточки в px (с отступами)
-    console.log("НУЖНА ДОГРУЗКА");
-  }
 };
 
 api.initApp();
@@ -43,7 +36,6 @@ api.onUpdateConfig(({ scheme }) => {
 let isAppUser = false;
 api.storageGet("is_app_user").then(r => {
   isAppUser = r;
-  console.log("is_app_user", r);
   if (!isAppUser) {
     api.storageSet("is_app_user", "1");
   }
@@ -58,17 +50,14 @@ api.storageGet("is_app_user").then(r => {
     new URLSearchParams(window.location.search)
   );
   store.dispatch(setLaunchParameters(launchParameters));
-  console.log("LAUNCH PARAMS", launchParameters);
   if (launchParameters.vk_access_token_settings.includes("friends")) {
-    console.log("with friends");
     loadPetitions("petitions", true)
       .then(r => onLoad(r))
-      .catch(e => console.log(e));
+      .catch(() => {});
   } else {
-    console.log("without friends");
     loadPetitions("petitions", false)
       .then(r => onLoad(r))
-      .catch(e => console.log(e));
+      .catch(() => {});
   }
 
   if (launchParameters.vk_ref.startsWith("story") && !petitionId) {

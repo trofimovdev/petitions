@@ -14,7 +14,6 @@ import {
   ANDROID,
   IOS,
   usePlatform,
-  getClassName,
   Placeholder,
   Spinner,
   ScreenSpinner
@@ -52,7 +51,6 @@ const PetitionModal = ({
   closePopout
 }) => {
   const [searchValue, setSearchValue] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
   const [friendsList, setFriendsList] = useState(null);
   const fragmentText = (text, maxWidth, ctx) => {
     const words = text.split(" ");
@@ -100,10 +98,6 @@ const PetitionModal = ({
           v: "5.103"
         })
         .then(response => {
-          console.log(
-            "response friends response friends response friends response friends response friends response friends response friends response friends response friends response friends",
-            response
-          );
           setFriendsList(response.items);
         });
     });
@@ -214,7 +208,6 @@ const PetitionModal = ({
                 const hRatio = canvas.width / img.width;
                 const vRatio = canvas.height / img.height;
                 const ratio = hRatio;
-                console.log(img.width, img.height, hRatio, vRatio);
                 /* if (img.width < img.height) {
                   ratio = hRatio;
                 } else {
@@ -335,7 +328,6 @@ const PetitionModal = ({
                 let progressBarWidth =
                   (countSignatures / needSignatures) *
                   (canvas.width - 16 * r - 16 * r);
-                console.log(progressBarWidth, countSignatures / needSignatures);
                 ctx.fillStyle = "#3f8ae0";
                 if (countSignatures / needSignatures > 1) {
                   progressBarWidth = canvas.width - 16 * r - 16 * r;
@@ -387,7 +379,6 @@ const PetitionModal = ({
                   ctx
                 );
 
-                console.log(canvas.width, canvas.width - 16 * r - 32 * r);
                 if (progressTextSize.width > canvas.width - 16 * r - 16 * r) {
                   ctx.font = `400 ${13 * r}px -apple-system`;
                   ctx.fillStyle = "#76787a";
@@ -457,22 +448,6 @@ const PetitionModal = ({
                     );
                   }
                 }
-                console.log({
-                    x: 16 * r,
-                    y: canvas.height - 16 * r - 36 * r
-                  },
-                  {
-                    x: canvas.width - 16 * r,
-                    y: canvas.height - 16 * r - 36 * r
-                  },
-                  {
-                    x: canvas.width - 16 * r,
-                    y: canvas.height - 16 * r
-                  },
-                  {
-                    x: 16 * r,
-                    y: canvas.height - 16 * r - 36 * r
-                  });
 
                 closePopout();
                 bridge
@@ -519,7 +494,7 @@ const PetitionModal = ({
                       }
                     ]
                   })
-                  .catch(e => console.log("error", e));
+                  .catch(() => {});
               };
               img.src = currentPetition.mobile_photo_url;
             }}
@@ -537,9 +512,6 @@ const PetitionModal = ({
             className="PetitionModal__button-wrapper"
             onClick={() => {
               api.selectionChanged().catch(() => {});
-              console.log("CLICKED");
-              console.log(platform);
-
               api
                 .getAccessToken(7338958, "photos")
                 .then(({ scope, accessToken }) => {
@@ -558,7 +530,6 @@ const PetitionModal = ({
                         .concat("photos")
                         .join(",")
                     });
-                    console.log(launchParameters);
                   }
                   api
                     .callAPIMethod("photos.getWallUploadServer", {
@@ -586,7 +557,6 @@ const PetitionModal = ({
                           })
                           .then(response => {
                             const { id, owner_id } = response[0];
-                            console.log(response[0]);
                             closePopout();
                             api.postToWall(
                               `Поддержите петицию «${currentPetition.title}»\n\nhttps://vk.com/app7338958#p${currentPetition.id}`,
@@ -596,7 +566,6 @@ const PetitionModal = ({
                       });
                     });
                 });
-              console.log("done");
             }}
           >
             <Button

@@ -74,23 +74,21 @@ const PetitionsFeed = ({
   const onRefresh = () => {
     setFetchingStatus(true);
     if (launchParameters.vk_access_token_settings.includes("friends")) {
-      console.log("with friends");
       loadPetitions("petitions", true, { type: activeTab.feed })
         .then(response => {
           setFetchingStatus(false);
           setCurrentPetitions(response);
           api.selectionChanged().catch(() => {});
         })
-        .catch(e => console.log("error>", e));
+        .catch(() => {});
     } else {
-      console.log("without friends");
       loadPetitions("petitions", false, { type: activeTab.feed })
         .then(response => {
           setFetchingStatus(false);
           setCurrentPetitions(response);
           api.selectionChanged().catch(() => {});
         })
-        .catch(e => console.log(e));
+        .catch(() => {});
     }
   };
 
@@ -108,13 +106,11 @@ const PetitionsFeed = ({
       // загружать новые карточки когда юзер пролистнет 5 карточку
       setLoadingStatus(true);
       if (launchParameters.vk_access_token_settings.includes("friends")) {
-        console.log("with friends");
         loadPetitions("petitions", true, {
           offset: currentPetitions.length,
           type: activeTab.feed
         })
           .then(r => {
-            console.log("THIS IS MY r", r);
             if (r.length === 0) {
               setEndStatus(true);
               return;
@@ -127,15 +123,13 @@ const PetitionsFeed = ({
             setCurrentPetitions(petitions);
             setLoadingStatus(false);
           })
-          .catch(e => console.log(e));
+          .catch(() => {});
       } else {
-        console.log("without friends");
         loadPetitions("petitions", false, {
           offset: currentPetitions.length,
           type: activeTab.feed
         })
           .then(r => {
-            console.log("THIS IS MY r", r);
             if (r.length === 0) {
               setEndStatus(true);
               return;
@@ -148,7 +142,7 @@ const PetitionsFeed = ({
             setCurrentPetitions(petitions);
             setLoadingStatus(false);
           })
-          .catch(e => console.log(e));
+          .catch(() => {});
       }
     }
   };
@@ -161,9 +155,7 @@ const PetitionsFeed = ({
   });
 
   useEffect(() => {
-    console.log("activePanel from feed", activePanel);
     if (activePanel === "feed") {
-      console.log("forceUpdate");
       api.setLocationHash(activeTab.feed);
     }
   }, [activeTab, activePanel]);
@@ -229,7 +221,10 @@ const PetitionsFeed = ({
           })}
           {currentPetitions.length === 0 ? (
             <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
-          ) : currentPetitions.length > 0 && endStatus || currentPetitions.length > 0 && currentPetitions.length < 10 && !endStatus ? (
+          ) : (currentPetitions.length > 0 && endStatus) ||
+            (currentPetitions.length > 0 &&
+              currentPetitions.length < 10 &&
+              !endStatus) ? (
             <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
           ) : (
             <Spinner
