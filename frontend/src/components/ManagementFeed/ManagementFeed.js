@@ -80,7 +80,6 @@ const ManagementFeed = ({
   const platform = usePlatform();
 
   const onManagement = (petitionId, completed) => {
-    console.log("manage petition", petitionId, completed);
     openPopout(
       <ActionSheet onClose={() => closePopout()}>
         <ActionSheetItem
@@ -131,7 +130,7 @@ const ManagementFeed = ({
                 };
                 file_1.src = response.mobile_photo_url;
               })
-              .catch(e => console.log(e));
+              .catch(() => {});
           }}
         >
           Редактировать петицию
@@ -151,16 +150,13 @@ const ManagementFeed = ({
                     managedPetitions.map((item, index) => {
                       if (item.id === petitionId) {
                         item.completed = false;
-                        console.log(item);
                         return item;
                       }
                       return item;
                     })
                   );
                 })
-                .catch(error => {
-                  console.log(error);
-                });
+                .catch(() => {});
             }}
           >
             Продолжить сбор
@@ -181,16 +177,13 @@ const ManagementFeed = ({
                     managedPetitions.map((item, index) => {
                       if (item.id === petitionId) {
                         item.completed = true;
-                        console.log(item);
                         return item;
                       }
                       return item;
                     })
                   );
                 })
-                .catch(error => {
-                  console.log(error);
-                });
+                .catch(() => {});
             }}
           >
             Завершить сбор
@@ -214,7 +207,6 @@ const ManagementFeed = ({
                       openPopout(<ScreenSpinner />);
                       Backend.request(`petitions/${petitionId}`, {}, "DELETE")
                         .then(r => {
-                          console.log(r);
                           closePopout();
                           setManaged(
                             managedPetitions.filter(item => {
@@ -244,9 +236,7 @@ const ManagementFeed = ({
                             </Snackbar>
                           );
                         })
-                        .catch(e => {
-                          console.log(e);
-                        });
+                        .catch(() => {});
                     }
                   },
                   {
@@ -279,14 +269,13 @@ const ManagementFeed = ({
   const onRefresh = () => {
     setFetchingStatus(true);
     if (launchParameters.vk_access_token_settings.includes("friends")) {
-      console.log("with friends");
       loadPetitions("petitions", true, { type: "managed" })
         .then(response => {
           setFetchingStatus(false);
           setManaged(response);
           api.selectionChanged().catch(() => {});
         })
-        .catch(e => console.log(e));
+        .catch(() => {});
     } else {
       loadPetitions("petitions", false, { type: "managed" })
         .then(response => {
@@ -294,7 +283,7 @@ const ManagementFeed = ({
           setManaged(response);
           api.selectionChanged().catch(() => {});
         })
-        .catch(e => console.log(e));
+        .catch(() => {});
     }
   };
 
@@ -312,13 +301,11 @@ const ManagementFeed = ({
       // загружать новые карточки когда юзер пролистнет 5 карточку
       setLoadingStatus(true);
       if (launchParameters.vk_access_token_settings.includes("friends")) {
-        console.log("with friends");
         loadPetitions("petitions", true, {
           offset: managedPetitions.length,
           type: "managed"
         })
           .then(r => {
-            console.log("THIS IS MY r", r);
             if (r.length === 0) {
               setEndStatus(true);
               return;
@@ -331,15 +318,13 @@ const ManagementFeed = ({
             setManaged(petitions);
             setLoadingStatus(false);
           })
-          .catch(e => console.log(e));
+          .catch(() => {});
       } else {
-        console.log("without friends");
         loadPetitions("petitions", false, {
           offset: managedPetitions.length,
           type: "managed"
         })
           .then(r => {
-            console.log("THIS IS MY r", r);
             if (r.length === 0) {
               setEndStatus(true);
               return;
@@ -352,7 +337,7 @@ const ManagementFeed = ({
             setManaged(petitions);
             setLoadingStatus(false);
           })
-          .catch(e => console.log(e));
+          .catch(() => {});
       }
     }
   };
@@ -466,7 +451,7 @@ const ManagementFeed = ({
         <Spinner size="regular" className="ManagementFeed__spinner" />
       )}
       {snackbar}
-      <EpicTabbar activeStory={activeStory} setStory={setStory} />
+      <EpicTabbar />
     </Panel>
   );
 };

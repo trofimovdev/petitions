@@ -76,16 +76,15 @@ const FriendsCard = ({
             setFriendsCardStatus(false);
             setCurrentPetitions(response);
           })
-          .catch(e => console.log(e));
+          .catch(() => {});
       })
-      .catch(e => console.log(e));
+      .catch(() => {});
   };
 
   const onClose = () => {
     setFriendsCardStatus(false);
     api.selectionChanged().catch(() => {});
   };
-  console.log(launchParameters, friendsCardStatus);
   return (
     <>
       {!friendsCardStatus ||

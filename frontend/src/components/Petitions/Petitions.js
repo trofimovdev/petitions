@@ -22,7 +22,6 @@ const Petitions = ({
   goBack,
   history,
   activeModal,
-  formType,
   popout
 }) => {
   return (
@@ -50,7 +49,6 @@ const mapStateToProps = state => {
       state.router.activeModals[state.router.activeView] === undefined
         ? null
         : state.router.activeModals[state.router.activeView],
-    formType: state.petitions.formType,
     popout:
       state.router.popouts[state.router.activeView] === undefined
         ? null
@@ -80,7 +78,6 @@ Petitions.propTypes = {
   activeModal: PropTypes.string,
   goBack: PropTypes.func.isRequired,
   history: PropTypes.array.isRequired,
-  formType: PropTypes.string.isRequired,
   popout: PropTypes.object
 };
 

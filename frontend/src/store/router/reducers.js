@@ -30,22 +30,18 @@ const initialState = {
 };
 
 const routerReducer = (state = initialState, action) => {
-  console.log("router", state, action);
   switch (action.type) {
     case SET_PAGE: {
-      console.log("LOL KEK ADASDASDASDASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
       const View = action.payload.view;
       const Panel = action.payload.panel;
       const { disableSwipeBack } = action.payload;
       const { rewriteHistory } = action.payload;
       const { history } = action.payload;
-      console.log(View, Panel);
 
       window.history.pushState(null, null);
 
       let panelsHistory = state.panelsHistory[View] || [];
       const viewsHistory = state.viewsHistory[state.activeStory] || [];
-      console.log("panelsHistory123123123", panelsHistory);
 
       const viewIndexInHistory = viewsHistory.indexOf(View);
 
@@ -56,16 +52,10 @@ const routerReducer = (state = initialState, action) => {
       if (panelsHistory.indexOf(Panel) === -1) {
         panelsHistory = [...panelsHistory, Panel];
       }
-      console.log("panelsHistory AFTER", {
-        ...state.panelsHistory,
-        [View]: panelsHistory
-      });
 
-      console.log("disableSwipeBack", disableSwipeBack);
       if (panelsHistory.length > 1 && !disableSwipeBack) {
         api.enableSwipeBack();
       } else {
-        console.log("DISABLE SWIPE BACK PLS");
         api.disableSwipeBack();
       }
 
@@ -104,10 +94,8 @@ const routerReducer = (state = initialState, action) => {
       let activePanel = action.payload.withHistory
         ? panelsHistory[panelsHistory.length - 1]
         : action.payload.initialPanel;
-      console.log("panelsHistory 1", panelsHistory);
 
       if (action.payload.withHistory) {
-        console.log("set to history STORY", action);
         if (action.payload.story === state.activeStory) {
           if (panelsHistory.length > 1) {
             const firstPanel = panelsHistory.shift();
@@ -145,28 +133,6 @@ const routerReducer = (state = initialState, action) => {
         storiesHistory = [...storiesHistory, action.payload.story];
       }
 
-      console.log("setStory", {
-        ...state,
-        activeStory: action.payload.story,
-        activeView,
-        activePanel,
-
-        storiesHistory,
-        viewsHistory: {
-          ...state.viewsHistory,
-          [activeView]: viewsHistory
-        },
-        panelsHistory: {
-          ...state.panelsHistory,
-          [activeView]: panelsHistory
-        },
-
-        scrollPosition: {
-          ...state.scrollPosition,
-          [`${state.activeStory}_${state.activeView}_${state.activePanel}`]: window.pageYOffset
-        }
-      });
-
       return {
         ...state,
         activeStory: action.payload.story,
@@ -191,7 +157,6 @@ const routerReducer = (state = initialState, action) => {
     }
 
     case GO_BACK: {
-      console.log("GO BACK");
       let setView = state.activeView;
       let setPanel = state.activePanel;
       let setStory = state.activeStory;
@@ -271,17 +236,11 @@ const routerReducer = (state = initialState, action) => {
         }
       } else {
         api.closeApp("success");
-        console.log("vksdk closeApp");
       }
 
       if (panelsHistory.length === 1) {
         api.disableSwipeBack();
       }
-
-      console.log("panelsHistory goBack", {
-        ...state.panelsHistory,
-        [state.activeView]: panelsHistory
-      });
 
       return {
         ...state,
@@ -301,7 +260,6 @@ const routerReducer = (state = initialState, action) => {
     }
 
     case OPEN_MODAL: {
-      console.log("OPEN MODAL", action.payload);
       window.history.pushState(null, null);
 
       const activeModal = action.payload || null;
@@ -369,11 +327,6 @@ const routerReducer = (state = initialState, action) => {
     case SET_ACTIVE_TAB: {
       let scrollPosition1 = {};
       if (state.activeTab && state.activeTab[state.activePanel]) {
-        console.log(
-          `set scrollPosition ${window.pageYOffset} in tab ${
-            state.activePanel
-          }_${state.activeTab[state.activePanel]}`
-        );
         scrollPosition1 = {
           ...state.scrollPosition,
           [`${state.activeStory}_${state.activeView}_${state.activePanel}_${
@@ -386,14 +339,7 @@ const routerReducer = (state = initialState, action) => {
           [`${state.activeStory}_${state.activeView}_${state.activePanel}`]: window.pageYOffset
         };
       }
-      console.log("setActiveTab", {
-        ...state,
-        activeTab: {
-          ...state.activeTab,
-          [action.payload.component]: action.payload.tab
-        },
-        scrollPosition: scrollPosition1
-      });
+
       return {
         ...state,
         activeTab: {

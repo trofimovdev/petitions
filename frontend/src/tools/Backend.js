@@ -3,7 +3,6 @@ import ConnectionError from "./ConnectionError";
 export default class Backend {
   static __call(method, params = {}, httpMethod = "GET") {
     let url = `https://petitions.trofimov.dev/api/${method}`;
-    console.log("PARAMS __CALL", params);
     const requestParams = {
       method: httpMethod || "GET",
       cache: "no-cache",
@@ -19,10 +18,8 @@ export default class Backend {
       }
       requestParams.body =
         params instanceof FormData ? params : JSON.stringify(params);
-      console.log("BODY", requestParams.body);
     } else {
       const paramsString = new URLSearchParams(params).toString();
-      console.log("paramsString", paramsString);
       url += `?${paramsString}`;
     }
 

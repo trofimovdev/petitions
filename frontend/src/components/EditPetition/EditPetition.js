@@ -5,8 +5,6 @@ import {
   PanelHeader,
   FormLayout,
   Input,
-  Div,
-  Button,
   Textarea,
   Snackbar,
   Avatar,
@@ -19,12 +17,11 @@ import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon48Camera from "@vkontakte/icons/dist/48/camera";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
-import Icon28Mention from "@vkontakte/icons/dist/28/mention";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import UploadCard from "../UploadCard/UploadCard";
 import EditPetitionTabbar from "../EditPetitionTabbar/EditPetitionTabbar";
-import { goBack, openModal } from "../../store/router/actions";
+import { goBack } from "../../store/router/actions";
 import { setEdit, setCreate } from "../../store/petitions/actions";
 
 const api = new VKMiniAppAPI();
@@ -36,12 +33,11 @@ const EditPetition = ({
   formType,
   setEdit,
   setCreate,
-  openModal,
   editPetitions,
   createPetitions
 }) => {
   const [snackbar, setSnackbar] = useState(null);
-  const MAX_FILE_SIZE = 5 * (10 ** 6); // максимальный размер - 5 мегабайт
+  const MAX_FILE_SIZE = 5 * 10 ** 6; // максимальный размер - 5 мегабайт
 
   const checkFileSize = fileSize => {
     if (fileSize > MAX_FILE_SIZE) {
@@ -71,7 +67,6 @@ const EditPetition = ({
   let setForm = () => {};
   let form = {};
   let panelTitle = "";
-  console.log(formType);
   switch (formType) {
     case "edit": {
       setForm = setEdit;
@@ -122,7 +117,6 @@ const EditPetition = ({
       reader.readAsDataURL(files[0]);
       reader.onload = j => {
         const fileSize = j.total; // в байтах
-        console.log("fileSize", fileSize);
         if (!checkFileSize(fileSize)) {
           return;
         }
@@ -287,8 +281,7 @@ const mapDispatchToProps = dispatch => {
       {
         goBack,
         setEdit,
-        setCreate,
-        openModal
+        setCreate
       },
       dispatch
     )
@@ -302,7 +295,6 @@ EditPetition.propTypes = {
   formType: PropTypes.string,
   setEdit: PropTypes.func.isRequired,
   setCreate: PropTypes.func.isRequired,
-  openModal: PropTypes.func.isRequired,
   editPetitions: PropTypes.object.isRequired,
   createPetitions: PropTypes.object.isRequired
 };

@@ -47,7 +47,6 @@ const MobileContainer = ({
         : scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
         ? scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
         : 0;
-    console.log("ACCEDPT SCROLL TO", pageScrollPosition);
     window.scroll(0, pageScrollPosition);
   }, [activeStory, activeView, activePanel, activeTab, scrollPosition]);
 

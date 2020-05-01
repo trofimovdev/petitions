@@ -34,10 +34,8 @@ export const loadPetitions = (method, withFriends = true, params = {}) => {
       reject(new ConnectionError("Invalid method"));
       return;
     }
-    console.log("FRIENDS request", withFriends);
 
     if (!withFriends) {
-      console.log("WITHOUT friends");
       Backend.request(method, params)
         .then(r => {
           resolve(r);
@@ -48,7 +46,6 @@ export const loadPetitions = (method, withFriends = true, params = {}) => {
       return;
     }
 
-    console.log("TRY WITH friends");
     api
       .getAccessToken(7338958, "friends")
       .then(({ accessToken }) => {
@@ -65,7 +62,6 @@ export const loadPetitions = (method, withFriends = true, params = {}) => {
                 ...{
                   with_friends: true,
                   friends: r.items.join(",")
-                  // friends: [1, 14, 15],//r.items.join(","),
                 }
               },
               "POST"

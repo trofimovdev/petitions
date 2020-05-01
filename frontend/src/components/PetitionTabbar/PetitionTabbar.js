@@ -165,7 +165,6 @@ const PetitionTabbar = ({
                 .then(response => {
                   // TODO: remove eslint problems
                   response = response[0];
-                  console.log("SET EDIT", response);
 
                   const file_1 = new Image();
                   file_1.crossOrigin = "Anonymous";
@@ -204,7 +203,7 @@ const PetitionTabbar = ({
                   };
                   file_1.src = `${response.mobile_photo_url}?12`;
                 })
-                .catch(e => console.log(e));
+                .catch(() => {});
             }}
           >
             <Icon24Settings />

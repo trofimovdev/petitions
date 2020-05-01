@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Div,
-  Card,
-  UsersStack,
-  ScreenSpinner,
-  Snackbar,
-  Avatar
-} from "@vkontakte/vkui";
+import { Div, Card, UsersStack } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./PetitionCard.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
@@ -44,13 +37,16 @@ const PetitionCard = ({
         ) {
           return;
         }
-        api.selectionChanged().catch(error => console.log(error));
+        api.selectionChanged().catch();
         setCurrent({ id });
         setPage(activeView, "petition");
       }}
     >
       {managementDots && (
-        <div className="PetitionCard__dots" onClick={() => onManagement(id, completed)}>
+        <div
+          className="PetitionCard__dots"
+          onClick={() => onManagement(id, completed)}
+        >
           <Icon28MoreHorizontal />
         </div>
       )}

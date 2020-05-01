@@ -5,7 +5,6 @@ const initialState = {
 };
 
 const uiReducer = (state = initialState, action) => {
-  console.log("ui", state, action);
   switch (action.type) {
     case SET_COLOR_SCHEME:
       return {
