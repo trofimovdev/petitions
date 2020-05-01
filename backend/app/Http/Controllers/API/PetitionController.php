@@ -110,8 +110,11 @@ class PetitionController extends Controller
         if (!$petition['owner_id'] === $request->userId) {
             return new ErrorResponse(403, 'Access denied');
         }
+        $mobilePhotoUrl = explode('https://petitions.trofimov.dev/', $petition->mobile_photo_url)[1];
+        $webPhotoUrl = explode('https://petitions.trofimov.dev/', $petition->web_photo_url)[1];
+        unlink(base_path() . '/storage/app/public/' . $mobilePhotoUrl);
+        unlink(base_path() . '/storage/app/public/' . $webPhotoUrl);
         $petition->delete();
-        unlink();
         return new OkResponse(true);
     }
 

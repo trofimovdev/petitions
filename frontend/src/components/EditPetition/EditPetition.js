@@ -243,7 +243,7 @@ const EditPetition = ({
           icon={<Icon48Camera />}
           text="Загрузить"
           size="m"
-          bottomText="Рекомендуемый размер изображения: 1360×300px"
+          bottomText="Рекомендуемый размер изображения: 1360×320px"
           onCancel={onCancel}
           img={form.file_2 ? form.file_2 : null}
         />
