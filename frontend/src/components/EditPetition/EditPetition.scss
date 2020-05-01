@@ -1,29 +1,32 @@
-.EditForm {
-  &__card-wrapper {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+@import "src/style/_vars.scss";
 
-    &__top {
-      margin: 0 !important;
-      padding-left: 0 !important;
+.EditPetition {
+  & > .Panel__in,
+  & .Snackbar {
+    padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
+  }
+}
+
+.EditForm {
+  &__input-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &__input-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    input {
+      flex-grow: 2;
     }
 
-    &__card {
-      &__content {
-        height: 164px;
-        font-size: 14px;
-        font-weight: 600;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: #c4c8cc;
-
-        &__text {
-          margin-top: 14px;
-          margin-bottom: 14px;
-        }
-      }
+    .Icon {
+      z-index: 2;
+      color: $petition-create-mention-icon-color;
+      margin-right: 8px;
     }
   }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Panel,
-  PanelHeaderSimple,
+  PanelHeader,
   PanelHeaderButton,
   Separator,
   Div,
@@ -12,34 +12,81 @@ import {
   PullToRefresh,
   getClassName,
   usePlatform,
-  ANDROID,
-  IOS
+  Spinner,
+  Button,
+  Placeholder
 } from "@vkontakte/vkui";
 import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
-import test from "../../img/test.jpg";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
+import Backend from "../../tools/Backend";
+import { goBack } from "../../store/router/actions";
+import { setCurrent } from "../../store/petitions/actions";
+import { declOfNum, loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
-const Petition = ({ id, setPage, activePanel, openModal }) => {
+const Petition = ({
+  id,
+  goBack,
+  currentPetition,
+  activePanel,
+  setCurrent,
+  launchParameters
+}) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState(true);
   const [headerStatus, setHeaderStatus] = useState("hidden");
+  const platform = usePlatform();
+
+  const getName = item => {
+    if (item instanceof String) {
+      return item;
+    }
+    return item.name;
+  };
+
+  console.log("CURRENT PETITION is", currentPetition);
 
   const onRefresh = () => {
     console.log("refresh");
     setFetchingStatus(true);
-    setTimeout(function() {
-      setFetchingStatus(false);
-    }, 1000);
+    if (launchParameters.vk_access_token_settings.includes("friends")) {
+      console.log("with friends");
+      loadPetitions(`petitions`, true, {
+        petition_id: currentPetition.id.toString()
+      })
+        .then(response => {
+          setFetchingStatus(false);
+          if (response) {
+            setCurrent(response[0]);
+          }
+          api.selectionChanged().catch(() => {});
+        })
+        .catch(e => console.log(e));
+    } else {
+      console.log("without friends");
+      loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
+        .then(response => {
+          setFetchingStatus(false);
+          if (response) {
+            setCurrent(response[0]);
+          }
+          api.selectionChanged().catch(() => {});
+        })
+        .catch(e => console.log(e));
+    }
   };
 
   const onScroll = () => {
     const scrollPosition = window.scrollY;
-    if (scrollPosition > 128) {
+    console.log(scrollPosition);
+    if (scrollPosition > 150) {
       setHeaderStatus("shown");
     } else {
       setHeaderStatus("hidden");
@@ -48,20 +95,64 @@ const Petition = ({ id, setPage, activePanel, openModal }) => {
 
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
-  });
+  }, [currentPetition]);
 
-  const platform = usePlatform();
+  useEffect(() => {
+    if (activePanel === "petition") {
+      api.setLocationHash(`p${currentPetition.id.toString()}`);
+      if (loadingStatus) {
+        if (launchParameters.vk_access_token_settings.includes("friends")) {
+          console.log("with friends");
+          loadPetitions(`petitions`, true, {
+            petition_id: currentPetition.id.toString()
+          })
+            .then(response => {
+              setLoadingStatus(false);
+              console.log("PETITION1", response);
+              if (response.length > 0) {
+                setCurrent(response[0]);
+              }
+            })
+            .catch(e => console.log(e));
+        } else {
+          console.log("without friends");
+          loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
+            .then(response => {
+              setLoadingStatus(false);
+              console.log("PETITION3", response);
+              if (response.length > 0) {
+                setCurrent(response[0]);
+              }
+            })
+            .catch(e => console.log(e));
+        }
+      }
+    }
+  }, [
+    activePanel,
+    currentPetition.id,
+    launchParameters.vk_access_token_settings,
+    loadingStatus,
+    setCurrent
+  ]);
 
   return (
-    <Panel id={id} separator={false} className="Petition">
-      <PanelHeaderSimple
+    <Panel
+      id={id}
+      separator={false}
+      className={`Petition ${
+        currentPetition && currentPetition.completed && currentPetition.signed
+          ? "Petition--signed"
+          : ""
+      }`}
+    >
+      <PanelHeader
         className={`Petition__header Petition__header__${headerStatus}`}
         left={
           <PanelHeaderButton
             onClick={() => {
-              api.setLocationHash("feed").then(() => {
-                setPage(activePanel, "feed");
-              });
+              goBack();
+              api.selectionChanged().catch(() => {});
             }}
           >
             <Icon28ChevronBack />
@@ -69,143 +160,170 @@ const Petition = ({ id, setPage, activePanel, openModal }) => {
         }
         separator={false}
       />
-      {/* <Touch onStartY={onStartY} onMoveY={onMoveY} onEndY={onEndY}> */}
-
-
-      <PullToRefresh
-        onRefresh={onRefresh}
-        isFetching={fetchingStatus}
-        useCapture
-      >
-        <div className="test">
-          <img src={`${test}`} />
-        </div>
-        <Div className={getClassName("Petition__info", platform)}>
-          <h1>Поместить Кобе Брайанта на новый логотип НБА</h1>
-          <PetitionProgress numberOfSignatures={100} totalSignatures={200} />
-          <UsersStack
-            className="PetitionCard__users_stack"
-            photos={[
-              "https://sun9-6.userapi.com/c846121/v846121540/195e4d/17NeSTKMR1o.jpg?ava=1",
-              "https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1",
-              "https://sun9-25.userapi.com/c849432/v849432217/18ad61/0UFtoEhCsgA.jpg?ava=1"
-            ]}
-          >
-            Подписали Дмитрий, Анастасия и еще 12 друзей
-          </UsersStack>
-        </Div>
-        <Separator />
-        <Div className="Petition__text">
-          В связи с преждевременным и неожиданным уходом великого Кобе Брайанта,
-          пожалуйста, подпишите эту петицию, чтобы увековечить его навсегда на
-          новом логотипе НБА. Ко́би Бин Бра́йант — американский профессиональный
-          баскетболист, выступавший в Национальной баскетбольной ассоциации в
-          течение двадцати сезонов за одну команду, «Лос-Анджелес Лейкерс».
-          Играл на позиции атакующего защитника. Известен своей
-          сверхрезультативной игрой.В связи с преждевременным и неожиданным
-          уходом великого Кобе Брайанта, пожалуйста, подпишите эту петицию,
-          чтобы увековечить его навсегда на новом логотипе НБА. Ко́би Бин Бра́йант
-          — американский профессиональный баскетболист, выступавший в
-          Национальной баскетбольной ассоциации в течение двадцати сезонов за
-          одну команду, «Лос-Анджелес Лейкерс». Играл на позиции атакующего
-          защитника. Известен своей сверхрезультативной игрой.В связи с
-          преждевременным и неожиданным уходом великого Кобе Брайанта,
-          пожалуйста, подпишите эту петицию, чтобы увековечить его навсегда на
-          новом логотипе НБА. Ко́би Бин Бра́йант — американский профессиональный
-          баскетболист, выступавший в Национальной баскетбольной ассоциации в
-          течение двадцати сезонов за одну команду, «Лос-Анджелес Лейкерс».
-          Играл на позиции атакующего защитника. Известен своей
-          сверхрезультативной игрой.В связи с преждевременным и неожиданным
-          уходом великого Кобе Брайанта, пожалуйста, подпишите эту петицию,
-          чтобы увековечить его навсегда на новом логотипе НБА. Ко́би Бин Бра́йант
-          — американский профессиональный баскетболист, выступавший в
-          Национальной баскетбольной ассоциации в течение двадцати сезонов за
-          одну команду, «Лос-Анджелес Лейкерс». Играл на позиции атакующего
-          защитника. Известен своей сверхрезультативной игрой.В связи с
-          преждевременным и неожиданным уходом великого Кобе Брайанта,
-          пожалуйста, подпишите эту петицию, чтобы увековечить его навсегда на
-          новом логотипе НБА. Ко́би Бин Бра́йант — американский профессиональный
-          баскетболист, выступавший в Национальной баскетбольной ассоциации в
-          течение двадцати сезонов за одну команду, «Лос-Анджелес Лейкерс».
-          Играл на позиции атакующего защитника. Известен своей
-          сверхрезультативной игрой.В связи с преждевременным и неожиданным
-          уходом великого Кобе Брайанта, пожалуйста, подпишите эту петицию,
-          чтобы увековечить его навсегда на новом логотипе НБА. Ко́би Бин Бра́йант
-          — американский профессиональный баскетболист, выступавший в
-          Национальной баскетбольной ассоциации в течение двадцати сезонов за
-          одну команду, «Лос-Анджелес Лейкерс». Играл на позиции атакующего
-          защитника. Известен своей сверхрезультативной игрой.В связи с
-          преждевременным и неожиданным уходом великого Кобе Брайанта,
-          пожалуйста, подпишите эту петицию, чтобы увековечить его навсегда на
-          новом логотипе НБА. Ко́би Бин Бра́йант — американский профессиональный
-          баскетболист, выступавший в Национальной баскетбольной ассоциации в
-          течение двадцати сезонов за одну команду, «Лос-Анджелес Лейкерс».
-          Играл на позиции атакующего защитника. Известен своей
-          сверхрезультативной игрой.В связи с преждевременным и неожиданным
-          уходом великого Кобе Брайанта, пожалуйста, подпишите эту петицию,
-          чтобы увековечить его навсегда на новом логотипе НБА. Ко́би Бин Бра́йант
-          — американский профессиональный баскетболист, выступавший в
-          Национальной баскетбольной ассоциации в течение двадцати сезонов за
-          одну команду, «Лос-Анджелес Лейкерс». Играл на позиции атакующего
-          защитника. Известен своей сверхрезультативной игрой.В связи с
-          преждевременным и неожиданным уходом великого Кобе Брайанта,
-          пожалуйста, подпишите эту петицию, чтобы увековечить его навсегда на
-          новом логотипе НБА. Ко́би Бин Бра́йант — американский профессиональный
-          баскетболист, выступавший в Национальной баскетбольной ассоциации в
-          течение двадцати сезонов за одну команду, «Лос-Анджелес Лейкерс».
-          Играл на позиции атакующего защитника. Известен своей
-          сверхрезультативной игрой.В связи с преждевременным и неожиданным
-          уходом великого Кобе Брайанта, пожалуйста, подпишите эту петицию,
-          чтобы увековечить его навсегда на новом логотипе НБА. Ко́би Бин Бра́йант
-          — американский профессиональный баскетболист, выступавший в
-          Национальной баскетбольной ассоциации в течение двадцати сезонов за
-          одну команду, «Лос-Анджелес Лейкерс». Играл на позиции атакующего
-          защитника. Известен своей сверхрезультативной игрой.В связи с
-          преждевременным и неожиданным уходом великого Кобе Брайанта,
-          пожалуйста, подпишите эту петицию, чтобы увековечить его навсегда на
-          новом логотипе НБА. Ко́би Бин Бра́йант — американский профессиональный
-          баскетболист, выступавший в Национальной баскетбольной ассоциации в
-          течение двадцати сезонов за одну команду, «Лос-Анджелес Лейкерс».
-          Играл на позиции атакующего защитника. Известен своей
-          сверхрезультативной игрой.В связи с преждевременным и неожиданным
-          уходом великого Кобе Брайанта, пожалуйста, подпишите эту петицию,
-          чтобы увековечить его навсегда на новом логотипе НБА. Ко́би Бин Бра́йант
-          — американский профессиональный баскетболист, выступавший в
-          Национальной баскетбольной ассоциации в течение двадцати сезонов за
-          одну команду, «Лос-Анджелес Лейкерс». Играл на позиции атакующего
-          защитника. Известен своей сверхрезультативной игрой.
-        </Div>
-        <Separator />
-        <Cell
-          className="Petition__creator"
-          before={
-            <Avatar
-              src="https://sun9-30.userapi.com/c845017/v845017447/1773bb/Wyfyi8-7e5A.jpg?ava=1"
-              size={40}
-            />
+      {Object.keys(currentPetition).length === 1 && !loadingStatus ? (
+        <Placeholder
+          action={
+            <Button
+              size="l"
+              onClick={() => {
+                goBack();
+                api.selectionChanged().catch(() => {});
+              }}
+            >
+              На главную
+            </Button>
           }
-          multiline
+          stretched
         >
-          <Link
-            href="https://vk.com/id165275777"
-            className="Petition__creator__link"
-          >
-            Роман Соколов
-          </Link>
-          создал петицию, адресованную Сергею Корнееву
-        </Cell>
-      </PullToRefresh>
-      {/* </Touch> */}
-      <PetitionTabbar openModal={openModal} />
+          Кажется, эта петиция была удалена.
+        </Placeholder>
+      ) : Object.keys(currentPetition).length > 1 ? (
+        <>
+          <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
+            <div className="Petition__image">
+              <img src={`${currentPetition.mobile_photo_url}`} />
+            </div>
+            <Div className={getClassName("Petition__info", platform)}>
+              <h1>{currentPetition.title}</h1>
+              <PetitionProgress
+                countSignatures={currentPetition.count_signatures}
+                needSignatures={currentPetition.need_signatures}
+                completed={currentPetition.completed}
+              />
+              {currentPetition.friends && currentPetition.friends.length > 0 && (
+                <UsersStack
+                  className="Petition__users_stack"
+                  photos={currentPetition.friends.slice(0, 3).map(item => {
+                    return item.user.photo_50;
+                  })}
+                >
+                  {currentPetition.friends.length === 1
+                    ? (currentPetition.friends[0].user.sex === "2"
+                        ? "Подписал "
+                        : "Подписала ") +
+                      currentPetition.friends[0].user.first_name
+                    : `Подписали ${
+                        currentPetition.friends.length === 2
+                          ? `${currentPetition.friends[0].user.first_name} и ${currentPetition.friends[1].user.first_name}`
+                          : currentPetition.friends
+                              .slice(0, 2)
+                              .map(item => {
+                                return item.user.first_name;
+                              })
+                              .join(", ")
+                      }${
+                        currentPetition.friends.length > 3
+                          ? `, ${
+                              currentPetition.friends[2].user.first_name
+                            } и еще ${currentPetition.friends.length -
+                              3} ${declOfNum(
+                              currentPetition.friends.length - 3,
+                              ["друг", "друга", "друзей"]
+                            )}`
+                          : `и ${currentPetition.friends[2].user.first_name}`
+                      }`}
+                  {}
+                </UsersStack>
+              )}
+            </Div>
+            <Separator />
+            <Div className="Petition__text">{currentPetition.text}</Div>
+            <Separator />
+            <Cell
+              className="Petition__creator"
+              before={
+                <a
+                  className="Petition__creator__avatar"
+                  href={`https://vk.com/id${currentPetition.owner_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Avatar src={currentPetition.owner.photo_50} size={40} />
+                </a>
+              }
+              multiline
+            >
+              <Link
+                href={`https://vk.com/id${currentPetition.owner_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="Petition__creator__link"
+              >
+                {`${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
+              </Link>
+              {`${
+                currentPetition.owner.sex.toString() === "2"
+                  ? "создал "
+                  : "создала "
+              } петицию${
+                currentPetition.directed_to.length > 0 ? `, адресованную ` : ""
+              }`}
+              {currentPetition.directed_to.length > 0 &&
+                currentPetition.directed_to.map((item, index) => {
+                  let ending = ", ";
+                  if (index === currentPetition.directed_to.length - 1) {
+                    ending = "";
+                  }
+                  if (index === currentPetition.directed_to.length - 2) {
+                    ending = " и ";
+                  }
+                  if (typeof item === "string") {
+                    return `${item}${ending}`;
+                  }
+
+                  return (
+                    <React.Fragment key={index}>
+                      <Link
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="Petition__link"
+                      >
+                        {item.name}
+                      </Link>
+                      <span>{ending}</span>
+                    </React.Fragment>
+                  );
+                })}
+            </Cell>
+          </PullToRefresh>
+          <PetitionTabbar />
+        </>
+      ) : (
+        <Spinner size="regular" className="ManagementFeed__spinner" />
+      )}
     </Panel>
   );
 };
 
-Petition.propTypes = {
-  id: PropTypes.string.isRequired,
-  setPage: PropTypes.func.isRequired,
-  activePanel: PropTypes.string.isRequired,
-  openModal: PropTypes.func.isRequired
+const mapStateToProps = state => {
+  return {
+    activePanel: state.router.activePanel,
+    currentPetition: state.petitions.current,
+    launchParameters: state.data.launchParameters
+  };
 };
 
-export default Petition;
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    ...bindActionCreators(
+      {
+        goBack,
+        setCurrent
+      },
+      dispatch
+    )
+  };
+};
+
+Petition.propTypes = {
+  id: PropTypes.string.isRequired,
+  goBack: PropTypes.func.isRequired,
+  currentPetition: PropTypes.object,
+  activePanel: PropTypes.string.isRequired,
+  setCurrent: PropTypes.func.isRequired,
+  launchParameters: PropTypes.object.isRequired
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Petition);

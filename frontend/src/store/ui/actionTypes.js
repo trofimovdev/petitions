@@ -1,2 +1,1 @@
-const SET_COLOR_SCHEME = "SET_COLOR_SCHEME";
-export default SET_COLOR_SCHEME;
+export const SET_COLOR_SCHEME = "ui.SET_COLOR_SCHEME";

@@ -3,3 +3,27 @@
 
 .Placeholder--android {
   margin-top: calc(5px + var(--panelheader_height_android) + var(--safe-area-inset-top)); }
+
+.FeedFooter {
+  margin-top: 0 !important; }
+
+.HeaderButton__wrapper {
+  width: 100%;
+  margin-top: -15px; }
+
+.ManagementFeed .PanelHeader--android .PanelHeader__in, .ManagementFeed .PanelHeader--android .PanelHeader__content {
+  height: calc(48px + var(--panelheader_height_android)) !important; }
+
+.ManagementFeed .PanelHeader--ios .PanelHeader__in, .ManagementFeed .PanelHeader--ios .PanelHeader__content {
+  height: calc(52px + var(--panelheader_height_ios)) !important; }
+
+.ManagementFeed .Separator--ios.PanelHeader__separator {
+  padding-top: 52px !important; }
+
+.ManagementFeed .Separator--android.PanelHeader__separator {
+  padding-top: 48px !important; }
+
+.ManagementFeed__spinner {
+  padding-top: 20px !important; }
+  .ManagementFeed__spinner__bottom {
+    margin-bottom: 30px; }

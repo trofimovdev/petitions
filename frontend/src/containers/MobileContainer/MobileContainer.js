@@ -11,63 +11,55 @@ import {
   closeModal,
   openModal
 } from "../../store/router/actions";
+import {
+  setCurrent,
+  setEdit,
+  setCreate,
+  setFormType,
+  setPopular,
+  setLast,
+  setSigned,
+  setManaged
+} from "../../store/petitions/actions";
 import "@vkontakte/vkui/dist/vkui.css";
 import Petitions from "../../components/Petitions/Petitions";
 import Management from "../../components/Management/Management";
+import SplashScreen from "../../components/SplashScreen/SplashScreen";
 
-const MobileContainer = props => {
-  const {
-    activeView,
-    activePanel,
-    setStory,
-    activeStory,
-    setActiveTab,
-    activeTab,
-    scrollPosition,
-    setPage,
-    activeModals,
-    closeModal,
-    openModal
-  } = props;
-  const activeModal =
-    activeModals[activeView] === undefined ? null : activeModals[activeView];
-
+const MobileContainer = ({
+  activeView,
+  activePanel,
+  activeStory,
+  activeTab,
+  scrollPosition,
+  goBack,
+  history
+}) => {
   useEffect(() => {
-    const pageScrollPosition = scrollPosition[
-      `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
-    ]
-      ? scrollPosition[
-          `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
-        ]
-      : scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
-      ? scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
-      : 0;
+    const pageScrollPosition =
+      activeTab &&
+      scrollPosition[
+        `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
+      ]
+        ? scrollPosition[
+            `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
+          ]
+        : scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
+        ? scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
+        : 0;
+    console.log("ACCEDPT SCROLL TO", pageScrollPosition);
     window.scroll(0, pageScrollPosition);
-  }, [activeStory, activeView, activePanel, activeTab, scrollPosition, props]);
+  }, [activeStory, activeView, activePanel, activeTab, scrollPosition]);
 
   return (
     <Epic activeStory={activeStory}>
       <Petitions
         id="petitions"
-        setActiveTab={setActiveTab}
         activeTab={activeTab}
-        activePanel={activePanel}
-        setPage={setPage}
-        activeStory={activeStory}
-        setStory={setStory}
-        activeModal={activeModal}
-        closeModal={closeModal}
-        openModal={openModal}
+        goBack={goBack}
+        history={history}
       />
-      <Management
-        id="management"
-        setActiveTab={setActiveTab}
-        activeTab={activeTab}
-        activePanel={activePanel}
-        activeStory={activeStory}
-        setStory={setStory}
-        setPage={setPage}
-      />
+      <Management id="management" goBack={goBack} history={history} />
     </Epic>
   );
 };
@@ -79,31 +71,30 @@ const mapStateToProps = state => {
     activeStory: state.router.activeStory,
     activeTab: state.router.activeTab,
     scrollPosition: state.router.scrollPosition,
-    activeModals: state.router.activeModals
+    history: state.router.panelsHistory[state.router.activeView] || []
   };
 };
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
     ...bindActionCreators(
-      { goBack, setPage, setStory, setActiveTab, closeModal, openModal },
+      {
+        goBack
+      },
       dispatch
     )
   };
-}
+};
 
 MobileContainer.propTypes = {
   activeView: PropTypes.string,
   activePanel: PropTypes.string,
-  setStory: PropTypes.func,
   activeStory: PropTypes.string,
-  setActiveTab: PropTypes.func.isRequired,
-  activeTab: PropTypes.object.isRequired,
-  activeModals: PropTypes.any.isRequired,
-  closeModal: PropTypes.func.isRequired,
-  openModal: PropTypes.func.isRequired,
-  scrollPosition: PropTypes.object
+  activeTab: PropTypes.object,
+  scrollPosition: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  goBack: PropTypes.func.isRequired,
+  history: PropTypes.array.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MobileContainer);

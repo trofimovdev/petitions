@@ -7,18 +7,107 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import store from "./store";
 import "./style/index.css";
 import App from "./App";
-import { setActiveTab, setStory } from "./store/router/actions";
-import setColorScheme from "./store/ui/actions";
+import { setActiveTab, setStory, setPage } from "./store/router/actions";
+import { setColorScheme } from "./store/ui/actions";
+import { loadPetitions } from "./tools/helpers";
+import {
+  setPopular,
+  setLast,
+  setSigned,
+  setManaged,
+  setCurrent
+} from "./store/petitions/actions";
+import { setLaunchParameters } from "./store/data/actions";
 
 const api = new VKMiniAppAPI();
+
+const onLoad = response => {
+  console.log("INDEX RESPONSE", response);
+  store.dispatch(setPopular(response.popular || []));
+  store.dispatch(setLast(response.last || []));
+  store.dispatch(setSigned(response.signed || []));
+  store.dispatch(setManaged(response.managed || []));
+
+  const screenHeight = document.body.getBoundingClientRect().height;
+  if (313 * response.last.length < screenHeight) {
+    // 313 - высота одной карточки в px (с отступами)
+    console.log("НУЖНА ДОГРУЗКА");
+  }
+};
 
 api.initApp();
 api.onUpdateConfig(({ scheme }) => {
   store.dispatch(setColorScheme(scheme));
-  console.log("SET COLOR SCHEME", scheme);
 });
-store.dispatch(setStory("management", "create"));
-store.dispatch(setActiveTab("feed", "popular"));
+
+let isAppUser = false;
+api.storageGet("is_app_user").then(r => {
+  isAppUser = r;
+  console.log("is_app_user", r);
+  if (!isAppUser) {
+    api.storageSet("is_app_user", "1");
+  }
+
+  const petitionRegExp = new RegExp("^#p(\\d+)$");
+  const feedRegExp = new RegExp("^#(popular|last|signed)$");
+  const managementRegExp = new RegExp("^#management$");
+  let petitionId = window.location.hash.match(petitionRegExp);
+  const feedTab = window.location.hash.match(feedRegExp);
+  const management = window.location.hash.match(managementRegExp);
+  const launchParameters = Object.fromEntries(
+    new URLSearchParams(window.location.search)
+  );
+  store.dispatch(setLaunchParameters(launchParameters));
+  console.log("LAUNCH PARAMS", launchParameters);
+  if (launchParameters.vk_access_token_settings.includes("friends")) {
+    console.log("with friends");
+    loadPetitions("petitions", true)
+      .then(r => onLoad(r))
+      .catch(e => console.log(e));
+  } else {
+    console.log("without friends");
+    loadPetitions("petitions", false)
+      .then(r => onLoad(r))
+      .catch(e => console.log(e));
+  }
+
+  if (launchParameters.vk_ref.startsWith("story") && !petitionId) {
+    const context = atob(launchParameters.vk_ref.split("_")[4]).match(
+      petitionRegExp
+    );
+    if (context) {
+      petitionId = context;
+    }
+  }
+  if (petitionId) {
+    store.dispatch(setCurrent({ id: petitionId[1] }));
+    store.dispatch(setActiveTab("feed", "last"));
+    store.dispatch(setStory("petitions", "feed"));
+    store.dispatch(setPage("petitions", "petition"));
+  } else if (!isAppUser) {
+    if (feedTab) {
+      store.dispatch(setActiveTab("feed", feedTab[1]));
+      store.dispatch(setStory("petitions", "splashscreen", false));
+    } else if (management) {
+      store.dispatch(setActiveTab("feed", "last"));
+      store.dispatch(setStory("management", "splashscreen", false));
+    } else {
+      store.dispatch(setActiveTab("feed", "last"));
+      store.dispatch(setStory("petitions", "splashscreen", false));
+    }
+  } else {
+    if (feedTab) {
+      store.dispatch(setActiveTab("feed", feedTab[1]));
+      store.dispatch(setStory("petitions", "feed"));
+    } else if (management) {
+      store.dispatch(setActiveTab("feed", "last"));
+      store.dispatch(setStory("management", "feed"));
+    } else {
+      store.dispatch(setActiveTab("feed", "last"));
+      store.dispatch(setStory("petitions", "feed"));
+    }
+  }
+});
 
 ReactDOM.render(
   <Provider store={store}>

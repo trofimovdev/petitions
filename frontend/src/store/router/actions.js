@@ -2,26 +2,30 @@ import {
   SET_PAGE,
   SET_STORY,
   GO_BACK,
-  OPEN_POPOUT,
-  CLOSE_POPOUT,
   OPEN_MODAL,
   CLOSE_MODAL,
-  SET_ACTIVE_TAB
+  SET_ACTIVE_TAB,
+  OPEN_POPOUT,
+  CLOSE_POPOUT
 } from "./actionTypes";
 
-export const setStory = (story, initialPanel) => ({
+export const setStory = (story, initialPanel, withHistory = true) => ({
   type: SET_STORY,
   payload: {
     story,
-    initialPanel
+    initialPanel,
+    withHistory
   }
 });
 
-export const setPage = (view, panel) => ({
+export const setPage = (view, panel, disableSwipeBack = false, rewriteHistory = false, history = []) => ({
   type: SET_PAGE,
   payload: {
     view,
-    panel
+    panel,
+    disableSwipeBack,
+    rewriteHistory,
+    history
   }
 });
 
@@ -29,22 +33,9 @@ export const goBack = () => ({
   type: GO_BACK
 });
 
-export const openPopout = popout => ({
-  type: OPEN_POPOUT,
-  payload: {
-    popout
-  }
-});
-
-export const closePopout = () => ({
-  type: CLOSE_POPOUT
-});
-
 export const openModal = id => ({
   type: OPEN_MODAL,
-  payload: {
-    id
-  }
+  payload: id
 });
 
 export const closeModal = () => ({
@@ -57,4 +48,15 @@ export const setActiveTab = (component, tab) => ({
     component,
     tab
   }
+});
+
+export const openPopout = popout => ({
+  type: OPEN_POPOUT,
+  payload: {
+    popout
+  }
+});
+
+export const closePopout = () => ({
+  type: CLOSE_POPOUT
 });

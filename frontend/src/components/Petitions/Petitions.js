@@ -1,58 +1,87 @@
 import React from "react";
 import { View } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import PetitionsFeed from "../PetitionsFeed/PetitionsFeed";
 import Petition from "../Petition/Petiton";
 import PetitionModal from "../PetitionModal/PetititonModal";
+import SplashScreen from "../SplashScreen/SplashScreen";
+import {
+  setActiveTab,
+  setPage,
+  setStory,
+  goBack
+} from "../../store/router/actions";
+import { setCurrent } from "../../store/petitions/actions";
+import EditPetition from "../EditPetition/EditPetition";
 
 const Petitions = ({
-  setActiveTab,
   activeTab,
   activePanel,
-  activeStory,
-  setStory,
-  setPage,
+  goBack,
+  history,
   activeModal,
-  closeModal,
-  openModal
+  formType,
+  popout
 }) => {
   return (
     <View
-      modal={
-        <PetitionModal activeModal={activeModal} closeModal={closeModal} />
-      }
+      modal={<PetitionModal activeModal={activeModal} />}
       activePanel={activePanel}
       header={false}
+      onSwipeBack={goBack}
+      history={history}
+      popout={popout}
     >
-      <PetitionsFeed
-        id="feed"
-        setActiveTab={setActiveTab}
-        activeTab={activeTab}
-        setPage={setPage}
-        activePanel={activePanel}
-        activeStory={activeStory}
-        setStory={setStory}
-      />
-      <Petition
-        id="petition"
-        setPage={setPage}
-        activePanel={activePanel}
-        openModal={openModal}
-      />
+      <SplashScreen id="splashscreen" />
+      <PetitionsFeed id="feed" activeTab={activeTab} />
+      <Petition id="petition" />
+      <EditPetition id="edit" />
     </View>
   );
 };
 
-Petitions.propTypes = {
-  setActiveTab: PropTypes.func.isRequired,
-  activeTab: PropTypes.object.isRequired,
-  activePanel: PropTypes.string.isRequired,
-  activeStory: PropTypes.string.isRequired,
-  setStory: PropTypes.func.isRequired,
-  setPage: PropTypes.func.isRequired,
-  activeModal: PropTypes.string,
-  closeModal: PropTypes.func.isRequired,
-  openModal: PropTypes.func.isRequired
+const mapStateToProps = state => {
+  return {
+    activeTab: state.router.activeTab,
+    activePanel: state.router.activePanel,
+    activeModal:
+      state.router.activeModals[state.router.activeView] === undefined
+        ? null
+        : state.router.activeModals[state.router.activeView],
+    formType: state.petitions.formType,
+    popout:
+      state.router.popouts[state.router.activeView] === undefined
+        ? null
+        : state.router.popouts[state.router.activeView]
+  };
 };
 
-export default Petitions;
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch,
+    ...bindActionCreators(
+      {
+        setActiveTab,
+        setStory,
+        setPage,
+        setCurrent,
+        goBack
+      },
+      dispatch
+    )
+  };
+};
+
+Petitions.propTypes = {
+  activeTab: PropTypes.object.isRequired,
+  activePanel: PropTypes.string.isRequired,
+  activeModal: PropTypes.string,
+  goBack: PropTypes.func.isRequired,
+  history: PropTypes.array.isRequired,
+  formType: PropTypes.string.isRequired,
+  popout: PropTypes.object
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Petitions);

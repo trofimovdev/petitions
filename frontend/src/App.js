@@ -1,11 +1,10 @@
 import React from "react";
 import "@vkontakte/vkui/dist/vkui.css";
 import { connect } from "react-redux";
-import { HashRouter as Router, Route } from "react-router-dom";
 import { ConfigProvider } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
-import { isDevEnv } from "./tools/helpers";
 import MobileContainer from "./containers/MobileContainer/MobileContainer";
+import { isDevEnv } from "./tools/helpers";
 
 const App = ({ colorScheme }) => {
   return (
@@ -14,9 +13,7 @@ const App = ({ colorScheme }) => {
       isWebView={isDevEnv() ? true : undefined}
       scheme={colorScheme}
     >
-      <Router history={[]}>
-        <Route component={props => <MobileContainer {...props} />} />
-      </Router>
+      <MobileContainer />
     </ConfigProvider>
   );
 };
@@ -31,4 +28,4 @@ App.propTypes = {
   colorScheme: PropTypes.string.isRequired
 };
 
-export default connect(mapStateToProps, {})(App);
+export default connect(mapStateToProps, null)(App);

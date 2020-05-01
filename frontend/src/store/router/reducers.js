@@ -3,12 +3,12 @@ import { smoothScrollToTop } from "../../tools/helpers";
 import {
   SET_PAGE,
   GO_BACK,
-  OPEN_POPOUT,
-  CLOSE_POPOUT,
   OPEN_MODAL,
   CLOSE_MODAL,
   SET_STORY,
-  SET_ACTIVE_TAB
+  SET_ACTIVE_TAB,
+  OPEN_POPOUT,
+  CLOSE_POPOUT
 } from "./actionTypes";
 
 const api = new VKMiniAppAPI();
@@ -33,15 +33,19 @@ const routerReducer = (state = initialState, action) => {
   console.log("router", state, action);
   switch (action.type) {
     case SET_PAGE: {
+      console.log("LOL KEK ADASDASDASDASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
       const View = action.payload.view;
       const Panel = action.payload.panel;
+      const { disableSwipeBack } = action.payload;
+      const { rewriteHistory } = action.payload;
+      const { history } = action.payload;
       console.log(View, Panel);
 
       window.history.pushState(null, null);
 
       let panelsHistory = state.panelsHistory[View] || [];
       const viewsHistory = state.viewsHistory[state.activeStory] || [];
-      console.log(panelsHistory);
+      console.log("panelsHistory123123123", panelsHistory);
 
       const viewIndexInHistory = viewsHistory.indexOf(View);
 
@@ -52,15 +56,18 @@ const routerReducer = (state = initialState, action) => {
       if (panelsHistory.indexOf(Panel) === -1) {
         panelsHistory = [...panelsHistory, Panel];
       }
-
-      if (panelsHistory.length > 1) {
-        // VkSdk.swipeBackOn();
-        console.log("vksdk swipeBackOn");
-      }
-      console.log("panelsHistory", {
+      console.log("panelsHistory AFTER", {
         ...state.panelsHistory,
         [View]: panelsHistory
       });
+
+      console.log("disableSwipeBack", disableSwipeBack);
+      if (panelsHistory.length > 1 && !disableSwipeBack) {
+        api.enableSwipeBack();
+      } else {
+        console.log("DISABLE SWIPE BACK PLS");
+        api.disableSwipeBack();
+      }
 
       return {
         ...state,
@@ -69,7 +76,7 @@ const routerReducer = (state = initialState, action) => {
 
         panelsHistory: {
           ...state.panelsHistory,
-          [View]: panelsHistory
+          [View]: rewriteHistory ? history : panelsHistory
         },
         viewsHistory: {
           ...state.viewsHistory,
@@ -91,24 +98,30 @@ const routerReducer = (state = initialState, action) => {
 
       let { storiesHistory } = state;
       let activeView = viewsHistory[viewsHistory.length - 1];
-      let panelsHistory = state.panelsHistory[activeView] || [
-        action.payload.initialPanel
-      ];
-      let activePanel = panelsHistory[panelsHistory.length - 1];
+      let panelsHistory = action.payload.withHistory
+        ? state.panelsHistory[activeView] || [action.payload.initialPanel]
+        : [];
+      let activePanel = action.payload.withHistory
+        ? panelsHistory[panelsHistory.length - 1]
+        : action.payload.initialPanel;
+      console.log("panelsHistory 1", panelsHistory);
 
-      if (action.payload.story === state.activeStory) {
-        if (panelsHistory.length > 1) {
-          const firstPanel = panelsHistory.shift();
-          panelsHistory = [firstPanel];
+      if (action.payload.withHistory) {
+        console.log("set to history STORY", action);
+        if (action.payload.story === state.activeStory) {
+          if (panelsHistory.length > 1) {
+            const firstPanel = panelsHistory.shift();
+            panelsHistory = [firstPanel];
 
-          activePanel = panelsHistory[panelsHistory.length - 1];
-        } else if (viewsHistory.length > 1) {
-          const firstView = viewsHistory.shift();
-          viewsHistory = [firstView];
+            activePanel = panelsHistory[panelsHistory.length - 1];
+          } else if (viewsHistory.length > 1) {
+            const firstView = viewsHistory.shift();
+            viewsHistory = [firstView];
 
-          activeView = viewsHistory[viewsHistory.length - 1];
-          panelsHistory = state.panelsHistory[activeView];
-          activePanel = panelsHistory[panelsHistory.length - 1];
+            activeView = viewsHistory[viewsHistory.length - 1];
+            panelsHistory = state.panelsHistory[activeView];
+            activePanel = panelsHistory[panelsHistory.length - 1];
+          }
         }
       }
 
@@ -131,6 +144,7 @@ const routerReducer = (state = initialState, action) => {
       ) {
         storiesHistory = [...storiesHistory, action.payload.story];
       }
+
       console.log("setStory", {
         ...state,
         activeStory: action.payload.story,
@@ -177,6 +191,7 @@ const routerReducer = (state = initialState, action) => {
     }
 
     case GO_BACK: {
+      console.log("GO BACK");
       let setView = state.activeView;
       let setPanel = state.activePanel;
       let setStory = state.activeStory;
@@ -255,13 +270,12 @@ const routerReducer = (state = initialState, action) => {
           setPanel = panelsHistoryNew[0];
         }
       } else {
-        // VkSdk.closeApp();
+        api.closeApp("success");
         console.log("vksdk closeApp");
       }
 
       if (panelsHistory.length === 1) {
-        // VkSdk.swipeBackOff();
-        console.log("vksdk swipeBackOff");
+        api.disableSwipeBack();
       }
 
       console.log("panelsHistory goBack", {
@@ -286,31 +300,11 @@ const routerReducer = (state = initialState, action) => {
       };
     }
 
-    case OPEN_POPOUT:
-      window.history.pushState(null, null);
-
-      return {
-        ...state,
-        popouts: {
-          ...state.popouts,
-          [state.activeView]: action.payload.popout
-        }
-      };
-
-    case CLOSE_POPOUT:
-      return {
-        ...state,
-        popouts: {
-          ...state.popouts,
-          [state.activeView]: null
-        }
-      };
-
     case OPEN_MODAL: {
-      console.log('OPEN MODAL');
+      console.log("OPEN MODAL", action.payload);
       window.history.pushState(null, null);
 
-      const activeModal = action.payload.id || null;
+      const activeModal = action.payload || null;
       let modalsHistory = state.modalHistory[state.activeView]
         ? [...state.modalHistory[state.activeView]]
         : [];
@@ -382,7 +376,9 @@ const routerReducer = (state = initialState, action) => {
         );
         scrollPosition1 = {
           ...state.scrollPosition,
-          [`${state.activeStory}_${state.activeView}_${state.activePanel}_${state.activeTab[state.activePanel]}`]: window.pageYOffset
+          [`${state.activeStory}_${state.activeView}_${state.activePanel}_${
+            state.activeTab[state.activePanel]
+          }`]: window.pageYOffset
         };
       } else {
         scrollPosition1 = {
@@ -405,6 +401,28 @@ const routerReducer = (state = initialState, action) => {
           [action.payload.component]: action.payload.tab
         },
         scrollPosition: scrollPosition1
+      };
+    }
+
+    case OPEN_POPOUT: {
+      window.history.pushState(null, null);
+
+      return {
+        ...state,
+        popouts: {
+          ...state.popouts,
+          [state.activeView]: action.payload.popout
+        }
+      };
+    }
+
+    case CLOSE_POPOUT: {
+      return {
+        ...state,
+        popouts: {
+          ...state.popouts,
+          [state.activeView]: null
+        }
       };
     }
 

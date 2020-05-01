@@ -1,14 +1,20 @@
 @import "src/style/_vars.scss";
 
 .PetitionTabbar {
-  height: 112px !important; // 68px
+  height: calc(68px + var(--safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: var(--safe-area-inset-bottom) !important;
+
+  &--signed {
+    height: calc(102px + var(--safe-area-inset-bottom)) !important;
+  }
 
   &__signed {
-    margin: 0 auto;
     display: flex;
     align-items: center;
+    justify-content: center;
     color: $petition-signed-text-color;
 
     &__icon {
@@ -18,13 +24,20 @@
 
   &__buttons {
     display: flex;
-  }
+    height: 44px !important;
 
-  &__buttons > * {
-    margin-right: 8px;
-  }
+    &__sign {
+      &--completed {
+        color: $petition-signed-button-text-color;
+      }
+    }
 
-  &__buttons > *:last-child {
-    margin-right: 0;
+    & > * {
+      margin-right: 8px;
+    }
+
+    & > *:last-child {
+      margin-right: 0;
+    }
   }
 }

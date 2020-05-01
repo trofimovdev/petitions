@@ -1,0 +1,46 @@
+@import "src/style/_vars.scss";
+
+:root {
+  --friends-card-border: solid 1px rgba(0, 0, 0, 0.08);
+}
+
+body[scheme="space_gray"] {
+  --friends-card-border: solid 1px rgba(255, 255, 255, 0.08);
+}
+
+.FriendsCard {
+  padding-bottom: 4px !important;
+
+  &__card {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border: var(--friends-card-border);
+
+    &__close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border-radius: 50%;
+      background: rgba(129, 140, 153, 0.12);
+      z-index: 2;
+      color: #818c99;
+      padding: 4px;
+
+    }
+
+    &__content {
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      color: $petitions-friends-card-text-color;
+      padding: 12px 52px 18px 16px;
+
+      &__link {
+        margin-top: 12px;
+        font-weight: 600;
+      }
+    }
+  }
+}

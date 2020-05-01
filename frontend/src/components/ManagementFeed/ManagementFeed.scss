@@ -7,3 +7,45 @@
     margin-top: calc(5px + var(--panelheader_height_android) + var(--safe-area-inset-top));
   }
 }
+
+.FeedFooter {
+  margin-top: 0 !important;
+}
+
+.HeaderButton {
+  &__wrapper {
+    width: 100%;
+    margin-top: -15px;
+  }
+}
+
+
+.ManagementFeed .PanelHeader--android {
+  .PanelHeader__in, .PanelHeader__content {
+    height: calc(48px + var(--panelheader_height_android)) !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
+  }
+}
+
+.ManagementFeed .PanelHeader--ios {
+  .PanelHeader__in, .PanelHeader__content {
+    height: calc(52px + var(--panelheader_height_ios)) !important; // 52px - высота кнопки на iOS
+  }
+}
+
+.ManagementFeed .Separator--ios.PanelHeader__separator {
+  padding-top: 52px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
+}
+
+.ManagementFeed .Separator--android.PanelHeader__separator {
+  padding-top: 48px !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
+}
+
+.ManagementFeed {
+  &__spinner {
+    padding-top: 20px !important;
+
+    &__bottom {
+      margin-bottom: 30px;
+    }
+  }
+}

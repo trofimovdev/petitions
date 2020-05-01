@@ -1,18 +1,19 @@
-.EditForm__card-wrapper {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important; }
-  .EditForm__card-wrapper__top {
-    margin: 0 !important;
-    padding-left: 0 !important; }
-  .EditForm__card-wrapper__card__content {
-    height: 164px;
-    font-size: 14px;
-    font-weight: 600;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #c4c8cc; }
-    .EditForm__card-wrapper__card__content__text {
-      margin-top: 14px;
-      margin-bottom: 14px; }
+.EditPetition > .Panel__in,
+.EditPetition .Snackbar {
+  padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; }
+
+.EditForm__input-top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; }
+
+.EditForm__input-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center; }
+  .EditForm__input-wrapper input {
+    flex-grow: 2; }
+  .EditForm__input-wrapper .Icon {
+    z-index: 2;
+    color: #aaaeb3;
+    margin-right: 8px; }

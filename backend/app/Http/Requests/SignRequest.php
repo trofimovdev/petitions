@@ -7,7 +7,6 @@ use Illuminate\Foundation\Http\FormRequest;
 class SignRequest extends FormRequest
 {
     public $groupId;
-    public $viewerType;
     public $userId;
     public $appId;
 
