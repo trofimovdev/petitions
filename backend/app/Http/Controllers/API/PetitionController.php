@@ -7,6 +7,7 @@ use App\Http\Requests\SignRequest;
 use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\OkResponse;
 use App\Models\Petition;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 class PetitionController extends Controller
@@ -82,7 +83,7 @@ class PetitionController extends Controller
                     return new ErrorResponse(400, 'Превышены ограничения');
                 }
 
-                return new OkResponse(Petition::createPetition($title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto, $request->userId));
+                return new OkResponse(Petition::createPetition($request, $title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto, $request->userId));
 
             case 'upload':
                 $uploadUrl = (string)$request->upload_url;
@@ -209,7 +210,9 @@ class PetitionController extends Controller
             'popular' => Petition::getPopular(0, $friendIds),
             'last' => Petition::getLast(0, $friendIds),
             'signed' => Petition::getSigned($request->userId, 0, $friendIds),
-            'managed' => Petition::getManaged($request->userId, 0, $friendIds)
+            'managed' => Petition::getManaged($request->userId, 0, $friendIds),
+            'test' => $request->server('HTTP_USER_AGENT'),
+            'ip' => $request->ip()
         ]);
     }
 }

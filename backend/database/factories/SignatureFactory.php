@@ -9,6 +9,8 @@ $factory->define(Signature::class, function (Faker $faker) use (&$id) {
     return [
         'petition_id' => rand(1, 100),
         'user_id' => rand(0, 1000000000),
+        'user_agent' => '',
+        'ip' => '192.168.0.1',
         'signed_at' => $faker->dateTimeBetween($startDate = '-30 days', $endDate = 'now', $timezone = null),
     ];
 });

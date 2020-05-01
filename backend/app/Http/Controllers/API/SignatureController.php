@@ -44,8 +44,10 @@ class SignatureController extends Controller
         }
 
         $signature = new Signature;
-        $signature->user_id = $request->userId;
         $signature->petition_id = $petitionId;
+        $signature->user_id = $request->userId;
+        $signature->user_agent = $request->server('HTTP_USER_AGENT');
+        $signature->ip = $request->ip(); // without CloudFlare
         $signature->signed_at = now();
         $signature->save();
         Petition::where('id', '=', $petitionId)

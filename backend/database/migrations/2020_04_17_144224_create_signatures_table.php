@@ -16,6 +16,8 @@ class CreateSignaturesTable extends Migration
         Schema::create('signatures', function (Blueprint $table) {
             $table->integer('petition_id');
             $table->integer('user_id');
+            $table->string('user_agent')->nullable();
+            $table->string('ip');
             $table->timestamp('signed_at');
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Requests\SignRequest;
 use CURLFile;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
@@ -162,7 +163,7 @@ class Petition extends Model
         return $response;
     }
 
-    public static function createPetition(string $title, string $text, int $needSignatures, string $directedTo, string $mobilePhoto, string $webPhoto, int $userId)
+    public static function createPetition(SignRequest $request, string $title, string $text, int $needSignatures, string $directedTo, string $mobilePhoto, string $webPhoto, int $userId)
     {
         $name = Petition::saveImages($mobilePhoto, $webPhoto);
         $row = [
@@ -177,8 +178,10 @@ class Petition extends Model
         ];
         $petition = Petition::create($row);
         $signature_row = [
-            'user_id' => $userId,
             'petition_id' => $petition['id'],
+            'user_id' => $userId,
+            'user_agent' => $request->server('HTTP_USER_AGENT'),
+            'ip' => $request->ip(), // without CloudFlare
             'signed_at' => now()
         ];
         Signature::create($signature_row);

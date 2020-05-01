@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use ErrorException;
 use Illuminate\Support\Facades\Redis;
 
 class User
@@ -39,6 +40,14 @@ class User
         }
         return $users;
     }
+    public static function checkIsBanned(int $userId)
+    {
+        $user = User::getUsersFromAPI([$userId], [], false);
+        if (!$user) {
+            return null;
+        }
+        return array_key_exists('deactivated', $user[$userId]);
+    }
 
     public static function getUsersFromAPI(array $userIds, array $fields = [], bool $cache = true, int $try = 0)
     {
@@ -49,20 +58,16 @@ class User
         $users = [];
         try {
             $usersData = json_decode(file_get_contents('https://api.vk.com/method/users.get?user_ids=' . join(',', $userIds) . '&fields=' . join(',', $fields) . '&access_token=' . config('app.service') . '&v=5.103'))->response;
-        } catch (Exeception $e) {
+        } catch (ErrorException $e) {
             if ($try === 5) {
-                return false;
+                return null;
             }
             return User::getUsersFromAPI($userIds, $fields, true, $try + 1);
         }
+
         foreach ($usersData as $userData) {
             $user = [];
-            $user['first_name'] = $userData->first_name;
-            $user['last_name'] = $userData->last_name;
-            foreach ($fields as $field) {
-                $user[$field] = (string)$userData->{$field};
-            }
-            $users[$userData->id] = $user;
+            $users[$userData->id] = (array)$userData;
             if ($cache) {
                 Redis::hmset('u' . $userData->id, $user);
                 Redis::expire('u' . $userData->id, User::CACHE_TTL);
