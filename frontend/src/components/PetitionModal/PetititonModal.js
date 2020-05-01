@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   ModalRoot,
   ModalPage,
@@ -6,16 +6,9 @@ import {
   PanelHeaderButton,
   Button,
   Div,
-  List,
-  Cell,
-  Search,
-  FixedLayout,
-  Avatar,
   ANDROID,
   IOS,
   usePlatform,
-  Placeholder,
-  Spinner,
   ScreenSpinner
 } from "@vkontakte/vkui";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
@@ -50,8 +43,8 @@ const PetitionModal = ({
   openPopout,
   closePopout
 }) => {
-  const [searchValue, setSearchValue] = useState("");
-  const [friendsList, setFriendsList] = useState(null);
+  // const [searchValue, setSearchValue] = useState("");
+  // const [friendsList, setFriendsList] = useState(null);
   const fragmentText = (text, maxWidth, ctx) => {
     const words = text.split(" ");
     const lines = [];
@@ -82,61 +75,61 @@ const PetitionModal = ({
     return lines;
   };
 
-  if (
-    launchParameters.vk_access_token_settings.includes("friends") &&
-    !searchValue &&
-    !friendsList
-  ) {
-    api.getAccessToken(7338958, "friends").then(r => {
-      if (!r.scope.includes("friends")) {
-        return;
-      }
-      api
-        .callAPIMethod("friends.get", {
-          fields: "photo_50,sex",
-          access_token: r.accessToken,
-          v: "5.103"
-        })
-        .then(response => {
-          setFriendsList(response.items);
-        });
-    });
-  }
+  // if (
+  //   launchParameters.vk_access_token_settings.includes("friends") &&
+  //   !searchValue &&
+  //   !friendsList
+  // ) {
+  //   api.getAccessToken(7338958, "friends").then(r => {
+  //     if (!r.scope.includes("friends")) {
+  //       return;
+  //     }
+  //     api
+  //       .callAPIMethod("friends.get", {
+  //         fields: "photo_50,sex",
+  //         access_token: r.accessToken,
+  //         v: "5.103"
+  //       })
+  //       .then(response => {
+  //         setFriendsList(response.items);
+  //       });
+  //   });
+  // }
 
-  const searchUsers = e => {
-    const request = e.target.value;
-    setSearchValue();
-    api.getAccessToken(7338958, "friends").then(r => {
-      if (!r.scope.includes("friends")) {
-        return;
-      }
-      api
-        .callAPIMethod("users.search", {
-          q: request,
-          fields: "photo_50,sex",
-          access_token: r.accessToken,
-          v: "5.103"
-        })
-        .then(response => {
-          console.log("response", response);
-        });
-    });
-  };
+  // const searchUsers = e => {
+  //   const request = e.target.value;
+  //   setSearchValue();
+  //   api.getAccessToken(7338958, "friends").then(r => {
+  //     if (!r.scope.includes("friends")) {
+  //       return;
+  //     }
+  //     api
+  //       .callAPIMethod("users.search", {
+  //         q: request,
+  //         fields: "photo_50,sex",
+  //         access_token: r.accessToken,
+  //         v: "5.103"
+  //       })
+  //       .then(response => {
+  //         console.log("response", response);
+  //       });
+  //   });
+  // };
 
-  const getAccessToken = () => {
-    api.getAccessToken(7338958, "friends").then(r => {
-      if (!r.scope.includes("friends")) {
-        return;
-      }
-      setLaunchParameters({
-        ...launchParameters,
-        vk_access_token_settings: launchParameters.vk_access_token_settings
-          .split(",")
-          .concat("friends")
-          .join(",")
-      });
-    });
-  };
+  // const getAccessToken = () => {
+  //   api.getAccessToken(7338958, "friends").then(r => {
+  //     if (!r.scope.includes("friends")) {
+  //       return;
+  //     }
+  //     setLaunchParameters({
+  //       ...launchParameters,
+  //       vk_access_token_settings: launchParameters.vk_access_token_settings
+  //         .split(",")
+  //         .concat("friends")
+  //         .join(",")
+  //     });
+  //   });
+  // };
 
   const platform = usePlatform();
   return (
@@ -170,7 +163,6 @@ const PetitionModal = ({
             className="PetitionModal__button-wrapper"
             onClick={() => {
               openPopout(<ScreenSpinner />);
-              // ctx.moveTo(0, 1800);
 
               const canvas = document.createElement("canvas");
               const r = 6;
@@ -205,15 +197,7 @@ const PetitionModal = ({
               const img = new Image();
               img.crossOrigin = "Anonymous";
               img.onload = () => {
-                const hRatio = canvas.width / img.width;
-                const vRatio = canvas.height / img.height;
-                const ratio = hRatio;
-                /* if (img.width < img.height) {
-                  ratio = hRatio;
-                } else {
-                  ratio = vRatio;
-                } */
-                // var ratio = Math.max(hRatio, vRatio);
+                const ratio = canvas.width / img.width;
                 ctx.drawImage(
                   img,
                   0,
@@ -601,81 +585,81 @@ const PetitionModal = ({
         </Div>
       </ModalPage>
 
-      <ModalPage
-        id="select-users"
-        className="SelectUsers"
-        dynamicContentHeight
-        onClose={closeModal}
-        header={
-          <ModalPageHeader
-            left={
-              platform === ANDROID && (
-                <PanelHeaderButton onClick={closeModal}>
-                  <Icon24Cancel />
-                </PanelHeaderButton>
-              )
-            }
-            right={
-              platform === IOS && (
-                <PanelHeaderButton onClick={closeModal}>
-                  <Icon24Dismiss />
-                </PanelHeaderButton>
-              )
-            }
-          >
-            Выберите пользователей
-          </ModalPageHeader>
-        }
-      >
-        {launchParameters.vk_access_token_settings.includes("friends") ? (
-          <>
-            <FixedLayout vertical="top" className="SelectUsers__search">
-              <Search onChange={searchUsers} />
-            </FixedLayout>
-            <List className="SelectUsers__list">
-              {friendsList && false ? (
-                friendsList.map((item, index) => {
-                  return (
-                    <Cell
-                      selectable
-                      before={
-                        <Avatar
-                          size={40}
-                          src="https://sun9-13.userapi.com/c836333/v836333001/31193/dNxZpRF-z_M.jpg?ava=1"
-                        />
-                      }
-                    >
-                      Выбранный Юзер 3
-                    </Cell>
-                  );
-                })
-              ) : (
-                <Placeholder className="SelectUsers__spinner">
-                  <Spinner size="regular" />
-                </Placeholder>
-              )}
-            </List>
-          </>
-        ) : (
-          <Placeholder
-            className="SelectUsers__placeholder"
-            action={
-              <Button
-                size="l"
-                onClick={() => {
-                  api.selectionChanged().catch(() => {});
-                  getAccessToken();
-                }}
-              >
-                Предоставить доступ
-              </Button>
-            }
-          >
-            Чтобы отмечать друзей и других людей в петиции, необходимо
-            предоставить доступ к их списку
-          </Placeholder>
-        )}
-      </ModalPage>
+      {/* <ModalPage */}
+      {/*  id="select-users" */}
+      {/*  className="SelectUsers" */}
+      {/*  dynamicContentHeight */}
+      {/*  onClose={closeModal} */}
+      {/*  header={ */}
+      {/*    <ModalPageHeader */}
+      {/*      left={ */}
+      {/*        platform === ANDROID && ( */}
+      {/*          <PanelHeaderButton onClick={closeModal}> */}
+      {/*            <Icon24Cancel /> */}
+      {/*          </PanelHeaderButton> */}
+      {/*        ) */}
+      {/*      } */}
+      {/*      right={ */}
+      {/*        platform === IOS && ( */}
+      {/*          <PanelHeaderButton onClick={closeModal}> */}
+      {/*            <Icon24Dismiss /> */}
+      {/*          </PanelHeaderButton> */}
+      {/*        ) */}
+      {/*      } */}
+      {/*    > */}
+      {/*      Выберите пользователей */}
+      {/*    </ModalPageHeader> */}
+      {/*  } */}
+      {/* > */}
+      {/*  {launchParameters.vk_access_token_settings.includes("friends") ? ( */}
+      {/*    <> */}
+      {/*      <FixedLayout vertical="top" className="SelectUsers__search"> */}
+      {/*        <Search onChange={searchUsers} /> */}
+      {/*      </FixedLayout> */}
+      {/*      <List className="SelectUsers__list"> */}
+      {/*        {friendsList && false ? ( */}
+      {/*          friendsList.map((item, index) => { */}
+      {/*            return ( */}
+      {/*              <Cell */}
+      {/*                selectable */}
+      {/*                before={ */}
+      {/*                  <Avatar */}
+      {/*                    size={40} */}
+      {/*                    src="https://sun9-13.userapi.com/c836333/v836333001/31193/dNxZpRF-z_M.jpg?ava=1" */}
+      {/*                  /> */}
+      {/*                } */}
+      {/*              > */}
+      {/*                Выбранный Юзер 3 */}
+      {/*              </Cell> */}
+      {/*            ); */}
+      {/*          }) */}
+      {/*        ) : ( */}
+      {/*          <Placeholder className="SelectUsers__spinner"> */}
+      {/*            <Spinner size="regular" /> */}
+      {/*          </Placeholder> */}
+      {/*        )} */}
+      {/*      </List> */}
+      {/*    </> */}
+      {/*  ) : ( */}
+      {/*    <Placeholder */}
+      {/*      className="SelectUsers__placeholder" */}
+      {/*      action={ */}
+      {/*        <Button */}
+      {/*          size="l" */}
+      {/*          onClick={() => { */}
+      {/*            api.selectionChanged().catch(() => {}); */}
+      {/*            getAccessToken(); */}
+      {/*          }} */}
+      {/*        > */}
+      {/*          Предоставить доступ */}
+      {/*        </Button> */}
+      {/*      } */}
+      {/*    > */}
+      {/*      Чтобы отмечать друзей и других людей в петиции, необходимо */}
+      {/*      предоставить доступ к их списку */}
+      {/*    </Placeholder> */}
+      {/*  )} */}
+      {/* </ModalPage> */}
     </ModalRoot>
   );
 };

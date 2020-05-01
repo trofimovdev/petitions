@@ -49,7 +49,7 @@ class SignatureController extends Controller
         $signature->signed_at = now();
         $signature->save();
         Petition::where('id', '=', $petitionId)
-            ->update(['count_signatures' => $petition['count_signatures'] + 1]);
+            ->increment('count_signatures');
 
         return new OkResponse($petition['count_signatures'] + 1);
     }
@@ -62,7 +62,8 @@ class SignatureController extends Controller
         }
 
         $signature = Signature::where('petition_id', '=', $petitionId)
-            ->where('user_id', '=', $request->userId);
+            ->where('user_id', '=', $request->userId)
+            ->exists();
         if (!$signature) {
             return new ErrorResponse(404, 'Signature not found');
         }
@@ -76,10 +77,15 @@ class SignatureController extends Controller
             return new ErrorResponse(403, 'Signature completed');
         }
 
-        $signature->delete();
-        Petition::where('id', '=', $petitionId)
-            ->update(['count_signatures' => $petition['count_signatures'] - 1]);
+        $signature = Signature::where('petition_id', '=', $petitionId)
+            ->where('user_id', '=', $request->userId)
+            ->delete();
+        if (!$signature) {
+            return new ErrorResponse(500, 'Signature not deleted');
+        }
 
+        Petition::where('id', '=', $petitionId)
+            ->decrement('count_signatures');
         return new OkResponse($petition['count_signatures'] - 1);
     }
 }

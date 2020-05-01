@@ -3,28 +3,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Epic } from "@vkontakte/vkui";
-import {
-  setPage,
-  goBack,
-  setStory,
-  setActiveTab,
-  closeModal,
-  openModal
-} from "../../store/router/actions";
-import {
-  setCurrent,
-  setEdit,
-  setCreate,
-  setFormType,
-  setPopular,
-  setLast,
-  setSigned,
-  setManaged
-} from "../../store/petitions/actions";
+import { goBack } from "../../store/router/actions";
 import "@vkontakte/vkui/dist/vkui.css";
 import Petitions from "../../components/Petitions/Petitions";
 import Management from "../../components/Management/Management";
-import SplashScreen from "../../components/SplashScreen/SplashScreen";
 
 const MobileContainer = ({
   activeView,

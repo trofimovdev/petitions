@@ -32,14 +32,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import PetitionCard from "../PetitionCard/PetitionCard";
-import {
-  setStory,
-  setPage,
-  openModal,
-  closeModal,
-  openPopout,
-  closePopout
-} from "../../store/router/actions";
+import { setPage, openPopout, closePopout } from "../../store/router/actions";
 import {
   setCurrent,
   setManaged,
@@ -55,16 +48,10 @@ const api = new VKMiniAppAPI();
 
 const ManagementFeed = ({
   id,
-  activeStory,
-  setStory,
   activeView,
   activePanel,
   setPage,
-  openModal,
-  closeModal,
   managedPetitions,
-  setCurrent,
-  setPopout,
   launchParameters,
   setManaged,
   openPopout,
@@ -115,7 +102,7 @@ const ManagementFeed = ({
                       id: response.id,
                       title: response.title,
                       text: response.text,
-                      signatures: response.count_signatures,
+                      need_signatures: response.need_signatures,
                       directed_to: response.directed_to,
                       file_1: dataURL_file_1,
                       file_2: dataURL_file_2
@@ -236,7 +223,31 @@ const ManagementFeed = ({
                             </Snackbar>
                           );
                         })
-                        .catch(() => {});
+                        .catch(({ message }) => {
+                          closePopout();
+                          setSnackbar(
+                            <Snackbar
+                              layout="vertical"
+                              onClose={() => setSnackbar()}
+                              before={
+                                <Avatar
+                                  size={24}
+                                  style={{
+                                    backgroundColor: "var(--dynamic_green)"
+                                  }}
+                                >
+                                  <Icon24DoneOutline
+                                    fill="#fff"
+                                    width={14}
+                                    height={14}
+                                  />
+                                </Avatar>
+                              }
+                            >
+                              Петиция удалена
+                            </Snackbar>
+                          );
+                        });
                     }
                   },
                   {
@@ -289,9 +300,10 @@ const ManagementFeed = ({
 
   const onScroll = () => {
     const scrollPosition = window.scrollY;
-    const petitionsContainerHeight = document.getElementById(
-      "managedPetitionsContainer"
-    ).offsetHeight;
+    const petitionsContainerHeight =
+      managedPetitions.length > 0
+        ? document.getElementById("managedPetitionsContainer").offsetHeight
+        : 0;
     if (
       managedPetitions &&
       scrollPosition + 1300 > petitionsContainerHeight &&
@@ -471,11 +483,8 @@ const mapDispatchToProps = dispatch => {
     dispatch,
     ...bindActionCreators(
       {
-        setStory,
         setPage,
         setCurrent,
-        openModal,
-        closeModal,
         setManaged,
         openPopout,
         closePopout,
@@ -490,15 +499,10 @@ const mapDispatchToProps = dispatch => {
 
 ManagementFeed.propTypes = {
   id: PropTypes.string.isRequired,
-  activeStory: PropTypes.string.isRequired,
-  setStory: PropTypes.func.isRequired,
   activeView: PropTypes.string.isRequired,
   activePanel: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
-  openModal: PropTypes.func.isRequired,
-  closeModal: PropTypes.func.isRequired,
   managedPetitions: PropTypes.array,
-  setCurrent: PropTypes.func.isRequired,
   launchParameters: PropTypes.object.isRequired,
   setManaged: PropTypes.func.isRequired,
   openPopout: PropTypes.func.isRequired,
