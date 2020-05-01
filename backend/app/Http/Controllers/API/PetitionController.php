@@ -189,7 +189,7 @@ class PetitionController extends Controller
         // TODO: move to consts
         switch ($type) {
             case 'popular':
-                return new OkResponse(Petition::getPetitions([22]));
+                return new OkResponse(Petition::getPopular($offset, $friendIds));
 
             case 'last':
                 return new OkResponse(Petition::getLast($offset, $friendIds));
@@ -202,7 +202,7 @@ class PetitionController extends Controller
         }
 
         return new OkResponse([
-            'popular' => Petition::getPetitions([22]),
+            'popular' => Petition::getPopular(0, $friendIds),
             'last' => Petition::getLast(0, $friendIds),
             'signed' => Petition::getSigned($request->userId, 0, $friendIds),
             'managed' => Petition::getManaged($request->userId, 0, $friendIds)

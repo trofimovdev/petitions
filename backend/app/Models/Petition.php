@@ -24,6 +24,29 @@ class Petition extends Model
 
     public $timestamps = true;
 
+    public static function getPopular(int $offset = 0, array $friendIds = [])
+    {
+        $petitionIds = Redis::lrange('popular_petitions', $offset, $offset + 10);
+        if (!$petitionIds || count($petitionIds) < $offset) {
+            $petitions = Signature::select('petition_id', Signature::raw('count(user_id)'), 'updated_at', 'completed')
+                ->join('petitions', 'petition_id', '=', 'id')
+                ->whereRaw('signed_at >= date_trunc(\'second\', current_timestamp - interval \'1 week\')')
+                ->groupBy('petition_id', 'updated_at', 'completed')
+                ->havingRaw('completed = false AND count(user_id) > ?', [14])
+                ->orderByRaw('updated_at, count(user_id) desc')
+                ->offset($offset)
+                ->limit(10)
+                ->get();
+        }
+        $petitionIds = [];
+        foreach ($petitions as $petition) {
+            $petitionIds[] = $petition->petition_id;
+        }
+        $petitions = Petition::getPetitions($petitionIds, false, $friendIds);
+        return $petitions;
+    }
+
+
     public static function getLast(int $offset = 0, array $friendIds = [])
     {
         $petitions = Petition::where('completed', '=', 'false')
