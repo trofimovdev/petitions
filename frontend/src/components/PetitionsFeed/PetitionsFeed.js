@@ -107,20 +107,6 @@ const PetitionsFeed = ({
     ) {
       // загружать новые карточки когда юзер пролистнет 5 карточку
       setLoadingStatus(true);
-      let setCurrentPetitions = () => {};
-      switch (activeTab.feed) {
-        case "popular":
-          setCurrentPetitions = setPopular;
-          break;
-
-        case "last":
-          setCurrentPetitions = setLast;
-          break;
-
-        case "signed":
-          setCurrentPetitions = setSigned;
-          break;
-      }
       if (launchParameters.vk_access_token_settings.includes("friends")) {
         console.log("with friends");
         loadPetitions("petitions", true, {

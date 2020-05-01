@@ -28,12 +28,12 @@ class Petition extends Model
     {
         $petitionIds = Redis::lrange('popular_petitions', $offset, $offset + 10);
         if (!$petitionIds || count($petitionIds) < $offset) {
-            $petitions = Signature::select('petition_id', Signature::raw('count(user_id)'), 'updated_at', 'completed')
+            $petitions = Signature::select('petition_id', Signature::raw('count(user_id)'), 'completed')
                 ->join('petitions', 'petition_id', '=', 'id')
                 ->whereRaw('signed_at >= date_trunc(\'second\', current_timestamp - interval \'1 week\')')
-                ->groupBy('petition_id', 'updated_at', 'completed')
-                ->havingRaw('completed = false AND count(user_id) > ?', [14])
-                ->orderByRaw('updated_at, count(user_id) desc')
+                ->groupBy('petition_id', 'completed')
+                ->havingRaw('completed = false AND count(user_id) > ?', [14]) // 140 / 7 = 20 signatures per day
+                ->orderByRaw('count(user_id) desc, petition_id asc')
                 ->offset($offset)
                 ->limit(10)
                 ->get();
@@ -124,7 +124,7 @@ class Petition extends Model
         return json_decode($response);
     }
 
-    public static function getPetitions(array $petitionIds, bool $withOwner = false, array $friendIds = [], bool $withSignedStatus = false, int $userId = 0)
+    public static function getPetitions(array $petitionIds, bool $withOwner = false, array $friendIds = [], bool $withSignedStatus = false, int $userId = 0, bool $text = false, bool $ownerId = true)
     {
         $petitions = Petition::whereIn('id', $petitionIds)->get();
         $loadedPetitions = [];
@@ -139,7 +139,7 @@ class Petition extends Model
                 if ($withSignedStatus) {
                     $petition->signed = (bool)Signature::getUsers($petition->id, [$userId]);
                 }
-                $loadedPetitions[$petition->id] = $petition->toPetitionView();
+                $loadedPetitions[$petition->id] = $petition->toPetitionView($text, $ownerId);
             } else {
                 $loadedPetitions[] = null;
             }
