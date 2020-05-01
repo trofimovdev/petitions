@@ -24,10 +24,13 @@ class Petition extends Model
 
     public $timestamps = true;
 
+    const POPULAR_CACHE_TTL = 3600;
+
     public static function getPopular(int $offset = 0, array $friendIds = [])
     {
-        $petitionIds = Redis::lrange('popular_petitions', $offset, $offset + 10);
-        if (!$petitionIds || count($petitionIds) < $offset) {
+        $redisPetitionIds = Redis::lrange('popular', $offset, $offset + 10);
+        $petitionIds = $redisPetitionIds;
+        if (!$redisPetitionIds || count($redisPetitionIds) < $offset) {
             $petitions = Signature::select('petition_id', Signature::raw('count(user_id)'), 'completed')
                 ->join('petitions', 'petition_id', '=', 'id')
                 ->whereRaw('signed_at >= date_trunc(\'second\', current_timestamp - interval \'1 week\')')
@@ -37,10 +40,14 @@ class Petition extends Model
                 ->offset($offset)
                 ->limit(10)
                 ->get();
-        }
-        $petitionIds = [];
-        foreach ($petitions as $petition) {
-            $petitionIds[] = $petition->petition_id;
+            $petitionIds = [];
+            foreach ($petitions as $petition) {
+                $petitionIds[] = $petition->petition_id;
+            }
+            Redis::rpush('popular', ...$petitionIds);
+            if (!$redisPetitionIds) {
+                Redis::expire('popular', Petition::POPULAR_CACHE_TTL);
+            }
         }
         $petitions = Petition::getPetitions($petitionIds, false, $friendIds);
         return $petitions;
