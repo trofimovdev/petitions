@@ -173,8 +173,8 @@ class Petition extends Model
             'need_signatures' => $needSignatures,
             'count_signatures' => 1,
             'owner_id' => $userId,
-            'mobile_photo_url' => config('app.server_url') . 'static/' . $name . '_mobile.jpg',
-            'web_photo_url' => config('app.server_url') . 'static/' . $name . '_web.jpg',
+            'mobile_photo_url' => config('app.server_url') . 'static/' . $name . '_mobile.png',
+            'web_photo_url' => config('app.server_url') . 'static/' . $name . '_web.png',
             'completed' => false,
             'directed_to' => $directedTo
         ];
@@ -195,54 +195,36 @@ class Petition extends Model
         return preg_replace("/[^\Wa-zA-Z0-9 ]/", "", $string);
     }
 
+    public static function exifRotate($image)
+    {
+        try {
+            $exif = exif_read_data($image);
+        } catch (ErrorException $e) {
+            $exif = [];
+        } finally {
+            $image = imagecreatefromstring(file_get_contents($image));
+            if (!empty($exif['Orientation'])) {
+                switch ($exif['Orientation']) {
+                    case 3:
+                        return imagerotate($image, 180, 0);
+
+                    case 6:
+                        return imagerotate($image, -90, 0);
+
+                    case 8:
+                        return imagerotate($image, 90, 0);
+                }
+            }
+            return $image;
+        }
+    }
+
     public static function saveImages($mobilePhoto, $webPhoto)
     {
         $name = time() . bin2hex(random_bytes(5));
 
-        try {
-            $mobileExif = exif_read_data($mobilePhoto);
-        } catch (ErrorException $e) {
-            $mobileExif = [];
-        }
-        $mobilePhoto = imagecreatefromstring(file_get_contents($mobilePhoto));
-        if (!empty($mobileExif['Orientation'])) {
-            switch ($mobileExif['Orientation']) {
-                case 3:
-                    $mobilePhoto = imagerotate($mobilePhoto, 180, 0);
-                    break;
-
-                case 6:
-                    $mobilePhoto = imagerotate($mobilePhoto, -90, 0);
-                    break;
-
-                case 8:
-                    $mobilePhoto = imagerotate($mobilePhoto, 90, 0);
-                    break;
-            }
-        }
-
-
-        try {
-            $webExif = exif_read_data($webPhoto);
-        } catch (ErrorException $e) {
-            $webExif = [];
-        }
-        $webPhoto = imagecreatefromstring(file_get_contents($webPhoto));
-        if (!empty($webExif['Orientation'])) {
-            switch ($webExif['Orientation']) {
-                case 3:
-                    $webPhoto = imagerotate($webPhoto, 180, 0);
-                    break;
-
-                case 6:
-                    $webPhoto = imagerotate($webPhoto, -90, 0);
-                    break;
-
-                case 8:
-                    $webPhoto = imagerotate($webPhoto, 90, 0);
-                    break;
-            }
-        }
+        $mobilePhoto = Petition::exifRotate($mobilePhoto);
+        $webPhoto = Petition::exifRotate($webPhoto);
 
         $mobilePhotoWidth = imagesx($mobilePhoto);
         $mobilePhotoHeight = imagesy($mobilePhoto);
@@ -262,38 +244,13 @@ class Petition extends Model
             $height = $webPhotoHeight;
             $width = round($webPhotoHeight * 4.25);
         } else {
-            $width = $mobilePhotoWidth;
-            $height = round($mobilePhotoWidth / 4.25);
+            $width = $webPhotoHeight;
+            $height = round($webPhotoHeight / 4.25);
         }
         $webPhoto = imagecrop($webPhoto, ['x' => round(($webPhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
 
-        imagejpeg($mobilePhoto, base_path() . '/storage/app/public/static/' . $name . '_mobile.jpg');
-        imagejpeg($webPhoto, base_path() . '/storage/app/public/static/' . $name . '_web.jpg');
-
-        $exif = exif_read_data(base_path() . '/storage/app/public/static/' . $name . '_mobile.jpg');
-        if($exif && isset($exif['Orientation'])) {
-            $orientation = $exif['Orientation'];
-            if($orientation != 1){
-                $img = imagecreatefromjpeg(base_path() . '/storage/app/public/static/' . $name . '_mobile.jpg');
-                $deg = 0;
-                switch ($orientation) {
-                    case 3:
-                        $deg = 180;
-                        break;
-                    case 6:
-                        $deg = 270;
-                        break;
-                    case 8:
-                        $deg = 90;
-                        break;
-                }
-                if ($deg) {
-                    $img = imagerotate($img, $deg, 0);
-                }
-                imagejpeg($img, base_path() . '/storage/app/public/static/' . $name . '_mobile_ROTATED.jpg');
-            }
-        }
-
+        imagepng($mobilePhoto, base_path() . '/storage/app/public/static/' . $name . '_mobile.png');
+        imagepng($webPhoto, base_path() . '/storage/app/public/static/' . $name . '_web.png');
         return $name;
     }
 

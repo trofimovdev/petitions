@@ -129,7 +129,7 @@ class PetitionController extends Controller
         if (!$petition) {
             return new ErrorResponse(404, 'Petition not found');
         }
-        if (!$petition['owner_id'] === $request->userId) {
+        if ($petition['owner_id'] !== $request->userId) {
             return new ErrorResponse(403, 'Access denied');
         }
         $mobilePhotoUrl = explode(config('app.server_url'), $petition->mobile_photo_url)[1];
@@ -156,7 +156,7 @@ class PetitionController extends Controller
         if (!$petition) {
             return new ErrorResponse(404, 'Петиция не найдена');
         }
-        if (!$petition['owner_id'] === $request->userId) {
+        if ($petition['owner_id'] !== $request->userId) {
             return new ErrorResponse(403, 'Access denied');
         }
         if ($petition['completed']) {
