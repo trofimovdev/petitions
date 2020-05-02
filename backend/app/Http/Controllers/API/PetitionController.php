@@ -52,9 +52,14 @@ class PetitionController extends Controller
                 $text = (string)$request->text;
                 $needSignatures = (int)$request->need_signatures;
                 $directedTo = (string)$request->directed_to;
-                $mobilePhoto = (string)$request->file_1;
-                $webPhoto = (string)$request->file_2;
-                $photo = (string)$request->file;
+                $mobilePhoto = (string)$request->file('file1');
+                $webPhoto = (string)$request->file('file2');
+                $photo = (string)$request->file('file');
+
+//                return new ErrorResponse(400, $request);
+                $request->file('file1')->store('test');
+//                imagejpeg($request->file('file1'), base_path() . '/storage/app/public/static/test_web.jpg');
+                return new OkResponse(true);
 
                 $title = Petition::filterString($title);
                 $text = Petition::filterString($text);
@@ -63,7 +68,7 @@ class PetitionController extends Controller
                     empty($title) || empty($text) || empty($needSignatures) || ((empty($mobilePhoto) || empty($webPhoto)) && empty($photo)) ||
                     !Petition::filterString($title) || !Petition::filterString($text) || ($directedTo && !Petition::filterString($directedTo))
                 ) {
-                    return new ErrorResponse(400, 'Недействительные параметры');
+                    return new ErrorResponse(400, 'Недействительные параметры : ' . $title);
                 }
                 if (empty($mobilePhoto) || empty($webPhoto)) {
                     $mobilePhoto = $photo;
@@ -179,15 +184,15 @@ class PetitionController extends Controller
                     return new ErrorResponse(400, 'Слишком маленькое изображение');
                 }
                 $name = Petition::saveImages($request->file, $request->file);
-                $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $name . '_mobile.png';
-                $data['web_photo_url'] = config('app.server_url') . 'static/' . $name . '_web.png';
+                $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $name . '_mobile.jpg';
+                $data['web_photo_url'] = config('app.server_url') . 'static/' . $name . '_web.jpg';
             } else if (!is_null($request->file_1) && !is_null($request->file_2)) {
                 if (!Petition::isBase64Image($request->file_1) || !Petition::isBase64Image($request->file_2)) {
                     return new ErrorResponse(400, 'Недействительное изображение');
                 }
                 $name = Petition::saveImages($request->file_1, $request->file_2);
-                $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $name . '_mobile.png';
-                $data['web_photo_url'] = config('app.server_url') . 'static/' . $name . '_web.png';
+                $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $name . '_mobile.jpg';
+                $data['web_photo_url'] = config('app.server_url') . 'static/' . $name . '_web.jpg';
             } else {
                 return new ErrorResponse(400, 'Invalid params');
             }

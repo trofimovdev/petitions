@@ -101,7 +101,8 @@ const EditPetition = ({
   };
 
   const onCancel = e => {
-    setForm({ [e.currentTarget.id]: undefined });
+    const file_preview = `${e.currentTarget.id}_preview`;
+    setForm({ [e.currentTarget.id]: undefined, [file_preview]: undefined });
     e.preventDefault();
   };
 
@@ -118,7 +119,8 @@ const EditPetition = ({
         if (!checkFileSize(fileSize)) {
           return;
         }
-        setForm({ [file_id]: j.target.result });
+        const file_preview = `${file_id}_preview`;
+        setForm({ [file_preview]: j.target.result, [file_id]: files[0] });
       };
     }
   };
@@ -226,7 +228,7 @@ const EditPetition = ({
           size="l"
           bottomText="Рекомендуемый размер изображения: 1440×768px"
           onCancel={onCancel}
-          img={form.file_1 ? form.file_1 : null}
+          img={form.file1_preview ? form.file1_preview : null}
         />
         <UploadCard
           id={2}
@@ -237,7 +239,7 @@ const EditPetition = ({
           size="m"
           bottomText="Рекомендуемый размер изображения: 1360×320px"
           onCancel={onCancel}
-          img={form.file_2 ? form.file_2 : null}
+          img={form.file2_preview ? form.file2_preview : null}
         />
       </FormLayout>
 
@@ -252,8 +254,8 @@ const EditPetition = ({
             form.need_signatures &&
             form.need_signatures >= 1 &&
             form.need_signatures <= 10000000 &&
-            form.file_1 &&
-            form.file_2
+            form.file1 &&
+            form.file2
           )
         }
         setSnackbar={setSnackbar}

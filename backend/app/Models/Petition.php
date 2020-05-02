@@ -172,8 +172,8 @@ class Petition extends Model
             'need_signatures' => $needSignatures,
             'count_signatures' => 1,
             'owner_id' => $userId,
-            'mobile_photo_url' => config('app.server_url') . 'static/' . $name . '_mobile.png',
-            'web_photo_url' => config('app.server_url') . 'static/' . $name . '_web.png',
+            'mobile_photo_url' => config('app.server_url') . 'static/' . $name . '_mobile.jpg',
+            'web_photo_url' => config('app.server_url') . 'static/' . $name . '_web.jpg',
             'completed' => false,
             'directed_to' => $directedTo
         ];
@@ -225,8 +225,33 @@ class Petition extends Model
         }
         $webPhoto = imagecrop($webPhoto, ['x' => round(($webPhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
 
-        imagepng($mobilePhoto, base_path() . '/storage/app/public/static/' . $name . '_mobile.png');
-        imagepng($webPhoto, base_path() . '/storage/app/public/static/' . $name . '_web.png');
+        imagejpeg($mobilePhoto, base_path() . '/storage/app/public/static/' . $name . '_mobile.jpg');
+        imagejpeg($webPhoto, base_path() . '/storage/app/public/static/' . $name . '_web.jpg');
+
+        $exif = exif_read_data(base_path() . '/storage/app/public/static/' . $name . '_mobile.jpg');
+        if($exif && isset($exif['Orientation'])) {
+            $orientation = $exif['Orientation'];
+            if($orientation != 1){
+                $img = imagecreatefromjpeg(base_path() . '/storage/app/public/static/' . $name . '_mobile.jpg');
+                $deg = 0;
+                switch ($orientation) {
+                    case 3:
+                        $deg = 180;
+                        break;
+                    case 6:
+                        $deg = 270;
+                        break;
+                    case 8:
+                        $deg = 90;
+                        break;
+                }
+                if ($deg) {
+                    $img = imagerotate($img, $deg, 0);
+                }
+                imagejpeg($img, base_path() . '/storage/app/public/static/' . $name . '_mobile_ROTATED.jpg');
+            }
+        }
+
         return $name;
     }
 

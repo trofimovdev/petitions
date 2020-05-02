@@ -64,25 +64,24 @@ const EditPetitionTabbar = ({
               delete form.file_2;
             }
             if (formType === "edit") {
-              const changed = {};
+              const changed = new FormData();
               for (const [key, value] of Object.entries(initialEditPetitions)) {
                 console.log(form[key], value, form[key] === value);
                 if (form[key] === value) {
                   continue;
                 }
-                changed[key] = form[key];
                 if (
                   ["file", "file_1", "file_2"].includes(key) &&
                   form[key] !== initialEditPetitions.file
                 ) {
-                  changed.images = true;
+                  changed.append("images", "true");
+                  changed.append(key, form[key], "img");
+                  continue;
                 }
+                changed.append(key, form[key]);
               }
-              Backend.request(
-                `petitions/${form.id}`,
-                { ...changed, type: "edit" },
-                "PATCH"
-              )
+              changed.append("type", "edit");
+              Backend.request(`petitions/${form.id}`, changed, "PATCH")
                 .then(response => {
                   closePopout();
                   api.notificationOccurred("success").catch(() => {});
@@ -133,7 +132,20 @@ const EditPetitionTabbar = ({
                 });
               return;
             }
-            Backend.request("petitions", { ...form, type: "create" }, "POST")
+
+            const formData = new FormData();
+            Object.entries(form).forEach(pair => {
+              if (!pair[0].includes("preview")) {
+                console.log("proceed");
+                if (["file_1", "file_2"].includes(pair[0])) {
+                  formData.append(pair[0], pair[1], "img");
+                } else {
+                  formData.append(pair[0], pair[1]);
+                }
+              }
+            });
+            formData.append("type", "create");
+            Backend.request("petitions", formData, "POST")
               .then(response => {
                 setCurrent({
                   id: response.id,
