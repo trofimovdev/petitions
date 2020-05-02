@@ -16,7 +16,8 @@
         "laravel/tinker": "^2.0",
         "ext-json": "*",
         "ext-curl": "*",
-        "ext-gd": "*"
+        "ext-gd": "*",
+        "ext-exif": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

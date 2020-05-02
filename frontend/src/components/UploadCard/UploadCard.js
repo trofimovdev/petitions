@@ -21,18 +21,18 @@ const UploadCard = ({
       {!img && (
         <input
           type="file"
-          id={`file_${id}`}
+          id={`file${id}`}
           accept="image/png,image/jpeg,image/jpg"
           style={{ display: "none" }}
           onChange={onChange}
         />
       )}
-      <label htmlFor={`file_${id}`}>
+      <label htmlFor={`file${id}`}>
         <Card size="l" className="UploadCard__card">
           {img != null && (
             <div
               className="UploadCard__card__cancel-button"
-              id={`file_${id}`}
+              id={`file${id}`}
               onClick={onCancel}
             >
               <Icon16Cancel />

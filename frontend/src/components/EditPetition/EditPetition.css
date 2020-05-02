@@ -2,7 +2,7 @@
   padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; }
 
 .EditPetition .Snackbar {
-  padding-bottom: 60px !important; }
+  padding-bottom: calc(25px + var(--safe-area-inset-bottom)) !important; }
 
 .EditForm__input-top {
   display: flex;

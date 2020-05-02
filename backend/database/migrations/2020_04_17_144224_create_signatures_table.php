@@ -19,6 +19,7 @@ class CreateSignaturesTable extends Migration
             $table->string('user_agent')->nullable();
             $table->string('ip');
             $table->timestamp('signed_at');
+            $table->unique(['petition_id', 'user_id']);
         });
     }
 

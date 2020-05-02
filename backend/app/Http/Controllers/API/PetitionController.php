@@ -9,6 +9,7 @@ use App\Http\Responses\OkResponse;
 use App\Models\Petition;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class PetitionController extends Controller
 {
@@ -30,6 +31,10 @@ class PetitionController extends Controller
 
     public function store(SignRequest $request)
     {
+        if (User::checkIsBanned($request->userId)) {
+            return new ErrorResponse(403, 'Suspicious account');
+        }
+
         $type = (string)$request->type;
         $offset = (int)$request->offset;
         $petitionId = (int)$request->petition_id;
@@ -48,9 +53,28 @@ class PetitionController extends Controller
                 $text = (string)$request->text;
                 $needSignatures = (int)$request->need_signatures;
                 $directedTo = (string)$request->directed_to;
-                $mobilePhoto = (string)$request->file_1;
-                $webPhoto = (string)$request->file_2;
-                $photo = (string)$request->file;
+
+                $files = [];
+                $rules = [];
+                if ($request->hasFile('file1')) {
+                    $mobilePhoto = $request->file('file1');
+                    $files['file1'] = $mobilePhoto;
+                    $rules['file1'] = 'required|image|mimes:png,jpeg,jpg|max:10240'; // 10mb
+                }
+                if ($request->hasFile('file2')) {
+                    $webPhoto = $request->file('file2');
+                    $files['file2'] = $webPhoto;
+                    $rules['file2'] = 'required|image|mimes:png,jpeg,jpg|max:10240'; // 10mb
+                }
+                if ($request->hasFile('file')) {
+                    $photo = $request->file('file');
+                    $files['file'] = $photo;
+                    $rules['file'] = 'required|image|mimes:png,jpeg,jpg|max:10240'; // 10mb
+                }
+                $validator = Validator::make($files, $rules);
+                if ($validator->fails()) {
+                    return new ErrorResponse(400, 'Недействительные изображения');
+                }
 
                 $title = Petition::filterString($title);
                 $text = Petition::filterString($text);
@@ -59,15 +83,11 @@ class PetitionController extends Controller
                     empty($title) || empty($text) || empty($needSignatures) || ((empty($mobilePhoto) || empty($webPhoto)) && empty($photo)) ||
                     !Petition::filterString($title) || !Petition::filterString($text) || ($directedTo && !Petition::filterString($directedTo))
                 ) {
-                    return new ErrorResponse(400, 'Недействительные параметры');
+                    return new ErrorResponse(400, 'Недействительное изображение');
                 }
                 if (empty($mobilePhoto) || empty($webPhoto)) {
                     $mobilePhoto = $photo;
                     $webPhoto = $photo;
-                }
-
-                if (!Petition::isBase64Image($mobilePhoto) || !Petition::isBase64Image($webPhoto)) {
-                    return new ErrorResponse(400, 'Недействительное изображение');
                 }
 
                 if (mb_strlen($title) === 0 || mb_strlen($title) > 150 || mb_strlen($text) === 0 || mb_strlen($text) > 3000 || $needSignatures === 0 || $needSignatures > 10000000) {
@@ -78,13 +98,6 @@ class PetitionController extends Controller
                 $webPhotoSize = getimagesize($webPhoto);
                 if ($mobilePhotoSize[0] < 100 || $mobilePhotoSize[1] < 100 || $webPhotoSize[0] < 100 || $webPhotoSize[1] < 100) {
                     return new ErrorResponse(400, 'Слишком маленькое изображение');
-                }
-
-                $mobilePhotoSize = strlen(explode(',', $mobilePhoto)[1]) * (3 / 4); // base64 ratio
-                $webPhotoSize = strlen(explode(',', $webPhoto)[1]) * (3 / 4); // base64 ratio
-                if ($mobilePhotoSize > 10485770 || $webPhotoSize > 10485770) {
-                    // max - 10mb
-                    return new ErrorResponse(400, 'Слишком большой вес фото');
                 }
 
                 return new OkResponse(Petition::createPetition($request, $title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto, $request->userId));
@@ -107,12 +120,16 @@ class PetitionController extends Controller
             return new ErrorResponse(400, 'Invalid params');
         }
 
+        if (User::checkIsBanned($request->userId)) {
+            return new ErrorResponse(403, 'Suspicious account');
+        }
+
         $petition = Petition::where('id', '=', $petitionId)
             ->first();
         if (!$petition) {
             return new ErrorResponse(404, 'Petition not found');
         }
-        if (!$petition['owner_id'] === $request->userId) {
+        if ($petition['owner_id'] !== $request->userId) {
             return new ErrorResponse(403, 'Access denied');
         }
         $mobilePhotoUrl = explode(config('app.server_url'), $petition->mobile_photo_url)[1];
@@ -130,12 +147,16 @@ class PetitionController extends Controller
             return new ErrorResponse(400, 'Invalid params');
         }
 
+        if (User::checkIsBanned($request->userId)) {
+            return new ErrorResponse(403, 'Suspicious account');
+        }
+
         $petition = Petition::where('id', '=', $petitionId)
             ->first();
         if (!$petition) {
             return new ErrorResponse(404, 'Петиция не найдена');
         }
-        if (!$petition['owner_id'] === $request->userId) {
+        if ($petition['owner_id'] !== $request->userId) {
             return new ErrorResponse(403, 'Access denied');
         }
         if ($petition['completed']) {
@@ -167,15 +188,15 @@ class PetitionController extends Controller
                     return new ErrorResponse(400, 'Слишком маленькое изображение');
                 }
                 $name = Petition::saveImages($request->file, $request->file);
-                $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $name . '_mobile.png';
-                $data['web_photo_url'] = config('app.server_url') . 'static/' . $name . '_web.png';
+                $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $name . '_mobile.jpg';
+                $data['web_photo_url'] = config('app.server_url') . 'static/' . $name . '_web.jpg';
             } else if (!is_null($request->file_1) && !is_null($request->file_2)) {
                 if (!Petition::isBase64Image($request->file_1) || !Petition::isBase64Image($request->file_2)) {
                     return new ErrorResponse(400, 'Недействительное изображение');
                 }
                 $name = Petition::saveImages($request->file_1, $request->file_2);
-                $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $name . '_mobile.png';
-                $data['web_photo_url'] = config('app.server_url') . 'static/' . $name . '_web.png';
+                $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $name . '_mobile.jpg';
+                $data['web_photo_url'] = config('app.server_url') . 'static/' . $name . '_web.jpg';
             } else {
                 return new ErrorResponse(400, 'Invalid params');
             }

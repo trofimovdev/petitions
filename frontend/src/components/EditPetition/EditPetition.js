@@ -9,7 +9,8 @@ import {
   Snackbar,
   Avatar,
   getClassName,
-  usePlatform
+  usePlatform,
+  IOS
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./EditPetition.css";
@@ -38,6 +39,7 @@ const EditPetition = ({
 }) => {
   const [snackbar, setSnackbar] = useState(null);
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
+  const platform = usePlatform();
 
   const checkFileSize = fileSize => {
     if (fileSize > MAX_FILE_SIZE) {
@@ -62,6 +64,72 @@ const EditPetition = ({
       return false;
     }
     return true;
+  };
+
+  // fast magic
+  const getOrientation = (file, callback) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const view = new DataView(e.target.result);
+      if (view.getUint16(0, false) != 0xffd8) {
+        return callback(-2);
+      }
+      const length = view.byteLength;
+      let offset = 2;
+      while (offset < length) {
+        if (view.getUint16(offset + 2, false) <= 8) return callback(-1);
+        const marker = view.getUint16(offset, false);
+        offset += 2;
+        if (marker == 0xffe1) {
+          if (view.getUint32((offset += 2), false) != 0x45786966) {
+            return callback(-1);
+          }
+
+          const little = view.getUint16((offset += 6), false) == 0x4949;
+          offset += view.getUint32(offset + 4, little);
+          const tags = view.getUint16(offset, little);
+          offset += 2;
+          for (let i = 0; i < tags; i++) {
+            if (view.getUint16(offset + i * 12, little) == 0x0112) {
+              return callback(view.getUint16(offset + i * 12 + 8, little));
+            }
+          }
+        } else if ((marker & 0xff00) != 0xff00) {
+          break;
+        } else {
+          offset += view.getUint16(offset, false);
+        }
+      }
+      return callback(-1);
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const rotateImage = (base64, deg) => {
+    const canvas = document.createElement("rotateImage_canvas");
+    const ctx = canvas.getContext("2d");
+    const image = new Image();
+    image.src = base64;
+    image.onload = () => {
+      const w = image.width;
+      const h = image.height;
+      const rads = (deg * Math.PI) / 180;
+      let c = Math.cos(rads);
+      let s = Math.sin(rads);
+      if (s < 0) {
+        s = -s;
+      }
+      if (c < 0) {
+        c = -c;
+      }
+      canvas.width = h * s + w * c;
+      canvas.height = h * c + w * s;
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate((deg * Math.PI) / 180);
+      ctx.drawImage(image, -image.width / 2, -image.height / 2);
+      // TODO: remove canvas from body
+      return canvas.toDataURL();
+    };
   };
 
   let setForm = () => {};
@@ -101,25 +169,37 @@ const EditPetition = ({
   };
 
   const onCancel = e => {
-    setForm({ [e.currentTarget.id]: undefined });
+    const file_preview = `${e.currentTarget.id}_preview`;
+    setForm({ [e.currentTarget.id]: undefined, [file_preview]: undefined });
     e.preventDefault();
   };
-
-  const platform = usePlatform();
 
   const handleFiles = e => {
     const file_id = e.currentTarget.id;
     const { files } = e.target;
     if (files.length === 1) {
-      const reader = new FileReader();
-      reader.readAsDataURL(files[0]);
-      reader.onload = j => {
-        const fileSize = j.total; // в байтах
-        if (!checkFileSize(fileSize)) {
-          return;
-        }
-        setForm({ [file_id]: j.target.result });
-      };
+      getOrientation(files[0], orientation => {
+        console.log("orientation", orientation);
+        const reader = new FileReader();
+        reader.onload = j => {
+          let preview = j.target.result;
+          let file = files[0];
+
+          // if (orientation === 6 && platform === IOS) {
+          //   console.log("превью норм а загружается говно");
+          // } else if (image.width > image.height && orientation === 1 && platform === IOS) {
+          //   console.log("small size превью говно и загружается говно");
+          // }
+
+          const fileSize = j.total; // в байтах
+          if (!checkFileSize(fileSize)) {
+            return;
+          }
+          const file_preview = `${file_id}_preview`;
+          setForm({ [file_preview]: preview, [file_id]: file });
+        };
+        reader.readAsDataURL(files[0]);
+      });
     }
   };
 
@@ -226,7 +306,7 @@ const EditPetition = ({
           size="l"
           bottomText="Рекомендуемый размер изображения: 1440×768px"
           onCancel={onCancel}
-          img={form.file_1 ? form.file_1 : null}
+          img={form.file1_preview ? form.file1_preview : null}
         />
         <UploadCard
           id={2}
@@ -237,7 +317,7 @@ const EditPetition = ({
           size="m"
           bottomText="Рекомендуемый размер изображения: 1360×320px"
           onCancel={onCancel}
-          img={form.file_2 ? form.file_2 : null}
+          img={form.file2_preview ? form.file2_preview : null}
         />
       </FormLayout>
 
@@ -252,8 +332,8 @@ const EditPetition = ({
             form.need_signatures &&
             form.need_signatures >= 1 &&
             form.need_signatures <= 10000000 &&
-            form.file_1 &&
-            form.file_2
+            form.file1 &&
+            form.file2
           )
         }
         setSnackbar={setSnackbar}

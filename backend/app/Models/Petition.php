@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Http\Requests\SignRequest;
 use CURLFile;
+use ErrorException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
@@ -163,7 +164,7 @@ class Petition extends Model
         return $response;
     }
 
-    public static function createPetition(SignRequest $request, string $title, string $text, int $needSignatures, string $directedTo, string $mobilePhoto, string $webPhoto, int $userId)
+    public static function createPetition(SignRequest $request, string $title, string $text, int $needSignatures, string $directedTo, $mobilePhoto, $webPhoto, int $userId)
     {
         $name = Petition::saveImages($mobilePhoto, $webPhoto);
         $row = [
@@ -194,13 +195,36 @@ class Petition extends Model
         return preg_replace("/[^\Wa-zA-Z0-9 ]/", "", $string);
     }
 
-    public static function saveImages(string $mobilePhoto, string $webPhoto)
+    public static function exifRotate($image)
+    {
+        try {
+            $exif = exif_read_data($image);
+        } catch (ErrorException $e) {
+            $exif = [];
+        } finally {
+            $image = imagecreatefromstring(file_get_contents($image));
+            if (!empty($exif['Orientation'])) {
+                switch ($exif['Orientation']) {
+                    case 3:
+                        return imagerotate($image, 180, 0);
+
+                    case 6:
+                        return imagerotate($image, -90, 0);
+
+                    case 8:
+                        return imagerotate($image, 90, 0);
+                }
+            }
+            return $image;
+        }
+    }
+
+    public static function saveImages($mobilePhoto, $webPhoto)
     {
         $name = time() . bin2hex(random_bytes(5));
-        $mobilePhotoBase64 = base64_decode(explode(',', $mobilePhoto)[1]);
-        $webPhotoBase64 = base64_decode(explode(',', $webPhoto)[1]);
-        $mobilePhoto = imagecreatefromstring($mobilePhotoBase64);
-        $webPhoto = imagecreatefromstring($webPhotoBase64);
+
+        $mobilePhoto = Petition::exifRotate($mobilePhoto);
+        $webPhoto = Petition::exifRotate($webPhoto);
 
         $mobilePhotoWidth = imagesx($mobilePhoto);
         $mobilePhotoHeight = imagesy($mobilePhoto);
@@ -220,8 +244,8 @@ class Petition extends Model
             $height = $webPhotoHeight;
             $width = round($webPhotoHeight * 4.25);
         } else {
-            $width = $mobilePhotoWidth;
-            $height = round($mobilePhotoWidth / 4.25);
+            $width = $webPhotoHeight;
+            $height = round($webPhotoHeight / 4.25);
         }
         $webPhoto = imagecrop($webPhoto, ['x' => round(($webPhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
 
