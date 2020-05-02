@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Requests\SignRequest;
 use CURLFile;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
@@ -28,26 +29,26 @@ class Petition extends Model
 
     public static function getPopular(int $offset = 0, array $friendIds = [])
     {
+        if ($offset >= 100) {
+            return [];
+        }
         $redisPetitionIds = Redis::lrange('popular', $offset, $offset + 10);
         $petitionIds = $redisPetitionIds;
-        if (!$redisPetitionIds || count($redisPetitionIds) < $offset) {
+        if (!$redisPetitionIds) {
             $petitions = Signature::select('petition_id', Signature::raw('count(user_id)'), 'completed')
                 ->join('petitions', 'petition_id', '=', 'id')
                 ->whereRaw('signed_at >= date_trunc(\'second\', current_timestamp - interval \'1 week\')')
                 ->groupBy('petition_id', 'completed')
                 ->havingRaw('completed = false AND count(user_id) > ?', [14]) // 140 / 7 = 20 signatures per day
                 ->orderByRaw('count(user_id) desc, petition_id asc')
-                ->offset($offset)
-                ->limit(10)
+                ->limit(100)
                 ->get();
             $petitionIds = [];
             foreach ($petitions as $petition) {
                 $petitionIds[] = $petition->petition_id;
             }
             Redis::rpush('popular', ...$petitionIds);
-            if (!$redisPetitionIds) {
-                Redis::expire('popular', Petition::POPULAR_CACHE_TTL);
-            }
+            Redis::expire('popular', Petition::POPULAR_CACHE_TTL);
         }
         $petitions = Petition::getPetitions($petitionIds, false, $friendIds);
         return $petitions;
@@ -113,7 +114,7 @@ class Petition extends Model
         switch ($type) {
             case 'mobile':
             default:
-                $imgPath = explode('https://petitions.trofimov.dev/', $petition['mobile_photo_url'])[1];
+                $imgPath = explode(config('app.server_url'), $petition['mobile_photo_url'])[1];
                 break;
         }
 
@@ -162,7 +163,7 @@ class Petition extends Model
         return $response;
     }
 
-    public static function createPetition(string $title, string $text, int $needSignatures, string $directedTo, string $mobilePhoto, string $webPhoto, int $userId)
+    public static function createPetition(SignRequest $request, string $title, string $text, int $needSignatures, string $directedTo, string $mobilePhoto, string $webPhoto, int $userId)
     {
         $name = Petition::saveImages($mobilePhoto, $webPhoto);
         $row = [
@@ -171,14 +172,17 @@ class Petition extends Model
             'need_signatures' => $needSignatures,
             'count_signatures' => 1,
             'owner_id' => $userId,
-            'mobile_photo_url' => 'https://petitions.trofimov.dev/static/' . $name . '_mobile.png',
-            'web_photo_url' => 'https://petitions.trofimov.dev/static/' . $name . '_web.png',
-            'completed' => false
+            'mobile_photo_url' => config('app.server_url') . 'static/' . $name . '_mobile.png',
+            'web_photo_url' => config('app.server_url') . 'static/' . $name . '_web.png',
+            'completed' => false,
+            'directed_to' => $directedTo
         ];
         $petition = Petition::create($row);
         $signature_row = [
-            'user_id' => $userId,
             'petition_id' => $petition['id'],
+            'user_id' => $userId,
+            'user_agent' => $request->server('HTTP_USER_AGENT'),
+            'ip' => $request->ip(), // without CloudFlare
             'signed_at' => now()
         ];
         Signature::create($signature_row);
@@ -203,7 +207,7 @@ class Petition extends Model
         $webPhotoWidth = imagesx($webPhoto);
         $webPhotoHeight = imagesy($webPhoto);
 
-        if ($mobilePhotoWidth > $mobilePhotoHeight || round($mobilePhotoHeight * 1.875) < $mobilePhotoWidth) {
+        if ($mobilePhotoWidth > $mobilePhotoHeight && round($mobilePhotoHeight * 1.875) < $mobilePhotoWidth) {
             $height = $mobilePhotoHeight;
             $width = round($mobilePhotoHeight * 1.875);
         } else {
@@ -212,7 +216,7 @@ class Petition extends Model
         }
         $mobilePhoto = imagecrop($mobilePhoto, ['x' => round(($mobilePhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
 
-        if ($webPhotoWidth > $webPhotoHeight || round($webPhotoHeight * 4.25) < $webPhotoWidth) {
+        if ($webPhotoWidth > $webPhotoHeight && round($webPhotoHeight * 4.25) < $webPhotoWidth) {
             $height = $webPhotoHeight;
             $width = round($webPhotoHeight * 4.25);
         } else {

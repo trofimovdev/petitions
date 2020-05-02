@@ -40,7 +40,7 @@ const UploadCard = ({
           )}
           <div className="UploadCard__card__content FormField__border">
             {img ? (
-              <img src={img} />
+              <img src={img} alt="petition" />
             ) : (
               <>
                 {icon}

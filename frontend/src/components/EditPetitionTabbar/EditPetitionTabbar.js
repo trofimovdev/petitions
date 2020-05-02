@@ -66,6 +66,7 @@ const EditPetitionTabbar = ({
             if (formType === "edit") {
               const changed = {};
               for (const [key, value] of Object.entries(initialEditPetitions)) {
+                console.log(form[key], value, form[key] === value);
                 if (form[key] === value) {
                   continue;
                 }
@@ -108,7 +109,7 @@ const EditPetitionTabbar = ({
                     </Snackbar>
                   );
                 })
-                .catch(({ code, message }) => {
+                .catch(({ message }) => {
                   closePopout();
                   api.notificationOccurred("success").catch(() => {});
                   setSnackbar(
@@ -154,7 +155,14 @@ const EditPetitionTabbar = ({
                   ].concat(managedPetitions)
                 );
                 closePopout();
-                setCreate();
+                setCreate({
+                  title: undefined,
+                  text: undefined,
+                  need_signatures: undefined,
+                  directed_to: undefined,
+                  file_1: undefined,
+                  file_2: undefined
+                });
                 setPage(activeView, "done", false, true, ["done"]);
               })
               .catch(({ code, message }) => {

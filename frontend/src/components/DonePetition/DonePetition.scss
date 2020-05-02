@@ -1,9 +1,17 @@
 @import "src/style/_vars.scss";
 
+:root {
+  --text-color: #000;
+}
+
+body[scheme="space_gray"] {
+  --text-color: #fff;
+}
+
 .DonePetition {
   .Placeholder__text {
     font-size: 20px !important;
-    color: #000 !important;
+    color: var(--text-color) !important;
     font-weight: 600 !important;
   }
 

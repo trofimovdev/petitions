@@ -11,6 +11,8 @@ class Signature extends Model
     protected $fillable = [
         'petition_id',
         'user_id',
+        'user_agent',
+        'ip',
         'signed_at'
     ];
 
@@ -38,26 +40,24 @@ class Signature extends Model
         return $response;
     }
 
-    public static function getUsers(int $petitionId, array $userIds = [])
+    public static function getUsers(int $petitionId, array $userIds)
     {
         $friendIds = [];
-        if ($userIds) {
-            $signatures = Signature::latest('signed_at')
-                ->where('petition_id', '=', $petitionId)
-                ->whereIn('user_id', $userIds)
-                ->get();
-            foreach ($signatures as $signature) {
-                if (!$signature instanceof Signature) {
-                    continue;
-                }
-                $friendIds[] = $signature->user_id;
+        $signatures = Signature::latest('signed_at')
+            ->where('petition_id', '=', $petitionId)
+            ->whereIn('user_id', $userIds)
+            ->get();
+        foreach ($signatures as $signature) {
+            if (!$signature instanceof Signature) {
+                continue;
             }
-        } else {
-            $signatures = Signature::latest('signed_at')
-                ->where('petition_id', '=', $petitionId)
-                ->get();
+            $friendIds[] = $signature->user_id;
         }
-        $users = User::getUsers($friendIds);
+
+        $users = [];
+        if ($friendIds) {
+            $users = User::getUsers($friendIds);
+        }
 
         $response = [];
         foreach ($signatures as $signature) {

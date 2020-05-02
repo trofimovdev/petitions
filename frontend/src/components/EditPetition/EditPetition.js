@@ -37,7 +37,7 @@ const EditPetition = ({
   createPetitions
 }) => {
   const [snackbar, setSnackbar] = useState(null);
-  const MAX_FILE_SIZE = 5 * 10 ** 6; // максимальный размер - 5 мегабайт
+  const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
 
   const checkFileSize = fileSize => {
     if (fileSize > MAX_FILE_SIZE) {
@@ -88,8 +88,6 @@ const EditPetition = ({
       panelTitle = "Создание";
     }
   }
-
-  const initialEditForm = { ...form };
 
   useEffect(() => {
     if (activePanel === "create") {
@@ -172,23 +170,23 @@ const EditPetition = ({
         <Input
           type="number"
           top="Необходимое количество подписей"
-          name="signatures"
+          name="need_signatures"
           pattern="\d*"
-          value={form.signatures ? parseInt(form.signatures) : ""}
+          value={form.need_signatures ? parseInt(form.need_signatures) : ""}
           // TODO: вынести в константу с бэкенда
           status={
-            !form.signatures ||
-            (form.signatures <= 10000000 && form.signatures >= 1)
+            !form.need_signatures ||
+            (form.need_signatures <= 10000000 && form.need_signatures >= 1)
               ? ""
               : "error"
           }
           bottom={
-            form.signatures &&
-            (form.signatures > 10000000
+            form.need_signatures &&
+            (form.need_signatures > 10000000
               ? `Максимально можно собрать ${(10000000).toLocaleString(
                   "ru"
                 )} подписей`
-              : form.signatures < 1
+              : form.need_signatures < 1
               ? `Минимально можно собрать 1 подпись`
               : "")
           }
@@ -251,9 +249,9 @@ const EditPetition = ({
             form.title.length <= 150 &&
             form.text &&
             form.text.length <= 3000 &&
-            form.signatures &&
-            form.signatures >= 1 &&
-            form.signatures <= 10000000 &&
+            form.need_signatures &&
+            form.need_signatures >= 1 &&
+            form.need_signatures <= 10000000 &&
             form.file_1 &&
             form.file_2
           )

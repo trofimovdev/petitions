@@ -21,12 +21,7 @@ import PetitionCard from "../PetitionCard/PetitionCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import FriendsCard from "../FriendsCard/FriendsCard";
 import { setActiveTab, setPage, setStory } from "../../store/router/actions";
-import {
-  setCurrent,
-  setPopular,
-  setLast,
-  setSigned
-} from "../../store/petitions/actions";
+import { setPopular, setLast, setSigned } from "../../store/petitions/actions";
 import { loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
@@ -35,19 +30,15 @@ const PetitionsFeed = ({
   id,
   setActiveTab,
   activeTab,
-  activeView,
-  setPage,
   activeStory,
   setStory,
   currentPetitions,
-  setCurrent,
   activePanel,
   launchParameters,
   setPopular,
   setLast,
   setSigned
 }) => {
-  const screenHeight = document.body.getBoundingClientRect().height;
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [endStatus, setEndStatus] = useState(false);
@@ -244,7 +235,6 @@ const PetitionsFeed = ({
 
 const mapStateToProps = state => {
   return {
-    activeView: state.router.activeView,
     activeStory: state.router.activeStory,
     activePanel: state.router.activePanel,
     currentPetitions: state.petitions[state.router.activeTab.feed],
@@ -260,7 +250,6 @@ const mapDispatchToProps = dispatch => {
         setActiveTab,
         setStory,
         setPage,
-        setCurrent,
         setPopular,
         setLast,
         setSigned
@@ -274,12 +263,9 @@ PetitionsFeed.propTypes = {
   id: PropTypes.string.isRequired,
   setActiveTab: PropTypes.func.isRequired,
   activeTab: PropTypes.object.isRequired,
-  activeView: PropTypes.string.isRequired,
   activeStory: PropTypes.string.isRequired,
   setStory: PropTypes.func.isRequired,
-  setPage: PropTypes.func.isRequired,
   currentPetitions: PropTypes.array,
-  setCurrent: PropTypes.func.isRequired,
   activePanel: PropTypes.string.isRequired,
   launchParameters: PropTypes.object.isRequired,
   setPopular: PropTypes.func.isRequired,

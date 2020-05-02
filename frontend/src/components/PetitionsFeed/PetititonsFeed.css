@@ -7,7 +7,8 @@
       margin-top: -15px; }
 
 .PetitionsFeed .PanelHeader--android .PanelHeader__in, .PetitionsFeed .PanelHeader--android .PanelHeader__content {
-  height: calc(48px + var(--panelheader_height_android)) !important; }
+  height: calc(48px + var(--panelheader_height_android)) !important;
+  margin-top: -16px; }
 
 .PetitionsFeed .PanelHeader--ios .PanelHeader__in, .PetitionsFeed .PanelHeader--ios .PanelHeader__content {
   height: calc(33px + var(--panelheader_height_ios)) !important; }
@@ -16,7 +17,7 @@
   padding-top: 33px !important; }
 
 .PetitionsFeed .Separator--android.PanelHeader__separator {
-  padding-top: 48px !important; }
+  padding-top: 32px !important; }
 
 .PetitionsFeed .Panel__in {
   padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important; }
@@ -28,3 +29,6 @@
 
 .FeedFooter {
   margin-top: 0 !important; }
+
+.Snackbar {
+  margin-bottom: calc(var(--tabbar_height)) !important; }

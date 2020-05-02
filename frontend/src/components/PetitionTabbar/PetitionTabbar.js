@@ -47,30 +47,37 @@ const PetitionTabbar = ({
   setEdit,
   setInitialEdit,
   openPopout,
-  closePopout
+  closePopout,
+  setSnackbarError
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
 
   const signPetition = () => {
     setFetchingStatus(true);
-    Backend.request(`signatures/${currentPetition.id}`, {}, "PUT").then(r => {
-      if (r || r === 0) {
-        setCurrent({
-          ...currentPetition,
-          ...{ signed: true, count_signatures: parseInt(r) }
-        });
-        signedPetitions.unshift(currentPetition);
-        setSigned(signedPetitions);
+    Backend.request(`signatures/${currentPetition.id}`, {}, "PUT")
+      .then(r => {
+        if (r || r === 0) {
+          setCurrent({
+            ...currentPetition,
+            ...{ signed: true, count_signatures: parseInt(r) }
+          });
+          signedPetitions.unshift(currentPetition);
+          setSigned(signedPetitions);
+          setFetchingStatus(false);
+          api.notificationOccurred("success").catch(() => {});
+        }
+      })
+      .catch(({ message }) => {
         setFetchingStatus(false);
-        api.notificationOccurred("success").catch(() => {});
-      }
-    });
+        setSnackbarError(message);
+        api.selectionChanged().catch(() => {});
+      });
   };
 
   const unsignPetition = () => {
     setFetchingStatus(true);
-    Backend.request(`signatures/${currentPetition.id}`, {}, "DELETE").then(
-      r => {
+    Backend.request(`signatures/${currentPetition.id}`, {}, "DELETE")
+      .then(r => {
         if (r || r === 0) {
           setCurrent({
             ...currentPetition,
@@ -82,10 +89,14 @@ const PetitionTabbar = ({
             })
           );
           setFetchingStatus(false);
-          api.notificationOccurred("success").catch(() => {});
+          api.selectionChanged().catch(() => {});
         }
-      }
-    );
+      })
+      .catch(({ code, message }) => {
+        setFetchingStatus(false);
+        setSnackbarError(message);
+        api.selectionChanged().catch(() => {});
+      });
   };
 
   const platform = usePlatform();
@@ -154,7 +165,7 @@ const PetitionTabbar = ({
         >
           <Icon24ShareOutline />
         </Button>
-        {currentPetition.owner_id == launchParameters.vk_user_id && (
+        {currentPetition.owner_id === parseInt(launchParameters.vk_user_id) && (
           <Button
             size="l"
             mode="secondary"
@@ -188,7 +199,7 @@ const PetitionTabbar = ({
                         id: response.id,
                         title: response.title,
                         text: response.text,
-                        signatures: response.count_signatures,
+                        need_signatures: response.need_signatures,
                         directed_to: response.directed_to,
                         file_1: dataURL_file_1,
                         file_2: dataURL_file_2
@@ -199,9 +210,9 @@ const PetitionTabbar = ({
                       setFormType("edit");
                       setPage(activeView, "edit");
                     };
-                    file_2.src = `${response.web_photo_url}?12`;
+                    file_2.src = response.web_photo_url;
                   };
-                  file_1.src = `${response.mobile_photo_url}?12`;
+                  file_1.src = response.mobile_photo_url;
                 })
                 .catch(() => {});
             }}
@@ -256,7 +267,8 @@ PetitionTabbar.propTypes = {
   setEdit: PropTypes.func.isRequired,
   setInitialEdit: PropTypes.func.isRequired,
   openPopout: PropTypes.func.isRequired,
-  closePopout: PropTypes.func.isRequired
+  closePopout: PropTypes.func.isRequired,
+  setSnackbarError: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionTabbar);

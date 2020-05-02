@@ -1,9 +1,11 @@
 @import "src/style/_vars.scss";
 
 .EditPetition {
-  & > .Panel__in,
-  & .Snackbar {
+  & > .Panel__in {
     padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
+  }
+  .Snackbar {
+    padding-bottom: 60px !important; // 68px - высота таббара
   }
 }
 

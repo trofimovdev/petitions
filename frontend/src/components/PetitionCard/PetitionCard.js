@@ -37,7 +37,7 @@ const PetitionCard = ({
         ) {
           return;
         }
-        api.selectionChanged().catch();
+        api.selectionChanged().catch(() => {});
         setCurrent({ id });
         setPage(activeView, "petition");
       }}

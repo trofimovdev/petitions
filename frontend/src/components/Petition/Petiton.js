@@ -14,10 +14,12 @@ import {
   usePlatform,
   Spinner,
   Button,
-  Placeholder
+  Placeholder,
+  Snackbar
 } from "@vkontakte/vkui";
 import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
+import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -41,7 +43,29 @@ const Petition = ({
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [headerStatus, setHeaderStatus] = useState("hidden");
+  const [snackbar, setSnackbar] = useState(null);
   const platform = usePlatform();
+
+  const setSnackbarError = message => {
+    setSnackbar(
+      <Snackbar
+        layout="vertical"
+        onClose={() => setSnackbar()}
+        before={
+          <Avatar
+            size={24}
+            style={{
+              backgroundColor: "var(--destructive)"
+            }}
+          >
+            <Icon24Cancel fill="#fff" width={14} height={14} />
+          </Avatar>
+        }
+      >
+        {message}
+      </Snackbar>
+    );
+  };
 
   const onRefresh = () => {
     setFetchingStatus(true);
@@ -163,7 +187,7 @@ const Petition = ({
         <>
           <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
             <div className="Petition__image">
-              <img src={`${currentPetition.mobile_photo_url}`} />
+              <img src={`${currentPetition.mobile_photo_url}`} alt="petition header" />
             </div>
             <Div className={getClassName("Petition__info", platform)}>
               <h1>{currentPetition.title}</h1>
@@ -269,11 +293,12 @@ const Petition = ({
                 })}
             </Cell>
           </PullToRefresh>
-          <PetitionTabbar />
+          <PetitionTabbar setSnackbarError={setSnackbarError} />
         </>
       ) : (
         <Spinner size="regular" className="ManagementFeed__spinner" />
       )}
+      {snackbar}
     </Panel>
   );
 };
