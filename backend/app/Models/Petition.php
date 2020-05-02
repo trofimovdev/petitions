@@ -207,7 +207,7 @@ class Petition extends Model
         $webPhotoWidth = imagesx($webPhoto);
         $webPhotoHeight = imagesy($webPhoto);
 
-        if ($mobilePhotoWidth > $mobilePhotoHeight || round($mobilePhotoHeight * 1.875) < $mobilePhotoWidth) {
+        if ($mobilePhotoWidth > $mobilePhotoHeight && round($mobilePhotoHeight * 1.875) < $mobilePhotoWidth) {
             $height = $mobilePhotoHeight;
             $width = round($mobilePhotoHeight * 1.875);
         } else {
@@ -216,7 +216,7 @@ class Petition extends Model
         }
         $mobilePhoto = imagecrop($mobilePhoto, ['x' => round(($mobilePhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
 
-        if ($webPhotoWidth > $webPhotoHeight || round($webPhotoHeight * 4.25) < $webPhotoWidth) {
+        if ($webPhotoWidth > $webPhotoHeight && round($webPhotoHeight * 4.25) < $webPhotoWidth) {
             $height = $webPhotoHeight;
             $width = round($webPhotoHeight * 4.25);
         } else {

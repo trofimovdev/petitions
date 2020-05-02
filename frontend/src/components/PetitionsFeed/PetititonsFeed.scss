@@ -48,3 +48,7 @@
 .FeedFooter {
   margin-top: 0 !important;
 }
+
+.Snackbar {
+  margin-bottom: calc(var(--tabbar_height)) !important;
+}

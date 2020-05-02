@@ -452,7 +452,7 @@ const PetitionModal = ({
                               action_type: "app",
                               action: {
                                 app_id: 7338958,
-                                app_context: "#p4"
+                                app_context: `#p${currentPetition.id}`
                               },
                               clickable_area: [
                                 {
