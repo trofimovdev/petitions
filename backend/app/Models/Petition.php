@@ -35,12 +35,13 @@ class Petition extends Model
         }
         $redisPetitionIds = Redis::lrange('popular', $offset, $offset + 10);
         $petitionIds = $redisPetitionIds;
+        // TODO: replace count(user_id) with prod value
         if (!$redisPetitionIds) {
             $petitions = Signature::select('petition_id', Signature::raw('count(user_id)'), 'completed')
                 ->join('petitions', 'petition_id', '=', 'id')
                 ->whereRaw('signed_at >= date_trunc(\'second\', current_timestamp - interval \'1 week\')')
                 ->groupBy('petition_id', 'completed')
-                ->havingRaw('completed = false AND count(user_id) > ?', [14]) // 140 / 7 = 20 signatures per day
+                ->havingRaw('completed = false AND count(user_id) > ?', [2]) // 140 / 7 = 20 signatures per day
                 ->orderByRaw('count(user_id) desc, petition_id asc')
                 ->limit(100)
                 ->get();
@@ -166,15 +167,15 @@ class Petition extends Model
 
     public static function createPetition(SignRequest $request, string $title, string $text, int $needSignatures, string $directedTo, $mobilePhoto, $webPhoto, int $userId)
     {
-        $name = Petition::saveImages($mobilePhoto, $webPhoto);
+        $saveData = Petition::saveImages($mobilePhoto, $webPhoto);
         $row = [
             'title' => $title,
             'text' => $text,
             'need_signatures' => $needSignatures,
             'count_signatures' => 1,
             'owner_id' => $userId,
-            'mobile_photo_url' => config('app.server_url') . 'static/' . $name . '_mobile.png',
-            'web_photo_url' => config('app.server_url') . 'static/' . $name . '_web.png',
+            'mobile_photo_url' => config('app.server_url') . 'static/' . $saveData['name'] . '_mobile.png',
+            'web_photo_url' => config('app.server_url') . 'static/' . $saveData['name'] . '_web.png',
             'completed' => false,
             'directed_to' => $directedTo
         ];
@@ -222,36 +223,37 @@ class Petition extends Model
     public static function saveImages($mobilePhoto, $webPhoto)
     {
         $name = time() . bin2hex(random_bytes(5));
-
-        $mobilePhoto = Petition::exifRotate($mobilePhoto);
-        $webPhoto = Petition::exifRotate($webPhoto);
-
-        $mobilePhotoWidth = imagesx($mobilePhoto);
-        $mobilePhotoHeight = imagesy($mobilePhoto);
-        $webPhotoWidth = imagesx($webPhoto);
-        $webPhotoHeight = imagesy($webPhoto);
-
-        if ($mobilePhotoWidth > $mobilePhotoHeight && round($mobilePhotoHeight * 1.875) < $mobilePhotoWidth) {
-            $height = $mobilePhotoHeight;
-            $width = round($mobilePhotoHeight * 1.875);
-        } else {
-            $width = $mobilePhotoWidth;
-            $height = round($mobilePhotoWidth / 1.875);
+        if ($mobilePhoto) {
+            $mobilePhoto = Petition::exifRotate($mobilePhoto);
+            $mobilePhotoWidth = imagesx($mobilePhoto);
+            $mobilePhotoHeight = imagesy($mobilePhoto);
+            if ($mobilePhotoWidth > $mobilePhotoHeight && round($mobilePhotoHeight * 1.875) < $mobilePhotoWidth) {
+                $height = $mobilePhotoHeight;
+                $width = round($mobilePhotoHeight * 1.875);
+            } else {
+                $width = $mobilePhotoWidth;
+                $height = round($mobilePhotoWidth / 1.875);
+            }
+            $mobilePhoto = imagecrop($mobilePhoto, ['x' => round(($mobilePhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
+            imagepng($mobilePhoto, base_path() . '/storage/app/public/static/' . $name . '_mobile.png');
         }
-        $mobilePhoto = imagecrop($mobilePhoto, ['x' => round(($mobilePhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
 
-        if ($webPhotoWidth > $webPhotoHeight && round($webPhotoHeight * 4.25) < $webPhotoWidth) {
-            $height = $webPhotoHeight;
-            $width = round($webPhotoHeight * 4.25);
-        } else {
-            $width = $webPhotoHeight;
-            $height = round($webPhotoHeight / 4.25);
+        if ($webPhoto) {
+            $webPhoto = Petition::exifRotate($webPhoto);
+            $webPhotoWidth = imagesx($webPhoto);
+            $webPhotoHeight = imagesy($webPhoto);
+            if ($webPhotoWidth > $webPhotoHeight && round($webPhotoHeight * 4.25) < $webPhotoWidth) {
+                $height = $webPhotoHeight;
+                $width = round($webPhotoHeight * 4.25);
+            } else {
+                $width = $webPhotoWidth;
+                $height = round($webPhotoWidth / 4.25);
+            }
+            $webPhoto = imagecrop($webPhoto, ['x' => round(($webPhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
+            imagepng($webPhoto, base_path() . '/storage/app/public/static/' . $name . '_web.png');
         }
-        $webPhoto = imagecrop($webPhoto, ['x' => round(($webPhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
 
-        imagepng($mobilePhoto, base_path() . '/storage/app/public/static/' . $name . '_mobile.png');
-        imagepng($webPhoto, base_path() . '/storage/app/public/static/' . $name . '_web.png');
-        return $name;
+        return ['name' => $name, 'mobilePhoto' => (bool)$mobilePhoto, 'webPhoto' => (bool)$webPhoto];
     }
 
     public static function isBase64Image(string $base64)

@@ -177,26 +177,70 @@ class PetitionController extends Controller
             $data['directed_to'] = Petition::filterString((string)$request->directed_to);
         }
         if (!is_null($request->images)) {
-            if (is_null($request->file_1) && is_null($request->file_2) && is_null($request->file)) {
+            if (!$request->hasFile('file1') && !$request->hasFile('file2') && !$request->hasFile('file')) {
                 return new ErrorResponse(400, 'Invalid params');
-            } else if (!is_null($request->file)) {
-                if (!Petition::isBase64Image($request->file)) {
+            } else if ($request->hasFile('file')) {
+                $photo = $request->file('file');
+                $files['file'] = $photo;
+                $rules['file'] = 'required|image|mimes:png,jpeg,jpg|max:10240'; // 10mb
+                $validator = Validator::make($files, $rules);
+                if ($validator->fails()) {
                     return new ErrorResponse(400, 'Недействительное изображение');
                 }
-                $photoSize = getimagesize($request->file);
+                $photoSize = getimagesize($photo);
                 if ($photoSize[0] < 100 || $photoSize[1] < 100) {
                     return new ErrorResponse(400, 'Слишком маленькое изображение');
                 }
-                $name = Petition::saveImages($request->file, $request->file);
-                $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $name . '_mobile.jpg';
-                $data['web_photo_url'] = config('app.server_url') . 'static/' . $name . '_web.jpg';
-            } else if (!is_null($request->file_1) && !is_null($request->file_2)) {
-                if (!Petition::isBase64Image($request->file_1) || !Petition::isBase64Image($request->file_2)) {
-                    return new ErrorResponse(400, 'Недействительное изображение');
+                $saveData = Petition::saveImages($photo, $photo);
+                $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $saveData['name'] . '_mobile.png';
+                $data['web_photo_url'] = config('app.server_url') . 'static/' . $saveData['name'] . '_web.png';
+                $mobilePhotoUrl = explode(config('app.server_url'), $petition['mobile_photo_url'])[1];
+                $webPhotoUrl = explode(config('app.server_url'), $petition['web_photo_url'])[1];
+                unlink(base_path() . '/storage/app/public/' . $mobilePhotoUrl);
+                unlink(base_path() . '/storage/app/public/' . $webPhotoUrl);
+
+            } else if ($request->hasFile('file1') || $request->hasFile('file2')) {
+                $mobilePhoto = null;
+                $webPhoto = null;
+                if ($request->hasFile('file1')) {
+                    $mobilePhoto = $request->file('file1');
+                    $files['file1'] = $mobilePhoto;
+                    $rules['file1'] = 'required|image|mimes:png,jpeg,jpg|max:10240'; // 10mb
                 }
-                $name = Petition::saveImages($request->file_1, $request->file_2);
-                $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $name . '_mobile.jpg';
-                $data['web_photo_url'] = config('app.server_url') . 'static/' . $name . '_web.jpg';
+                if ($request->hasFile('file2')) {
+                    $webPhoto = $request->file('file2');
+                    $files['file2'] = $webPhoto;
+                    $rules['file2'] = 'required|image|mimes:png,jpeg,jpg|max:10240'; // 10mb
+                }
+                $validator = Validator::make($files, $rules);
+                if ($validator->fails()) {
+                    return new ErrorResponse(400, 'Недействительные изображения');
+                }
+
+                if ($mobilePhoto) {
+                    $mobilePhotoSize = getimagesize($mobilePhoto);
+                    if ($mobilePhotoSize[0] < 100 || $mobilePhotoSize[1] < 100) {
+                        return new ErrorResponse(400, 'Слишком маленькое изображение');
+                    }
+                }
+                if ($webPhoto) {
+                    $webPhotoSize = getimagesize($webPhoto);
+                    if ($webPhotoSize[0] < 100 || $webPhotoSize[1] < 100) {
+                        return new ErrorResponse(400, 'Слишком маленькое изображение');
+                    }
+                }
+
+                $saveData = Petition::saveImages($mobilePhoto, $webPhoto);
+                if ($saveData['mobilePhoto']) {
+                    $data['mobile_photo_url'] = config('app.server_url') . 'static/' . $saveData['name'] . '_mobile.png';
+                    $mobilePhotoUrl = explode(config('app.server_url'), $petition['mobile_photo_url'])[1];
+                    unlink(base_path() . '/storage/app/public/' . $mobilePhotoUrl);
+                }
+                if ($saveData['webPhoto']) {
+                    $data['web_photo_url'] = config('app.server_url') . 'static/' . $saveData['name'] . '_web.png';
+                    $webPhotoUrl = explode(config('app.server_url'), $petition['web_photo_url'])[1];
+                    unlink(base_path() . '/storage/app/public/' . $webPhotoUrl);
+                }
             } else {
                 return new ErrorResponse(400, 'Invalid params');
             }

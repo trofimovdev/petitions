@@ -62,20 +62,14 @@ const petitionsReducer = (state = initialState, action) => {
     case SET_CREATE: {
       return {
         ...state,
-        create: {
-          ...state.create,
-          ...action.payload
-        }
+        create: action.payload
       };
     }
 
     case SET_EDIT: {
       return {
         ...state,
-        edit: {
-          ...state.edit,
-          ...action.payload
-        }
+        edit: action.payload
       };
     }
 
