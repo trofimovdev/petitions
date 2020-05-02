@@ -21,7 +21,6 @@ export default class Backend {
       if (!(params instanceof FormData)) {
         requestParams.headers["Content-Type"] = "application/json";
       }
-      console.log("IS FORMDATA", params instanceof FormData, typeof params);
       requestParams.body =
         params instanceof FormData ? params : JSON.stringify(params);
     } else {

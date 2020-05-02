@@ -80,7 +80,6 @@ const ManagementFeed = ({
         resolve([file, dataURL_file]);
       };
       file.onerror = () => {
-        console.log("error");
         reject();
       };
       file.src = src;
