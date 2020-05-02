@@ -37,7 +37,7 @@ const EditPetition = ({
   createPetitions
 }) => {
   const [snackbar, setSnackbar] = useState(null);
-  const MAX_FILE_SIZE = 5 * 10 ** 6; // максимальный размер - 5 мегабайт
+  const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
 
   const checkFileSize = fileSize => {
     if (fileSize > MAX_FILE_SIZE) {
@@ -122,7 +122,7 @@ const EditPetition = ({
       };
     }
   };
-  console.log(form);
+
   return (
     <Panel id={id} separator={false} className="EditPetition">
       <PanelHeader

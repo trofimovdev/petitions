@@ -66,6 +66,7 @@ const EditPetitionTabbar = ({
             if (formType === "edit") {
               const changed = {};
               for (const [key, value] of Object.entries(initialEditPetitions)) {
+                console.log(form[key], value, form[key] === value);
                 if (form[key] === value) {
                   continue;
                 }

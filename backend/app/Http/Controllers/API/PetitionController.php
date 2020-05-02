@@ -70,17 +70,21 @@ class PetitionController extends Controller
                     return new ErrorResponse(400, 'Недействительное изображение');
                 }
 
+                if (mb_strlen($title) === 0 || mb_strlen($title) > 150 || mb_strlen($text) === 0 || mb_strlen($text) > 3000 || $needSignatures === 0 || $needSignatures > 10000000) {
+                    return new ErrorResponse(400, 'Превышены ограничения');
+                }
+
                 $mobilePhotoSize = getimagesize($mobilePhoto);
                 $webPhotoSize = getimagesize($webPhoto);
                 if ($mobilePhotoSize[0] < 100 || $mobilePhotoSize[1] < 100 || $webPhotoSize[0] < 100 || $webPhotoSize[1] < 100) {
                     return new ErrorResponse(400, 'Слишком маленькое изображение');
                 }
 
-                $mobilePhotoSize = $mobilePhotoSize[0] * $mobilePhotoSize[1] * $mobilePhotoSize["bits"];
-                $webPhotoSize = $webPhotoSize[0] * $webPhotoSize[1] * $webPhotoSize["bits"];
-
-                if (mb_strlen($title) === 0 || mb_strlen($title) > 150 || mb_strlen($text) === 0 || mb_strlen($text) > 3000 || $needSignatures === 0 || $needSignatures > 10000000 || $mobilePhotoSize / 8 / 1024 / 1024 > 7 || $webPhotoSize / 8 / 1024 / 1024 > 7) {
-                    return new ErrorResponse(400, 'Превышены ограничения');
+                $mobilePhotoSize = strlen(explode(',', $mobilePhoto)[1]) * (3 / 4); // base64 ratio
+                $webPhotoSize = strlen(explode(',', $webPhoto)[1]) * (3 / 4); // base64 ratio
+                if ($mobilePhotoSize > 10485770 || $webPhotoSize > 10485770) {
+                    // max - 10mb
+                    return new ErrorResponse(400, 'Слишком большой вес фото');
                 }
 
                 return new OkResponse(Petition::createPetition($request, $title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto, $request->userId));
@@ -148,7 +152,7 @@ class PetitionController extends Controller
         if (!is_null($request->need_signatures)) {
             $data['need_signatures'] = (integer)$request->need_signatures;
         }
-        if ($request->directed_to && !is_null($request->signatures)) {
+        if ($request->directed_to) {
             $data['directed_to'] = Petition::filterString((string)$request->directed_to);
         }
         if (!is_null($request->images)) {

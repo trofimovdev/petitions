@@ -174,7 +174,8 @@ class Petition extends Model
             'owner_id' => $userId,
             'mobile_photo_url' => config('app.server_url') . 'static/' . $name . '_mobile.png',
             'web_photo_url' => config('app.server_url') . 'static/' . $name . '_web.png',
-            'completed' => false
+            'completed' => false,
+            'directed_to' => $directedTo
         ];
         $petition = Petition::create($row);
         $signature_row = [
