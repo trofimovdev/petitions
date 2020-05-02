@@ -36,7 +36,7 @@ const PetitionProgress = ({ countSignatures, needSignatures, completed }) => {
 PetitionProgress.propTypes = {
   countSignatures: PropTypes.number.isRequired,
   needSignatures: PropTypes.number.isRequired,
-  completed: PropTypes.bool.isRequired
+  completed: PropTypes.bool
 };
 
 export default PetitionProgress;

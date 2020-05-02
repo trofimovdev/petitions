@@ -66,6 +66,51 @@ const ManagementFeed = ({
   const [endStatus, setEndStatus] = useState(false);
   const platform = usePlatform();
 
+  const loadPhoto = src => {
+    return new Promise((resolve, reject) => {
+      const file = new Image();
+      file.crossOrigin = "Anonymous";
+      file.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.height = file.height;
+        canvas.width = file.width;
+        ctx.drawImage(file, 0, 0);
+        const dataURL_file = canvas.toDataURL("image/png");
+        resolve([file, dataURL_file]);
+      };
+      file.onerror = () => {
+        reject();
+      };
+      file.src = src;
+    });
+  };
+
+  const openEditForm = (
+    file1_preview,
+    file1,
+    file2_preview,
+    file2,
+    response
+  ) => {
+    const editForm = {
+      id: response.id,
+      title: response.title,
+      text: response.text,
+      need_signatures: response.need_signatures,
+      directed_to: response.directed_to,
+      file1_preview,
+      file1,
+      file2_preview,
+      file2
+    };
+    closePopout();
+    setInitialEdit(editForm);
+    setEdit(editForm);
+    setFormType("edit");
+    setPage(activeView, "edit");
+  };
+
   const onManagement = (petitionId, completed) => {
     openPopout(
       <ActionSheet onClose={() => closePopout()}>
@@ -79,43 +124,49 @@ const ManagementFeed = ({
               .then(response => {
                 // TODO: remove eslint problems
                 response = response[0];
-
-                const file_1 = new Image();
-                file_1.crossOrigin = "Anonymous";
-                file_1.onload = () => {
-                  const canvas1 = document.createElement("canvas");
-                  const ctx1 = canvas1.getContext("2d");
-                  canvas1.height = file_1.height;
-                  canvas1.width = file_1.width;
-                  ctx1.drawImage(file_1, 0, 0);
-                  const dataURL_file_1 = canvas1.toDataURL("image/png");
-                  const file_2 = new Image();
-                  file_2.crossOrigin = "Anonymous";
-                  file_2.onload = () => {
-                    const canvas2 = document.createElement("canvas");
-                    const ctx2 = canvas2.getContext("2d");
-                    canvas2.height = file_2.height;
-                    canvas2.width = file_2.width;
-                    ctx2.drawImage(file_2, 0, 0);
-                    const dataURL_file_2 = canvas2.toDataURL("image/png");
-                    const editForm = {
-                      id: response.id,
-                      title: response.title,
-                      text: response.text,
-                      need_signatures: response.need_signatures,
-                      directed_to: response.directed_to,
-                      file_1: dataURL_file_1,
-                      file_2: dataURL_file_2
-                    };
-                    closePopout();
-                    setInitialEdit(editForm);
-                    setEdit(editForm);
-                    setFormType("edit");
-                    setPage(activeView, "edit");
-                  };
-                  file_2.src = response.web_photo_url;
-                };
-                file_1.src = response.mobile_photo_url;
+                loadPhoto(response.mobile_photo_url)
+                  .then(data1 => {
+                    loadPhoto(response.web_photo_url)
+                      .then(data2 => {
+                        openEditForm(
+                          data1[1],
+                          data1[0],
+                          data2[1],
+                          data2[0],
+                          response
+                        );
+                      })
+                      .catch(() => {
+                        openEditForm(
+                          data1[1],
+                          data1[0],
+                          undefined,
+                          undefined,
+                          response
+                        );
+                      });
+                  })
+                  .catch(() => {
+                    loadPhoto(response.web_photo_url)
+                      .then(data2 => {
+                        openEditForm(
+                          undefined,
+                          undefined,
+                          data2[1],
+                          data2[0],
+                          response
+                        );
+                      })
+                      .catch(() => {
+                        openEditForm(
+                          undefined,
+                          undefined,
+                          undefined,
+                          undefined,
+                          response
+                        );
+                      });
+                  });
               })
               .catch(() => {});
           }}

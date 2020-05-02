@@ -12,11 +12,15 @@ export default class Backend {
       }
     };
 
+    if (["PUT", "PATCH"].includes(httpMethod.toString().toUpperCase())) {
+      requestParams.method = "POST";
+      params.append("_method", httpMethod); // fix that Laravel doesn't work with formData in PATCH / PUT
+    }
+
     if (httpMethod.toString().toUpperCase() !== "GET") {
       if (!(params instanceof FormData)) {
         requestParams.headers["Content-Type"] = "application/json";
       }
-      console.log("IS FORMDATA", params instanceof FormData, typeof params);
       requestParams.body =
         params instanceof FormData ? params : JSON.stringify(params);
     } else {

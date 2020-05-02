@@ -24,6 +24,7 @@ import {
 import {
   setCreate,
   setCurrent,
+  setInitialEdit,
   setManaged
 } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
@@ -58,29 +59,24 @@ const EditPetitionTabbar = ({
               formType === "edit"
                 ? { ...editPetitions }
                 : { ...createPetitions };
-            if (form.file_1 === form.file_2) {
-              form.file = form.file_1;
-              delete form.file_1;
-              delete form.file_2;
-            }
             if (formType === "edit") {
               const changed = new FormData();
               for (const [key, value] of Object.entries(initialEditPetitions)) {
-                console.log(form[key], value, form[key] === value);
-                if (form[key] === value) {
+                if (form[key] === value || key.includes("preview")) {
                   continue;
                 }
-                if (
-                  ["file", "file_1", "file_2"].includes(key) &&
-                  form[key] !== initialEditPetitions.file
-                ) {
+                if (["file1", "file2"].includes(key)) {
                   changed.append("images", "true");
                   changed.append(key, form[key], "img");
                   continue;
                 }
                 changed.append(key, form[key]);
               }
-              changed.append("type", "edit");
+              if (form.file1_preview === form.file2_preview) {
+                changed.append("file", form.file1);
+                changed.delete("file1");
+                changed.delete("file2");
+              }
               Backend.request(`petitions/${form.id}`, changed, "PATCH")
                 .then(response => {
                   closePopout();
@@ -136,7 +132,7 @@ const EditPetitionTabbar = ({
             const formData = new FormData();
             Object.entries(form).forEach(pair => {
               if (!pair[0].includes("preview")) {
-                if (["file_1", "file_2"].includes(pair[0])) {
+                if (["file1", "file2"].includes(pair[0])) {
                   formData.append(pair[0], pair[1], "img");
                 } else {
                   formData.append(pair[0], pair[1]);
@@ -172,7 +168,9 @@ const EditPetitionTabbar = ({
                   need_signatures: undefined,
                   directed_to: undefined,
                   file1: undefined,
-                  file2: undefined
+                  file1_preview: undefined,
+                  file2: undefined,
+                  file2_preview: undefined
                 });
                 setPage(activeView, "done", false, true, ["done"]);
               })

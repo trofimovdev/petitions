@@ -35,14 +35,14 @@ export const setCurrent = petition => ({
   payload: petition
 });
 
-export const setCreate = field => ({
+export const setCreate = form => ({
   type: SET_CREATE,
-  payload: field
+  payload: form
 });
 
-export const setEdit = field => ({
+export const setEdit = form => ({
   type: SET_EDIT,
-  payload: field
+  payload: form
 });
 
 export const setInitialEdit = field => ({
