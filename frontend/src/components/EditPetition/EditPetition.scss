@@ -5,7 +5,7 @@
     padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
   }
   .Snackbar {
-    padding-bottom: 60px !important; // 68px - высота таббара
+    padding-bottom: calc(25px + var(--safe-area-inset-bottom)) !important; // magic 25px
   }
 }
 

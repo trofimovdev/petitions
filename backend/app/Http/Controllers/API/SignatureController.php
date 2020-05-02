@@ -8,6 +8,7 @@ use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\OkResponse;
 use App\Models\Petition;
 use App\Models\Signature;
+use App\Models\User;
 
 class SignatureController extends Controller
 {
@@ -25,6 +26,10 @@ class SignatureController extends Controller
         $petitionId = (int)$petitionId;
         if (empty($petitionId)) {
             return new ErrorResponse(400, 'Invalid params');
+        }
+
+        if (User::checkIsBanned($request->userId)) {
+            return new ErrorResponse(403, 'Suspicious account');
         }
 
         $signature = Signature::where('petition_id', '=', $petitionId)
@@ -61,6 +66,10 @@ class SignatureController extends Controller
         $petitionId = (int)$petitionId;
         if (empty($petitionId)) {
             return new ErrorResponse(400, 'Invalid params');
+        }
+
+        if (User::checkIsBanned($request->userId)) {
+            return new ErrorResponse(403, 'Suspicious account');
         }
 
         $signature = Signature::where('petition_id', '=', $petitionId)

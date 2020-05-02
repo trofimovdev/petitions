@@ -30,6 +30,10 @@ class PetitionController extends Controller
 
     public function store(SignRequest $request)
     {
+        if (User::checkIsBanned($request->userId)) {
+            return new ErrorResponse(403, 'Suspicious account');
+        }
+
         $type = (string)$request->type;
         $offset = (int)$request->offset;
         $petitionId = (int)$request->petition_id;
@@ -107,6 +111,10 @@ class PetitionController extends Controller
             return new ErrorResponse(400, 'Invalid params');
         }
 
+        if (User::checkIsBanned($request->userId)) {
+            return new ErrorResponse(403, 'Suspicious account');
+        }
+
         $petition = Petition::where('id', '=', $petitionId)
             ->first();
         if (!$petition) {
@@ -128,6 +136,10 @@ class PetitionController extends Controller
         $petitionId = (int)$petitionId;
         if (empty($petitionId)) {
             return new ErrorResponse(400, 'Invalid params');
+        }
+
+        if (User::checkIsBanned($request->userId)) {
+            return new ErrorResponse(403, 'Suspicious account');
         }
 
         $petition = Petition::where('id', '=', $petitionId)
