@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Http\Requests\SignRequest;
 use CURLFile;
+use ErrorException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
@@ -163,7 +164,7 @@ class Petition extends Model
         return $response;
     }
 
-    public static function createPetition(SignRequest $request, string $title, string $text, int $needSignatures, string $directedTo, string $mobilePhoto, string $webPhoto, int $userId)
+    public static function createPetition(SignRequest $request, string $title, string $text, int $needSignatures, string $directedTo, $mobilePhoto, $webPhoto, int $userId)
     {
         $name = Petition::saveImages($mobilePhoto, $webPhoto);
         $row = [
@@ -194,13 +195,54 @@ class Petition extends Model
         return preg_replace("/[^\Wa-zA-Z0-9 ]/", "", $string);
     }
 
-    public static function saveImages(string $mobilePhoto, string $webPhoto)
+    public static function saveImages($mobilePhoto, $webPhoto)
     {
         $name = time() . bin2hex(random_bytes(5));
-        $mobilePhotoBase64 = base64_decode(explode(',', $mobilePhoto)[1]);
-        $webPhotoBase64 = base64_decode(explode(',', $webPhoto)[1]);
-        $mobilePhoto = imagecreatefromstring($mobilePhotoBase64);
-        $webPhoto = imagecreatefromstring($webPhotoBase64);
+
+        try {
+            $mobileExif = exif_read_data($mobilePhoto);
+        } catch (ErrorException $e) {
+            $mobileExif = [];
+        }
+        $mobilePhoto = imagecreatefromstring(file_get_contents($mobilePhoto));
+        if (!empty($mobileExif['Orientation'])) {
+            switch ($mobileExif['Orientation']) {
+                case 3:
+                    $mobilePhoto = imagerotate($mobilePhoto, 180, 0);
+                    break;
+
+                case 6:
+                    $mobilePhoto = imagerotate($mobilePhoto, -90, 0);
+                    break;
+
+                case 8:
+                    $mobilePhoto = imagerotate($mobilePhoto, 90, 0);
+                    break;
+            }
+        }
+
+
+        try {
+            $webExif = exif_read_data($webPhoto);
+        } catch (ErrorException $e) {
+            $webExif = [];
+        }
+        $webPhoto = imagecreatefromstring(file_get_contents($webPhoto));
+        if (!empty($webExif['Orientation'])) {
+            switch ($webExif['Orientation']) {
+                case 3:
+                    $webPhoto = imagerotate($webPhoto, 180, 0);
+                    break;
+
+                case 6:
+                    $webPhoto = imagerotate($webPhoto, -90, 0);
+                    break;
+
+                case 8:
+                    $webPhoto = imagerotate($webPhoto, 90, 0);
+                    break;
+            }
+        }
 
         $mobilePhotoWidth = imagesx($mobilePhoto);
         $mobilePhotoHeight = imagesy($mobilePhoto);

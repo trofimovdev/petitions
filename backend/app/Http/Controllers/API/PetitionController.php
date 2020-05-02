@@ -9,6 +9,7 @@ use App\Http\Responses\OkResponse;
 use App\Models\Petition;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class PetitionController extends Controller
 {
@@ -52,14 +53,28 @@ class PetitionController extends Controller
                 $text = (string)$request->text;
                 $needSignatures = (int)$request->need_signatures;
                 $directedTo = (string)$request->directed_to;
-                $mobilePhoto = (string)$request->file('file1');
-                $webPhoto = (string)$request->file('file2');
-                $photo = (string)$request->file('file');
 
-//                return new ErrorResponse(400, $request);
-                $request->file('file1')->store('test');
-//                imagejpeg($request->file('file1'), base_path() . '/storage/app/public/static/test_web.jpg');
-                return new OkResponse(true);
+                $files = [];
+                $rules = [];
+                if ($request->hasFile('file1')) {
+                    $mobilePhoto = $request->file('file1');
+                    $files['file1'] = $mobilePhoto;
+                    $rules['file1'] = 'required|image|mimes:png,jpeg,jpg|max:10240'; // 10mb
+                }
+                if ($request->hasFile('file2')) {
+                    $webPhoto = $request->file('file2');
+                    $files['file2'] = $webPhoto;
+                    $rules['file2'] = 'required|image|mimes:png,jpeg,jpg|max:10240'; // 10mb
+                }
+                if ($request->hasFile('file')) {
+                    $photo = $request->file('file');
+                    $files['file'] = $photo;
+                    $rules['file'] = 'required|image|mimes:png,jpeg,jpg|max:10240'; // 10mb
+                }
+                $validator = Validator::make($files, $rules);
+                if ($validator->fails()) {
+                    return new ErrorResponse(400, 'Недействительные изображения');
+                }
 
                 $title = Petition::filterString($title);
                 $text = Petition::filterString($text);
@@ -68,15 +83,11 @@ class PetitionController extends Controller
                     empty($title) || empty($text) || empty($needSignatures) || ((empty($mobilePhoto) || empty($webPhoto)) && empty($photo)) ||
                     !Petition::filterString($title) || !Petition::filterString($text) || ($directedTo && !Petition::filterString($directedTo))
                 ) {
-                    return new ErrorResponse(400, 'Недействительные параметры : ' . $title);
+                    return new ErrorResponse(400, 'Недействительное изображение');
                 }
                 if (empty($mobilePhoto) || empty($webPhoto)) {
                     $mobilePhoto = $photo;
                     $webPhoto = $photo;
-                }
-
-                if (!Petition::isBase64Image($mobilePhoto) || !Petition::isBase64Image($webPhoto)) {
-                    return new ErrorResponse(400, 'Недействительное изображение');
                 }
 
                 if (mb_strlen($title) === 0 || mb_strlen($title) > 150 || mb_strlen($text) === 0 || mb_strlen($text) > 3000 || $needSignatures === 0 || $needSignatures > 10000000) {
@@ -87,13 +98,6 @@ class PetitionController extends Controller
                 $webPhotoSize = getimagesize($webPhoto);
                 if ($mobilePhotoSize[0] < 100 || $mobilePhotoSize[1] < 100 || $webPhotoSize[0] < 100 || $webPhotoSize[1] < 100) {
                     return new ErrorResponse(400, 'Слишком маленькое изображение');
-                }
-
-                $mobilePhotoSize = strlen(explode(',', $mobilePhoto)[1]) * (3 / 4); // base64 ratio
-                $webPhotoSize = strlen(explode(',', $webPhoto)[1]) * (3 / 4); // base64 ratio
-                if ($mobilePhotoSize > 10485770 || $webPhotoSize > 10485770) {
-                    // max - 10mb
-                    return new ErrorResponse(400, 'Слишком большой вес фото');
                 }
 
                 return new OkResponse(Petition::createPetition($request, $title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto, $request->userId));

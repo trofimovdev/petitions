@@ -136,7 +136,6 @@ const EditPetitionTabbar = ({
             const formData = new FormData();
             Object.entries(form).forEach(pair => {
               if (!pair[0].includes("preview")) {
-                console.log("proceed");
                 if (["file_1", "file_2"].includes(pair[0])) {
                   formData.append(pair[0], pair[1], "img");
                 } else {
@@ -172,8 +171,8 @@ const EditPetitionTabbar = ({
                   text: undefined,
                   need_signatures: undefined,
                   directed_to: undefined,
-                  file_1: undefined,
-                  file_2: undefined
+                  file1: undefined,
+                  file2: undefined
                 });
                 setPage(activeView, "done", false, true, ["done"]);
               })
