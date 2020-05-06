@@ -4,28 +4,35 @@ import { connect } from "react-redux";
 import { ConfigProvider } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import MobileContainer from "./containers/MobileContainer/MobileContainer";
+import DesktopContainer from "./containers/DesktopContainer/DesktopContainer";
 import { isDevEnv } from "./tools/helpers";
 
-const App = ({ colorScheme }) => {
+const App = ({ colorScheme, launchParameters }) => {
   return (
     <ConfigProvider
       webviewType="vkapps"
       isWebView={isDevEnv() ? true : undefined}
       scheme={colorScheme}
     >
-      <MobileContainer />
+      {launchParameters.vk_platform === "desktop_web" ? (
+        <DesktopContainer />
+      ) : (
+        <MobileContainer />
+      )}
     </ConfigProvider>
   );
 };
 
 const mapStateToProps = state => {
   return {
-    colorScheme: state.ui.colorScheme
+    colorScheme: state.ui.colorScheme,
+    launchParameters: state.data.launchParameters
   };
 };
 
 App.propTypes = {
-  colorScheme: PropTypes.string.isRequired
+  colorScheme: PropTypes.string.isRequired,
+  launchParameters: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, null)(App);

@@ -1,0 +1,27 @@
+.PetitionCardDesktop {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  &__info {
+    flex-shrink: 2;
+    flex-basis: 400px;
+
+    &__title {
+      font-size: 18px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      margin: 0;
+    }
+  }
+
+  &__card {
+    flex-basis: 250px;
+    height: 125px;
+    overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 0%;
+    margin: 0;
+  }
+}
