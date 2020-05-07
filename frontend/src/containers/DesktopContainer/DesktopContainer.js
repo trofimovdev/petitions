@@ -1,21 +1,27 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { PageRoot } from "@happysanta/vk-app-ui";
+import {PageRoot, TabItem, PageView} from "@happysanta/vk-app-ui";
 import "@happysanta/vk-app-ui/dist/vkappui.css";
 import MainDesktop from "../../components/MainDesktop/MainDesktop";
+import PetitionDesktop from "../../components/PetitionDesktop/PetitionDesktop";
 
-const DesktopContainer = ({}) => {
+const DesktopContainer = ({ activeTab, activeView }) => {
+  console.log("activeView DesktopContainer", activeView);
   return (
-    <PageRoot activePage="main">
-      <MainDesktop id="main" />
-      <div id="book">book</div>
+    <PageRoot activePage={activeView}>
+      <MainDesktop id="petitions" activeTab={activeTab.feed} />
+      <PetitionDesktop id="petition" />
     </PageRoot>
   );
 };
 
 const mapStateToProps = state => {
-  return {};
+  return {
+    activeTab: state.router.activeTab,
+    activeView: state.router.activeView
+  };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -25,6 +31,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-DesktopContainer.propTypes = {};
+DesktopContainer.propTypes = {
+  activeTab: PropTypes.object,
+  activeView: PropTypes.string.isRequired
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DesktopContainer);

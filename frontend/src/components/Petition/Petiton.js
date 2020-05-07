@@ -187,7 +187,10 @@ const Petition = ({
         <>
           <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
             <div className="Petition__image">
-              <img src={`${currentPetition.mobile_photo_url}`} alt="petition header" />
+              <img
+                src={`${currentPetition.mobile_photo_url}`}
+                alt="petition header"
+              />
             </div>
             <Div className={getClassName("Petition__info", platform)}>
               <h1>{currentPetition.title}</h1>
@@ -233,7 +236,9 @@ const Petition = ({
               )}
             </Div>
             <Separator />
-            <Div className="Petition__text">{currentPetition.text}</Div>
+            <Div className="Petition__text">
+              <p>{currentPetition.text}</p>
+            </Div>
             <Separator />
             <Cell
               className="Petition__creator"

@@ -2,16 +2,22 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  
+  &:hover {
+    cursor: pointer;
+  }
 
   &__info {
     flex-shrink: 2;
-    flex-basis: 400px;
+    flex-basis: 380px;
 
     &__title {
       font-size: 18px;
       text-overflow: ellipsis;
       overflow: hidden;
-      margin: 0;
+      margin-top: 0;
     }
   }
 

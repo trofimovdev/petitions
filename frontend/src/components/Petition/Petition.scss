@@ -63,6 +63,13 @@
     padding: 0;
   }
 
+  &__text {
+    p {
+      white-space: pre-wrap;
+      margin: 0;
+    }
+  }
+
   &__creator {
     margin-top: 5px;
     margin-bottom: 5px;
@@ -71,9 +78,7 @@
       font-weight: 600;
       margin-right: 4px;
     }
-  }
 
-  &__creator {
     .Cell {
       &__children {
         font-size: 14px;

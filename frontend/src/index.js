@@ -22,6 +22,7 @@ import { setLaunchParameters } from "./store/data/actions";
 const api = new VKMiniAppAPI();
 
 const onLoad = response => {
+  console.log("onload", response);
   store.dispatch(setPopular(response.popular || []));
   store.dispatch(setLast(response.last || []));
   store.dispatch(setSigned(response.signed || []));
@@ -37,6 +38,7 @@ let isAppUser = false;
 api
   .storageGet("is_app_user")
   .then(r => {
+    console.log("is_app_user", r);
     isAppUser = r;
     if (!isAppUser) {
       api.storageSet("is_app_user", "1");
@@ -71,10 +73,15 @@ api
       }
     }
     if (petitionId) {
+      console.log("petitionId", petitionId);
       store.dispatch(setCurrent({ id: petitionId[1] }));
       store.dispatch(setActiveTab("feed", "last"));
       store.dispatch(setStory("petitions", "feed"));
-      store.dispatch(setPage("petitions", "petition"));
+      if (launchParameters.vk_platform === "desktop_web") {
+        store.dispatch(setPage("petition", ""));
+      } else {
+        store.dispatch(setPage("petitions", "petition"));
+      }
     } else if (!isAppUser) {
       if (feedTab) {
         store.dispatch(setActiveTab("feed", feedTab[1]));

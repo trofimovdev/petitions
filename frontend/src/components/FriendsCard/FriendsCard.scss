@@ -25,6 +25,10 @@ body[scheme="space_gray"] {
       z-index: 2;
       color: #818c99;
       padding: 4px;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
 
     &__content {
@@ -39,6 +43,10 @@ body[scheme="space_gray"] {
       &__link {
         margin-top: 12px;
         font-weight: 600;
+
+        &:hover {
+          cursor: pointer;
+        }
       }
     }
   }

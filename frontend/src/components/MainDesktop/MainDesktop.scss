@@ -3,7 +3,6 @@
   background: #fff;
   width: 100%;
   z-index: 3;
-  margin-top: -47px !important; // 47px -- высота таббара
 }
 
 .create {
@@ -15,6 +14,7 @@
     color: #2a5885;
     opacity: .5;
     margin-right: 3px;
+    margin-left: -3px;
   }
 
   &:hover &__icon {
@@ -23,6 +23,5 @@
 }
 
 .wrapper {
-  margin-top: 47px !important; // 47px -- высота таббара
-  padding: 10px 15px 0 15px;
+  padding: 57px 10px 0 10px;
 }
