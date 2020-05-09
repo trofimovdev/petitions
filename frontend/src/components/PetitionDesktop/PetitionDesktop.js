@@ -88,7 +88,7 @@ const PetitionDesktop = ({
           setFetchingStatus(false);
         }
       })
-      .catch(({ message }) => {
+      .catch(() => {
         setFetchingStatus(false);
       });
   };
@@ -110,7 +110,7 @@ const PetitionDesktop = ({
           setFetchingStatus(false);
         }
       })
-      .catch(({ code, message }) => {
+      .catch(() => {
         setFetchingStatus(false);
       });
   };

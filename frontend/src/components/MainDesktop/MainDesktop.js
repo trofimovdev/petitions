@@ -6,6 +6,7 @@ import { TabList, TabItem, Link } from "@happysanta/vk-app-ui";
 import {
   Div,
   Footer,
+  Placeholder,
   PullToRefresh,
   Separator,
   Spinner
@@ -161,7 +162,15 @@ const MainDesktop = ({
               );
             })}
             {currentPetitions.length === 0 ? (
-              <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
+              activeTab === "managed" ? (
+                <Placeholder stretched>
+                  <Footer>Создавайте петиции, чтобы решать реальные проблемы</Footer>
+                </Placeholder>
+              ) : (
+                <Placeholder stretched>
+                  <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
+                </Placeholder>
+              )
             ) : (currentPetitions.length > 0 && endStatus) ||
               (currentPetitions.length > 0 &&
                 currentPetitions.length < 10 &&
