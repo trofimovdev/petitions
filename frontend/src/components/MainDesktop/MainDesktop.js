@@ -17,6 +17,7 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import FriendsCard from "../FriendsCard/FriendsCard";
 import PetitionCardDesktop from "../PetitionCardDesktop/PetitionCardDesktop";
 import { setActiveTab, setPage } from "../../store/router/actions";
+import { setPopular, setLast, setSigned, setManaged } from "../../store/petitions/actions";
 import { loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
@@ -41,7 +42,7 @@ const MainDesktop = ({
   const [popout, setPopout] = useState(null);
 
   const setCurrentPetitions = petitions => {
-    switch (activeTab.feed) {
+    switch (activeTab) {
       case "popular":
         setPopular(petitions);
         break;
@@ -66,19 +67,17 @@ const MainDesktop = ({
   const onRefresh = () => {
     setFetchingStatus(true);
     if (launchParameters.vk_access_token_settings.includes("friends")) {
-      loadPetitions("petitions", true, { type: activeTab.feed })
+      loadPetitions("petitions", true, { type: activeTab })
         .then(response => {
           setFetchingStatus(false);
           setCurrentPetitions(response);
-          api.selectionChanged().catch(() => {});
         })
         .catch(() => {});
     } else {
-      loadPetitions("petitions", false, { type: activeTab.feed })
+      loadPetitions("petitions", false, { type: activeTab })
         .then(response => {
           setFetchingStatus(false);
           setCurrentPetitions(response);
-          api.selectionChanged().catch(() => {});
         })
         .catch(() => {});
     }
@@ -163,13 +162,11 @@ const MainDesktop = ({
             })}
             {currentPetitions.length === 0 ? (
               activeTab === "managed" ? (
-                <Placeholder stretched>
-                  <Footer>Создавайте петиции, чтобы решать реальные проблемы</Footer>
-                </Placeholder>
+                <Footer>
+                  Создавайте петиции, чтобы решать реальные проблемы
+                </Footer>
               ) : (
-                <Placeholder stretched>
-                  <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
-                </Placeholder>
+                <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
               )
             ) : (currentPetitions.length > 0 && endStatus) ||
               (currentPetitions.length > 0 &&
@@ -208,7 +205,11 @@ const mapDispatchToProps = dispatch => {
     ...bindActionCreators(
       {
         setActiveTab,
-        setPage
+        setPage,
+        setPopular,
+        setLast,
+        setSigned,
+        setManaged
       },
       dispatch
     )

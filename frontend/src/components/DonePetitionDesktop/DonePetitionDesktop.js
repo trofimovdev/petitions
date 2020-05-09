@@ -1,24 +1,13 @@
 import React from "react";
-import {
-  Panel,
-  Placeholder,
-  Link,
-  FixedLayout,
-  Button,
-  Div
-} from "@vkontakte/vkui";
+import { Placeholder, Link, FixedLayout } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
-import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon56CheckCircleOutline from "@vkontakte/icons/dist/56/check_circle_outline";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { setPage, openModal } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
-import "../DonePetitionDesktop/DonePetitionDesktop.css";
 
-const api = new VKMiniAppAPI();
-
-const DonePetition = ({
+const DonePetitionDesktop = ({
   id,
   setPage,
   openModal,
@@ -27,48 +16,39 @@ const DonePetition = ({
   activeView
 }) => {
   return (
-    <Panel id={id} separator={false} className="DonePetition">
+    <div id={id} className="DonePetitionDesktop">
       <Placeholder
-        icon={<Icon56CheckCircleOutline className="DonePetition__icon" />}
+        icon={
+          <Icon56CheckCircleOutline className="DonePetitionDesktop__icon" />
+        }
         stretched
       >
         Петиция{" "}
         <Link
-          className="DonePetition__title"
+          className="DonePetitionDesktop__title"
           onClick={() => {
             setCurrent({ id: currentPetition.id });
-            setPage(activeView, "petition", false, true, ["feed", "petition"]);
+            setPage("petition", "");
           }}
         >
           {`«${currentPetition.title}»`}
         </Link>{" "}
         запущена
       </Placeholder>
-      <FixedLayout vertical="bottom" className="DonePetition__fixed-layout">
-        <Div className="DonePetition__buttons">
-          <Button
-            size="xl"
-            mode="primary"
-            onClick={() => {
-              api.selectionChanged().catch(() => {});
-              openModal("share-type");
-            }}
-          >
-            Поделиться
-          </Button>
-          <Button
-            size="xl"
-            mode="secondary"
-            onClick={() => {
-              api.selectionChanged().catch(() => {});
-              setPage("management", "feed");
-            }}
-          >
-            Вернуться к списку петиций
-          </Button>
-        </Div>
+      <FixedLayout
+        vertical="bottom"
+        className="DonePetitionDesktop__fixed-layout"
+      >
+        <a
+          className="DonePetitionDesktop__fixed-layout__link"
+          onClick={() => {
+            setPage("petitions", "");
+          }}
+        >
+          Вернуться к списку петиций
+        </a>
       </FixedLayout>
-    </Panel>
+    </div>
   );
 };
 
@@ -93,7 +73,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-DonePetition.propTypes = {
+DonePetitionDesktop.propTypes = {
   id: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
   currentPetition: PropTypes.object.isRequired,
@@ -102,4 +82,7 @@ DonePetition.propTypes = {
   activeView: PropTypes.string.isRequired
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DonePetition);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DonePetitionDesktop);

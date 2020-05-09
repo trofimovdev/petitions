@@ -7,14 +7,17 @@ import "@happysanta/vk-app-ui/dist/vkappui.css";
 import MainDesktop from "../../components/MainDesktop/MainDesktop";
 import PetitionDesktop from "../../components/PetitionDesktop/PetitionDesktop";
 import EditPetitionDesktop from "../../components/EditPetitionDesktop/EditPetitionDesktop";
+import DonePetitionDesktop from "../../components/DonePetitionDesktop/DonePetitionDesktop";
 
 const DesktopContainer = ({ activeTab, activeView }) => {
   console.log("activeView DesktopContainer", activeView);
   return (
     <PageRoot activePage={activeView}>
+      <div id="splashscreen">splashscreen</div>
       <MainDesktop id="petitions" activeTab={activeTab.feed} />
       <PetitionDesktop id="petition" />
       <EditPetitionDesktop id="edit" />
+      <DonePetitionDesktop id="done" />
     </PageRoot>
   );
 };

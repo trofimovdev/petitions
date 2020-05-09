@@ -36,7 +36,7 @@ api.onUpdateConfig(({ scheme }) => {
 
 let isAppUser = false;
 api
-  .storageGet("is_app_user")
+  .storageGet("is_apap_user")
   .then(r => {
     console.log("is_app_user", r);
     isAppUser = r;
@@ -85,13 +85,25 @@ api
     } else if (!isAppUser) {
       if (feedTab) {
         store.dispatch(setActiveTab("feed", feedTab[1]));
-        store.dispatch(setStory("petitions", "splashscreen", false));
+        if (launchParameters.vk_platform === "desktop_web") {
+          store.dispatch(setPage("splashscreen", ""));
+        } else {
+          store.dispatch(setStory("petitions", "splashscreen", false));
+        }
       } else if (managed) {
         store.dispatch(setActiveTab("feed", "last"));
-        store.dispatch(setStory("management", "splashscreen", false));
+        if (launchParameters.vk_platform === "desktop_web") {
+          store.dispatch(setPage("splashscreen", ""));
+        } else {
+          store.dispatch(setStory("management", "splashscreen", false));
+        }
       } else {
         store.dispatch(setActiveTab("feed", "last"));
-        store.dispatch(setStory("petitions", "splashscreen", false));
+        if (launchParameters.vk_platform === "desktop_web") {
+          store.dispatch(setPage("splashscreen", ""));
+        } else {
+          store.dispatch(setStory("petitions", "splashscreen", false));
+        }
       }
     } else if (feedTab) {
       store.dispatch(setActiveTab("feed", feedTab[1]));
