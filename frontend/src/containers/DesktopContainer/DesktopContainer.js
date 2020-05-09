@@ -2,10 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import {PageRoot, TabItem, PageView} from "@happysanta/vk-app-ui";
+import { PageRoot } from "@happysanta/vk-app-ui";
 import "@happysanta/vk-app-ui/dist/vkappui.css";
 import MainDesktop from "../../components/MainDesktop/MainDesktop";
 import PetitionDesktop from "../../components/PetitionDesktop/PetitionDesktop";
+import EditPetitionDesktop from "../../components/EditPetitionDesktop/EditPetitionDesktop";
 
 const DesktopContainer = ({ activeTab, activeView }) => {
   console.log("activeView DesktopContainer", activeView);
@@ -13,6 +14,7 @@ const DesktopContainer = ({ activeTab, activeView }) => {
     <PageRoot activePage={activeView}>
       <MainDesktop id="petitions" activeTab={activeTab.feed} />
       <PetitionDesktop id="petition" />
+      <EditPetitionDesktop id="edit" />
     </PageRoot>
   );
 };

@@ -1,3 +1,5 @@
+@import "src/style/_vars.scss";
+
 .PetitionCardDesktop {
   display: flex;
   flex-direction: row;
@@ -10,14 +12,27 @@
   }
 
   &__info {
-    flex-shrink: 2;
     flex-basis: 380px;
+    z-index: 3;
+
+    &__title-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 5px;
+    }
 
     &__title {
       font-size: 18px;
       text-overflow: ellipsis;
       overflow: hidden;
-      margin-top: 0;
+      margin: 0;
+    }
+
+    &__arrow {
+      color: $petition-card-desktop-arrow-color;
+      height: 21px !important;
     }
   }
 
@@ -29,5 +44,9 @@
     background-repeat: no-repeat;
     background-position: 50% 0%;
     margin: 0;
+  }
+
+  &__modal {
+    font-size: 14px;
   }
 }

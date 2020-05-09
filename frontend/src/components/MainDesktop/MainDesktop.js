@@ -3,20 +3,85 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { TabList, TabItem, Link } from "@happysanta/vk-app-ui";
-import { Footer, PullToRefresh, Separator, Spinner } from "@vkontakte/vkui";
+import {
+  Div,
+  Footer,
+  PullToRefresh,
+  Separator,
+  Spinner
+} from "@vkontakte/vkui";
 import Icon24Add from "@vkontakte/icons/dist/16/add";
 import "./MainDesktop.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import FriendsCard from "../FriendsCard/FriendsCard";
 import PetitionCardDesktop from "../PetitionCardDesktop/PetitionCardDesktop";
-import { setActiveTab } from "../../store/router/actions";
+import { setActiveTab, setPage } from "../../store/router/actions";
+import { loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
-const MainDesktop = ({ id, activeTab, setActiveTab, currentPetitions, activeView, activePanel }) => {
+const MainDesktop = ({
+  id,
+  activeTab,
+  setActiveTab,
+  currentPetitions,
+  activeView,
+  activePanel,
+  setPage,
+  setPopular,
+  setLast,
+  setSigned,
+  setManaged,
+  launchParameters
+}) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [endStatus, setEndStatus] = useState(false);
+  const [popout, setPopout] = useState(null);
+
+  const setCurrentPetitions = petitions => {
+    switch (activeTab.feed) {
+      case "popular":
+        setPopular(petitions);
+        break;
+
+      case "last":
+        setLast(petitions);
+        break;
+
+      case "signed":
+        setSigned(petitions);
+        break;
+
+      case "managed":
+        setManaged(petitions);
+        break;
+
+      default:
+        setLast(petitions);
+    }
+  };
+
+  const onRefresh = () => {
+    setFetchingStatus(true);
+    if (launchParameters.vk_access_token_settings.includes("friends")) {
+      loadPetitions("petitions", true, { type: activeTab.feed })
+        .then(response => {
+          setFetchingStatus(false);
+          setCurrentPetitions(response);
+          api.selectionChanged().catch(() => {});
+        })
+        .catch(() => {});
+    } else {
+      loadPetitions("petitions", false, { type: activeTab.feed })
+        .then(response => {
+          setFetchingStatus(false);
+          setCurrentPetitions(response);
+          api.selectionChanged().catch(() => {});
+        })
+        .catch(() => {});
+    }
+  };
 
   useEffect(() => {
     api.setLocationHash(activeTab);
@@ -29,7 +94,12 @@ const MainDesktop = ({ id, activeTab, setActiveTab, currentPetitions, activeView
     <div id={id} className="DesktopContainer">
       <TabList
         after={
-          <Link className="create">
+          <Link
+            className="create"
+            onClick={() => {
+              setPage("edit", "");
+            }}
+          >
             <Icon24Add className="create__icon" />
             Создать петицию
           </Link>
@@ -68,10 +138,9 @@ const MainDesktop = ({ id, activeTab, setActiveTab, currentPetitions, activeView
           Мои петиции
         </TabItem>
       </TabList>
-      <div className="wrapper">
-        {/* <Spinner /> */}
+      <Div className="wrapper">
         {currentPetitions !== undefined ? (
-          <PullToRefresh>
+          <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
             <FriendsCard />
             {currentPetitions.map((item, index) => {
               return (
@@ -84,6 +153,8 @@ const MainDesktop = ({ id, activeTab, setActiveTab, currentPetitions, activeView
                     webPhotoUrl={item.web_photo_url}
                     friends={item.friends || []}
                     completed={item.completed}
+                    managementArrow={activeTab === "managed"}
+                    setPopout={setPopout}
                   />
                   {index < currentPetitions.length - 1 && <Separator />}
                 </div>
@@ -106,7 +177,8 @@ const MainDesktop = ({ id, activeTab, setActiveTab, currentPetitions, activeView
         ) : (
           <Spinner size="regular" className="PetitionsFeed__spinner" />
         )}
-      </div>
+      </Div>
+      {popout}
     </div>
   );
 };
@@ -116,7 +188,8 @@ const mapStateToProps = state => {
     activeTab: state.router.activeTab.feed,
     currentPetitions: state.petitions[state.router.activeTab.feed],
     activeView: state.router.activeView,
-    activePanel: state.router.activePanel
+    activePanel: state.router.activePanel,
+    launchParameters: state.data.launchParameters
   };
 };
 
@@ -125,7 +198,8 @@ const mapDispatchToProps = dispatch => {
     dispatch,
     ...bindActionCreators(
       {
-        setActiveTab
+        setActiveTab,
+        setPage
       },
       dispatch
     )
@@ -138,7 +212,13 @@ MainDesktop.propTypes = {
   setActiveTab: PropTypes.func.isRequired,
   currentPetitions: PropTypes.array,
   activeView: PropTypes.string.isRequired,
-  activePanel: PropTypes.string.isRequired
+  activePanel: PropTypes.string.isRequired,
+  setPage: PropTypes.func.isRequired,
+  setPopular: PropTypes.func.isRequired,
+  setLast: PropTypes.func.isRequired,
+  setSigned: PropTypes.func.isRequired,
+  setManaged: PropTypes.func.isRequired,
+  launchParameters: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainDesktop);

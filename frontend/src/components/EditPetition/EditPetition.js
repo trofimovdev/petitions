@@ -91,12 +91,6 @@ const EditPetition = ({
     }
   }
 
-  useEffect(() => {
-    if (activePanel === "create") {
-      api.setLocationHash(activePanel);
-    }
-  }, [activePanel]);
-
   const onChange = e => {
     const { name, value } = e.currentTarget;
     setForm({ ...form, ...{ [name]: value } });

@@ -21,7 +21,7 @@ import Icon16Chevron from "@vkontakte/icons/dist/16/chevron";
 import Icon24ShareOutline from "@vkontakte/icons/dist/24/share_outline";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import { declOfNum, loadPetitions } from "../../tools/helpers";
-import { setCurrent } from "../../store/petitions/actions";
+import { setCurrent, setSigned } from "../../store/petitions/actions";
 import { setLaunchParameters } from "../../store/data/actions";
 import { setPage } from "../../store/router/actions";
 import Backend from "../../tools/Backend";
@@ -34,15 +34,14 @@ const PetitionDesktop = ({
   launchParameters,
   currentPetition,
   setLaunchParameters,
-  setPage
+  setPage,
+  signedPetitions,
+  setSigned
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [shareLoadingStatus, setShareLoadingStatus] = useState(false);
-  // useEffect(() => {
-  //   // api.setLocationHash(activeTab);
-  // }, [activeTab]);
-  console.log("currentPetition", currentPetition);
+
   useEffect(() => {
     api.setLocationHash(`p${currentPetition.id.toString()}`);
     if (loadingStatus) {
@@ -74,6 +73,47 @@ const PetitionDesktop = ({
     loadingStatus,
     setCurrent
   ]);
+
+  const signPetition = () => {
+    setFetchingStatus(true);
+    Backend.request(`signatures/${currentPetition.id}`, {}, "PUT")
+      .then(r => {
+        if (r || r === 0) {
+          setCurrent({
+            ...currentPetition,
+            ...{ signed: true, count_signatures: parseInt(r) }
+          });
+          signedPetitions.unshift(currentPetition);
+          setSigned(signedPetitions);
+          setFetchingStatus(false);
+        }
+      })
+      .catch(({ message }) => {
+        setFetchingStatus(false);
+      });
+  };
+
+  const unsignPetition = () => {
+    setFetchingStatus(true);
+    Backend.request(`signatures/${currentPetition.id}`, {}, "DELETE")
+      .then(r => {
+        if (r || r === 0) {
+          setCurrent({
+            ...currentPetition,
+            ...{ signed: false, count_signatures: parseInt(r) }
+          });
+          setSigned(
+            signedPetitions.filter(item => {
+              return item.id !== currentPetition.id;
+            })
+          );
+          setFetchingStatus(false);
+        }
+      })
+      .catch(({ code, message }) => {
+        setFetchingStatus(false);
+      });
+  };
 
   return (
     <div id={id} className="PetitionDesktop">
@@ -113,10 +153,32 @@ const PetitionDesktop = ({
               countSignatures={currentPetition.count_signatures}
               needSignatures={currentPetition.need_signatures}
               signed={currentPetition.signed}
+              completed={currentPetition.completed}
             />
             <div className="PetitionDesktop__info">
               <div className="PetitionDesktop__info__buttons">
-                <Button mode="primary">Подписать петицию</Button>
+                <Button
+                  mode={
+                    currentPetition.signed || currentPetition.completed
+                      ? "secondary"
+                      : "primary"
+                  }
+                  disabled={currentPetition.completed}
+                  loading={fetchingStatus}
+                  onClick={() => {
+                    if (currentPetition.signed) {
+                      unsignPetition();
+                    } else {
+                      signPetition();
+                    }
+                  }}
+                >
+                  {currentPetition.completed
+                    ? "Сбор завершен"
+                    : currentPetition.signed
+                    ? "Вы подписали"
+                    : "Подписать петицию"}
+                </Button>
                 <Button
                   mode="secondary"
                   loading={shareLoadingStatus}
@@ -290,7 +352,8 @@ const mapStateToProps = state => {
   return {
     activeTab: state.router.activeTab.feed,
     launchParameters: state.data.launchParameters,
-    currentPetition: state.petitions.current
+    currentPetition: state.petitions.current,
+    signedPetitions: state.petitions.signed
   };
 };
 
@@ -301,7 +364,8 @@ const mapDispatchToProps = dispatch => {
       {
         setCurrent,
         setLaunchParameters,
-        setPage
+        setPage,
+        setSigned
       },
       dispatch
     )
@@ -314,7 +378,9 @@ PetitionDesktop.propTypes = {
   launchParameters: PropTypes.object.isRequired,
   currentPetition: PropTypes.object,
   setLaunchParameters: PropTypes.func.isRequired,
-  setPage: PropTypes.func.isRequired
+  setPage: PropTypes.func.isRequired,
+  signedPetitions: PropTypes.array,
+  setSigned: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionDesktop);

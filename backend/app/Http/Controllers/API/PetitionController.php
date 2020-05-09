@@ -159,7 +159,7 @@ class PetitionController extends Controller
         if ($petition['owner_id'] !== $request->userId) {
             return new ErrorResponse(403, 'Access denied');
         }
-        if ($petition['completed']) {
+        if ($petition['completed'] && is_null($request->completed)) {
             return new ErrorResponse(403, 'Петиция уже завершена');
         }
 

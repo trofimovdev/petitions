@@ -414,7 +414,7 @@ const ManagementFeed = ({
 
   useEffect(() => {
     if (activePanel === "feed") {
-      api.setLocationHash("management");
+      api.setLocationHash("managed");
     }
   }, [activePanel]);
 

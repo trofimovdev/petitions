@@ -46,10 +46,10 @@ api
 
     const petitionRegExp = new RegExp("^#p(\\d+)$");
     const feedRegExp = new RegExp("^#(popular|last|signed)$");
-    const managementRegExp = new RegExp("^#management$");
+    const managedRegExp = new RegExp("^#managed");
     let petitionId = window.location.hash.match(petitionRegExp);
     const feedTab = window.location.hash.match(feedRegExp);
-    const management = window.location.hash.match(managementRegExp);
+    const managed = window.location.hash.match(managedRegExp);
     const launchParameters = Object.fromEntries(
       new URLSearchParams(window.location.search)
     );
@@ -86,7 +86,7 @@ api
       if (feedTab) {
         store.dispatch(setActiveTab("feed", feedTab[1]));
         store.dispatch(setStory("petitions", "splashscreen", false));
-      } else if (management) {
+      } else if (managed) {
         store.dispatch(setActiveTab("feed", "last"));
         store.dispatch(setStory("management", "splashscreen", false));
       } else {
@@ -96,9 +96,14 @@ api
     } else if (feedTab) {
       store.dispatch(setActiveTab("feed", feedTab[1]));
       store.dispatch(setStory("petitions", "feed"));
-    } else if (management) {
-      store.dispatch(setActiveTab("feed", "last"));
-      store.dispatch(setStory("management", "feed"));
+    } else if (managed) {
+      if (launchParameters.vk_platform === "desktop_web") {
+        store.dispatch(setActiveTab("feed", "managed"));
+        store.dispatch(setStory("petitions", ""));
+      } else {
+        store.dispatch(setActiveTab("feed", "last"));
+        store.dispatch(setStory("management", "feed"));
+      }
     } else {
       store.dispatch(setActiveTab("feed", "last"));
       store.dispatch(setStory("petitions", "feed"));

@@ -17,7 +17,7 @@ const UploadCard = ({
 }) => {
   return (
     <Div className={`UploadCard UploadCard__${size}`}>
-      <p className="UploadCard__top FormLayout__row-top">{title}</p>
+      {title && <p className="UploadCard__top FormLayout__row-top">{title}</p>}
       {!img && (
         <input
           type="file"
@@ -57,7 +57,7 @@ const UploadCard = ({
 
 UploadCard.propTypes = {
   id: PropTypes.number.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   icon: PropTypes.object.isRequired,
   text: PropTypes.string.isRequired,
