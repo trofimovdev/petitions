@@ -76,10 +76,10 @@ api
       console.log("petitionId", petitionId);
       store.dispatch(setCurrent({ id: petitionId[1] }));
       store.dispatch(setActiveTab("feed", "last"));
-      store.dispatch(setStory("petitions", "feed"));
       if (launchParameters.vk_platform === "desktop_web") {
         store.dispatch(setPage("petition", ""));
       } else {
+        store.dispatch(setStory("petitions", "feed"));
         store.dispatch(setPage("petitions", "petition"));
       }
     } else if (!isAppUser) {

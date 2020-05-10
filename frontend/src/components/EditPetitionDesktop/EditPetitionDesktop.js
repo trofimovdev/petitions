@@ -286,8 +286,18 @@ const EditPetitionDesktop = ({
               const formData = new FormData();
               Object.entries(form).forEach(pair => {
                 if (!pair[0].includes("preview")) {
-                  if (["file1", "file2"].includes(pair[0])) {
-                    formData.append(pair[0], pair[1], "img");
+                  if (
+                    ["file1", "file2"].includes(pair[0]) &&
+                    form.file2_preview === form.file1_preview &&
+                    !formData.get("file")
+                  ) {
+                    formData.append("file", pair[1], "img");
+                    formData.delete("file1");
+                    formData.delete("file2");
+                  } else if (["file1", "file2"].includes(pair[0])) {
+                    if (!formData.get("file")) {
+                      formData.append(pair[0], pair[1], "img");
+                    }
                   } else {
                     formData.append(pair[0], pair[1]);
                   }
@@ -326,7 +336,7 @@ const EditPetitionDesktop = ({
                     file2: undefined,
                     file2_preview: undefined
                   });
-                  // setPage(activeView, "done", false, true, ["done"]);
+                  setPage("done", "");
                 })
                 .catch(({ code, message }) => {
                   setFetchingStatus(false);

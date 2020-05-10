@@ -41,7 +41,7 @@ import {
   setInitialEdit
 } from "../../store/petitions/actions";
 import FriendsCard from "../FriendsCard/FriendsCard";
-import { loadPetitions } from "../../tools/helpers";
+import { loadPetitions, loadPhoto } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
 
 const api = new VKMiniAppAPI();
@@ -65,26 +65,6 @@ const ManagementFeed = ({
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [endStatus, setEndStatus] = useState(false);
   const platform = usePlatform();
-
-  const loadPhoto = src => {
-    return new Promise((resolve, reject) => {
-      const file = new Image();
-      file.crossOrigin = "Anonymous";
-      file.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        canvas.height = file.height;
-        canvas.width = file.width;
-        ctx.drawImage(file, 0, 0);
-        const dataURL_file = canvas.toDataURL("image/png");
-        resolve([file, dataURL_file]);
-      };
-      file.onerror = () => {
-        reject();
-      };
-      file.src = src;
-    });
-  };
 
   const openEditForm = (
     file1_preview,

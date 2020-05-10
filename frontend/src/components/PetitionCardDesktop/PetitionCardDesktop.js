@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Div, Card, UsersStack, Snackbar, Avatar } from "@vkontakte/vkui";
+import React from "react";
+import { Div, Card, UsersStack, ScreenSpinner } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -7,9 +7,15 @@ import { DropList, ModalDialog } from "@happysanta/vk-app-ui";
 import Icon28ChevronDownOutline from "@vkontakte/icons/dist/28/chevron_down_outline";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import "./PetitionCardDesktop.css";
-import { setCurrent, setManaged } from "../../store/petitions/actions";
-import { setPage } from "../../store/router/actions";
-import { declOfNum } from "../../tools/helpers";
+import {
+  setCurrent,
+  setEdit,
+  setFormType,
+  setInitialEdit,
+  setManaged
+} from "../../store/petitions/actions";
+import { setPage, openPopout, closePopout } from "../../store/router/actions";
+import { declOfNum, loadPetitions, loadPhoto } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
 
 const PetitionCardDesktop = ({
@@ -25,10 +31,13 @@ const PetitionCardDesktop = ({
   completed,
   setManaged,
   managedPetitions,
-  setPopout
+  setPopout,
+  setFormType,
+  setEdit,
+  setInitialEdit,
+  openPopout,
+  closePopout
 }) => {
-  const [deleting, setDeleting] = useState(null);
-
   const deletePetition = (retry = false, message = "") => {
     if (retry) {
       setPopout(
@@ -84,11 +93,35 @@ const PetitionCardDesktop = ({
       });
   };
 
+  const openEditForm = (
+    file1_preview,
+    file1,
+    file2_preview,
+    file2,
+    response
+  ) => {
+    const editForm = {
+      id: response.id,
+      title: response.title,
+      text: response.text,
+      need_signatures: response.need_signatures,
+      directed_to: response.directed_to,
+      file1_preview,
+      file1,
+      file2_preview,
+      file2
+    };
+    // closePopout();
+    setInitialEdit(editForm);
+    setEdit(editForm);
+    setFormType("edit");
+    setPage("edit", "");
+  };
+
   return (
     <Div
       className="PetitionCardDesktop"
       onClick={e => {
-        console.log(e.target.className);
         if (e.target.className.includes("DropList") || id === 0) {
           return;
         }
@@ -105,7 +138,57 @@ const PetitionCardDesktop = ({
               items={[
                 {
                   body: "Редактировать",
-                  onClick: () => {}
+                  onClick: () => {
+                    openPopout(<ScreenSpinner />);
+                    loadPetitions(`petitions/${id.toString()}`, false)
+                      .then(response => {
+                        response = response[0];
+                        loadPhoto(response.mobile_photo_url)
+                          .then(data1 => {
+                            loadPhoto(response.web_photo_url)
+                              .then(data2 => {
+                                openEditForm(
+                                  data1[1],
+                                  data1[0],
+                                  data2[1],
+                                  data2[0],
+                                  response
+                                );
+                              })
+                              .catch(() => {
+                                openEditForm(
+                                  data1[1],
+                                  data1[0],
+                                  undefined,
+                                  undefined,
+                                  response
+                                );
+                              });
+                          })
+                          .catch(() => {
+                            loadPhoto(response.web_photo_url)
+                              .then(data2 => {
+                                openEditForm(
+                                  undefined,
+                                  undefined,
+                                  data2[1],
+                                  data2[0],
+                                  response
+                                );
+                              })
+                              .catch(() => {
+                                openEditForm(
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  response
+                                );
+                              });
+                          });
+                      })
+                      .catch(() => {});
+                  }
                 },
                 {
                   body: completed ? "Продолжить сбор" : "Завершить сбор",
@@ -242,7 +325,12 @@ const mapDispatchToProps = dispatch => {
       {
         setPage,
         setCurrent,
-        setManaged
+        setManaged,
+        setFormType,
+        setEdit,
+        setInitialEdit,
+        openPopout,
+        closePopout
       },
       dispatch
     )
@@ -262,7 +350,12 @@ PetitionCardDesktop.propTypes = {
   completed: PropTypes.bool.isRequired,
   setManaged: PropTypes.func.isRequired,
   managedPetitions: PropTypes.array,
-  setPopout: PropTypes.func
+  setPopout: PropTypes.func,
+  openPopout: PropTypes.func.isRequired,
+  closePopout: PropTypes.func.isRequired,
+  setFormType: PropTypes.func.isRequired,
+  setEdit: PropTypes.func.isRequired,
+  setInitialEdit: PropTypes.func.isRequired
 };
 
 export default connect(

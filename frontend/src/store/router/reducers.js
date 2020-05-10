@@ -326,7 +326,12 @@ const routerReducer = (state = initialState, action) => {
 
     case SET_ACTIVE_TAB: {
       let scrollPosition1 = {};
-      if (state.activeTab && state.activeTab[state.activePanel]) {
+      if (action.payload.web) {
+        scrollPosition1 = {
+          ...state.scrollPosition,
+          [`${state.activeView}_${state.activeTab.feed}`]: window.pageYOffset
+        };
+      } else if (state.activeTab && state.activeTab[state.activePanel]) {
         scrollPosition1 = {
           ...state.scrollPosition,
           [`${state.activeStory}_${state.activeView}_${state.activePanel}_${

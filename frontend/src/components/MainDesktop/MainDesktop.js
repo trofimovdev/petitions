@@ -113,7 +113,7 @@ const MainDesktop = ({
         <TabItem
           selected={activeTab === "popular"}
           onClick={() => {
-            setActiveTab("feed", "popular");
+            setActiveTab("feed", "popular", true);
           }}
         >
           Популярные
@@ -121,7 +121,7 @@ const MainDesktop = ({
         <TabItem
           selected={activeTab === "last"}
           onClick={() => {
-            setActiveTab("feed", "last");
+            setActiveTab("feed", "last", true);
           }}
         >
           Последние
@@ -129,7 +129,7 @@ const MainDesktop = ({
         <TabItem
           selected={activeTab === "signed"}
           onClick={() => {
-            setActiveTab("feed", "signed");
+            setActiveTab("feed", "signed", true);
           }}
         >
           Подписанные
@@ -137,7 +137,7 @@ const MainDesktop = ({
         <TabItem
           selected={activeTab === "managed"}
           onClick={() => {
-            setActiveTab("feed", "managed");
+            setActiveTab("feed", "managed", true);
           }}
         >
           Мои петиции
