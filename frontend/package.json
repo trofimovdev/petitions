@@ -33,6 +33,7 @@
     "react-scripts": "^3.4.1"
   },
   "dependencies": {
+    "@happysanta/vk-app-ui": "^1.0.3",
     "@vkontakte/icons": "^1.20.2",
     "@vkontakte/vk-bridge": "^2.1.8",
     "@vkontakte/vk-connect": "^1.9.1",

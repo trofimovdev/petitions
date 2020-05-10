@@ -12,9 +12,13 @@ export default class Backend {
       }
     };
 
-    if (["PUT", "PATCH"].includes(httpMethod.toString().toUpperCase())) {
+    if (
+      params instanceof FormData &&
+      ["PUT", "PATCH"].includes(httpMethod.toString().toUpperCase())
+    ) {
+      // fix that Laravel doesn't work with formData in PATCH / PUT
       requestParams.method = "POST";
-      params.append("_method", httpMethod); // fix that Laravel doesn't work with formData in PATCH / PUT
+      params.append("_method", httpMethod);
     }
 
     if (httpMethod.toString().toUpperCase() !== "GET") {

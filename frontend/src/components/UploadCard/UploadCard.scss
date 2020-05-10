@@ -40,7 +40,6 @@
       z-index: 2;
       color: #fff;
       padding: 4px;
-
     }
 
     &__content {
@@ -65,6 +64,32 @@
         object-fit: cover;
         object-position: 50% 0%;
       }
+    }
+  }
+}
+
+.EditPetitionDesktop {
+  .UploadCard {
+    padding: 0 !important;
+
+    &__card__cancel-button {
+      border-radius: 5px !important;
+    }
+
+    .Link {
+      color: $petition-desktop-link-color;
+      font-weight: normal;
+    }
+
+    &__l .UploadCard__card,
+    &__l .UploadCard__card__content {
+      height: 151px;
+      width: 283px;
+    }
+
+    &__m .UploadCard__card,
+    &__m .UploadCard__card__content {
+      height: 151px !important;
     }
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Panel,
   PanelHeaderButton,
@@ -9,8 +9,7 @@ import {
   Snackbar,
   Avatar,
   getClassName,
-  usePlatform,
-  IOS
+  usePlatform
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./EditPetition.css";
@@ -29,7 +28,6 @@ const api = new VKMiniAppAPI();
 
 const EditPetition = ({
   id,
-  activePanel,
   goBack,
   formType,
   setEdit,
@@ -90,12 +88,6 @@ const EditPetition = ({
       panelTitle = "Создание";
     }
   }
-
-  useEffect(() => {
-    if (activePanel === "create") {
-      api.setLocationHash(activePanel);
-    }
-  }, [activePanel]);
 
   const onChange = e => {
     const { name, value } = e.currentTarget;
@@ -295,7 +287,6 @@ const mapDispatchToProps = dispatch => {
 
 EditPetition.propTypes = {
   id: PropTypes.string.isRequired,
-  activePanel: PropTypes.string.isRequired,
   goBack: PropTypes.func.isRequired,
   formType: PropTypes.string,
   setEdit: PropTypes.func.isRequired,

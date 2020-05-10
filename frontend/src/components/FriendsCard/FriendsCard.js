@@ -57,7 +57,7 @@ const FriendsCard = ({
 
   const onClick = () => {
     api
-      .getAccessToken(7338958, "friends")
+      .getAccessToken(7442034, "friends")
       .then(r => {
         if (!r.scope.includes("friends")) {
           return;

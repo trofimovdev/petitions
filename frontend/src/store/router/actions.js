@@ -42,11 +42,12 @@ export const closeModal = () => ({
   type: CLOSE_MODAL
 });
 
-export const setActiveTab = (component, tab) => ({
+export const setActiveTab = (component, tab, web = false) => ({
   type: SET_ACTIVE_TAB,
   payload: {
     component,
-    tab
+    tab,
+    web
   }
 });
 

@@ -15,6 +15,6 @@ $factory->define(Petition::class, function (Faker $faker) {
         'mobile_photo_url' => 'https://petitions.trofimov.dev/static/1440x768.png',
         'web_photo_url' => 'https://petitions.trofimov.dev/static/1360x320.png',
         'completed' => $faker->randomElement($array = [true, false]),
-        'directed_to' => preg_replace("/[^\Wa-zA-Z0-9 ]/", "", '@id165275777 (Test TTTTest), Правительству РФ, @id165275777 (Test2 TTTTest), Правительству РФ1'),
+        'directed_to' => preg_replace("/[^\Wa-zA-Z0-9 ]/", "", 'Администрации, Модераторам'),
     ];
 });

@@ -104,10 +104,11 @@ class PetitionController extends Controller
 
             case 'upload':
                 $uploadUrl = (string)$request->upload_url;
-                if (empty($petitionId) || !$uploadUrl) {
+                $device = (string)$request->device;
+                if (empty($petitionId) || !$uploadUrl || empty($device)) {
                     return new ErrorResponse(400, 'Invalid params');
                 }
-                return new OkResponse(Petition::upload($petitionId, $uploadUrl, 'mobile'));
+                return new OkResponse(Petition::upload($petitionId, $uploadUrl, $device));
         }
 
         return $this->getPetitions($request, $type, $offset, $petitionId, $friendIds);
@@ -159,7 +160,7 @@ class PetitionController extends Controller
         if ($petition['owner_id'] !== $request->userId) {
             return new ErrorResponse(403, 'Access denied');
         }
-        if ($petition['completed']) {
+        if ($petition['completed'] && is_null($request->completed)) {
             return new ErrorResponse(403, 'Петиция уже завершена');
         }
 

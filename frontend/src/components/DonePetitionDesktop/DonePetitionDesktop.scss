@@ -1,0 +1,39 @@
+@import "../../style/vars";
+
+.DonePetitionDesktop {
+  .Placeholder__text {
+    font-size: 18px !important;
+    color: #000 !important;
+    font-weight: bold !important;
+  }
+
+  &__icon {
+    color: $petition-done-icon-color;
+  }
+
+  &__title {
+    word-break: break-all;
+  }
+
+  .Link {
+    color: $petition-done-desktop-link-color;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__fixed-layout {
+    margin: 0 auto 20px auto;
+    text-align: center;
+
+    &__link {
+      color: $petition-done-desktop-back-color;
+      font-size: 14px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}

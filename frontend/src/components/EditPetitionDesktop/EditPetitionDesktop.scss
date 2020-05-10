@@ -1,0 +1,44 @@
+.EditPetitionDesktop {
+  margin-top: 45px;
+
+  .form {
+    &__row {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+
+        .TooltipDesk__text__hs0tag {
+          font-weight: normal;
+        }
+      }
+
+      textarea {
+        height: 200px;
+      }
+
+      &_error__text {
+        display: none;
+      }
+
+      &_error {
+        input:not(:focus),
+        textarea:not(:focus) {
+          background: var(--field_error_background);
+          border-color: var(--field_error_border);
+        }
+
+        & > .form__row_error__text {
+          display: block;
+          padding: 0;
+          margin: 5px 0 0 0;
+          color: var(--field_error_border);
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

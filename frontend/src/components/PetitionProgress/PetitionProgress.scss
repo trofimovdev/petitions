@@ -1,11 +1,31 @@
 @import "src/style/_vars.scss";
 
 .PetitionProgress {
-  &__text {
-    margin: 0 0 9px 0;
-    font-size: $progress-text-font-size;
-    color: $progress-text-color;
-    text-align: left;
+  &__info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 9px;
+
+    &__text {
+      margin: 0;
+      font-size: $progress-text-font-size;
+      color: $progress-text-color;
+      text-align: left;
+    }
+
+    &__signed {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $petition-signed-text-color;
+      font-size: $progress-text-font-size;
+
+      &__icon {
+        margin-right: 5px;
+      }
+    }
   }
 
   &__bar {

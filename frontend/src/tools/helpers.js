@@ -47,7 +47,7 @@ export const loadPetitions = (method, withFriends = true, params = {}) => {
     }
 
     api
-      .getAccessToken(7338958, "friends")
+      .getAccessToken(7442034, "friends")
       .then(({ accessToken }) => {
         api
           .callAPIMethod("friends.get", {
@@ -83,4 +83,24 @@ export const declOfNum = (n, titles) => {
       ? 1
       : 2
   ];
+};
+
+export const loadPhoto = src => {
+  return new Promise((resolve, reject) => {
+    const file = new Image();
+    file.crossOrigin = "Anonymous";
+    file.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.height = file.height;
+      canvas.width = file.width;
+      ctx.drawImage(file, 0, 0);
+      const dataURL_file = canvas.toDataURL("image/png");
+      resolve([file, dataURL_file]);
+    };
+    file.onerror = () => {
+      reject();
+    };
+    file.src = src;
+  });
 };
