@@ -6,7 +6,6 @@ import { TabList, TabItem, Link } from "@happysanta/vk-app-ui";
 import {
   Div,
   Footer,
-  Placeholder,
   PullToRefresh,
   Separator,
   Spinner

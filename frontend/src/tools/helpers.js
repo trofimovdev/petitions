@@ -47,7 +47,7 @@ export const loadPetitions = (method, withFriends = true, params = {}) => {
     }
 
     api
-      .getAccessToken(7338958, "friends")
+      .getAccessToken(7442034, "friends")
       .then(({ accessToken }) => {
         api
           .callAPIMethod("friends.get", {

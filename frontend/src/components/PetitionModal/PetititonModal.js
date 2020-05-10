@@ -80,7 +80,7 @@ const PetitionModal = ({
   //   !searchValue &&
   //   !friendsList
   // ) {
-  //   api.getAccessToken(7338958, "friends").then(r => {
+  //   api.getAccessToken(7442034, "friends").then(r => {
   //     if (!r.scope.includes("friends")) {
   //       return;
   //     }
@@ -99,7 +99,7 @@ const PetitionModal = ({
   // const searchUsers = e => {
   //   const request = e.target.value;
   //   setSearchValue();
-  //   api.getAccessToken(7338958, "friends").then(r => {
+  //   api.getAccessToken(7442034, "friends").then(r => {
   //     if (!r.scope.includes("friends")) {
   //       return;
   //     }
@@ -117,7 +117,7 @@ const PetitionModal = ({
   // };
 
   // const getAccessToken = () => {
-  //   api.getAccessToken(7338958, "friends").then(r => {
+  //   api.getAccessToken(7442034, "friends").then(r => {
   //     if (!r.scope.includes("friends")) {
   //       return;
   //     }
@@ -451,7 +451,7 @@ const PetitionModal = ({
                             {
                               action_type: "app",
                               action: {
-                                app_id: 7338958,
+                                app_id: 7442034,
                                 app_context: `#p${currentPetition.id}`
                               },
                               clickable_area: [
@@ -497,7 +497,7 @@ const PetitionModal = ({
             onClick={() => {
               api.selectionChanged().catch(() => {});
               api
-                .getAccessToken(7338958, "photos")
+                .getAccessToken(7442034, "photos")
                 .then(({ scope, accessToken }) => {
                   if (!scope.includes("photos")) {
                     return;
@@ -544,7 +544,7 @@ const PetitionModal = ({
                             const { id, owner_id } = response[0];
                             closePopout();
                             api.postToWall(
-                              `Поддержите петицию «${currentPetition.title}»\n\nhttps://vk.com/app7338958#p${currentPetition.id}`,
+                              `Поддержите петицию «${currentPetition.title}»\n\nhttps://vk.com/app7442034#p${currentPetition.id}`,
                               `photo${owner_id}_${id}`
                             );
                           });
@@ -569,7 +569,7 @@ const PetitionModal = ({
             onClick={() => {
               api.selectionChanged().catch(() => {});
               bridge.send("VKWebAppCopyText", {
-                text: `https://vk.com/app7338958#p${currentPetition.id}`
+                text: `https://vk.com/app7442034#p${currentPetition.id}`
               });
             }}
           >

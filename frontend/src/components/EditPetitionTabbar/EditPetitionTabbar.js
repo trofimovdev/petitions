@@ -24,7 +24,6 @@ import {
 import {
   setCreate,
   setCurrent,
-  setInitialEdit,
   setManaged
 } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";

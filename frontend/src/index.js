@@ -36,7 +36,7 @@ api.onUpdateConfig(({ scheme }) => {
 
 let isAppUser = false;
 api
-  .storageGet("is_apap_user")
+  .storageGet("is_app_user")
   .then(r => {
     console.log("is_app_user", r);
     isAppUser = r;

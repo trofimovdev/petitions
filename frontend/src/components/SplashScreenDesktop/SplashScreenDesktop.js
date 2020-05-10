@@ -1,5 +1,5 @@
 import React from "react";
-import {Panel, FixedLayout, Div, Placeholder, Separator} from "@vkontakte/vkui";
+import { Div, Separator } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -12,11 +12,10 @@ import dog from "../../img/dog.jpg";
 import starwars from "../../img/starwars.jpg";
 import { setPage } from "../../store/router/actions";
 import "./SplashScreenDesktop.css";
-import MainDesktop from "../MainDesktop/MainDesktop";
 
 const api = new VKMiniAppAPI();
 
-const SplashScreenDesktop = ({ id, activeView, setPage }) => {
+const SplashScreenDesktop = ({ id, setPage }) => {
   return (
     <div id={id} className="SplashScreenDesktop">
       <Welcome

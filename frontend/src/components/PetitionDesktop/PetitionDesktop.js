@@ -6,11 +6,8 @@ import { Button } from "@happysanta/vk-app-ui";
 import {
   Avatar,
   Cell,
-  Footer,
   Link,
   Placeholder,
-  PullToRefresh,
-  ScreenSpinner,
   Separator,
   Spinner,
   UsersStack
@@ -186,7 +183,7 @@ const PetitionDesktop = ({
                   onClick={() => {
                     setShareLoadingStatus(true);
                     api
-                      .getAccessToken(7338958, "photos")
+                      .getAccessToken(7442034, "photos")
                       .then(({ scope, accessToken }) => {
                         if (!scope.includes("photos")) {
                           return;
@@ -232,7 +229,7 @@ const PetitionDesktop = ({
                                   setShareLoadingStatus(false);
                                   const { id, owner_id } = response[0];
                                   api.postToWall(
-                                    `Поддержите петицию «${currentPetition.title}»\n\nhttps://vk.com/app7338958#p${currentPetition.id}`,
+                                    `Поддержите петицию «${currentPetition.title}»\n\nhttps://vk.com/app7442034#p${currentPetition.id}`,
                                     `photo${owner_id}_${id}`
                                   );
                                 });

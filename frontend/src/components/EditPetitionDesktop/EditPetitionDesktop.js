@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Div } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./EditPetitionDesktop.css";
-import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon48Camera from "@vkontakte/icons/dist/48/camera";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -36,24 +35,6 @@ const EditPetitionDesktop = ({
 
   const checkFileSize = fileSize => {
     if (fileSize > MAX_FILE_SIZE) {
-      // setSnackbar(
-      //   <Snackbar
-      //     layout="vertical"
-      //     onClose={() => setSnackbar()}
-      //     before={
-      //       <Avatar
-      //         size={24}
-      //         style={{
-      //           backgroundColor: "var(--destructive)"
-      //         }}
-      //       >
-      //         <Icon24Cancel fill="#fff" width={14} height={14} />
-      //       </Avatar>
-      //     }
-      //   >
-      //     Слишком большой размер файла
-      //   </Snackbar>
-      // );
       return false;
     }
     return true;
