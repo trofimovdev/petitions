@@ -51,6 +51,7 @@ class Petition extends Model
             }
             Redis::rpush('popular', ...$petitionIds);
             Redis::expire('popular', Petition::POPULAR_CACHE_TTL);
+            $petitionIds = array_slice($petitionIds, $offset, 10);
         }
         $petitions = Petition::getPetitions($petitionIds, false, $friendIds);
         return $petitions;

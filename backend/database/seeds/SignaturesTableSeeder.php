@@ -11,6 +11,6 @@ class SignaturesTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Models\Signature::class, 10000)->create();
+        factory(App\Models\Signature::class, 50000)->create();
     }
 }

@@ -32,8 +32,6 @@ const MainDesktop = ({
   activeTab,
   setActiveTab,
   currentPetitions,
-  activeView,
-  activePanel,
   setPage,
   setPopular,
   setLast,
@@ -88,12 +86,71 @@ const MainDesktop = ({
     }
   };
 
+  const onScroll = () => {
+    const scrollPosition = window.scrollY;
+    const petitionsContainerHeight = document.getElementById(
+      "petitionsContainer"
+    ).offsetHeight;
+    if (
+      currentPetitions &&
+      scrollPosition + 1300 > petitionsContainerHeight &&
+      !loadingStatus &&
+      !endStatus
+    ) {
+      // загружать новые карточки когда юзер пролистнет 5 карточку
+      setLoadingStatus(true);
+      if (launchParameters.vk_access_token_settings.includes("friends")) {
+        loadPetitions("petitions", true, {
+          offset: currentPetitions.length,
+          type: activeTab
+        })
+          .then(r => {
+            if (r.length === 0) {
+              setEndStatus(true);
+              return;
+            }
+            const petitions = currentPetitions
+              .concat(r)
+              .filter((value, index, self) => {
+                return self.indexOf(value) === index;
+              });
+            setCurrentPetitions(petitions);
+            setLoadingStatus(false);
+          })
+          .catch(() => {});
+      } else {
+        loadPetitions("petitions", false, {
+          offset: currentPetitions.length,
+          type: activeTab.feed
+        })
+          .then(r => {
+            if (r.length === 0) {
+              setEndStatus(true);
+              return;
+            }
+            const petitions = currentPetitions
+              .concat(r)
+              .filter((value, index, self) => {
+                return self.indexOf(value) === index;
+              });
+            setCurrentPetitions(petitions);
+            setLoadingStatus(false);
+          })
+          .catch(() => {});
+      }
+    }
+  };
+
   useEffect(() => {
     api.setLocationHash(activeTab);
   }, [activeTab]);
 
-  console.log("activePanel", activePanel);
-  console.log("activeView", activeView);
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  });
 
   return (
     <div id={id} className="DesktopContainer">
@@ -143,7 +200,7 @@ const MainDesktop = ({
           Мои петиции
         </TabItem>
       </TabList>
-      <Div className="wrapper">
+      <Div className="wrapper" id="petitionsContainer">
         {currentPetitions !== undefined ? (
           <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
             <FriendsCard />
@@ -198,8 +255,6 @@ const mapStateToProps = state => {
   return {
     activeTab: state.router.activeTab.feed,
     currentPetitions: state.petitions[state.router.activeTab.feed],
-    activeView: state.router.activeView,
-    activePanel: state.router.activePanel,
     launchParameters: state.data.launchParameters
   };
 };
@@ -226,8 +281,6 @@ MainDesktop.propTypes = {
   activeTab: PropTypes.string.isRequired,
   setActiveTab: PropTypes.func.isRequired,
   currentPetitions: PropTypes.array,
-  activeView: PropTypes.string.isRequired,
-  activePanel: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
   setPopular: PropTypes.func.isRequired,
   setLast: PropTypes.func.isRequired,
