@@ -1,0 +1,15 @@
+.SplashScreenDesktop {
+  &__buttons {
+    &__next {
+      margin-right: 8px;
+    }
+  }
+
+  &__feed {
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 2px 40px 0 rgba(0, 0, 0, 0.12);
+    transform: scale(0.92);
+    pointer-events: none;
+  }
+}

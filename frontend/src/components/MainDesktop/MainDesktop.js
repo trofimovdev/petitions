@@ -11,13 +11,18 @@ import {
   Separator,
   Spinner
 } from "@vkontakte/vkui";
-import Icon24Add from "@vkontakte/icons/dist/16/add";
+import Icon16Add from "@vkontakte/icons/dist/16/add";
 import "./MainDesktop.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import FriendsCard from "../FriendsCard/FriendsCard";
 import PetitionCardDesktop from "../PetitionCardDesktop/PetitionCardDesktop";
 import { setActiveTab, setPage } from "../../store/router/actions";
-import { setPopular, setLast, setSigned, setManaged } from "../../store/petitions/actions";
+import {
+  setPopular,
+  setLast,
+  setSigned,
+  setManaged
+} from "../../store/petitions/actions";
 import { loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
@@ -100,7 +105,7 @@ const MainDesktop = ({
               setPage("edit", "");
             }}
           >
-            <Icon24Add className="create__icon" />
+            <Icon16Add className="create__icon" />
             Создать петицию
           </Link>
         }

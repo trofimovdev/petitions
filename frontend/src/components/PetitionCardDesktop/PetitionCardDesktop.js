@@ -262,7 +262,7 @@ PetitionCardDesktop.propTypes = {
   completed: PropTypes.bool.isRequired,
   setManaged: PropTypes.func.isRequired,
   managedPetitions: PropTypes.array,
-  setPopout: PropTypes.func.isRequired
+  setPopout: PropTypes.func
 };
 
 export default connect(

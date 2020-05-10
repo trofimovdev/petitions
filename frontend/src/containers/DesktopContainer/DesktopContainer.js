@@ -8,12 +8,13 @@ import MainDesktop from "../../components/MainDesktop/MainDesktop";
 import PetitionDesktop from "../../components/PetitionDesktop/PetitionDesktop";
 import EditPetitionDesktop from "../../components/EditPetitionDesktop/EditPetitionDesktop";
 import DonePetitionDesktop from "../../components/DonePetitionDesktop/DonePetitionDesktop";
+import SplashScreenDesktop from "../../components/SplashScreenDesktop/SplashScreenDesktop";
 
 const DesktopContainer = ({ activeTab, activeView }) => {
   console.log("activeView DesktopContainer", activeView);
   return (
     <PageRoot activePage={activeView}>
-      <div id="splashscreen">splashscreen</div>
+      <SplashScreenDesktop id="splashscreen" />
       <MainDesktop id="petitions" activeTab={activeTab.feed} />
       <PetitionDesktop id="petition" />
       <EditPetitionDesktop id="edit" />
