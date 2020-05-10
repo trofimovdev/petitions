@@ -200,12 +200,10 @@ const PetitionCardDesktop = ({
                         "PATCH"
                       )
                         .then(response => {
-                          console.log(response, managedPetitions);
                           setManaged(
                             managedPetitions.map((item, index) => {
                               if (item.id === id) {
                                 item.completed = false;
-                                console.log(id, item);
                                 return item;
                               }
                               return item;
@@ -221,12 +219,10 @@ const PetitionCardDesktop = ({
                       "PATCH"
                     )
                       .then(response => {
-                        console.log(response, managedPetitions);
                         setManaged(
                           managedPetitions.map((item, index) => {
                             if (item.id === id) {
                               item.completed = true;
-                              console.log(id, item);
                               return item;
                             }
                             return item;
