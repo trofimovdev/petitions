@@ -215,6 +215,7 @@ const PetitionDesktop = ({
                               {
                                 petition_id: currentPetition.id,
                                 type: "upload",
+                                device: "web",
                                 upload_url
                               },
                               "POST"

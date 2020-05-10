@@ -110,14 +110,17 @@ class Petition extends Model
         return $response;
     }
 
-    public static function upload(int $petitionId, string $uploadUrl, string $type)
+    public static function upload(int $petitionId, string $uploadUrl, string $device)
     {
         $petition = Petition::getPetitions([$petitionId])[0];
 
-        switch ($type) {
+        switch ($device) {
             case 'mobile':
-            default:
                 $imgPath = explode(config('app.server_url'), $petition['mobile_photo_url'])[1];
+                break;
+
+            case 'web':
+                $imgPath = explode(config('app.server_url'), $petition['web_photo_url'])[1];
                 break;
         }
 

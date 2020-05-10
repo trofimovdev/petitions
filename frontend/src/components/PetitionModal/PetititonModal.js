@@ -527,6 +527,7 @@ const PetitionModal = ({
                         {
                           petition_id: currentPetition.id,
                           type: "upload",
+                          device: "mobile",
                           upload_url
                         },
                         "POST"
