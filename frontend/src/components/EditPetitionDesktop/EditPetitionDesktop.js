@@ -67,7 +67,6 @@ const EditPetitionDesktop = ({
 
   const onChange = e => {
     const { name, value } = e.currentTarget;
-    console.log(name, value, form);
     setForm({ ...form, ...{ [name]: value } });
   };
 

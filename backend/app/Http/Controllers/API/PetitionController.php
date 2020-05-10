@@ -281,8 +281,6 @@ class PetitionController extends Controller
             'last' => Petition::getLast(0, $friendIds),
             'signed' => Petition::getSigned($request->userId, 0, $friendIds),
             'managed' => Petition::getManaged($request->userId, 0, $friendIds),
-            'test' => $request->server('HTTP_USER_AGENT'),
-            'ip' => $request->ip()
         ]);
     }
 }

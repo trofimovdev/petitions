@@ -120,7 +120,7 @@ const MainDesktop = ({
       } else {
         loadPetitions("petitions", false, {
           offset: currentPetitions.length,
-          type: activeTab.feed
+          type: activeTab
         })
           .then(r => {
             if (r.length === 0) {
