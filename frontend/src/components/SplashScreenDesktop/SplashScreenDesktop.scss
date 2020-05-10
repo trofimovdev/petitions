@@ -1,4 +1,10 @@
 .SplashScreenDesktop {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+
   &__buttons {
     &__next {
       margin-right: 8px;
@@ -6,10 +12,13 @@
   }
 
   &__feed {
-    overflow: hidden;
     border-radius: 10px;
     box-shadow: 0 2px 40px 0 rgba(0, 0, 0, 0.12);
     transform: scale(0.92);
     pointer-events: none;
+  }
+
+  .Welcome__hs0tag {
+    margin-top: 128px;
   }
 }
