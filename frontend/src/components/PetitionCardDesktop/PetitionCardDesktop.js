@@ -137,7 +137,7 @@ const PetitionCardDesktop = ({
     setInitialEdit(editForm);
     setEdit(editForm);
     setFormType("edit");
-    setPage("edit", "");
+    setPage("edit", "", false, false, [], true);
   };
 
   return (
@@ -148,7 +148,7 @@ const PetitionCardDesktop = ({
           return;
         }
         setCurrent({ id });
-        setPage("petition", "");
+        setPage("petition", "", false, false, [], true);
       }}
     >
       <div className="PetitionCardDesktop__info">

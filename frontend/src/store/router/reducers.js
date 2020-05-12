@@ -59,6 +59,19 @@ const routerReducer = (state = initialState, action) => {
         api.disableSwipeBack();
       }
 
+      let scrollPosition = {};
+      if (action.payload.web) {
+        scrollPosition = {
+          ...state.scrollPosition,
+          [`${state.activeView}_${state.activeTab.feed}`]: window.pageYOffset
+        };
+      } else {
+        scrollPosition = {
+        ...state.scrollPosition,
+          [`${state.activeStory}_${state.activeView}_${state.activePanel}`]: window.pageYOffset
+        };
+      }
+
       return {
         ...state,
         activeView: View,
@@ -72,10 +85,7 @@ const routerReducer = (state = initialState, action) => {
           ...state.viewsHistory,
           [state.activeStory]: [...viewsHistory, View]
         },
-        scrollPosition: {
-          ...state.scrollPosition,
-          [`${state.activeStory}_${state.activeView}_${state.activePanel}`]: window.pageYOffset
-        }
+        scrollPosition: scrollPosition
       };
     }
 
