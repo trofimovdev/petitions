@@ -5,7 +5,14 @@ import "./EditPetitionDesktop.css";
 import Icon48Camera from "@vkontakte/icons/dist/48/camera";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { Input, Textarea, TooltipTag, Button } from "@happysanta/vk-app-ui";
+import {
+  Input,
+  Textarea,
+  TooltipTag,
+  Button,
+  FadeInOut,
+  Gray
+} from "@happysanta/vk-app-ui";
 import UploadCard from "../UploadCard/UploadCard";
 import {
   setEdit,
@@ -43,11 +50,13 @@ const EditPetitionDesktop = ({
   let setForm = () => {};
   let form = {};
   let panelTitle = "";
+  let buttonText = "";
   switch (formType) {
     case "edit": {
       setForm = setEdit;
       form = editPetitions;
       panelTitle = "Редактирование петиции";
+      buttonText = "Сохранить";
       break;
     }
 
@@ -55,6 +64,7 @@ const EditPetitionDesktop = ({
       setForm = setCreate;
       form = createPetitions;
       panelTitle = "Создание петиции";
+      buttonText = "Запустить";
       break;
     }
 
@@ -62,6 +72,7 @@ const EditPetitionDesktop = ({
       setForm = setCreate;
       form = createPetitions;
       panelTitle = "Создание петиции";
+      buttonText = "Сохранить";
     }
   }
 
@@ -209,7 +220,7 @@ const EditPetitionDesktop = ({
           />
         </Div>
 
-        <Div>
+        <Div className="form__button">
           <Button
             disabled={
               !(
@@ -324,8 +335,13 @@ const EditPetitionDesktop = ({
                 });
             }}
           >
-            Запустить
+            {buttonText}
           </Button>
+          {formType === "edit" && (
+            <FadeInOut ts={Date.now()}>
+              <Gray>Изменения сохранены</Gray>
+            </FadeInOut>
+          )}
         </Div>
       </Div>
     </div>

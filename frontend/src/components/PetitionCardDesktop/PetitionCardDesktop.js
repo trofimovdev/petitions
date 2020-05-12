@@ -272,7 +272,7 @@ const PetitionCardDesktop = ({
             })}
           >
             {friends.length === 1
-              ? (friends[0].user.sex === "2" ? "Подписал " : "Подписала ") +
+              ? (friends[0].user.sex === 2 ? "Подписал " : "Подписала ") +
                 friends[0].user.first_name
               : `Подписали ${
                   friends.length === 2
