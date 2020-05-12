@@ -161,7 +161,7 @@ const MainDesktop = ({
             className="create"
             onClick={() => {
               setFormType("create");
-              setPage("edit", "");
+              setPage("edit", "", false, false, [], true);
             }}
           >
             <Icon16Add className="create__icon" />

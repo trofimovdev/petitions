@@ -18,14 +18,15 @@ export const setStory = (story, initialPanel, withHistory = true) => ({
   }
 });
 
-export const setPage = (view, panel, disableSwipeBack = false, rewriteHistory = false, history = []) => ({
+export const setPage = (view, panel, disableSwipeBack = false, rewriteHistory = false, history = [], web = false) => ({
   type: SET_PAGE,
   payload: {
     view,
     panel,
     disableSwipeBack,
     rewriteHistory,
-    history
+    history,
+    web
   }
 });
 
