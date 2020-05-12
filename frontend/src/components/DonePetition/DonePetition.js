@@ -14,7 +14,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { setPage, openModal } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
-import "../DonePetitionDesktop/DonePetitionDesktop.css";
+import "./DonePetition.css";
 
 const api = new VKMiniAppAPI();
 
