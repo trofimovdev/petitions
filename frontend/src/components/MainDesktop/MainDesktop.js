@@ -94,6 +94,7 @@ const MainDesktop = ({
     ).offsetHeight;
     if (
       currentPetitions &&
+      currentPetitions.length > 10 &&
       scrollPosition + 1300 > petitionsContainerHeight &&
       !loadingStatus &&
       !endStatus
