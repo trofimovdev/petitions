@@ -6,15 +6,9 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { setPage, openModal } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
+import "./DonePetitionDesktop.css";
 
-const DonePetitionDesktop = ({
-  id,
-  setPage,
-  openModal,
-  currentPetition,
-  setCurrent,
-  activeView
-}) => {
+const DonePetitionDesktop = ({ id, setPage, currentPetition, setCurrent }) => {
   return (
     <div id={id} className="DonePetitionDesktop">
       <Placeholder
@@ -54,8 +48,7 @@ const DonePetitionDesktop = ({
 
 const mapStateToProps = state => {
   return {
-    currentPetition: state.petitions.current,
-    activeView: state.router.activeView
+    currentPetition: state.petitions.current
   };
 };
 
@@ -65,8 +58,7 @@ const mapDispatchToProps = dispatch => {
     ...bindActionCreators(
       {
         setPage,
-        setCurrent,
-        openModal
+        setCurrent
       },
       dispatch
     )
@@ -77,9 +69,7 @@ DonePetitionDesktop.propTypes = {
   id: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
   currentPetition: PropTypes.object.isRequired,
-  openModal: PropTypes.func.isRequired,
-  setCurrent: PropTypes.func.isRequired,
-  activeView: PropTypes.string.isRequired
+  setCurrent: PropTypes.func.isRequired
 };
 
 export default connect(

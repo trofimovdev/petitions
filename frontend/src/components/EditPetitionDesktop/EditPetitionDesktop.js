@@ -45,6 +45,7 @@ const EditPetitionDesktop = ({
   launchParameters
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(null);
+  const [ts, setTs] = useState(undefined);
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
 
   const checkFileSize = fileSize => {
@@ -295,7 +296,7 @@ const EditPetitionDesktop = ({
                         .catch(() => {});
                     }
                     setFetchingStatus(false);
-                    // изменени сохранены
+                    setTs(Date.now());
                   })
                   .catch(({ message }) => {
                     setFetchingStatus(false);
@@ -391,7 +392,7 @@ const EditPetitionDesktop = ({
             {buttonText}
           </Button>
           {formType === "edit" && (
-            <FadeInOut ts={Date.now()}>
+            <FadeInOut ts={ts}>
               <Gray>Изменения сохранены</Gray>
             </FadeInOut>
           )}
