@@ -18,11 +18,15 @@ import {
   setEdit,
   setCreate,
   setCurrent,
-  setManaged
+  setManaged,
+  setPopular,
+  setLast,
+  setSigned
 } from "../../store/petitions/actions";
 import { setPage } from "../../store/router/actions";
 import HeaderDesktop from "../HeaderDesktop/HeaderDesktop";
 import Backend from "../../tools/Backend";
+import { loadPetitions } from "../../tools/helpers";
 
 const EditPetitionDesktop = ({
   id,
@@ -35,7 +39,10 @@ const EditPetitionDesktop = ({
   setCurrent,
   setManaged,
   initialEditPetitions,
-  managedPetitions
+  setPopular,
+  setLast,
+  setSigned,
+  launchParameters
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(null);
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
@@ -264,6 +271,29 @@ const EditPetitionDesktop = ({
                 }
                 Backend.request(`petitions/${form.id}`, changed, "PATCH")
                   .then(response => {
+                    if (
+                      launchParameters.vk_access_token_settings.includes(
+                        "friends"
+                      )
+                    ) {
+                      loadPetitions("petitions", true)
+                        .then(response => {
+                          setPopular(response.popular || []);
+                          setLast(response.last || []);
+                          setSigned(response.signed || []);
+                          setManaged(response.managed || []);
+                        })
+                        .catch(() => {});
+                    } else {
+                      loadPetitions("petitions", false)
+                        .then(response => {
+                          setPopular(response.popular || []);
+                          setLast(response.last || []);
+                          setSigned(response.signed || []);
+                          setManaged(response.managed || []);
+                        })
+                        .catch(() => {});
+                    }
                     setFetchingStatus(false);
                     // изменени сохранены
                   })
@@ -305,17 +335,40 @@ const EditPetitionDesktop = ({
                     mobile_photo_url: response.mobile_photo_url,
                     web_photo_url: response.web_photo_url
                   });
-                  setManaged(
-                    [
-                      {
-                        id: response.id,
-                        title: response.title,
-                        web_photo_url: response.web_photo_url,
-                        count_signatures: response.count_signatures,
-                        need_signatures: response.need_signatures
-                      }
-                    ].concat(managedPetitions)
-                  );
+                  // setManaged(
+                  //   [
+                  //     {
+                  //       id: response.id,
+                  //       title: response.title,
+                  //       web_photo_url: response.web_photo_url,
+                  //       count_signatures: response.count_signatures,
+                  //       need_signatures: response.need_signatures
+                  //     }
+                  //   ].concat(managedPetitions)
+                  // );
+                  if (
+                    launchParameters.vk_access_token_settings.includes(
+                      "friends"
+                    )
+                  ) {
+                    loadPetitions("petitions", true)
+                      .then(response => {
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
+                      })
+                      .catch(() => {});
+                  } else {
+                    loadPetitions("petitions", false)
+                      .then(response => {
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
+                      })
+                      .catch(() => {});
+                  }
                   setFetchingStatus(false);
                   setCreate({
                     title: undefined,
@@ -355,7 +408,7 @@ const mapStateToProps = state => {
     editPetitions: state.petitions.edit,
     createPetitions: state.petitions.create,
     initialEditPetitions: state.petitions.initialEdit,
-    managedPetitions: state.petitions.managed
+    launchParameters: state.data.launchParameters
   };
 };
 
@@ -368,7 +421,10 @@ const mapDispatchToProps = dispatch => {
         setCreate,
         setPage,
         setCurrent,
-        setManaged
+        setManaged,
+        setPopular,
+        setLast,
+        setSigned
       },
       dispatch
     )
@@ -386,7 +442,10 @@ EditPetitionDesktop.propTypes = {
   setCurrent: PropTypes.func.isRequired,
   setManaged: PropTypes.func.isRequired,
   initialEditPetitions: PropTypes.object.isRequired,
-  managedPetitions: PropTypes.array.isRequired
+  setPopular: PropTypes.func.isRequired,
+  setLast: PropTypes.func.isRequired,
+  setSigned: PropTypes.func.isRequired,
+  launchParameters: PropTypes.object.isRequired
 };
 
 export default connect(

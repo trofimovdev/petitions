@@ -249,7 +249,7 @@ const PetitionDesktop = ({
                   })}
                 >
                   {currentPetition.friends.length === 1
-                    ? (currentPetition.friends[0].user.sex === "2"
+                    ? (currentPetition.friends[0].user.sex === 2
                         ? "Подписал "
                         : "Подписала ") +
                       currentPetition.friends[0].user.first_name
@@ -303,7 +303,7 @@ const PetitionDesktop = ({
                 {`${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
               </Link>
               {`${
-                currentPetition.owner.sex.toString() === "2"
+                currentPetition.owner.sex === 2
                   ? "создал "
                   : "создала "
               } петицию${
