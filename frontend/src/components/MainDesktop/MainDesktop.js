@@ -92,7 +92,6 @@ const MainDesktop = ({
     const petitionsContainerHeight = document.getElementById(
       "petitionsContainer"
     ).offsetHeight;
-    console.log(scrollPosition);
     if (
       currentPetitions &&
       currentPetitions.length > 10 &&

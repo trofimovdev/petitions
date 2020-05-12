@@ -84,6 +84,7 @@ const PetitionCardDesktop = ({
               setLast(response.last || []);
               setSigned(response.signed || []);
               setManaged(response.managed || []);
+              setPopout();
             })
             .catch(() => {});
         } else {
@@ -93,10 +94,10 @@ const PetitionCardDesktop = ({
               setLast(response.last || []);
               setSigned(response.signed || []);
               setManaged(response.managed || []);
+              setPopout();
             })
             .catch(() => {});
         }
-        setPopout();
       })
       .catch(({ errorMessage }) => {
         setPopout(
