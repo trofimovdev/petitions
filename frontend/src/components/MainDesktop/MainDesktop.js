@@ -20,7 +20,8 @@ import {
   setPopular,
   setLast,
   setSigned,
-  setManaged
+  setManaged,
+  setFormType
 } from "../../store/petitions/actions";
 import { loadPetitions } from "../../tools/helpers";
 
@@ -36,7 +37,8 @@ const MainDesktop = ({
   setLast,
   setSigned,
   setManaged,
-  launchParameters
+  launchParameters,
+  setFormType
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
@@ -158,6 +160,7 @@ const MainDesktop = ({
           <Link
             className="create"
             onClick={() => {
+              setFormType("create");
               setPage("edit", "");
             }}
           >
@@ -268,7 +271,8 @@ const mapDispatchToProps = dispatch => {
         setPopular,
         setLast,
         setSigned,
-        setManaged
+        setManaged,
+        setFormType
       },
       dispatch
     )
@@ -285,7 +289,8 @@ MainDesktop.propTypes = {
   setLast: PropTypes.func.isRequired,
   setSigned: PropTypes.func.isRequired,
   setManaged: PropTypes.func.isRequired,
-  launchParameters: PropTypes.object.isRequired
+  launchParameters: PropTypes.object.isRequired,
+  setFormType: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainDesktop);

@@ -16,7 +16,7 @@ body[scheme="space_gray"] {
   }
 
   &__icon {
-    color: $petition-done-icon-color;
+    color: $petition-done-icon-color !important;
   }
 
   &__title {

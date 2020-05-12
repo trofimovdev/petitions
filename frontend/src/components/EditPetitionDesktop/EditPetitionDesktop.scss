@@ -40,5 +40,15 @@
         }
       }
     }
+
+    &__button {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .Button__hs0tag {
+        margin-right: 8px;
+      }
+    }
   }
 }

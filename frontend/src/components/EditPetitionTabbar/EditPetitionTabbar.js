@@ -24,9 +24,13 @@ import {
 import {
   setCreate,
   setCurrent,
-  setManaged
+  setLast,
+  setManaged,
+  setPopular,
+  setSigned
 } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
+import { loadPetitions } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -43,8 +47,11 @@ const EditPetitionTabbar = ({
   activeView,
   setCurrent,
   setManaged,
-  managedPetitions,
-  setCreate
+  setCreate,
+  setPopular,
+  setLast,
+  setSigned,
+  launchParameters
 }) => {
   return (
     <FixedLayout vertical="bottom" className="Tabbar EditPetitionTabbar">
@@ -78,6 +85,29 @@ const EditPetitionTabbar = ({
               }
               Backend.request(`petitions/${form.id}`, changed, "PATCH")
                 .then(response => {
+                  if (
+                    launchParameters.vk_access_token_settings.includes(
+                      "friends"
+                    )
+                  ) {
+                    loadPetitions("petitions", true)
+                      .then(response => {
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
+                      })
+                      .catch(() => {});
+                  } else {
+                    loadPetitions("petitions", false)
+                      .then(response => {
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
+                      })
+                      .catch(() => {});
+                  }
                   closePopout();
                   api.notificationOccurred("success").catch(() => {});
                   setSnackbar(
@@ -159,17 +189,38 @@ const EditPetitionTabbar = ({
                   mobile_photo_url: response.mobile_photo_url,
                   web_photo_url: response.web_photo_url
                 });
-                setManaged(
-                  [
-                    {
-                      id: response.id,
-                      title: response.title,
-                      mobile_photo_url: response.mobile_photo_url,
-                      count_signatures: response.count_signatures,
-                      need_signatures: response.need_signatures
-                    }
-                  ].concat(managedPetitions)
-                );
+                // setManaged(
+                //   [
+                //     {
+                //       id: response.id,
+                //       title: response.title,
+                //       mobile_photo_url: response.mobile_photo_url,
+                //       count_signatures: response.count_signatures,
+                //       need_signatures: response.need_signatures
+                //     }
+                //   ].concat(managedPetitions)
+                // );
+                if (
+                  launchParameters.vk_access_token_settings.includes("friends")
+                ) {
+                  loadPetitions("petitions", true)
+                    .then(response => {
+                      setPopular(response.popular || []);
+                      setLast(response.last || []);
+                      setSigned(response.signed || []);
+                      setManaged(response.managed || []);
+                    })
+                    .catch(() => {});
+                } else {
+                  loadPetitions("petitions", false)
+                    .then(response => {
+                      setPopular(response.popular || []);
+                      setLast(response.last || []);
+                      setSigned(response.signed || []);
+                      setManaged(response.managed || []);
+                    })
+                    .catch(() => {});
+                }
                 closePopout();
                 setCreate({
                   title: undefined,
@@ -220,8 +271,7 @@ const mapStateToProps = state => {
     editPetitions: state.petitions.edit,
     initialEditPetitions: state.petitions.initialEdit,
     createPetitions: state.petitions.create,
-    activeView: state.router.activeView,
-    managedPetitions: state.petitions.managed
+    launchParameters: state.data.launchParameters
   };
 };
 
@@ -237,7 +287,10 @@ const mapDispatchToProps = dispatch => {
         closePopout,
         setPage,
         setCurrent,
-        setManaged
+        setManaged,
+        setPopular,
+        setLast,
+        setSigned
       },
       dispatch
     )
@@ -257,8 +310,11 @@ EditPetitionTabbar.propTypes = {
   activeView: PropTypes.string.isRequired,
   setCurrent: PropTypes.func.isRequired,
   setManaged: PropTypes.func.isRequired,
-  managedPetitions: PropTypes.array.isRequired,
-  setCreate: PropTypes.func.isRequired
+  setCreate: PropTypes.func.isRequired,
+  setPopular: PropTypes.func.isRequired,
+  setLast: PropTypes.func.isRequired,
+  setSigned: PropTypes.func.isRequired,
+  launchParameters: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditPetitionTabbar);
