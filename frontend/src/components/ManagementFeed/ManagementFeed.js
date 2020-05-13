@@ -482,7 +482,7 @@ const ManagementFeed = ({
               (managedPetitions.length > 0 &&
                 managedPetitions.length < 10 &&
                 !endStatus) ? (
-              <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
+              <></>
             ) : (
               <Spinner
                 size="regular"

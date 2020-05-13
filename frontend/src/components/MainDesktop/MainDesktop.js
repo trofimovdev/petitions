@@ -237,7 +237,7 @@ const MainDesktop = ({
               (currentPetitions.length > 0 &&
                 currentPetitions.length < 10 &&
                 !endStatus) ? (
-              <Footer className="FeedFooter">На этом все ¯\_(ツ)_/¯</Footer>
+              <></>
             ) : (
               <Spinner
                 size="regular"
