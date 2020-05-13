@@ -73,11 +73,7 @@ const PetitionCardDesktop = ({
 
     Backend.request(`petitions/${id}`, {}, "DELETE")
       .then(r => {
-        if (
-          launchParameters.vk_access_token_settings.includes(
-            "friends"
-          )
-        ) {
+        if (launchParameters.vk_access_token_settings.includes("friends")) {
           loadPetitions("petitions", true)
             .then(response => {
               setPopular(response.popular || []);
@@ -115,6 +111,12 @@ const PetitionCardDesktop = ({
         );
       });
   };
+  console.log(
+    friends,
+    friends.slice(0, 2).map(item => {
+      return item.user;
+    })
+  );
 
   const openEditForm = (
     file1_preview,
@@ -341,9 +343,8 @@ const PetitionCardDesktop = ({
                         "друга",
                         "друзей"
                       ])}`
-                    : `и ${friends[2].user.first_name}`
+                    : ""
                 }`}
-            {}
           </UsersStack>
         )}
       </div>
