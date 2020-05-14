@@ -23,9 +23,16 @@
     margin: 0;
   }
 
-  &__users_stack {
-    margin: 12px 0 0 0;
+  &__users-stack {
+    margin: 12px 0 0 0 !important;
     padding: 0;
+
+    .UsersStack__text__link {
+      pointer-events: none;
+      cursor: default;
+      text-decoration: none;
+      color: inherit;
+    }
   }
 
   &__dots {

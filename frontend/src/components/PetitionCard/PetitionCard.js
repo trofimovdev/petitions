@@ -64,7 +64,7 @@ const PetitionCard = ({
         />
         {friends.length > 0 && (
           <UsersStack
-            className="PetitionCard__users_stack"
+            className="PetitionCard__users-stack"
             photos={friends.slice(0, 3).map(item => {
               return item.user.photo_50;
             })}

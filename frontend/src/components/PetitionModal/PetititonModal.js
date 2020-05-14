@@ -568,9 +568,7 @@ const PetitionModal = ({
             className="PetitionModal__button-wrapper"
             onClick={() => {
               api.selectionChanged().catch(() => {});
-              bridge.send("VKWebAppCopyText", {
-                text: `https://vk.com/app7442034#p${currentPetition.id}`
-              });
+              api.shareLink(`https://vk.com/app7442034#p${currentPetition.id}`);
             }}
           >
             <Button
@@ -580,7 +578,7 @@ const PetitionModal = ({
               <Icon28ChainOutline />
             </Button>
             <p className="PetitionModal__button-wrapper__text">
-              Скопировать ссылку
+              Отправить сообщением
             </p>
           </div>
         </Div>
