@@ -17,7 +17,7 @@ import "./PetitionDesktop.css";
 import Icon16Chevron from "@vkontakte/icons/dist/16/chevron";
 import Icon24ShareOutline from "@vkontakte/icons/dist/24/share_outline";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
-import { declOfNum, loadPetitions } from "../../tools/helpers";
+import { userStackText, loadPetitions } from "../../tools/helpers";
 import { setCurrent, setSigned } from "../../store/petitions/actions";
 import { setLaunchParameters } from "../../store/data/actions";
 import { setPage } from "../../store/router/actions";
@@ -243,37 +243,12 @@ const PetitionDesktop = ({
               </div>
               {currentPetition.friends && currentPetition.friends.length > 0 && (
                 <UsersStack
-                  className="Petition__users_stack"
+                  className="PetitionDesktop__users-stack"
                   photos={currentPetition.friends.slice(0, 3).map(item => {
                     return item.user.photo_50;
                   })}
                 >
-                  {currentPetition.friends.length === 1
-                    ? (currentPetition.friends[0].user.sex === 2
-                        ? "Подписал "
-                        : "Подписала ") +
-                      currentPetition.friends[0].user.first_name
-                    : `Подписали ${
-                        currentPetition.friends.length === 2
-                          ? `${currentPetition.friends[0].user.first_name} и ${currentPetition.friends[1].user.first_name}`
-                          : currentPetition.friends
-                              .slice(0, 2)
-                              .map(item => {
-                                return item.user.first_name;
-                              })
-                              .join(", ")
-                      }${
-                        currentPetition.friends.length > 3
-                          ? `, ${
-                              currentPetition.friends[2].user.first_name
-                            } и еще ${currentPetition.friends.length -
-                              3} ${declOfNum(
-                              currentPetition.friends.length - 3,
-                              ["друг", "друга", "друзей"]
-                            )}`
-                          : `и ${currentPetition.friends[2].user.first_name}`
-                      }`}
-                  {}
+                  {userStackText(currentPetition.friends)}
                 </UsersStack>
               )}
             </div>

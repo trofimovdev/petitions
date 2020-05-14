@@ -85,8 +85,19 @@
     }
   }
 
+  &__users-stack {
+    margin: 12px 0 12px 0 !important;
+    padding: 0;
+
+    .UsersStack__text__link {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+
   &__text {
     white-space: pre-wrap;
+
   }
 
   &__creator {

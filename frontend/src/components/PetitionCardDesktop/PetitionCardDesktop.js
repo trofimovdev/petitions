@@ -18,7 +18,7 @@ import {
   setSigned
 } from "../../store/petitions/actions";
 import { setPage } from "../../store/router/actions";
-import { declOfNum, loadPetitions, loadPhoto } from "../../tools/helpers";
+import { userStackText, loadPetitions, loadPhoto } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
 
 const PetitionCardDesktop = ({
@@ -318,33 +318,12 @@ const PetitionCardDesktop = ({
         />
         {friends && friends.length > 0 && (
           <UsersStack
-            className="Petition__users_stack"
+            className="PetitionCardDesktop__users-stack"
             photos={friends.slice(0, 3).map(item => {
               return item.user.photo_50;
             })}
           >
-            {friends.length === 1
-              ? (friends[0].user.sex === 2 ? "Подписал " : "Подписала ") +
-                friends[0].user.first_name
-              : `Подписали ${
-                  friends.length === 2
-                    ? `${friends[0].user.first_name} и ${friends[1].user.first_name}`
-                    : friends
-                        .slice(0, 2)
-                        .map(item => {
-                          return item.user.first_name;
-                        })
-                        .join(", ")
-                }${
-                  friends.length > 3
-                    ? `, ${friends[2].user.first_name} и еще ${friends.length -
-                        3} ${declOfNum(friends.length - 3, [
-                        "друг",
-                        "друга",
-                        "друзей"
-                      ])}`
-                    : ""
-                }`}
+            {userStackText(friends)}
           </UsersStack>
         )}
       </div>

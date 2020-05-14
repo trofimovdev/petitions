@@ -28,7 +28,7 @@ import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
 import { goBack } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
-import { declOfNum, loadPetitions } from "../../tools/helpers";
+import { loadPetitions, userStackText } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -201,37 +201,12 @@ const Petition = ({
               />
               {currentPetition.friends && currentPetition.friends.length > 0 && (
                 <UsersStack
-                  className="Petition__users_stack"
+                  className="Petition__users-stack"
                   photos={currentPetition.friends.slice(0, 3).map(item => {
                     return item.user.photo_50;
                   })}
                 >
-                  {currentPetition.friends.length === 1
-                    ? (currentPetition.friends[0].user.sex === 2
-                        ? "Подписал "
-                        : "Подписала ") +
-                      currentPetition.friends[0].user.first_name
-                    : `Подписали ${
-                        currentPetition.friends.length === 2
-                          ? `${currentPetition.friends[0].user.first_name} и ${currentPetition.friends[1].user.first_name}`
-                          : currentPetition.friends
-                              .slice(0, 2)
-                              .map(item => {
-                                return item.user.first_name;
-                              })
-                              .join(", ")
-                      }${
-                        currentPetition.friends.length > 3
-                          ? `, ${
-                              currentPetition.friends[2].user.first_name
-                            } и еще ${currentPetition.friends.length -
-                              3} ${declOfNum(
-                              currentPetition.friends.length - 3,
-                              ["друг", "друга", "друзей"]
-                            )}`
-                          : `и ${currentPetition.friends[2].user.first_name}`
-                      }`}
-                  {}
+                  {userStackText(currentPetition.friends)}
                 </UsersStack>
               )}
             </Div>
@@ -263,9 +238,7 @@ const Petition = ({
                 {`${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
               </Link>
               {`${
-                currentPetition.owner.sex === 2
-                  ? "создал "
-                  : "создала "
+                currentPetition.owner.sex === 2 ? "создал " : "создала "
               } петицию${
                 currentPetition.directed_to.length > 0 ? `, адресованную ` : ""
               }`}
