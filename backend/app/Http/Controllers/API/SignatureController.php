@@ -9,6 +9,7 @@ use App\Http\Responses\OkResponse;
 use App\Models\Petition;
 use App\Models\Signature;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class SignatureController extends Controller
 {
@@ -54,9 +55,12 @@ class SignatureController extends Controller
         $signature->user_agent = $request->server('HTTP_USER_AGENT');
         $signature->ip = $request->ip(); // without CloudFlare
         $signature->signed_at = now();
-        $signature->save();
-        Petition::where('id', '=', $petitionId)
-            ->increment('count_signatures');
+
+        DB::transaction(function() use ($signature, $petitionId) {
+            $signature->save();
+            Petition::where('id', '=', $petitionId)
+                ->increment('count_signatures');
+        });
 
         return new OkResponse($petition['count_signatures'] + 1);
     }
