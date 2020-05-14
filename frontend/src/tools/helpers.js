@@ -1,4 +1,5 @@
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
+import React from "react";
 import Backend from "./Backend";
 import ConnectionError from "./ConnectionError";
 
@@ -103,4 +104,55 @@ export const loadPhoto = src => {
     };
     file.src = src;
   });
+};
+
+export const getLinkName = item => {
+  return (
+    <a
+      className="UsersStack__text__link"
+      href={`https://vk.com/id${item.user_id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {item.user.first_name}
+    </a>
+  );
+};
+
+export const userStackText = friends => {
+  if (friends.length === 1) {
+    return (
+      <>
+        {friends[0].user.sex === 2 ? "Подписал " : "Подписала "}
+        {getLinkName(friends[0])}
+      </>
+    );
+  }
+  return (
+    <>
+      Подписали {}
+      {friends.length === 2 ? (
+        <>
+          {getLinkName(friends[0])} и {getLinkName(friends[1])}
+        </>
+      ) : (
+        <>
+          {friends.slice(0, 3).map((item, index) => {
+            return (
+              <>
+                {getLinkName(item)}
+                {index !== 2 && ","}{" "}
+              </>
+            );
+          })}
+        </>
+      )}
+      {friends.length > 2 &&
+        `и еще ${friends.length - 3} ${declOfNum(friends.length - 3, [
+          "друг",
+          "друга",
+          "друзей"
+        ])}`}
+    </>
+  );
 };

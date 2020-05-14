@@ -36,6 +36,18 @@
     }
   }
 
+  &__users-stack {
+    margin: 12px 0 12px 0 !important;
+    padding: 0;
+
+    .UsersStack__text__link {
+      pointer-events: none;
+      cursor: default;
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+
   &__card {
     flex-basis: 250px;
     height: 125px;

@@ -18,7 +18,7 @@ import {
   setSigned
 } from "../../store/petitions/actions";
 import { setPage } from "../../store/router/actions";
-import { declOfNum, loadPetitions, loadPhoto } from "../../tools/helpers";
+import { userStackText, loadPetitions, loadPhoto } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
 
 const PetitionCardDesktop = ({
@@ -73,11 +73,7 @@ const PetitionCardDesktop = ({
 
     Backend.request(`petitions/${id}`, {}, "DELETE")
       .then(r => {
-        if (
-          launchParameters.vk_access_token_settings.includes(
-            "friends"
-          )
-        ) {
+        if (launchParameters.vk_access_token_settings.includes("friends")) {
           loadPetitions("petitions", true)
             .then(response => {
               setPopular(response.popular || []);
@@ -115,6 +111,12 @@ const PetitionCardDesktop = ({
         );
       });
   };
+  console.log(
+    friends,
+    friends.slice(0, 2).map(item => {
+      return item.user;
+    })
+  );
 
   const openEditForm = (
     file1_preview,
@@ -316,34 +318,12 @@ const PetitionCardDesktop = ({
         />
         {friends && friends.length > 0 && (
           <UsersStack
-            className="Petition__users_stack"
+            className="PetitionCardDesktop__users-stack"
             photos={friends.slice(0, 3).map(item => {
               return item.user.photo_50;
             })}
           >
-            {friends.length === 1
-              ? (friends[0].user.sex === 2 ? "Подписал " : "Подписала ") +
-                friends[0].user.first_name
-              : `Подписали ${
-                  friends.length === 2
-                    ? `${friends[0].user.first_name} и ${friends[1].user.first_name}`
-                    : friends
-                        .slice(0, 2)
-                        .map(item => {
-                          return item.user.first_name;
-                        })
-                        .join(", ")
-                }${
-                  friends.length > 3
-                    ? `, ${friends[2].user.first_name} и еще ${friends.length -
-                        3} ${declOfNum(friends.length - 3, [
-                        "друг",
-                        "друга",
-                        "друзей"
-                      ])}`
-                    : `и ${friends[2].user.first_name}`
-                }`}
-            {}
+            {userStackText(friends)}
           </UsersStack>
         )}
       </div>

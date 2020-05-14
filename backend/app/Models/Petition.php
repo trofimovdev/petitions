@@ -21,7 +21,8 @@ class Petition extends Model
         'owner_id',
         'mobile_photo_url',
         'web_photo_url',
-        'completed'
+        'completed',
+        'directed_to'
     ];
 
     public $timestamps = true;
@@ -67,14 +68,10 @@ class Petition extends Model
             ->get();
         $response = [];
         foreach ($petitions as $petition) {
-            if ($petition instanceof Petition) {
-                if ($friendIds) {
-                    $petition->friends = Signature::getUsers($petition->id, $friendIds);
-                }
-                $response[] = $petition->toPetitionView($text = false, $ownerId = true);
-            } else {
-                $response[] = null;
+            if ($friendIds) {
+                $petition->friends = Signature::getUsers($petition->id, $friendIds);
             }
+            $response[] = $petition->toPetitionView($text = false, $ownerId = true);
         }
         return $response;
     }
@@ -98,14 +95,10 @@ class Petition extends Model
             ->get();
         $response = [];
         foreach ($petitions as $petition) {
-            if ($petition instanceof Petition) {
-                if ($friendIds) {
-                    $petition->friends = Signature::getUsers($petition->id, $friendIds);
-                }
-                $response[] = $petition->toPetitionView($text = false, $ownerId = true);
-            } else {
-                $response[] = null;
+            if ($friendIds) {
+                $petition->friends = Signature::getUsers($petition->id, $friendIds);
             }
+            $response[] = $petition->toPetitionView($text = false, $ownerId = true);
         }
         return $response;
     }
@@ -143,20 +136,16 @@ class Petition extends Model
         $petitions = Petition::whereIn('id', $petitionIds)->get();
         $loadedPetitions = [];
         foreach ($petitions as $petition) {
-            if ($petition instanceof Petition) {
-                if ($withOwner) {
-                    $petition->owner = User::getUsers([$petition->owner_id])[$petition->owner_id];
-                }
-                if ($friendIds) {
-                    $petition->friends = Signature::getUsers($petition->id, $friendIds);
-                }
-                if ($withSignedStatus) {
-                    $petition->signed = (bool)Signature::getUsers($petition->id, [$userId]);
-                }
-                $loadedPetitions[$petition->id] = $petition->toPetitionView($text, $ownerId);
-            } else {
-                $loadedPetitions[] = null;
+            if ($withOwner) {
+                $petition->owner = User::getUsers([$petition->owner_id])[$petition->owner_id];
             }
+            if ($friendIds) {
+                $petition->friends = Signature::getUsers($petition->id, $friendIds);
+            }
+            if ($withSignedStatus) {
+                $petition->signed = (bool)Signature::getUsers($petition->id, [$userId]);
+            }
+            $loadedPetitions[$petition->id] = $petition->toPetitionView($text, $ownerId);
         }
 
         $response = [];

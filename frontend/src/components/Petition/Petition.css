@@ -72,9 +72,14 @@ body[scheme="space_gray"] {
   font-size: 20px;
   margin: 0 0 14px 0 !important; }
 
-.Petition__users_stack {
+.Petition__users-stack {
   margin: 12px 0 12px 0 !important;
   padding: 0; }
+  .Petition__users-stack .UsersStack__text__link {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+    color: inherit; }
 
 .Petition__text p {
   white-space: pre-wrap;

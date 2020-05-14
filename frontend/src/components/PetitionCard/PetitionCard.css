@@ -16,9 +16,14 @@
     background-repeat: no-repeat;
     background-position: 50% 0%;
     margin: 0; }
-  .PetitionCard__users_stack {
-    margin: 12px 0 0 0;
+  .PetitionCard__users-stack {
+    margin: 12px 0 0 0 !important;
     padding: 0; }
+    .PetitionCard__users-stack .UsersStack__text__link {
+      pointer-events: none;
+      cursor: default;
+      text-decoration: none;
+      color: inherit; }
   .PetitionCard__dots {
     position: absolute;
     top: 12px;
