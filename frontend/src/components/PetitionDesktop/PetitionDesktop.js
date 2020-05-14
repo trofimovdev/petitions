@@ -216,26 +216,31 @@ const PetitionDesktop = ({
                                 upload_url
                               },
                               "POST"
-                            ).then(({ server, photo, hash }) => {
-                              api
-                                .callAPIMethod("photos.saveWallPhoto", {
-                                  v: "5.105",
-                                  access_token: accessToken,
-                                  server,
-                                  photo,
-                                  hash
-                                })
-                                .then(response => {
-                                  setShareLoadingStatus(false);
-                                  const { id, owner_id } = response[0];
-                                  api.postToWall(
-                                    `Поддержите петицию «${currentPetition.title}»\n\nhttps://vk.com/app7442034#p${currentPetition.id}`,
-                                    `photo${owner_id}_${id}`
-                                  );
-                                });
-                            });
-                          });
-                      });
+                            )
+                              .then(({ server, photo, hash }) => {
+                                api
+                                  .callAPIMethod("photos.saveWallPhoto", {
+                                    v: "5.105",
+                                    access_token: accessToken,
+                                    server,
+                                    photo,
+                                    hash
+                                  })
+                                  .then(response => {
+                                    setShareLoadingStatus(false);
+                                    const { id, owner_id } = response[0];
+                                    api.postToWall(
+                                      `Поддержите петицию «${currentPetition.title}»\n\nhttps://vk.com/app7442034#p${currentPetition.id}`,
+                                      `photo${owner_id}_${id}`
+                                    );
+                                  })
+                                  .catch(() => setShareLoadingStatus(false));
+                              })
+                              .catch(() => setShareLoadingStatus(false));
+                          })
+                          .catch(() => setShareLoadingStatus(false));
+                      })
+                      .catch(() => setShareLoadingStatus(false));
                   }}
                 >
                   <Icon24ShareOutline className="PetitionDesktop__info__buttons__share__icon" />
@@ -278,9 +283,7 @@ const PetitionDesktop = ({
                 {`${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
               </Link>
               {`${
-                currentPetition.owner.sex === 2
-                  ? "создал "
-                  : "создала "
+                currentPetition.owner.sex === 2 ? "создал " : "создала "
               } петицию${
                 currentPetition.directed_to.length > 0 ? `, адресованную ` : ""
               }`}
