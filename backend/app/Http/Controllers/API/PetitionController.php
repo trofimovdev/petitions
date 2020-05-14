@@ -80,10 +80,9 @@ class PetitionController extends Controller
                 $text = Petition::filterString($text);
                 $directedTo = Petition::filterString($directedTo);
                 if (
-                    empty($title) || empty($text) || empty($needSignatures) || ((empty($mobilePhoto) || empty($webPhoto)) && empty($photo)) ||
-                    !Petition::filterString($title) || !Petition::filterString($text) || ($directedTo && !Petition::filterString($directedTo))
+                    empty($title) || empty($text) || empty($needSignatures) || ((empty($mobilePhoto) || empty($webPhoto)) && empty($photo))
                 ) {
-                    return new ErrorResponse(400, 'Недействительное изображение');
+                    return new ErrorResponse(400, 'Invalid params');
                 }
                 if (empty($mobilePhoto) || empty($webPhoto)) {
                     $mobilePhoto = $photo;

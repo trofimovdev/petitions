@@ -21,7 +21,8 @@ class Petition extends Model
         'owner_id',
         'mobile_photo_url',
         'web_photo_url',
-        'completed'
+        'completed',
+        'directed_to'
     ];
 
     public $timestamps = true;
