@@ -57,7 +57,7 @@ class User
 
         $users = [];
         try {
-            $usersData = json_decode(file_get_contents('https://api.vk.com/method/users.get?user_ids=' . join(',', $userIds) . '&fields=' . join(',', $fields) . '&access_token=' . config('app.service') . '&v=5.103'))->response;
+            $usersData = json_decode(file_get_contents('https://api.vk.com/method/users.get?user_ids=' . join(',', $userIds) . '&fields=' . join(',', $fields) . '&access_token=' . config('app.service') . '&v=5.103&lang=ru'))->response;
         } catch (ErrorException $e) {
             if ($try === 5) {
                 return null;

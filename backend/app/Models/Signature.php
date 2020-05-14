@@ -31,11 +31,7 @@ class Signature extends Model
             ->get();
         $response = [];
         foreach ($signatures as $signature) {
-            if ($signature instanceof Signature) {
-                $response[] = $signature->toSignatureView($signatureId = true);
-            } else {
-                $response[] = null;
-            }
+            $response[] = $signature->toSignatureView($signatureId = true);
         }
         return $response;
     }
@@ -48,9 +44,6 @@ class Signature extends Model
             ->whereIn('user_id', $userIds)
             ->get();
         foreach ($signatures as $signature) {
-            if (!$signature instanceof Signature) {
-                continue;
-            }
             $friendIds[] = $signature->user_id;
         }
 
@@ -61,14 +54,10 @@ class Signature extends Model
 
         $response = [];
         foreach ($signatures as $signature) {
-            if ($signature instanceof Signature) {
-                if ($friendIds) {
-                    $signature->user = $users[$signature->user_id];
-                }
-                $response[] = $signature->toSignatureView();
-            } else {
-                $response[] = null;
+            if ($friendIds) {
+                $signature->user = $users[$signature->user_id];
             }
+            $response[] = $signature->toSignatureView();
         }
         return $response;
     }
