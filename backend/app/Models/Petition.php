@@ -103,34 +103,6 @@ class Petition extends Model
         return $response;
     }
 
-    public static function upload(int $petitionId, string $uploadUrl, string $device)
-    {
-        $petition = Petition::getPetitions([$petitionId])[0];
-
-        switch ($device) {
-            case 'mobile':
-                $imgPath = explode(config('app.server_url'), $petition['mobile_photo_url'])[1];
-                break;
-
-            case 'web':
-                $imgPath = explode(config('app.server_url'), $petition['web_photo_url'])[1];
-                break;
-        }
-
-        $options = array(
-            CURLOPT_POST        => 1,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS     => ['file1' => new CurlFile(Storage::path('public/' . $imgPath))]
-        );
-
-        $ch = curl_init($uploadUrl);
-        curl_setopt_array($ch, $options);
-
-        $response = curl_exec($ch);
-        curl_close($ch);
-        return json_decode($response);
-    }
-
     public static function getPetitions(array $petitionIds, bool $withOwner = false, array $friendIds = [], bool $withSignedStatus = false, int $userId = 0, bool $text = false, bool $ownerId = true)
     {
         $petitions = Petition::whereIn('id', $petitionIds)->get();

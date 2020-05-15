@@ -100,14 +100,6 @@ class PetitionController extends Controller
                 }
 
                 return new OkResponse(Petition::createPetition($request, $title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto, $request->userId));
-
-            case 'upload':
-                $uploadUrl = (string)$request->upload_url;
-                $device = (string)$request->device;
-                if (empty($petitionId) || !$uploadUrl || empty($device)) {
-                    return new ErrorResponse(400, 'Invalid params');
-                }
-                return new OkResponse(Petition::upload($petitionId, $uploadUrl, $device));
         }
 
         return $this->getPetitions($request, $type, $offset, $petitionId, $friendIds);
