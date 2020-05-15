@@ -39,6 +39,9 @@ body[scheme="space_gray"] {
 .Petition__header .PanelHeader__in {
   transition: .15s; }
 
+.Petition__header .PanelHeaderButton {
+  color: #fff !important; }
+
 .Petition__header__hidden .PanelHeader__in {
   background: transparent !important; }
 
