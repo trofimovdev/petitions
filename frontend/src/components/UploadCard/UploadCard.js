@@ -38,7 +38,7 @@ const UploadCard = ({
               <Icon16Cancel />
             </div>
           )}
-          <div className="UploadCard__card__content FormField__border">
+          <div className="UploadCard__card__content ">
             {img ? (
               <img src={img} alt="petition" />
             ) : (

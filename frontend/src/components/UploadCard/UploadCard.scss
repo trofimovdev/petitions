@@ -31,6 +31,9 @@
   }
 
   &__card {
+    border: 1px solid var(--field_border);
+    border-width: 0.5px;
+
     &__cancel-button {
       position: absolute;
       top: 10px;
