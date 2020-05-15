@@ -9,7 +9,7 @@ import {
   ScreenSpinner
 } from "@vkontakte/vkui";
 import Icon24ShareOutline from "@vkontakte/icons/dist/24/share_outline";
-import Icon24Settings from "@vkontakte/icons/dist/24/settings";
+import Icon28SettingsOutline from '@vkontakte/icons/dist/28/settings_outline';
 import Icon24DoneOutline from "@vkontakte/icons/dist/24/done_outline";
 import "./PetitionTabbar.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
@@ -248,7 +248,7 @@ const PetitionTabbar = ({
                 .catch(() => {});
             }}
           >
-            <Icon24Settings />
+            <Icon28SettingsOutline />
           </Button>
         )}
       </Div>
