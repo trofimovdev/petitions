@@ -4,8 +4,13 @@
   & > .Panel__in {
     padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
   }
+
   .Snackbar {
     padding-bottom: calc(25px + var(--safe-area-inset-bottom)) !important; // magic 25px
+  }
+
+  .PanelHeaderButton {
+    color: $petition-create-upload-back-button-color !important;;
   }
 }
 
