@@ -1,14 +1,21 @@
 .PetitionsTabs {
-  transition: 1s !important;
   z-index: 999 !important; }
   .PetitionsTabs__wrapper {
     width: 100%; }
     .PetitionsTabs__wrapper--ios {
-      margin-top: -15px; }
+      top: calc(37px + var(--safe-area-inset-top)) !important; }
+    .PetitionsTabs__wrapper--android {
+      top: calc(40px + var(--safe-area-inset-top)) !important; }
+
+.View--animated .PetitionsTabs__wrapper--android {
+  margin-top: 16px !important; }
 
 .PetitionsFeed .PanelHeader--android .PanelHeader__in, .PetitionsFeed .PanelHeader--android .PanelHeader__content {
   height: calc(48px + var(--panelheader_height_android)) !important;
-  margin-top: -16px; }
+  margin-top: -16px !important; }
+
+.PetitionsFeed .PanelHeader--ios .PanelHeader__in, .PetitionsFeed .PanelHeader--ios .PanelHeader__content {
+  height: calc(33px + var(--panelheader_height_ios)) !important; }
 
 .PetitionsFeed .PanelHeader--ios .PanelHeader__in, .PetitionsFeed .PanelHeader--ios .PanelHeader__content {
   height: calc(33px + var(--panelheader_height_ios)) !important; }
@@ -27,8 +34,8 @@
   .PetitionsFeed__spinner__bottom {
     margin-bottom: 30px; }
 
+.PetitionsFeed .Snackbar {
+  margin-bottom: calc(var(--tabbar_height)) !important; }
+
 .FeedFooter {
   margin-top: 0 !important; }
-
-.Snackbar {
-  margin-bottom: calc(var(--tabbar_height)) !important; }

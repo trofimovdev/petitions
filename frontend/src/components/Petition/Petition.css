@@ -30,6 +30,9 @@ body::-webkit-scrollbar-button {
 body[scheme="space_gray"] {
   --background_page: #0a0a0a; }
 
+.PanelHeader__content {
+  overflow: visible; }
+
 .Petition > .Panel__in {
   padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; }
 

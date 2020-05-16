@@ -14,6 +14,7 @@ const DesktopContainer = ({ activeTab, activeView, scrollPosition }) => {
   useEffect(() => {
     const pageScrollPosition = scrollPosition[`petitions_${activeTab.feed}`];
     window.scroll(0, pageScrollPosition);
+    return () => {};
   }, [activeView, activeTab, scrollPosition]);
 
   return (

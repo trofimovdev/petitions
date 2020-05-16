@@ -7,7 +7,12 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import store from "./store";
 import "./style/index.css";
 import App from "./App";
-import { setActiveTab, setStory, setPage } from "./store/router/actions";
+import {
+  setActiveTab,
+  setStory,
+  setPage,
+  goBack
+} from "./store/router/actions";
 import { setColorScheme } from "./store/ui/actions";
 import { loadPetitions } from "./tools/helpers";
 import {
@@ -31,6 +36,10 @@ const onLoad = response => {
 api.initApp();
 api.onUpdateConfig(({ scheme }) => {
   store.dispatch(setColorScheme(scheme));
+});
+
+window.addEventListener("popstate", e => {
+  store.dispatch(goBack());
 });
 
 let isAppUser = false;

@@ -14,34 +14,47 @@
 
 .HeaderButton__wrapper {
   width: 100%;
-}
-.Div--ios.HeaderButton__wrapper {
-  margin-top: -15px;
-}
+  z-index: 999 !important;
 
+  &--ios {
+    top: calc(37px + var(--safe-area-inset-top)) !important;
+  }
 
-.ManagementFeed .PanelHeader--android {
-  .PanelHeader__in, .PanelHeader__content {
-    height: calc(48px + var(--panelheader_height_android)) !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
-    margin-top: -16px !important;
+  &--android {
+    top: calc(40px + var(--safe-area-inset-top)) !important;
   }
 }
 
-.ManagementFeed .PanelHeader--ios {
-  .PanelHeader__in, .PanelHeader__content {
-    height: calc(52px + var(--panelheader_height_ios)) !important; // 52px - высота кнопки на iOS
-  }
-}
-
-.ManagementFeed .Separator--ios.PanelHeader__separator {
-  padding-top: 52px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
-}
-
-.ManagementFeed .Separator--android.PanelHeader__separator {
-  padding-top: 48px !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
+.View--animated .HeaderButton__wrapper--android {
+  margin-top: 23px !important;
 }
 
 .ManagementFeed {
+  .Snackbar {
+    margin-bottom: calc(var(--tabbar_height)) !important;
+  }
+
+  .PanelHeader--android {
+    .PanelHeader__in, .PanelHeader__content {
+      height: calc(69px + var(--panelheader_height_android)) !important;
+      margin-top: -23px !important;
+    }
+  }
+
+  .PanelHeader--ios {
+    .PanelHeader__in, .PanelHeader__content {
+      height: calc(52px + var(--panelheader_height_ios)) !important; // 52px - высота кнопки на iOS
+    }
+  }
+
+  .Separator--ios.PanelHeader__separator {
+    padding-top: 52px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
+  }
+
+  .Separator--android.PanelHeader__separator {
+    padding-top: 48px !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
+  }
+
   &__spinner {
     padding-top: 20px !important;
 
@@ -50,3 +63,4 @@
     }
   }
 }
+

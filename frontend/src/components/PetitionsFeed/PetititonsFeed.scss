@@ -1,37 +1,51 @@
 .PetitionsTabs {
-  transition: 1s !important;
   z-index: 999 !important;
 
   &__wrapper {
     width: 100%;
+
     &--ios {
-      margin-top: -15px;
+      top: calc(37px + var(--safe-area-inset-top)) !important;
+    }
+
+    &--android {
+      top: calc(40px + var(--safe-area-inset-top)) !important;
     }
   }
 }
 
-.PetitionsFeed .PanelHeader--android {
-  .PanelHeader__in, .PanelHeader__content {
-    height: calc(48px + var(--panelheader_height_android)) !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
-    margin-top: -16px;
-  }
-}
-
-.PetitionsFeed .PanelHeader--ios {
-  .PanelHeader__in, .PanelHeader__content {
-    height: calc(33px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
-  }
-}
-
-.PetitionsFeed .Separator--ios.PanelHeader__separator {
-  padding-top: 33px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
-}
-
-.PetitionsFeed .Separator--android.PanelHeader__separator {
-  padding-top: 32px !important; // 48px (высота HorizontalScroll с Tabs внутри на Android) - 15px (отрацательный отступ табов) = 32px
+.View--animated .PetitionsTabs__wrapper--android {
+  margin-top: 16px !important;
 }
 
 .PetitionsFeed {
+  .PanelHeader--android {
+    .PanelHeader__in, .PanelHeader__content {
+      height: calc(48px + var(--panelheader_height_android)) !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
+      margin-top: -16px !important;
+    }
+  }
+
+  .PanelHeader--ios {
+    .PanelHeader__in, .PanelHeader__content {
+      height: calc(33px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
+    }
+  }
+
+  .PanelHeader--ios {
+    .PanelHeader__in, .PanelHeader__content {
+      height: calc(33px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
+    }
+  }
+
+  .Separator--ios.PanelHeader__separator {
+    padding-top: 33px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
+  }
+
+  .Separator--android.PanelHeader__separator {
+    padding-top: 32px !important; // 48px (высота HorizontalScroll с Tabs внутри на Android) - 15px (отрацательный отступ табов) = 32px
+  }
+
   .Panel__in {
     padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important;
   }
@@ -43,12 +57,12 @@
       margin-bottom: 30px;
     }
   }
+
+  .Snackbar {
+    margin-bottom: calc(var(--tabbar_height)) !important;
+  }
 }
 
 .FeedFooter {
   margin-top: 0 !important;
-}
-
-.Snackbar {
-  margin-bottom: calc(var(--tabbar_height)) !important;
 }

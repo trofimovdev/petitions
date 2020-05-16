@@ -18,7 +18,8 @@ import {
   Alert,
   Snackbar,
   Avatar,
-  ScreenSpinner
+  ScreenSpinner,
+  FixedLayout
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
@@ -331,10 +332,16 @@ const ManagementFeed = ({
 
   const onScroll = () => {
     const scrollPosition = window.scrollY;
+    const petitionsContainer = document.getElementById(
+      "managedPetitionsContainer"
+    );
+
+    if (!petitionsContainer) {
+      return;
+    }
     const petitionsContainerHeight =
-      managedPetitions.length > 0
-        ? document.getElementById("managedPetitionsContainer").offsetHeight
-        : 0;
+      managedPetitions.length > 0 ? petitionsContainer.offsetHeight : 0;
+
     if (
       managedPetitions &&
       managedPetitions.length > 10 &&
@@ -397,6 +404,7 @@ const ManagementFeed = ({
     if (activePanel === "feed") {
       api.setLocationHash("managed");
     }
+    return () => {};
   }, [activePanel]);
 
   return (
@@ -413,20 +421,24 @@ const ManagementFeed = ({
         <div>
           Петиции
           {managedPetitions !== undefined && managedPetitions.length > 0 && (
-            <Div className="HeaderButton__wrapper FixedLayout">
-              <Button
-                size="xl"
-                mode="secondary"
-                before={<Icon24Add />}
-                onClick={() => {
-                  setFormType("create");
-                  setPage(activeView, "edit");
-                  api.selectionChanged().catch(() => {});
-                }}
-              >
-                Создать петицию
-              </Button>
-            </Div>
+            <FixedLayout
+              className={`${getClassName("HeaderButton__wrapper", platform)}`}
+            >
+              <Div>
+                <Button
+                  size="xl"
+                  mode="secondary"
+                  before={<Icon24Add />}
+                  onClick={() => {
+                    setFormType("create");
+                    setPage(activeView, "edit");
+                    api.selectionChanged().catch(() => {});
+                  }}
+                >
+                  Создать петицию
+                </Button>
+              </Div>
+            </FixedLayout>
           )}
         </div>
       </PanelHeader>
