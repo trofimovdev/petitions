@@ -31,6 +31,10 @@
   }
 
   &__card {
+    border: 1px solid var(--field_border);
+    border-width: 0.5px;
+    overflow: hidden;
+
     &__cancel-button {
       position: absolute;
       top: 10px;
@@ -49,9 +53,9 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: #c4c8cc;
       overflow: hidden;
       position: relative;
+      color: $petition-create-upload-card-color;
 
       &__text {
         margin-top: 14px;
@@ -63,6 +67,12 @@
         height: 100%;
         object-fit: cover;
         object-position: 50% 0%;
+      }
+
+      .Icon--28,
+      .Icon--28 > svg{
+        width: 48px !important;
+        height: 48px !important;
       }
     }
   }

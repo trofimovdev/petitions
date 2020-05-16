@@ -4,6 +4,9 @@
 .EditPetition .Snackbar {
   padding-bottom: calc(25px + var(--safe-area-inset-bottom)) !important; }
 
+.EditPetition .PanelHeaderButton {
+  color: #AAAEB2 !important; }
+
 .EditForm__input-top {
   display: flex;
   flex-direction: row;

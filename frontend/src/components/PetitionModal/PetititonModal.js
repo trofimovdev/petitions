@@ -28,8 +28,6 @@ import {
   openPopout,
   closePopout
 } from "../../store/router/actions";
-import { setLaunchParameters } from "../../store/data/actions";
-import Backend from "../../tools/Backend";
 import { declOfNum } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
@@ -38,8 +36,6 @@ const PetitionModal = ({
   currentPetition,
   closeModal,
   activeModal,
-  launchParameters,
-  setLaunchParameters,
   openPopout,
   closePopout
 }) => {
@@ -496,61 +492,10 @@ const PetitionModal = ({
             className="PetitionModal__button-wrapper"
             onClick={() => {
               api.selectionChanged().catch(() => {});
-              api
-                .getAccessToken(7442034, "photos")
-                .then(({ scope, accessToken }) => {
-                  if (!scope.includes("photos")) {
-                    return;
-                  }
-                  if (
-                    !launchParameters.vk_access_token_settings.includes(
-                      "photos"
-                    )
-                  ) {
-                    setLaunchParameters({
-                      ...launchParameters,
-                      vk_access_token_settings: launchParameters.vk_access_token_settings
-                        .split(",")
-                        .concat("photos")
-                        .join(",")
-                    });
-                  }
-                  api
-                    .callAPIMethod("photos.getWallUploadServer", {
-                      v: "5.105",
-                      access_token: accessToken
-                    })
-                    .then(({ upload_url }) => {
-                      openPopout(<ScreenSpinner />);
-                      Backend.request(
-                        "petitions",
-                        {
-                          petition_id: currentPetition.id,
-                          type: "upload",
-                          device: "mobile",
-                          upload_url
-                        },
-                        "POST"
-                      ).then(({ server, photo, hash }) => {
-                        api
-                          .callAPIMethod("photos.saveWallPhoto", {
-                            v: "5.105",
-                            access_token: accessToken,
-                            server,
-                            photo,
-                            hash
-                          })
-                          .then(response => {
-                            const { id, owner_id } = response[0];
-                            closePopout();
-                            api.postToWall(
-                              `Поддержите петицию «${currentPetition.title}»\n\nhttps://vk.com/app7442034#p${currentPetition.id}`,
-                              `photo${owner_id}_${id}`
-                            );
-                          });
-                      });
-                    });
-                });
+              api.postToWall(
+                "",
+                `https://vk.com/app7442034#p${currentPetition.id}`
+              );
             }}
           >
             <Button
@@ -665,8 +610,7 @@ const PetitionModal = ({
 
 const mapStateToProps = state => {
   return {
-    currentPetition: state.petitions.current,
-    launchParameters: state.data.launchParameters
+    currentPetition: state.petitions.current
   };
 };
 
@@ -676,7 +620,6 @@ const mapDispatchToProps = dispatch => {
     ...bindActionCreators(
       {
         closeModal,
-        setLaunchParameters,
         openPopout,
         closePopout
       },
@@ -689,8 +632,6 @@ PetitionModal.propTypes = {
   currentPetition: PropTypes.object,
   closeModal: PropTypes.func.isRequired,
   activeModal: PropTypes.string,
-  launchParameters: PropTypes.object.isRequired,
-  setLaunchParameters: PropTypes.func.isRequired,
   openPopout: PropTypes.func.isRequired,
   closePopout: PropTypes.func.isRequired
 };

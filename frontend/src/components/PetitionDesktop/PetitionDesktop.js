@@ -64,6 +64,7 @@ const PetitionDesktop = ({
           .catch(() => {});
       }
     }
+    return () => {};
   }, [
     currentPetition.id,
     launchParameters.vk_access_token_settings,
@@ -114,7 +115,7 @@ const PetitionDesktop = ({
 
   return (
     <div id={id} className="PetitionDesktop">
-      {Object.keys(currentPetition).length === 1 && !loadingStatus ? (
+      {Object.keys(currentPetition).length < 3 && !loadingStatus ? (
         <Placeholder
           action={
             <Button
@@ -130,7 +131,7 @@ const PetitionDesktop = ({
         >
           Кажется, эта петиция была удалена.
         </Placeholder>
-      ) : Object.keys(currentPetition).length > 1 ? (
+      ) : Object.keys(currentPetition).length > 2 ? (
         <>
           <div className="PetitionDesktop__image">
             <img src={`${currentPetition.web_photo_url}`} alt="header" />

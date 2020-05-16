@@ -10,7 +10,8 @@ import {
   Footer,
   Spinner,
   getClassName,
-  usePlatform
+  usePlatform,
+  FixedLayout
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./PetititonsFeed.css";
@@ -85,9 +86,13 @@ const PetitionsFeed = ({
 
   const onScroll = () => {
     const scrollPosition = window.scrollY;
-    const petitionsContainerHeight = document.getElementById(
-      "petitionsContainer"
-    ).offsetHeight;
+    const petitionsContainer = document.getElementById("petitionsContainer");
+
+    if (!petitionsContainer) {
+      return;
+    }
+    const petitionsContainerHeight = petitionsContainer.offsetHeight;
+
     if (
       currentPetitions &&
       currentPetitions.length > 10 &&
@@ -150,6 +155,7 @@ const PetitionsFeed = ({
     if (activePanel === "feed") {
       api.setLocationHash(activeTab.feed);
     }
+    return () => {};
   }, [activeTab, activePanel]);
 
   const platform = usePlatform();
@@ -159,33 +165,32 @@ const PetitionsFeed = ({
       <PanelHeaderSimple separator>
         <div>
           Петиции
-          <Tabs
-            className={`${getClassName(
-              "PetitionsTabs__wrapper",
-              platform
-            )} FixedLayout`}
+          <FixedLayout
+            className={`${getClassName("PetitionsTabs__wrapper", platform)}`}
           >
-            <HorizontalScroll>
-              <TabsItem
-                onClick={() => setActiveTab("feed", "popular")}
-                selected={activeTab.feed === "popular"}
-              >
-                Популярные
-              </TabsItem>
-              <TabsItem
-                onClick={() => setActiveTab("feed", "last")}
-                selected={activeTab.feed === "last"}
-              >
-                Последние
-              </TabsItem>
-              <TabsItem
-                onClick={() => setActiveTab("feed", "signed")}
-                selected={activeTab.feed === "signed"}
-              >
-                Подписанные
-              </TabsItem>
-            </HorizontalScroll>
-          </Tabs>
+            <Tabs>
+              <HorizontalScroll>
+                <TabsItem
+                  onClick={() => setActiveTab("feed", "popular")}
+                  selected={activeTab.feed === "popular"}
+                >
+                  Популярные
+                </TabsItem>
+                <TabsItem
+                  onClick={() => setActiveTab("feed", "last")}
+                  selected={activeTab.feed === "last"}
+                >
+                  Последние
+                </TabsItem>
+                <TabsItem
+                  onClick={() => setActiveTab("feed", "signed")}
+                  selected={activeTab.feed === "signed"}
+                >
+                  Подписанные
+                </TabsItem>
+              </HorizontalScroll>
+            </Tabs>
+          </FixedLayout>
         </div>
       </PanelHeaderSimple>
       {currentPetitions !== undefined ? (

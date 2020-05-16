@@ -15,6 +15,10 @@
   }
 
   &__header {
+    .PanelHeaderButton {
+      color: #fff !important;
+    }
+
     &__hidden .PanelHeader__in {
       background: transparent !important;
     }

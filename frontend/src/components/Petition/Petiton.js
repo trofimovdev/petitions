@@ -105,6 +105,9 @@ const Petition = ({
 
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [currentPetition]);
 
   useEffect(() => {
@@ -134,6 +137,7 @@ const Petition = ({
         }
       }
     }
+    return () => {};
   }, [
     activePanel,
     currentPetition.id,
@@ -166,7 +170,7 @@ const Petition = ({
         }
         separator={false}
       />
-      {Object.keys(currentPetition).length === 1 && !loadingStatus ? (
+      {Object.keys(currentPetition).length < 3 && !loadingStatus ? (
         <Placeholder
           action={
             <Button
@@ -183,7 +187,7 @@ const Petition = ({
         >
           Кажется, эта петиция была удалена.
         </Placeholder>
-      ) : Object.keys(currentPetition).length > 1 ? (
+      ) : Object.keys(currentPetition).length > 2 ? (
         <>
           <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
             <div className="Petition__image">

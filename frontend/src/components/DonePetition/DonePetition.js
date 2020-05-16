@@ -36,7 +36,11 @@ const DonePetition = ({
         <Link
           className="DonePetition__title"
           onClick={() => {
-            setCurrent({ id: currentPetition.id });
+            console.log(currentPetition);
+            setCurrent({
+              id: currentPetition.id,
+              title: currentPetition.title
+            });
             setPage(activeView, "petition", false, true, ["feed", "petition"]);
           }}
         >

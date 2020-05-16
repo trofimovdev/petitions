@@ -21,7 +21,10 @@ const DonePetitionDesktop = ({ id, setPage, currentPetition, setCurrent }) => {
         <Link
           className="DonePetitionDesktop__title"
           onClick={() => {
-            setCurrent({ id: currentPetition.id });
+            setCurrent({
+              id: currentPetition.id,
+              title: currentPetition.title
+            });
             setPage("petition", "");
           }}
         >

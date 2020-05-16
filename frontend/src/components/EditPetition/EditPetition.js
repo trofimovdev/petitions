@@ -15,7 +15,7 @@ import PropTypes from "prop-types";
 import "./EditPetition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
-import Icon48Camera from "@vkontakte/icons/dist/48/camera";
+import Icon28CameraOutline from "@vkontakte/icons/dist/28/camera_outline";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -220,8 +220,8 @@ const EditPetition = ({
           id={1}
           title="Обложка для мобильной версии"
           onChange={handleFiles}
-          icon={<Icon48Camera />}
-          text="Загрузить"
+          icon={<Icon28CameraOutline />}
+          text="Загрузить обложку"
           size="l"
           bottomText="Рекомендуемый размер изображения: 1440×768px"
           onCancel={onCancel}
@@ -231,8 +231,8 @@ const EditPetition = ({
           id={2}
           title="Обложка для веб-версии"
           onChange={handleFiles}
-          icon={<Icon48Camera />}
-          text="Загрузить"
+          icon={<Icon28CameraOutline />}
+          text="Загрузить обложку"
           size="m"
           bottomText="Рекомендуемый размер изображения: 1360×320px"
           onCancel={onCancel}

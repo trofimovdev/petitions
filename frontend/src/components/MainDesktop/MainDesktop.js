@@ -145,6 +145,7 @@ const MainDesktop = ({
 
   useEffect(() => {
     api.setLocationHash(activeTab);
+    return () => {};
   }, [activeTab]);
 
   useEffect(() => {

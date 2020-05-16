@@ -271,7 +271,8 @@ const mapStateToProps = state => {
     editPetitions: state.petitions.edit,
     initialEditPetitions: state.petitions.initialEdit,
     createPetitions: state.petitions.create,
-    launchParameters: state.data.launchParameters
+    launchParameters: state.data.launchParameters,
+    activeView: state.router.activeView
   };
 };
 
