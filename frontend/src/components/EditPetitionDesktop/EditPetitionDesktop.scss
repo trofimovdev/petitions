@@ -1,3 +1,5 @@
+@import "src/style/_vars.scss";
+
 .EditPetitionDesktop {
   margin-top: 45px;
 
@@ -49,6 +51,10 @@
       .Button__hs0tag {
         margin-right: 8px;
       }
+    }
+
+    .UploadCard__card__content {
+      color: $petition-create-desktop-upload-card-color !important;
     }
   }
 }

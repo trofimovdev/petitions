@@ -27,6 +27,7 @@ import Icon28EditOutline from "@vkontakte/icons/dist/28/edit_outline";
 import Icon28BlockOutline from "@vkontakte/icons/dist/28/block_outline";
 import Icon28DeleteOutline from "@vkontakte/icons/dist/28/delete_outline";
 import Icon24Add from "@vkontakte/icons/dist/24/add";
+import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import Icon24DoneOutline from "@vkontakte/icons/dist/24/done_outline";
 import Icon28ChevronRightCircleOutline from "@vkontakte/icons/dist/28/chevron_right_circle_outline";
 import { connect } from "react-redux";
@@ -95,65 +96,67 @@ const ManagementFeed = ({
   const onManagement = (petitionId, completed) => {
     openPopout(
       <ActionSheet onClose={() => closePopout()}>
-        <ActionSheetItem
-          autoclose
-          before={<Icon28EditOutline />}
-          onClick={() => {
-            api.selectionChanged().catch(() => {});
-            openPopout(<ScreenSpinner />);
-            loadPetitions(`petitions/${petitionId.toString()}`, false)
-              .then(response => {
-                // TODO: remove eslint problems
-                response = response[0];
-                loadPhoto(response.mobile_photo_url)
-                  .then(data1 => {
-                    loadPhoto(response.web_photo_url)
-                      .then(data2 => {
-                        openEditForm(
-                          data1[1],
-                          data1[0],
-                          data2[1],
-                          data2[0],
-                          response
-                        );
-                      })
-                      .catch(() => {
-                        openEditForm(
-                          data1[1],
-                          data1[0],
-                          undefined,
-                          undefined,
-                          response
-                        );
-                      });
-                  })
-                  .catch(() => {
-                    loadPhoto(response.web_photo_url)
-                      .then(data2 => {
-                        openEditForm(
-                          undefined,
-                          undefined,
-                          data2[1],
-                          data2[0],
-                          response
-                        );
-                      })
-                      .catch(() => {
-                        openEditForm(
-                          undefined,
-                          undefined,
-                          undefined,
-                          undefined,
-                          response
-                        );
-                      });
-                  });
-              })
-              .catch(() => {});
-          }}
-        >
-          Редактировать петицию
-        </ActionSheetItem>
+        {!completed && (
+          <ActionSheetItem
+            autoclose
+            before={<Icon28EditOutline />}
+            onClick={() => {
+              api.selectionChanged().catch(() => {});
+              openPopout(<ScreenSpinner />);
+              loadPetitions(`petitions/${petitionId.toString()}`, false)
+                .then(response => {
+                  // TODO: remove eslint problems
+                  response = response[0];
+                  loadPhoto(response.mobile_photo_url)
+                    .then(data1 => {
+                      loadPhoto(response.web_photo_url)
+                        .then(data2 => {
+                          openEditForm(
+                            data1[1],
+                            data1[0],
+                            data2[1],
+                            data2[0],
+                            response
+                          );
+                        })
+                        .catch(() => {
+                          openEditForm(
+                            data1[1],
+                            data1[0],
+                            undefined,
+                            undefined,
+                            response
+                          );
+                        });
+                    })
+                    .catch(() => {
+                      loadPhoto(response.web_photo_url)
+                        .then(data2 => {
+                          openEditForm(
+                            undefined,
+                            undefined,
+                            data2[1],
+                            data2[0],
+                            response
+                          );
+                        })
+                        .catch(() => {
+                          openEditForm(
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            response
+                          );
+                        });
+                    });
+                })
+                .catch(() => {});
+            }}
+          >
+            Редактировать петицию
+          </ActionSheetItem>
+        )}
         {completed ? (
           <ActionSheetItem
             autoclose
@@ -174,8 +177,49 @@ const ManagementFeed = ({
                       return item;
                     })
                   );
+                  setSnackbar(
+                    <Snackbar
+                      layout="vertical"
+                      onClose={() => setSnackbar()}
+                      before={
+                        <Avatar
+                          size={24}
+                          style={{
+                            backgroundColor: "var(--dynamic_green)"
+                          }}
+                        >
+                          <Icon24DoneOutline
+                            fill="#fff"
+                            width={14}
+                            height={14}
+                          />
+                        </Avatar>
+                      }
+                    >
+                      Сбор продолжается
+                    </Snackbar>
+                  );
                 })
-                .catch(() => {});
+                .catch(() => {
+                  setSnackbar(
+                    <Snackbar
+                      layout="vertical"
+                      onClose={() => setSnackbar()}
+                      before={
+                        <Avatar
+                          size={24}
+                          style={{
+                            backgroundColor: "var(--destructive)"
+                          }}
+                        >
+                          <Icon24Cancel fill="#fff" width={14} height={14} />
+                        </Avatar>
+                      }
+                    >
+                      Что-то пошло не так
+                    </Snackbar>
+                  );
+                });
             }}
           >
             Продолжить сбор
@@ -201,8 +245,49 @@ const ManagementFeed = ({
                       return item;
                     })
                   );
+                  setSnackbar(
+                    <Snackbar
+                      layout="vertical"
+                      onClose={() => setSnackbar()}
+                      before={
+                        <Avatar
+                          size={24}
+                          style={{
+                            backgroundColor: "var(--dynamic_green)"
+                          }}
+                        >
+                          <Icon24DoneOutline
+                            fill="#fff"
+                            width={14}
+                            height={14}
+                          />
+                        </Avatar>
+                      }
+                    >
+                      Сбор завершен
+                    </Snackbar>
+                  );
                 })
-                .catch(() => {});
+                .catch(() => {
+                  setSnackbar(
+                    <Snackbar
+                      layout="vertical"
+                      onClose={() => setSnackbar()}
+                      before={
+                        <Avatar
+                          size={24}
+                          style={{
+                            backgroundColor: "var(--destructive)"
+                          }}
+                        >
+                          <Icon24Cancel fill="#fff" width={14} height={14} />
+                        </Avatar>
+                      }
+                    >
+                      Что-то пошло не так
+                    </Snackbar>
+                  );
+                });
             }}
           >
             Завершить сбор
@@ -265,10 +350,10 @@ const ManagementFeed = ({
                                 <Avatar
                                   size={24}
                                   style={{
-                                    backgroundColor: "var(--dynamic_green)"
+                                    backgroundColor: "var(--destructive)"
                                   }}
                                 >
-                                  <Icon24DoneOutline
+                                  <Icon24Cancel
                                     fill="#fff"
                                     width={14}
                                     height={14}
@@ -276,7 +361,7 @@ const ManagementFeed = ({
                                 </Avatar>
                               }
                             >
-                              Петиция удалена
+                              Петиция не удалена
                             </Snackbar>
                           );
                         });

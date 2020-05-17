@@ -164,7 +164,13 @@ const EditPetitionDesktop = ({
           </p>
         </Div>
 
-        <Div className="form__row">
+        <Div
+          className={`form__row ${
+            form.directed_to && form.directed_to.length > 255
+              ? "form__row_error"
+              : ""
+          }`}
+        >
           <label htmlFor="need_signatures">Кому направлена петиция</label>
           <Input
             id="directed_to"
@@ -173,6 +179,7 @@ const EditPetitionDesktop = ({
             value={form.directed_to ? form.directed_to : ""}
             onChange={onChange}
           />
+          <p className="form__row_error__text">Слишком много символов</p>
         </Div>
 
         <Div
@@ -239,8 +246,8 @@ const EditPetitionDesktop = ({
                 form.need_signatures &&
                 form.need_signatures >= 1 &&
                 form.need_signatures <= 10000000 &&
-                form.file1 &&
-                form.file2
+                (!form.directed_to ||
+                  (form.directed_to && form.directed_to.length <= 255))
               )
             }
             loading={fetchingStatus}
@@ -252,24 +259,34 @@ const EditPetitionDesktop = ({
                   : { ...createPetitions };
               if (formType === "edit") {
                 const changed = new FormData();
-                for (const [key, value] of Object.entries(
-                  initialEditPetitions
-                )) {
-                  if (form[key] === value || key.includes("preview")) {
-                    continue;
+                Object.entries(form).forEach(pair => {
+                  if (
+                    !pair[0].includes("preview") &&
+                    initialEditPetitions[pair[0]] !== pair[1]
+                  ) {
+                    if (
+                      ["file1", "file2"].includes(pair[0]) &&
+                      form.file1_preview === form.file2_preview &&
+                      !changed.get("file")
+                    ) {
+                      if (pair[1] === undefined) {
+                        changed.append("file", "delete");
+                      } else {
+                        changed.append("file", pair[1], "img");
+                      }
+                    } else if (["file1", "file2"].includes(pair[0])) {
+                      if (!changed.get(pair[0]) && !changed.get("file")) {
+                        if (pair[1] === undefined) {
+                          changed.append(pair[0], "delete");
+                        } else {
+                          changed.append(pair[0], pair[1], "img");
+                        }
+                      }
+                    } else {
+                      changed.append(pair[0], pair[1]);
+                    }
                   }
-                  if (["file1", "file2"].includes(key)) {
-                    changed.append("images", "true");
-                    changed.append(key, form[key], "img");
-                    continue;
-                  }
-                  changed.append(key, form[key]);
-                }
-                if (form.file1_preview === form.file2_preview) {
-                  changed.append("file", form.file1);
-                  changed.delete("file1");
-                  changed.delete("file2");
-                }
+                });
                 Backend.request(`petitions/${form.id}`, changed, "PATCH")
                   .then(response => {
                     if (

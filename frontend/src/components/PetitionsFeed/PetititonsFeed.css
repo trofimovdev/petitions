@@ -34,8 +34,5 @@
   .PetitionsFeed__spinner__bottom {
     margin-bottom: 30px; }
 
-.PetitionsFeed .Snackbar {
-  margin-bottom: calc(var(--tabbar_height)) !important; }
-
 .FeedFooter {
   margin-top: 0 !important; }

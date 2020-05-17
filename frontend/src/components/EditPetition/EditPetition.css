@@ -2,7 +2,7 @@
   padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; }
 
 .EditPetition .Snackbar {
-  padding-bottom: calc(25px + var(--safe-area-inset-bottom)) !important; }
+  padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; }
 
 .EditPetition .PanelHeaderButton {
   color: #AAAEB2 !important; }

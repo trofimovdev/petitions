@@ -67,22 +67,34 @@ const EditPetitionTabbar = ({
                 : { ...createPetitions };
             if (formType === "edit") {
               const changed = new FormData();
-              for (const [key, value] of Object.entries(initialEditPetitions)) {
-                if (form[key] === value || key.includes("preview")) {
-                  continue;
+              Object.entries(form).forEach(pair => {
+                if (
+                  !pair[0].includes("preview") &&
+                  initialEditPetitions[pair[0]] !== pair[1]
+                ) {
+                  if (
+                    ["file1", "file2"].includes(pair[0]) &&
+                    form.file1_preview === form.file2_preview &&
+                    !changed.get("file")
+                  ) {
+                    if (pair[1] === undefined) {
+                      changed.append("file", "delete");
+                    } else {
+                      changed.append("file", pair[1], "img");
+                    }
+                  } else if (["file1", "file2"].includes(pair[0])) {
+                    if (!changed.get(pair[0]) && !changed.get("file")) {
+                      if (pair[1] === undefined) {
+                        changed.append(pair[0], "delete");
+                      } else {
+                        changed.append(pair[0], pair[1], "img");
+                      }
+                    }
+                  } else {
+                    changed.append(pair[0], pair[1]);
+                  }
                 }
-                if (["file1", "file2"].includes(key)) {
-                  changed.append("images", "true");
-                  changed.append(key, form[key], "img");
-                  continue;
-                }
-                changed.append(key, form[key]);
-              }
-              if (form.file1_preview === form.file2_preview) {
-                changed.append("file", form.file1);
-                changed.delete("file1");
-                changed.delete("file2");
-              }
+              });
               Backend.request(`petitions/${form.id}`, changed, "PATCH")
                 .then(response => {
                   if (
