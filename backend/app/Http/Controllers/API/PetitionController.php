@@ -26,7 +26,7 @@ class PetitionController extends Controller
         if (empty($petitionId)) {
             return new ErrorResponse(400, 'Invalid params');
         }
-        return new OkResponse(Petition::getPetitions([$petitionId], $withOwner = true, [], true, $request->userId, true, false, false));
+        return new OkResponse(Petition::getPetitions([$petitionId], $withOwner = true, [], true, $request->userId, true, false));
     }
 
     public function store(SignRequest $request)
