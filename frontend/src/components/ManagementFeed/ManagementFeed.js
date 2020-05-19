@@ -103,7 +103,9 @@ const ManagementFeed = ({
             onClick={() => {
               api.selectionChanged().catch(() => {});
               openPopout(<ScreenSpinner />);
-              loadPetitions(`petitions/${petitionId.toString()}`, false)
+              loadPetitions(`petitions/${petitionId.toString()}`, false, {
+                type: "edit"
+              })
                 .then(response => {
                   // TODO: remove eslint problems
                   response = response[0];

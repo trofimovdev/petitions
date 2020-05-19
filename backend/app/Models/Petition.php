@@ -35,6 +35,7 @@ class Petition extends Model
     const TYPE_LAST = 'last';
     const TYPE_SIGNED = 'signed';
     const TYPE_MANAGED = 'managed';
+    const ACTION_TYPE_EDIT = 'edit';
 
     public static function getPopular(int $offset = 0, array $friendIds = [])
     {
@@ -110,7 +111,7 @@ class Petition extends Model
         return $response;
     }
 
-    public static function getPetitions(array $petitionIds, bool $withOwner = false, array $friendIds = [], bool $withSignedStatus = false, int $userId = 0, bool $text = false, bool $ownerId = true)
+    public static function getPetitions(array $petitionIds, bool $withOwner = false, array $friendIds = [], bool $withSignedStatus = false, int $userId = 0, bool $text = false, bool $ownerId = true, bool $defaultImages = true)
     {
         $petitions = Petition::whereIn('id', $petitionIds)->get();
         $loadedPetitions = [];
@@ -124,7 +125,7 @@ class Petition extends Model
             if ($withSignedStatus) {
                 $petition->signed = (bool)Signature::getUsers($petition->id, [$userId]);
             }
-            $loadedPetitions[$petition->id] = $petition->toPetitionView($text, $ownerId);
+            $loadedPetitions[$petition->id] = $petition->toPetitionView($text, $ownerId, $defaultImages);
         }
 
         $response = [];
@@ -248,8 +249,8 @@ class Petition extends Model
             'title' => $this->title,
             'need_signatures' => $this->need_signatures,
             'count_signatures' => $this->count_signatures,
-            'mobile_photo_url' => config('app.server_url') . 'static/' . Petition::DEFAULT_MOBILE_IMAGE_NAME,
-            'web_photo_url' => config('app.server_url') . 'static/' . Petition::DEFAULT_WEB_IMAGE_NAME,
+            'mobile_photo_url' => $defaultImages ? config('app.server_url') . 'static/' . Petition::DEFAULT_MOBILE_IMAGE_NAME : '',
+            'web_photo_url' => $defaultImages ? config('app.server_url') . 'static/' . Petition::DEFAULT_WEB_IMAGE_NAME : '',
             'completed' => $this->completed,
             'directed_to' => []
         ];

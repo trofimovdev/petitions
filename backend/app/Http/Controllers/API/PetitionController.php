@@ -23,10 +23,11 @@ class PetitionController extends Controller
     public function show(SignRequest $request, $petitionId)
     {
         $petitionId = (int)$petitionId;
+        $defaultImages = (bool)($request->type !== Petition::ACTION_TYPE_EDIT);
         if (empty($petitionId)) {
             return new ErrorResponse(400, 'Invalid params');
         }
-        return new OkResponse(Petition::getPetitions([$petitionId], $withOwner = true, [], true, $request->userId, true, false));
+        return new OkResponse(Petition::getPetitions([$petitionId], $withOwner = true, [], true, $request->userId, true, false, $defaultImages));
     }
 
     public function store(SignRequest $request)

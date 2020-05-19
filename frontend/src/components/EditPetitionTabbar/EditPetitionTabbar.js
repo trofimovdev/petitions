@@ -201,17 +201,6 @@ const EditPetitionTabbar = ({
                   mobile_photo_url: response.mobile_photo_url,
                   web_photo_url: response.web_photo_url
                 });
-                // setManaged(
-                //   [
-                //     {
-                //       id: response.id,
-                //       title: response.title,
-                //       mobile_photo_url: response.mobile_photo_url,
-                //       count_signatures: response.count_signatures,
-                //       need_signatures: response.need_signatures
-                //     }
-                //   ].concat(managedPetitions)
-                // );
                 if (
                   launchParameters.vk_access_token_settings.includes("friends")
                 ) {
@@ -239,6 +228,7 @@ const EditPetitionTabbar = ({
                   text: undefined,
                   need_signatures: undefined,
                   directed_to: undefined,
+                  file: undefined,
                   file1: undefined,
                   file1_preview: undefined,
                   file2: undefined,

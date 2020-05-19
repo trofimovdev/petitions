@@ -111,12 +111,6 @@ const PetitionCardDesktop = ({
         );
       });
   };
-  console.log(
-    friends,
-    friends.slice(0, 2).map(item => {
-      return item.user;
-    })
-  );
 
   const openEditForm = (
     file1_preview,
@@ -164,7 +158,9 @@ const PetitionCardDesktop = ({
                 {
                   body: "Редактировать",
                   onClick: () => {
-                    loadPetitions(`petitions/${id.toString()}`, false)
+                    loadPetitions(`petitions/${id.toString()}`, false, {
+                      type: "edit"
+                    })
                       .then(response => {
                         response = response[0];
                         loadPhoto(response.mobile_photo_url)

@@ -393,6 +393,7 @@ const EditPetitionDesktop = ({
                     text: undefined,
                     need_signatures: undefined,
                     directed_to: undefined,
+                    file: undefined,
                     file1: undefined,
                     file1_preview: undefined,
                     file2: undefined,
