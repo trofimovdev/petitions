@@ -67,7 +67,7 @@ const routerReducer = (state = initialState, action) => {
         };
       } else {
         scrollPosition = {
-        ...state.scrollPosition,
+          ...state.scrollPosition,
           [`${state.activeStory}_${state.activeView}_${state.activePanel}`]: window.pageYOffset
         };
       }
@@ -85,7 +85,7 @@ const routerReducer = (state = initialState, action) => {
           ...state.viewsHistory,
           [state.activeStory]: [...viewsHistory, View]
         },
-        scrollPosition: scrollPosition
+        scrollPosition
       };
     }
 

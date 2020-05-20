@@ -64,7 +64,7 @@ const DonePetition = ({
             mode="secondary"
             onClick={() => {
               api.selectionChanged().catch(() => {});
-              setPage("management", "feed");
+              setPage("management", "feed", false, true, ["feed"]);
             }}
           >
             Вернуться к списку петиций
