@@ -152,6 +152,7 @@ const EditPetition = ({
           value={form.title ? form.title : ""}
           name="title"
           onChange={onChange}
+          placeholder="Введите название"
         />
         <Textarea
           name="text"
@@ -165,6 +166,7 @@ const EditPetition = ({
           }
           value={form.text ? form.text : ""}
           onChange={onChange}
+          placeholder="Введите текст"
         />
         <Input
           type="number"
@@ -190,6 +192,7 @@ const EditPetition = ({
               : "")
           }
           onChange={onChange}
+          placeholder="Введите количество подписей"
         />
 
         <Input
@@ -209,6 +212,7 @@ const EditPetition = ({
               : ""
           }
           onChange={onChange}
+          placeholder="Введите адресата"
         />
 
         <UploadCard

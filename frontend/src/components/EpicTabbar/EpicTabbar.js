@@ -11,7 +11,7 @@ import { setStory } from "../../store/router/actions";
 
 const api = new VKMiniAppAPI();
 
-const EpicTabbar = ({ setStory, activeStory }) => (
+const EpicTabbar = ({ setStory, activeStory, launchParameters }) => (
   <FixedLayout vertical="bottom" className="Tabbar">
     <Tabbar className="EpicTabbar">
       <TabbarItem
@@ -25,24 +25,30 @@ const EpicTabbar = ({ setStory, activeStory }) => (
       >
         <Icon28WriteSquareOutline />
       </TabbarItem>
-      <TabbarItem
-        onClick={() => {
-          setStory("management", "feed");
-          api.selectionChanged().catch(() => {});
-        }}
-        selected={activeStory === "management"}
-        data-story="management"
-        text="Управление"
-      >
-        <Icon28SettingsOutline />
-      </TabbarItem>
+      {(!launchParameters.vk_group_id ||
+        ["moder", "editor", "admin"].includes(
+          launchParameters.vk_viewer_group_role
+        )) && (
+        <TabbarItem
+          onClick={() => {
+            setStory("management", "feed");
+            api.selectionChanged().catch(() => {});
+          }}
+          selected={activeStory === "management"}
+          data-story="management"
+          text="Управление"
+        >
+          <Icon28SettingsOutline />
+        </TabbarItem>
+      )}
     </Tabbar>
   </FixedLayout>
 );
 
 const mapStateToProps = state => {
   return {
-    activeStory: state.router.activeStory
+    activeStory: state.router.activeStory,
+    launchParameters: state.data.launchParameters
   };
 };
 
@@ -60,7 +66,8 @@ const mapDispatchToProps = dispatch => {
 
 EpicTabbar.propTypes = {
   setStory: PropTypes.func.isRequired,
-  activeStory: PropTypes.string.isRequired
+  activeStory: PropTypes.string.isRequired,
+  launchParameters: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EpicTabbar);

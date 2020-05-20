@@ -32,12 +32,6 @@
     }
   }
 
-  .PanelHeader--ios {
-    .PanelHeader__in, .PanelHeader__content {
-      height: calc(33px + var(--panelheader_height_ios)) !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
-    }
-  }
-
   .Separator--ios.PanelHeader__separator {
     padding-top: 33px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
   }
@@ -57,10 +51,6 @@
       margin-bottom: 30px;
     }
   }
-
-  //.Snackbar {
-  //  margin-bottom: calc(var(--tabbar_height)) !important;
-  //}
 }
 
 .FeedFooter {

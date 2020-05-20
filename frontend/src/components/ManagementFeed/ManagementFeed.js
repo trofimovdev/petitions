@@ -67,6 +67,13 @@ const ManagementFeed = ({
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [endStatus, setEndStatus] = useState(false);
   const platform = usePlatform();
+  console.log(
+    !launchParameters.vk_group_id ||
+      ["moder", "editor", "admin"].includes(
+        launchParameters.vk_viewer_group_role
+      ),
+    managedPetitions
+  );
 
   const openEditForm = (
     file1_preview,
@@ -499,7 +506,12 @@ const ManagementFeed = ({
       id={id}
       separator={false}
       className={`${
-        managedPetitions !== undefined && managedPetitions.length > 0
+        managedPetitions !== undefined &&
+        managedPetitions.length > 0 &&
+        (!launchParameters.vk_group_id ||
+          ["moder", "editor", "admin"].includes(
+            launchParameters.vk_viewer_group_role
+          ))
           ? "ManagementFeed"
           : ""
       }`}
@@ -507,26 +519,31 @@ const ManagementFeed = ({
       <PanelHeader separator>
         <div>
           Петиции
-          {managedPetitions !== undefined && managedPetitions.length > 0 && (
-            <FixedLayout
-              className={`${getClassName("HeaderButton__wrapper", platform)}`}
-            >
-              <Div>
-                <Button
-                  size="xl"
-                  mode="secondary"
-                  before={<Icon24Add />}
-                  onClick={() => {
-                    setFormType("create");
-                    setPage(activeView, "edit");
-                    api.selectionChanged().catch(() => {});
-                  }}
-                >
-                  Создать петицию
-                </Button>
-              </Div>
-            </FixedLayout>
-          )}
+          {managedPetitions !== undefined &&
+            managedPetitions.length > 0 &&
+            (!launchParameters.vk_group_id ||
+              ["moder", "editor", "admin"].includes(
+                launchParameters.vk_viewer_group_role
+              )) && (
+              <FixedLayout
+                className={`${getClassName("HeaderButton__wrapper", platform)}`}
+              >
+                <Div>
+                  <Button
+                    size="xl"
+                    mode="secondary"
+                    before={<Icon24Add />}
+                    onClick={() => {
+                      setFormType("create");
+                      setPage(activeView, "edit");
+                      api.selectionChanged().catch(() => {});
+                    }}
+                  >
+                    Создать петицию
+                  </Button>
+                </Div>
+              </FixedLayout>
+            )}
         </div>
       </PanelHeader>
 

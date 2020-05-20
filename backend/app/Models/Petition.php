@@ -35,6 +35,7 @@ class Petition extends Model
     const TYPE_LAST = 'last';
     const TYPE_SIGNED = 'signed';
     const TYPE_MANAGED = 'managed';
+    const TYPE_GROUP = 'group';
     const ACTION_TYPE_EDIT = 'edit';
 
     public static function getPopular(int $offset = 0, array $friendIds = [])
@@ -67,13 +68,22 @@ class Petition extends Model
     }
 
 
-    public static function getLast(int $offset = 0, array $friendIds = [])
+    public static function getLast(int $offset = 0, array $friendIds = [], int $groupId = 0)
     {
-        $petitions = Petition::where('completed', '=', 'false')
-            ->latest('created_at')
-            ->offset($offset)
-            ->limit(10)
-            ->get();
+        if ($groupId) {
+            $petitions = Petition::where('completed', '=', 'false')
+                ->where('group_id', '=', $groupId)
+                ->latest('created_at')
+                ->offset($offset)
+                ->limit(10)
+                ->get();
+        } else {
+            $petitions = Petition::where('completed', '=', 'false')
+                ->latest('created_at')
+                ->offset($offset)
+                ->limit(10)
+                ->get();
+        }
         $response = [];
         foreach ($petitions as $petition) {
             if ($friendIds) {
@@ -94,13 +104,22 @@ class Petition extends Model
         return Petition::getPetitions($petitionIds, false, $friendIds);
     }
 
-    public static function getManaged(int $userId, int $offset = 0, array $friendIds = [])
+    public static function getManaged(int $userId, int $offset = 0, array $friendIds = [], int $groupId = 0)
     {
-        $petitions = Petition::where('owner_id', '=', $userId)
-            ->latest('created_at')
-            ->offset($offset)
-            ->limit(10)
-            ->get();
+        if ($groupId) {
+            $petitions = Petition::where('owner_id', '=', $userId)
+                ->where('group_id', '=', $groupId)
+                ->latest('created_at')
+                ->offset($offset)
+                ->limit(10)
+                ->get();
+        } else {
+            $petitions = Petition::where('owner_id', '=', $userId)
+                ->latest('created_at')
+                ->offset($offset)
+                ->limit(10)
+                ->get();
+        }
         $response = [];
         foreach ($petitions as $petition) {
             if ($friendIds) {

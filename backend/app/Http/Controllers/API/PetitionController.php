@@ -8,7 +8,6 @@ use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\OkResponse;
 use App\Models\Petition;
 use App\Models\User;
-use ErrorException;
 use Illuminate\Support\Facades\Validator;
 
 class PetitionController extends Controller
@@ -50,6 +49,10 @@ class PetitionController extends Controller
 
         switch ($type) {
             case 'create':
+                if (!empty($request->viewerGroupRole) && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+                    return new ErrorResponse(403, 'Access denied');
+                }
+
                 $title = (string)$request->title;
                 $text = (string)$request->text;
                 $needSignatures = (int)$request->need_signatures;
@@ -122,6 +125,10 @@ class PetitionController extends Controller
 
     public function destroy(SignRequest $request, $petitionId)
     {
+        if (!empty($request->viewerGroupRole) && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+            return new ErrorResponse(403, 'Access denied');
+        }
+
         $petitionId = (int)$petitionId;
         if (empty($petitionId)) {
             return new ErrorResponse(400, 'Invalid params');
@@ -154,6 +161,10 @@ class PetitionController extends Controller
 
     public function update(SignRequest $request, $petitionId)
     {
+        if (!empty($request->viewerGroupRole) && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+            return new ErrorResponse(403, 'Access denied');
+        }
+
         $petitionId = (int)$petitionId;
         if (empty($petitionId)) {
             return new ErrorResponse(400, 'Invalid params');
@@ -279,20 +290,21 @@ class PetitionController extends Controller
                 return new OkResponse(Petition::getPopular($offset, $friendIds));
 
             case Petition::TYPE_LAST:
-                return new OkResponse(Petition::getLast($offset, $friendIds));
+                return new OkResponse(Petition::getLast($offset, $friendIds, $request->groupId));
 
             case Petition::TYPE_SIGNED:
                 return new OkResponse(Petition::getSigned($request->userId, $offset, $friendIds));
 
             case Petition::TYPE_MANAGED:
-                return new OkResponse(Petition::getManaged($request->userId, $offset, $friendIds));
-        }
+                return new OkResponse(Petition::getManaged($request->userId, $offset, $friendIds, $request->groupId));
 
-        return new OkResponse([
-            Petition::TYPE_POPULAR => Petition::getPopular(0, $friendIds),
-            Petition::TYPE_LAST => Petition::getLast(0, $friendIds),
-            Petition::TYPE_SIGNED => Petition::getSigned($request->userId, 0, $friendIds),
-            Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds),
-        ]);
+            default:
+                return new OkResponse([
+                    Petition::TYPE_POPULAR => Petition::getPopular(0, $friendIds),
+                    Petition::TYPE_LAST => Petition::getLast(0, $friendIds, $request->groupId),
+                    Petition::TYPE_SIGNED => Petition::getSigned($request->userId, 0, $friendIds),
+                    Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds, $request->groupId),
+                ]);
+        }
     }
 }

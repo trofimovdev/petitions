@@ -136,6 +136,7 @@ const EditPetitionDesktop = ({
             type="text"
             value={form.title ? form.title : ""}
             onChange={onChange}
+            placeholder="Введите название"
           />
           <p className="form__row_error__text">
             Слишком длинное название петиции
@@ -158,6 +159,7 @@ const EditPetitionDesktop = ({
             type="number"
             value={form.need_signatures ? parseInt(form.need_signatures) : ""}
             onChange={onChange}
+            placeholder="Введите количество подписей"
           />
           <p className="form__row_error__text">
             Можно собрать от 1 до 10 000 000 подписей
@@ -178,6 +180,7 @@ const EditPetitionDesktop = ({
             type="text"
             value={form.directed_to ? form.directed_to : ""}
             onChange={onChange}
+            placeholder="Введите адресата"
           />
           <p className="form__row_error__text">Слишком много символов</p>
         </Div>
@@ -195,6 +198,7 @@ const EditPetitionDesktop = ({
             maxHeight={200}
             value={form.text ? form.text : ""}
             onChange={onChange}
+            placeholder="Введите текст"
           />
           <p className="form__row_error__text">Слишком длинный текст петиции</p>
         </Div>
@@ -294,21 +298,39 @@ const EditPetitionDesktop = ({
                         "friends"
                       )
                     ) {
-                      loadPetitions("petitions", true)
+                      loadPetitions(
+                        "petitions",
+                        true,
+                        launchParameters.vk_group_id ? { type: "group" } : {}
+                      )
                         .then(response => {
-                          setPopular(response.popular || []);
-                          setLast(response.last || []);
-                          setSigned(response.signed || []);
-                          setManaged(response.managed || []);
+                          if (launchParameters.vk_group_id) {
+                            setLast(response.group || []);
+                            setManaged(response.managed || []);
+                          } else {
+                            setPopular(response.popular || []);
+                            setLast(response.last || []);
+                            setSigned(response.signed || []);
+                            setManaged(response.managed || []);
+                          }
                         })
                         .catch(() => {});
                     } else {
-                      loadPetitions("petitions", false)
+                      loadPetitions(
+                        "petitions",
+                        false,
+                        launchParameters.vk_group_id ? { type: "group" } : {}
+                      )
                         .then(response => {
-                          setPopular(response.popular || []);
-                          setLast(response.last || []);
-                          setSigned(response.signed || []);
-                          setManaged(response.managed || []);
+                          if (launchParameters.vk_group_id) {
+                            setLast(response.group || []);
+                            setManaged(response.managed || []);
+                          } else {
+                            setPopular(response.popular || []);
+                            setLast(response.last || []);
+                            setSigned(response.signed || []);
+                            setManaged(response.managed || []);
+                          }
                         })
                         .catch(() => {});
                     }
@@ -369,21 +391,39 @@ const EditPetitionDesktop = ({
                       "friends"
                     )
                   ) {
-                    loadPetitions("petitions", true)
+                    loadPetitions(
+                      "petitions",
+                      true,
+                      launchParameters.vk_group_id ? { type: "group" } : {}
+                    )
                       .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
+                        if (launchParameters.vk_group_id) {
+                          setLast(response.group || []);
+                          setManaged(response.managed || []);
+                        } else {
+                          setPopular(response.popular || []);
+                          setLast(response.last || []);
+                          setSigned(response.signed || []);
+                          setManaged(response.managed || []);
+                        }
                       })
                       .catch(() => {});
                   } else {
-                    loadPetitions("petitions", false)
+                    loadPetitions(
+                      "petitions",
+                      false,
+                      launchParameters.vk_group_id ? { type: "group" } : {}
+                    )
                       .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
+                        if (launchParameters.vk_group_id) {
+                          setLast(response.group || []);
+                          setManaged(response.managed || []);
+                        } else {
+                          setPopular(response.popular || []);
+                          setLast(response.last || []);
+                          setSigned(response.signed || []);
+                          setManaged(response.managed || []);
+                        }
                       })
                       .catch(() => {});
                   }
