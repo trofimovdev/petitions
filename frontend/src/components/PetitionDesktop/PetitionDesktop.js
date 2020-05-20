@@ -184,64 +184,13 @@ const PetitionDesktop = ({
                   onClick={() => {
                     setShareLoadingStatus(true);
                     api
-                      .getAccessToken(7442034, "photos")
-                      .then(({ scope, accessToken }) => {
-                        if (!scope.includes("photos")) {
-                          return;
-                        }
-                        if (
-                          !launchParameters.vk_access_token_settings.includes(
-                            "photos"
-                          )
-                        ) {
-                          setLaunchParameters({
-                            ...launchParameters,
-                            vk_access_token_settings: launchParameters.vk_access_token_settings
-                              .split(",")
-                              .concat("photos")
-                              .join(",")
-                          });
-                        }
-                        api
-                          .callAPIMethod("photos.getWallUploadServer", {
-                            v: "5.105",
-                            access_token: accessToken
-                          })
-                          .then(({ upload_url }) => {
-                            Backend.request(
-                              "petitions",
-                              {
-                                petition_id: currentPetition.id,
-                                type: "upload",
-                                device: "web",
-                                upload_url
-                              },
-                              "POST"
-                            )
-                              .then(({ server, photo, hash }) => {
-                                api
-                                  .callAPIMethod("photos.saveWallPhoto", {
-                                    v: "5.105",
-                                    access_token: accessToken,
-                                    server,
-                                    photo,
-                                    hash
-                                  })
-                                  .then(response => {
-                                    setShareLoadingStatus(false);
-                                    const { id, owner_id } = response[0];
-                                    api.postToWall(
-                                      `Поддержите петицию «${currentPetition.title}»\n\nhttps://vk.com/app7442034#p${currentPetition.id}`,
-                                      `photo${owner_id}_${id}`
-                                    );
-                                  })
-                                  .catch(() => setShareLoadingStatus(false));
-                              })
-                              .catch(() => setShareLoadingStatus(false));
-                          })
-                          .catch(() => setShareLoadingStatus(false));
-                      })
-                      .catch(() => setShareLoadingStatus(false));
+                      .postToWall(
+                        "",
+                        `https://vk.com/app7442034#p${currentPetition.id}`
+                      )
+                      .then(() => {
+                        setShareLoadingStatus(false);
+                      });
                   }}
                 >
                   <Icon24ShareOutline className="PetitionDesktop__info__buttons__share__icon" />

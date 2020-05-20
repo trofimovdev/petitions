@@ -3,11 +3,9 @@
 namespace App\Models;
 
 use App\Http\Requests\SignRequest;
-use CURLFile;
 use ErrorException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Storage;
 
 class Petition extends Model
 {
@@ -22,19 +20,30 @@ class Petition extends Model
         'mobile_photo_url',
         'web_photo_url',
         'completed',
-        'directed_to'
+        'directed_to',
+        'group_id'
     ];
 
     public $timestamps = true;
 
     const POPULAR_CACHE_TTL = 3600;
+    const IMAGE_TYPE_MOBILE = 'mobile';
+    const IMAGE_TYPE_WEB = 'web';
+    const DEFAULT_MOBILE_IMAGE_NAME = '1440x768.png';
+    const DEFAULT_WEB_IMAGE_NAME = '1360x320.png';
+    const TYPE_POPULAR = 'popular';
+    const TYPE_LAST = 'last';
+    const TYPE_SIGNED = 'signed';
+    const TYPE_MANAGED = 'managed';
+    const TYPE_GROUP = 'group';
+    const ACTION_TYPE_EDIT = 'edit';
 
     public static function getPopular(int $offset = 0, array $friendIds = [])
     {
         if ($offset >= 100) {
             return [];
         }
-        $redisPetitionIds = Redis::lrange('popular', $offset, $offset + 10);
+        $redisPetitionIds = Redis::lrange(Petition::TYPE_POPULAR, $offset, $offset + 10);
         $petitionIds = $redisPetitionIds;
         // TODO: replace count(user_id) with prod value
         if (!$redisPetitionIds) {
@@ -50,8 +59,8 @@ class Petition extends Model
             foreach ($petitions as $petition) {
                 $petitionIds[] = $petition->petition_id;
             }
-            Redis::rpush('popular', ...$petitionIds);
-            Redis::expire('popular', Petition::POPULAR_CACHE_TTL);
+            Redis::rpush(Petition::TYPE_POPULAR, ...$petitionIds);
+            Redis::expire(Petition::TYPE_POPULAR, Petition::POPULAR_CACHE_TTL);
             $petitionIds = array_slice($petitionIds, $offset, 10);
         }
         $petitions = Petition::getPetitions($petitionIds, false, $friendIds);
@@ -59,13 +68,22 @@ class Petition extends Model
     }
 
 
-    public static function getLast(int $offset = 0, array $friendIds = [])
+    public static function getLast(int $offset = 0, array $friendIds = [], int $groupId = 0)
     {
-        $petitions = Petition::where('completed', '=', 'false')
-            ->latest('created_at')
-            ->offset($offset)
-            ->limit(10)
-            ->get();
+        if ($groupId) {
+            $petitions = Petition::where('completed', '=', 'false')
+                ->where('group_id', '=', $groupId)
+                ->latest('created_at')
+                ->offset($offset)
+                ->limit(10)
+                ->get();
+        } else {
+            $petitions = Petition::where('completed', '=', 'false')
+                ->latest('created_at')
+                ->offset($offset)
+                ->limit(10)
+                ->get();
+        }
         $response = [];
         foreach ($petitions as $petition) {
             if ($friendIds) {
@@ -86,13 +104,22 @@ class Petition extends Model
         return Petition::getPetitions($petitionIds, false, $friendIds);
     }
 
-    public static function getManaged(int $userId, int $offset = 0, array $friendIds = [])
+    public static function getManaged(int $userId, int $offset = 0, array $friendIds = [], int $groupId = 0)
     {
-        $petitions = Petition::where('owner_id', '=', $userId)
-            ->latest('created_at')
-            ->offset($offset)
-            ->limit(10)
-            ->get();
+        if ($groupId) {
+            $petitions = Petition::where('owner_id', '=', $userId)
+                ->where('group_id', '=', $groupId)
+                ->latest('created_at')
+                ->offset($offset)
+                ->limit(10)
+                ->get();
+        } else {
+            $petitions = Petition::where('owner_id', '=', $userId)
+                ->latest('created_at')
+                ->offset($offset)
+                ->limit(10)
+                ->get();
+        }
         $response = [];
         foreach ($petitions as $petition) {
             if ($friendIds) {
@@ -103,7 +130,7 @@ class Petition extends Model
         return $response;
     }
 
-    public static function getPetitions(array $petitionIds, bool $withOwner = false, array $friendIds = [], bool $withSignedStatus = false, int $userId = 0, bool $text = false, bool $ownerId = true)
+    public static function getPetitions(array $petitionIds, bool $withOwner = false, array $friendIds = [], bool $withSignedStatus = false, int $userId = 0, bool $text = false, bool $ownerId = true, bool $defaultImages = true)
     {
         $petitions = Petition::whereIn('id', $petitionIds)->get();
         $loadedPetitions = [];
@@ -117,7 +144,7 @@ class Petition extends Model
             if ($withSignedStatus) {
                 $petition->signed = (bool)Signature::getUsers($petition->id, [$userId]);
             }
-            $loadedPetitions[$petition->id] = $petition->toPetitionView($text, $ownerId);
+            $loadedPetitions[$petition->id] = $petition->toPetitionView($text, $ownerId, $defaultImages);
         }
 
         $response = [];
@@ -130,24 +157,33 @@ class Petition extends Model
         return $response;
     }
 
-    public static function createPetition(SignRequest $request, string $title, string $text, int $needSignatures, string $directedTo, $mobilePhoto, $webPhoto, int $userId)
+    public static function createPetition(SignRequest $request, string $title, string $text, int $needSignatures, string $directedTo, $mobilePhoto, $webPhoto)
     {
-        $saveData = Petition::saveImages($mobilePhoto, $webPhoto);
+        $name = time() . bin2hex(random_bytes(5));
+        $mobilePhotoName = null;
+        $webPhotoName = null;
+        if (!is_null($mobilePhoto)) {
+            $mobilePhotoName = Petition::saveImage($mobilePhoto, Petition::IMAGE_TYPE_MOBILE, $name);
+        }
+        if (!is_null($webPhoto)) {
+            $webPhotoName = Petition::saveImage($webPhoto, Petition::IMAGE_TYPE_WEB, $name);
+        }
         $row = [
             'title' => $title,
             'text' => $text,
             'need_signatures' => $needSignatures,
             'count_signatures' => 1,
-            'owner_id' => $userId,
-            'mobile_photo_url' => config('app.server_url') . 'static/' . $saveData['name'] . '_mobile.png',
-            'web_photo_url' => config('app.server_url') . 'static/' . $saveData['name'] . '_web.png',
+            'owner_id' => $request->userId,
+            'mobile_photo_url' => is_null($mobilePhotoName) ? null : config('app.server_url') . 'static/' . $mobilePhotoName,
+            'web_photo_url' => is_null($webPhotoName) ? null : config('app.server_url') . 'static/' . $webPhotoName,
             'completed' => false,
-            'directed_to' => $directedTo
+            'directed_to' => $directedTo,
+            'group_id' => $request->groupId
         ];
         $petition = Petition::create($row);
         $signature_row = [
             'petition_id' => $petition['id'],
-            'user_id' => $userId,
+            'user_id' => $request->userId,
             'user_agent' => $request->server('HTTP_USER_AGENT'),
             'ip' => $request->ip(), // without CloudFlare
             'signed_at' => now()
@@ -185,78 +221,55 @@ class Petition extends Model
         }
     }
 
-    public static function saveImages($mobilePhoto, $webPhoto)
+    public static function saveImage($photo, string $type, string $name)
     {
-        $name = time() . bin2hex(random_bytes(5));
-        if ($mobilePhoto) {
-            $mobilePhoto = Petition::exifRotate($mobilePhoto);
-            $mobilePhotoWidth = imagesx($mobilePhoto);
-            $mobilePhotoHeight = imagesy($mobilePhoto);
-            if ($mobilePhotoWidth > $mobilePhotoHeight && round($mobilePhotoHeight * 1.875) < $mobilePhotoWidth) {
-                $height = $mobilePhotoHeight;
-                $width = round($mobilePhotoHeight * 1.875);
-            } else {
-                $width = $mobilePhotoWidth;
-                $height = round($mobilePhotoWidth / 1.875);
-            }
-            $mobilePhoto = imagecrop($mobilePhoto, ['x' => round(($mobilePhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
-            imagepng($mobilePhoto, base_path() . '/storage/app/public/static/' . $name . '_mobile.png');
+        if (empty($name)) {
+            $name = time() . bin2hex(random_bytes(5));
+        }
+        $photo = Petition::exifRotate($photo);
+        $photoWidth = imagesx($photo);
+        $photoHeight = imagesy($photo);
+        switch ($type) {
+            case Petition::IMAGE_TYPE_MOBILE:
+                if ($photoWidth > $photoHeight && round($photoHeight * 1.875) < $photoWidth) {
+                    $height = $photoHeight;
+                    $width = round($photoHeight * 1.875);
+                } else {
+                    $width = $photoWidth;
+                    $height = round($photoWidth / 1.875);
+                }
+                break;
+
+            case Petition::IMAGE_TYPE_WEB:
+                if ($photoWidth > $photoHeight && round($photoHeight * 4.25) < $photoWidth) {
+                    $height = $photoHeight;
+                    $width = round($photoHeight * 4.25);
+                } else {
+                    $width = $photoWidth;
+                    $height = round($photoWidth / 4.25);
+                }
+                break;
+
+            default:
+                return null;
         }
 
-        if ($webPhoto) {
-            $webPhoto = Petition::exifRotate($webPhoto);
-            $webPhotoWidth = imagesx($webPhoto);
-            $webPhotoHeight = imagesy($webPhoto);
-            if ($webPhotoWidth > $webPhotoHeight && round($webPhotoHeight * 4.25) < $webPhotoWidth) {
-                $height = $webPhotoHeight;
-                $width = round($webPhotoHeight * 4.25);
-            } else {
-                $width = $webPhotoWidth;
-                $height = round($webPhotoWidth / 4.25);
-            }
-            $webPhoto = imagecrop($webPhoto, ['x' => round(($webPhotoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
-            imagepng($webPhoto, base_path() . '/storage/app/public/static/' . $name . '_web.png');
-        }
+        $photo = imagecrop($photo, ['x' => round(($photoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
+        $extension = '.png';
+        imagepng($photo, base_path() . '/storage/app/public/static/' . $name . $type . $extension);
 
-        return ['name' => $name, 'mobilePhoto' => (bool)$mobilePhoto, 'webPhoto' => (bool)$webPhoto];
+        return $name . $type . $extension;
     }
 
-    public static function isBase64Image(string $base64)
-    {
-        $explode = explode(',', $base64);
-        $allow = ['png', 'jpg', 'jpeg'];
-        $format = str_replace(
-            [
-                'data:image/',
-                ';',
-                'base64',
-            ],
-            [
-                '', '', '',
-            ],
-            $explode[0]
-        );
-
-        if (!in_array($format, $allow)) {
-            return false;
-        }
-
-        if (!preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $explode[1])) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function toPetitionView(bool $text = true, bool $ownerId = true)
+    public function toPetitionView(bool $text = true, bool $ownerId = true, bool $defaultImages = true)
     {
         $petition = [
             'id' => $this->id,
             'title' => $this->title,
             'need_signatures' => $this->need_signatures,
             'count_signatures' => $this->count_signatures,
-            'mobile_photo_url' => $this->mobile_photo_url,
-            'web_photo_url' => $this->web_photo_url,
+            'mobile_photo_url' => $defaultImages ? config('app.server_url') . 'static/' . Petition::DEFAULT_MOBILE_IMAGE_NAME : '',
+            'web_photo_url' => $defaultImages ? config('app.server_url') . 'static/' . Petition::DEFAULT_WEB_IMAGE_NAME : '',
             'completed' => $this->completed,
             'directed_to' => []
         ];
@@ -292,8 +305,14 @@ class Petition extends Model
         if ($this->friends) {
             $petition['friends'] = $this->friends;
         }
-        if ($this->signed !== null) {
+        if (!is_null($this->signed)) {
             $petition['signed'] = $this->signed;
+        }
+        if (!is_null($this->mobile_photo_url)) {
+            $petition['mobile_photo_url'] = $this->mobile_photo_url;
+        }
+        if (!is_null($this->web_photo_url)) {
+            $petition['web_photo_url'] = $this->web_photo_url;
         }
         return $petition;
     }

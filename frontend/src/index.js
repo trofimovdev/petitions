@@ -26,7 +26,7 @@ import { setLaunchParameters } from "./store/data/actions";
 
 const api = new VKMiniAppAPI();
 
-const onLoad = response => {
+const onLoad = (response, launchParameters) => {
   store.dispatch(setPopular(response.popular || []));
   store.dispatch(setLast(response.last || []));
   store.dispatch(setSigned(response.signed || []));
@@ -62,12 +62,18 @@ api
     );
     store.dispatch(setLaunchParameters(launchParameters));
     if (launchParameters.vk_access_token_settings.includes("friends")) {
-      loadPetitions("petitions", true)
-        .then(r => onLoad(r))
+      loadPetitions(
+        "petitions",
+        true
+      )
+        .then(r => onLoad(r, launchParameters))
         .catch(() => {});
     } else {
-      loadPetitions("petitions", false)
-        .then(r => onLoad(r))
+      loadPetitions(
+        "petitions",
+        false
+      )
+        .then(r => onLoad(r, launchParameters))
         .catch(() => {});
     }
 
@@ -90,7 +96,11 @@ api
       }
     } else if (!isAppUser) {
       if (feedTab) {
-        store.dispatch(setActiveTab("feed", feedTab[1]));
+        if (launchParameters.vk_group_id) {
+          store.dispatch(setActiveTab("feed", "last"));
+        } else {
+          store.dispatch(setActiveTab("feed", feedTab[1]));
+        }
         if (launchParameters.vk_platform === "desktop_web") {
           store.dispatch(setPage("splashscreen", ""));
         } else {
@@ -100,8 +110,14 @@ api
         store.dispatch(setActiveTab("feed", "last"));
         if (launchParameters.vk_platform === "desktop_web") {
           store.dispatch(setPage("splashscreen", ""));
-        } else {
+        } else if (
+          ["moder", "editor", "admin"].includes(
+            launchParameters.vk_viewer_group_role
+          )
+        ) {
           store.dispatch(setStory("management", "splashscreen", false));
+        } else {
+          store.dispatch(setStory("petitions", "splashscreen", false));
         }
       } else {
         store.dispatch(setActiveTab("feed", "last"));
@@ -112,15 +128,26 @@ api
         }
       }
     } else if (feedTab) {
-      store.dispatch(setActiveTab("feed", feedTab[1]));
+      if (launchParameters.vk_group_id) {
+        store.dispatch(setActiveTab("feed", "last"));
+      } else {
+        store.dispatch(setActiveTab("feed", feedTab[1]));
+      }
       store.dispatch(setStory("petitions", "feed"));
     } else if (managed) {
       if (launchParameters.vk_platform === "desktop_web") {
         store.dispatch(setActiveTab("feed", "managed"));
         store.dispatch(setStory("petitions", ""));
-      } else {
+      } else if (
+        ["moder", "editor", "admin"].includes(
+          launchParameters.vk_viewer_group_role
+        )
+      ) {
         store.dispatch(setActiveTab("feed", "last"));
         store.dispatch(setStory("management", "feed"));
+      } else {
+        store.dispatch(setActiveTab("feed", "last"));
+        store.dispatch(setStory("petitions", "feed"));
       }
     } else {
       store.dispatch(setActiveTab("feed", "last"));

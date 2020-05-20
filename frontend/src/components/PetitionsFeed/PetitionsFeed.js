@@ -66,7 +66,9 @@ const PetitionsFeed = ({
   const onRefresh = () => {
     setFetchingStatus(true);
     if (launchParameters.vk_access_token_settings.includes("friends")) {
-      loadPetitions("petitions", true, { type: activeTab.feed })
+      loadPetitions("petitions", true, {
+        type: activeTab.feed
+      })
         .then(response => {
           setFetchingStatus(false);
           setCurrentPetitions(response);
@@ -74,7 +76,9 @@ const PetitionsFeed = ({
         })
         .catch(() => {});
     } else {
-      loadPetitions("petitions", false, { type: activeTab.feed })
+      loadPetitions("petitions", false, {
+        type: activeTab.feed
+      })
         .then(response => {
           setFetchingStatus(false);
           setCurrentPetitions(response);
@@ -161,36 +165,42 @@ const PetitionsFeed = ({
   const platform = usePlatform();
 
   return (
-    <Panel id={id} className="PetitionsFeed" separator={false}>
+    <Panel
+      id={id}
+      className={!launchParameters.vk_group_id ? "PetitionsFeed" : ""}
+      separator={false}
+    >
       <PanelHeaderSimple separator>
         <div>
           Петиции
-          <FixedLayout
-            className={`${getClassName("PetitionsTabs__wrapper", platform)}`}
-          >
-            <Tabs>
-              <HorizontalScroll>
-                <TabsItem
-                  onClick={() => setActiveTab("feed", "popular")}
-                  selected={activeTab.feed === "popular"}
-                >
-                  Популярные
-                </TabsItem>
-                <TabsItem
-                  onClick={() => setActiveTab("feed", "last")}
-                  selected={activeTab.feed === "last"}
-                >
-                  Последние
-                </TabsItem>
-                <TabsItem
-                  onClick={() => setActiveTab("feed", "signed")}
-                  selected={activeTab.feed === "signed"}
-                >
-                  Подписанные
-                </TabsItem>
-              </HorizontalScroll>
-            </Tabs>
-          </FixedLayout>
+          {!launchParameters.vk_group_id && (
+            <FixedLayout
+              className={`${getClassName("PetitionsTabs__wrapper", platform)}`}
+            >
+              <Tabs>
+                <HorizontalScroll>
+                  <TabsItem
+                    onClick={() => setActiveTab("feed", "popular")}
+                    selected={activeTab.feed === "popular"}
+                  >
+                    Популярные
+                  </TabsItem>
+                  <TabsItem
+                    onClick={() => setActiveTab("feed", "last")}
+                    selected={activeTab.feed === "last"}
+                  >
+                    Последние
+                  </TabsItem>
+                  <TabsItem
+                    onClick={() => setActiveTab("feed", "signed")}
+                    selected={activeTab.feed === "signed"}
+                  >
+                    Подписанные
+                  </TabsItem>
+                </HorizontalScroll>
+              </Tabs>
+            </FixedLayout>
+          )}
         </div>
       </PanelHeaderSimple>
       {currentPetitions !== undefined ? (

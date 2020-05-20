@@ -36,7 +36,6 @@ const DonePetition = ({
         <Link
           className="DonePetition__title"
           onClick={() => {
-            console.log(currentPetition);
             setCurrent({
               id: currentPetition.id,
               title: currentPetition.title

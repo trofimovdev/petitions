@@ -71,14 +71,18 @@ const MainDesktop = ({
   const onRefresh = () => {
     setFetchingStatus(true);
     if (launchParameters.vk_access_token_settings.includes("friends")) {
-      loadPetitions("petitions", true, { type: activeTab })
+      loadPetitions("petitions", true, {
+        type: activeTab
+      })
         .then(response => {
           setFetchingStatus(false);
           setCurrentPetitions(response);
         })
         .catch(() => {});
     } else {
-      loadPetitions("petitions", false, { type: activeTab })
+      loadPetitions("petitions", false, {
+        type: activeTab
+      })
         .then(response => {
           setFetchingStatus(false);
           setCurrentPetitions(response);
@@ -159,50 +163,80 @@ const MainDesktop = ({
     <div id={id} className="DesktopContainer">
       <TabList
         after={
-          <Link
-            className="create"
-            onClick={() => {
-              setFormType("create");
-              setPage("edit", "", false, false, [], true);
-            }}
-          >
-            <Icon16Add className="create__icon" />
-            Создать петицию
-          </Link>
+          <>
+            {(!launchParameters.vk_group_id ||
+              ["moder", "editor", "admin"].includes(
+                launchParameters.vk_viewer_group_role
+              )) && (
+              <Link
+                className="create"
+                onClick={() => {
+                  setFormType("create");
+                  setPage("edit", "", false, false, [], true);
+                }}
+              >
+                <Icon16Add className="create__icon" />
+                Создать петицию
+              </Link>
+            )}
+          </>
         }
       >
-        <TabItem
-          selected={activeTab === "popular"}
-          onClick={() => {
-            setActiveTab("feed", "popular", true);
-          }}
-        >
-          Популярные
-        </TabItem>
-        <TabItem
-          selected={activeTab === "last"}
-          onClick={() => {
-            setActiveTab("feed", "last", true);
-          }}
-        >
-          Последние
-        </TabItem>
-        <TabItem
-          selected={activeTab === "signed"}
-          onClick={() => {
-            setActiveTab("feed", "signed", true);
-          }}
-        >
-          Подписанные
-        </TabItem>
-        <TabItem
-          selected={activeTab === "managed"}
-          onClick={() => {
-            setActiveTab("feed", "managed", true);
-          }}
-        >
-          Мои петиции
-        </TabItem>
+        {launchParameters.vk_group_id ? (
+          <>
+            <TabItem
+              selected={activeTab === "last"}
+              onClick={() => {
+                setActiveTab("feed", "last", true);
+              }}
+            >
+              Петиции сообщества
+            </TabItem>
+            <TabItem
+              selected={activeTab === "managed"}
+              onClick={() => {
+                setActiveTab("feed", "managed", true);
+              }}
+            >
+              Управление
+            </TabItem>
+          </>
+        ) : (
+          <>
+            <TabItem
+              selected={activeTab === "popular"}
+              onClick={() => {
+                setActiveTab("feed", "popular", true);
+              }}
+            >
+              Популярные
+            </TabItem>
+            <TabItem
+              selected={activeTab === "last"}
+              onClick={() => {
+                setActiveTab("feed", "last", true);
+              }}
+            >
+              Последние
+            </TabItem>
+            <TabItem
+              selected={activeTab === "signed"}
+              onClick={() => {
+                setActiveTab("feed", "signed", true);
+              }}
+            >
+              Подписанные
+            </TabItem>
+            <TabItem
+              selected={activeTab === "managed"}
+              onClick={() => {
+                setActiveTab("feed", "managed", true);
+              }}
+            >
+              Мои петиции
+            </TabItem>
+          </>
+        )}
       </TabList>
       <Div className="wrapper" id="petitionsContainer">
         {currentPetitions !== undefined ? (

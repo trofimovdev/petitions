@@ -31,7 +31,7 @@ export const smoothScrollToTop = async (f = () => {}) => {
 
 export const loadPetitions = (method, withFriends = true, params = {}) => {
   return new Promise((resolve, reject) => {
-    if (!["bootstrap", "petitions"].includes(method.split("/")[0])) {
+    if (!["petitions"].includes(method.split("/")[0])) {
       reject(new ConnectionError("Invalid method"));
       return;
     }

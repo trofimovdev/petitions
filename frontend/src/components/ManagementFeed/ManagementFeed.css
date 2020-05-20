@@ -18,9 +18,6 @@
 .View--animated .HeaderButton__wrapper--android {
   margin-top: 23px !important; }
 
-.ManagementFeed .Snackbar {
-  margin-bottom: calc(var(--tabbar_height)) !important; }
-
 .ManagementFeed .PanelHeader--android .PanelHeader__in, .ManagementFeed .PanelHeader--android .PanelHeader__content {
   height: calc(69px + var(--panelheader_height_android)) !important;
   margin-top: -23px !important; }

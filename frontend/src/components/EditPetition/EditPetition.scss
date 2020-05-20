@@ -6,7 +6,7 @@
   }
 
   .Snackbar {
-    padding-bottom: calc(25px + var(--safe-area-inset-bottom)) !important; // magic 25px
+    padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
   }
 
   .PanelHeaderButton {

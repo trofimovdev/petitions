@@ -197,7 +197,11 @@ const PetitionTabbar = ({
             onClick={() => {
               api.selectionChanged().catch(() => {});
               openPopout(<ScreenSpinner />);
-              loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
+              loadPetitions(
+                `petitions/${currentPetition.id.toString()}`,
+                false,
+                { type: "edit" }
+              )
                 .then(response => {
                   // TODO: remove eslint problems
                   response = response[0];

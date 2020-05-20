@@ -30,10 +30,6 @@
 }
 
 .ManagementFeed {
-  .Snackbar {
-    margin-bottom: calc(var(--tabbar_height)) !important;
-  }
-
   .PanelHeader--android {
     .PanelHeader__in, .PanelHeader__content {
       height: calc(69px + var(--panelheader_height_android)) !important;

@@ -6,9 +6,10 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class SignRequest extends FormRequest
 {
-    public $groupId;
-    public $userId;
     public $appId;
+    public $userId;
+    public $groupId;
+    public $viewerGroupRole;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -25,6 +26,7 @@ class SignRequest extends FormRequest
                 $this->appId = (int)config('app.id');
                 $this->userId = 165275777;
                 $this->groupId = 0;
+                $this->viewerGroupRole = 'admin';
                 return true;
             }
             return false;
@@ -32,6 +34,7 @@ class SignRequest extends FormRequest
         $this->appId = (int)$launchParameters['vk_app_id'];
         $this->userId = (int)$launchParameters['vk_user_id'];
         $this->groupId = !empty($launchParameters['vk_group_id']) ? (int)$launchParameters['vk_group_id'] : 0;
+        $this->viewerGroupRole = !empty($launchParameters['vk_viewer_group_role']) ? (string)$launchParameters['vk_viewer_group_role'] : '';
         return true;
 
     }

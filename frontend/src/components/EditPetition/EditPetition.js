@@ -152,6 +152,7 @@ const EditPetition = ({
           value={form.title ? form.title : ""}
           name="title"
           onChange={onChange}
+          placeholder="Введите название"
         />
         <Textarea
           name="text"
@@ -165,6 +166,7 @@ const EditPetition = ({
           }
           value={form.text ? form.text : ""}
           onChange={onChange}
+          placeholder="Введите текст"
         />
         <Input
           type="number"
@@ -190,31 +192,28 @@ const EditPetition = ({
               : "")
           }
           onChange={onChange}
+          placeholder="Введите количество подписей"
         />
 
-        <>
-          <div className="FormLayout__row-top">Кому направлена петиция</div>
-          <div
-            className={`FormField Input ${getClassName("FormField", platform)}`}
-          >
-            <div className="EditForm__input-wrapper">
-              <input
-                type="text"
-                name="directed_to"
-                className="Input__el"
-                value={form.directed_to ? form.directed_to : ""}
-                onChange={onChange}
-              />
-              {/* <Icon28Mention */}
-              {/*  onClick={() => { */}
-              {/*    api.selectionChanged().catch(() => {}); */}
-              {/*    openModal("select-users"); */}
-              {/*  }} */}
-              {/* /> */}
-            </div>
-            <div className="FormField__border" />
-          </div>
-        </>
+        <Input
+          type="text"
+          top="Кому направлена петиция"
+          name="directed_to"
+          pattern="\d*"
+          value={form.directed_to ? form.directed_to : ""}
+          status={
+            form.directed_to && form.directed_to.length > 255
+              ? "error"
+              : ""
+          }
+          bottom={
+            form.directed_to && form.directed_to.length > 255
+              ? "Слишком много символов"
+              : ""
+          }
+          onChange={onChange}
+          placeholder="Введите адресата"
+        />
 
         <UploadCard
           id={1}
@@ -251,8 +250,8 @@ const EditPetition = ({
             form.need_signatures &&
             form.need_signatures >= 1 &&
             form.need_signatures <= 10000000 &&
-            form.file1 &&
-            form.file2
+            (!form.directed_to ||
+              (form.directed_to && form.directed_to.length <= 255))
           )
         }
         setSnackbar={setSnackbar}

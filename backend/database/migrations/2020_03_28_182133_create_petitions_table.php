@@ -20,10 +20,11 @@ class CreatePetitionsTable extends Migration
             $table->integer('need_signatures');
             $table->integer('count_signatures');
             $table->integer('owner_id');
-            $table->string('mobile_photo_url');
-            $table->string('web_photo_url');
+            $table->string('mobile_photo_url')->nullable();
+            $table->string('web_photo_url')->nullable();
             $table->boolean('completed');
             $table->longText('directed_to')->nullable();
+            $table->integer('group_id')->nullable();
             $table->timestamps();
         });
     }
