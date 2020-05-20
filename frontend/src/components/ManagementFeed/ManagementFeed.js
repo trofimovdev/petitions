@@ -67,13 +67,6 @@ const ManagementFeed = ({
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [endStatus, setEndStatus] = useState(false);
   const platform = usePlatform();
-  console.log(
-    !launchParameters.vk_group_id ||
-      ["moder", "editor", "admin"].includes(
-        launchParameters.vk_viewer_group_role
-      ),
-    managedPetitions
-  );
 
   const openEditForm = (
     file1_preview,
