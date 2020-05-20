@@ -303,7 +303,7 @@ class PetitionController extends Controller
                     Petition::TYPE_POPULAR => Petition::getPopular(0, $friendIds),
                     Petition::TYPE_LAST => Petition::getLast(0, $friendIds, $request->groupId),
                     Petition::TYPE_SIGNED => Petition::getSigned($request->userId, 0, $friendIds),
-                    Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds, $request->groupId),
+                    Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds, $request->groupIdор),
                 ]);
         }
     }
