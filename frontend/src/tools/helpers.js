@@ -128,7 +128,7 @@ export const userStackText = friends => {
   if (friends.length === 1) {
     return (
       <>
-        {friends[0].user.sex === 2 ? "Подписал " : "Подписала "}
+        {parseInt(friends[0].user.sex) === 2 ? "Подписал " : "Подписала "}
         {getLinkName(friends[0])}
       </>
     );

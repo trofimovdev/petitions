@@ -113,7 +113,7 @@ class Petition extends Model
                 ->limit(10)
                 ->get();
         } else {
-            $petitions = Petition::whereNull('group_id')
+            $petitions = Petition::where('group_id', '=', 0)
                 ->where('owner_id', '=', $userId)
                 ->latest('created_at')
                 ->offset($offset)

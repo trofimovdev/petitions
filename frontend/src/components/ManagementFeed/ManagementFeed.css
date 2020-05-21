@@ -25,6 +25,9 @@
 .ManagementFeed .PanelHeader--ios .PanelHeader__in, .ManagementFeed .PanelHeader--ios .PanelHeader__content {
   height: calc(52px + var(--panelheader_height_ios)) !important; }
 
+.ManagementFeed .Panel__in {
+  padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important; }
+
 .ManagementFeed .Separator--ios.PanelHeader__separator {
   padding-top: 52px !important; }
 
