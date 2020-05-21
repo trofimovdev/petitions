@@ -224,7 +224,11 @@ const Petition = ({
               before={
                 <a
                   className="Petition__creator__avatar"
-                  href={`https://vk.com/id${currentPetition.owner_id}`}
+                  href={
+                    parseInt(currentPetition.owner_id) < 0
+                      ? `https://vk.com/${currentPetition.owner.screen_name}`
+                      : `https://vk.com/id${currentPetition.user_id}`
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -233,16 +237,27 @@ const Petition = ({
               }
               multiline
             >
+              {parseInt(currentPetition.owner_id) < 0 && "Сообщество «"}
               <Link
-                href={`https://vk.com/id${currentPetition.owner_id}`}
+                href={
+                  parseInt(currentPetition.owner_id) < 0
+                    ? `https://vk.com/${currentPetition.owner.screen_name}`
+                    : `https://vk.com/id${currentPetition.user_id}`
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="Petition__creator__link"
               >
-                {`${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
-              </Link>
+                {parseInt(currentPetition.owner_id) < 0
+                  ? `${currentPetition.owner.name}`
+                  : `${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
+              </Link>{parseInt(currentPetition.owner_id) < 0 && "» "}
               {`${
-                currentPetition.owner.sex === 2 ? "создал " : "создала "
+                parseInt(currentPetition.owner_id) < 0
+                  ? "создало "
+                  : currentPetition.owner.sex === 2
+                  ? "создал "
+                  : "создала "
               } петицию${
                 currentPetition.directed_to.length > 0 ? `, адресованную ` : ""
               }`}

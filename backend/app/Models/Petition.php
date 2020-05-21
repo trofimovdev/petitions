@@ -107,8 +107,7 @@ class Petition extends Model
     public static function getManaged(int $userId, int $offset = 0, array $friendIds = [], int $groupId = 0)
     {
         if ($groupId) {
-            $petitions = Petition::where('owner_id', '=', $userId)
-                ->where('group_id', '=', $groupId)
+            $petitions = Petition::where('group_id', '=', $groupId)
                 ->latest('created_at')
                 ->offset($offset)
                 ->limit(10)
@@ -136,7 +135,11 @@ class Petition extends Model
         $loadedPetitions = [];
         foreach ($petitions as $petition) {
             if ($withOwner) {
-                $petition->owner = User::getUsers([$petition->owner_id])[$petition->owner_id];
+                if ($petition->group_id) {
+                    $petition->owner = Group::getGroups([$petition->group_id])[$petition->group_id];
+                } else {
+                    $petition->owner = User::getUsers([$petition->owner_id])[$petition->owner_id];
+                }
             }
             if ($friendIds) {
                 $petition->friends = Signature::getUsers($petition->id, $friendIds);
@@ -297,7 +300,7 @@ class Petition extends Model
             $petition['text'] = $this->text;
         }
         if ($ownerId) {
-            $petition['owner_id'] = $this->owner_id;
+            $petition['owner_id'] = $this->group_id ? -$this->group_id : $this->owner_id;
         }
         if ($this->owner) {
             $petition['owner'] = $this->owner;

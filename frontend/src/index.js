@@ -97,6 +97,7 @@ api
     if (petitionId) {
       store.dispatch(setActiveTab("feed", "last"));
       if (launchParameters.vk_platform === "desktop_web") {
+        store.dispatch(setCurrent({ id: petitionId[1] }));
         store.dispatch(setPage("petition", ""));
       } else {
         store.dispatch(setStory("petitions", "feed"));

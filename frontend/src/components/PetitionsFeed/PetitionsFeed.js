@@ -230,6 +230,8 @@ const PetitionsFeed = ({
             <Footer>Скоро здесь будут популярные петиции</Footer>
           ) : currentPetitions.length === 0 && activeTab.feed === "signed" ? (
             <Footer>Пока что вы не подписали ни одной петиции</Footer>
+          ) : currentPetitions.length === 0 && activeTab.feed === "last" ? (
+            <Footer>Пока что нет ни одной петиции</Footer>
           ) : (currentPetitions.length > 0 && endStatus) ||
             (currentPetitions.length > 0 &&
               currentPetitions.length < 10 &&
