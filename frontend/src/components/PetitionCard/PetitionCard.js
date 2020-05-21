@@ -108,7 +108,7 @@ PetitionCard.propTypes = {
   managementDots: PropTypes.bool,
   onManagement: PropTypes.func,
   friends: PropTypes.array,
-  completed: PropTypes.bool.isRequired
+  completed: PropTypes.bool
 };
 
 PetitionCard.defaultProps = {
