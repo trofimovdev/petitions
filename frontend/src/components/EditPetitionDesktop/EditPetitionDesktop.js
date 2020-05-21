@@ -223,7 +223,7 @@ const EditPetitionDesktop = ({
         </Div>
 
         <Div className="form__row">
-          <label htmlFor="text">
+          <label htmlFor="text" className="form__row__fix">
             Обложка для мобильной версии
             <TooltipTag>
               Рекомендуемый размер изображения: 1440x768px

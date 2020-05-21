@@ -7,16 +7,15 @@
   &__l &__card,
   &__l &__card__content {
     height: 188px;
+    margin-top: 0px;
+    margin-bottom: 5px;
   }
 
   &__m &__card,
   &__m &__card__content {
     height: 84px;
-
-    &__text {
-      margin-top: 0px;
-      margin-bottom: 5px;
-    }
+    margin-top: 0px;
+    margin-bottom: 5px;
   }
 
   &__top {
@@ -70,7 +69,7 @@
       }
 
       .Icon--28,
-      .Icon--28 > svg{
+      .Icon--28 > svg {
         width: 48px !important;
         height: 48px !important;
       }
