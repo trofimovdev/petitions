@@ -50,6 +50,8 @@ body[scheme="space_gray"] {
 
 .Petition__header__shown .PanelHeader__in {
   background: var(--background_content) !important; }
+  .Petition__header__shown .PanelHeader__in .PanelHeaderButton {
+    color: #AAAEB2 !important; }
 
 .Petition__image {
   width: 100%;

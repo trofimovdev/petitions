@@ -25,6 +25,9 @@
 
     &__shown .PanelHeader__in {
       background: var(--background_content) !important;
+      .PanelHeaderButton {
+        color: $petition-back-button-color !important;
+      }
     }
   }
 
