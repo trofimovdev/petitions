@@ -190,6 +190,9 @@ const PetitionDesktop = ({
                       )
                       .then(() => {
                         setShareLoadingStatus(false);
+                      })
+                      .catch(() => {
+                        setShareLoadingStatus(false);
                       });
                   }}
                 >
