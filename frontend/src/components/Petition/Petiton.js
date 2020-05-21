@@ -111,7 +111,7 @@ const Petition = ({
   }, [currentPetition]);
 
   useEffect(() => {
-    if (activePanel === "petition") {
+    if (activePanel === "petition" && currentPetition.id) {
       api.setLocationHash(`p${currentPetition.id.toString()}`);
       if (loadingStatus) {
         if (launchParameters.vk_access_token_settings.includes("friends")) {

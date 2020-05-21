@@ -431,7 +431,7 @@ const ManagementFeed = ({
 
     if (
       managedPetitions &&
-      managedPetitions.length > 10 &&
+      managedPetitions.length >= 10 &&
       scrollPosition + 1300 > petitionsContainerHeight &&
       !loadingStatus &&
       !endStatus

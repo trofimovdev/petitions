@@ -99,7 +99,7 @@ const PetitionsFeed = ({
 
     if (
       currentPetitions &&
-      currentPetitions.length > 10 &&
+      currentPetitions.length >= 10 &&
       scrollPosition + 1300 > petitionsContainerHeight &&
       !loadingStatus &&
       !endStatus
@@ -226,8 +226,10 @@ const PetitionsFeed = ({
               </div>
             );
           })}
-          {currentPetitions.length === 0 ? (
-            <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
+          {currentPetitions.length === 0 && activeTab.feed === "popular" ? (
+            <Footer>Скоро здесь будут популярные петиции</Footer>
+          ) : currentPetitions.length === 0 && activeTab.feed === "signed" ? (
+            <Footer>Пока что вы не подписали ни одной петиции</Footer>
           ) : (currentPetitions.length > 0 && endStatus) ||
             (currentPetitions.length > 0 &&
               currentPetitions.length < 10 &&
