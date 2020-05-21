@@ -100,14 +100,14 @@ class PetitionController extends Controller
 
                 if (!is_null($mobilePhoto)) {
                     $mobilePhotoSize = getimagesize($mobilePhoto);
-                    if ($mobilePhotoSize[0] < 100 || $mobilePhotoSize[1]) {
+                    if ($mobilePhotoSize[0] < 100 || $mobilePhotoSize[1] < 100) {
                         return new ErrorResponse(400, 'Слишком маленькое изображение');
                     }
                 }
 
                 if (!is_null($webPhoto)) {
                     $webPhotoSize = getimagesize($webPhoto);
-                    if ($webPhotoSize[0] < 100 || $webPhotoSize[1]) {
+                    if ($webPhotoSize[0] < 100 || $webPhotoSize[1] < 100) {
                         return new ErrorResponse(400, 'Слишком маленькое изображение');
                     }
                 }
