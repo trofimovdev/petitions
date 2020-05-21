@@ -199,12 +199,9 @@ const EditPetition = ({
           type="text"
           top="Кому направлена петиция"
           name="directed_to"
-          pattern="\d*"
           value={form.directed_to ? form.directed_to : ""}
           status={
-            form.directed_to && form.directed_to.length > 255
-              ? "error"
-              : ""
+            form.directed_to && form.directed_to.length > 255 ? "error" : ""
           }
           bottom={
             form.directed_to && form.directed_to.length > 255

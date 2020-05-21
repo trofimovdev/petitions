@@ -157,6 +157,7 @@ const EditPetitionDesktop = ({
             id="need_signatures"
             name="need_signatures"
             type="number"
+            pattern="\d*"
             value={form.need_signatures ? parseInt(form.need_signatures) : ""}
             onChange={onChange}
             placeholder="Введите количество подписей"
