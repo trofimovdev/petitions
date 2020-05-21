@@ -476,6 +476,7 @@ const PetitionModal = ({
                   })
                   .catch(() => closePopout());
               };
+              console.log(currentPetition.mobile_photo_url, currentPetition.mobile_photo_url === null);
               img.src = currentPetition.mobile_photo_url;
             }}
           >

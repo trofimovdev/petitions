@@ -117,7 +117,14 @@ class PetitionController extends Controller
                     $webPhoto = $photo;
                 }
 
-                return new OkResponse(Petition::createPetition($request, $title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto));
+                $createdPetition = Petition::createPetition($request, $title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto);
+                if (is_null($createdPetition['mobile_photo_url'])) {
+                    $createdPetition['mobile_photo_url'] = config('app.server_url') . 'static/' . Petition::DEFAULT_MOBILE_IMAGE_NAME;
+                }
+                if (is_null($createdPetition['web_photo_url'])) {
+                    $createdPetition['web_photo_url'] = config('app.server_url') . 'static/' . Petition::DEFAULT_WEB_IMAGE_NAME;
+                }
+                return new OkResponse($createdPetition);
         }
 
         return $this->getPetitions($request, $type, $offset, $petitionId, $friendIds);

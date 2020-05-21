@@ -7,15 +7,16 @@
   &__l &__card,
   &__l &__card__content {
     height: 188px;
-    margin-top: 0px;
-    margin-bottom: 5px;
   }
 
   &__m &__card,
   &__m &__card__content {
     height: 84px;
-    margin-top: 0px;
-    margin-bottom: 5px;
+
+    &__text {
+      margin-top: 0;
+      margin-bottom: 5px;
+    }
   }
 
   &__top {
@@ -24,7 +25,7 @@
   }
 
   &__bottom {
-    margin: 8px 0 0 0!important;
+    margin: 8px 0 0 0 !important;
     font-size: 13px;
     color: $petition-create-upload-card-bottom-text-color;
   }
@@ -80,7 +81,9 @@
 .EditPetitionDesktop {
   .UploadCard {
     padding: 0 !important;
+    border-radius: 2px;
 
+    &__card,
     &__card__cancel-button {
       border-radius: 5px !important;
     }
@@ -94,6 +97,11 @@
     &__l .UploadCard__card__content {
       height: 151px;
       width: 283px;
+
+      &__text {
+        margin-top: 0;
+        margin-bottom: 5px;
+      }
     }
 
     &__m .UploadCard__card,
