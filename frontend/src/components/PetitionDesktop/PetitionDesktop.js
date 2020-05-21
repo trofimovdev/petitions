@@ -251,9 +251,9 @@ const PetitionDesktop = ({
               {`${
                 parseInt(currentPetition.owner_id) < 0
                   ? "создало "
-                  : currentPetition.owner.sex === 2
-                  ? "создал "
-                  : "создала "
+                  : parseInt(currentPetition.owner.sex) === 2
+                  ? " создал "
+                  : " создала "
               } петицию${
                 currentPetition.directed_to.length > 0 ? `, адресованную ` : ""
               }`}

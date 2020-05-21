@@ -305,17 +305,21 @@ class PetitionController extends Controller
                 return new OkResponse(Petition::getManaged($request->userId, $offset, $friendIds, $request->groupId));
 
             default:
-                if ($request->groupId) {
+                if ($request->groupId && in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
                     return new OkResponse([
                         Petition::TYPE_LAST => Petition::getLast(0, $friendIds, $request->groupId),
                         Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds, $request->groupId),
                     ]);
+                } else if ($request->groupId) {
+                    return new OkResponse([
+                        Petition::TYPE_LAST => Petition::getLast(0, $friendIds, $request->groupId)
+                    ]);
                 }
                 return new OkResponse([
                     Petition::TYPE_POPULAR => Petition::getPopular(0, $friendIds),
-                    Petition::TYPE_LAST => Petition::getLast(0, $friendIds, $request->groupId),
+                    Petition::TYPE_LAST => Petition::getLast(0, $friendIds),
                     Petition::TYPE_SIGNED => Petition::getSigned($request->userId, 0, $friendIds),
-                    Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds, $request->groupId)
+                    Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds)
                 ]);
         }
     }
