@@ -35,7 +35,6 @@ class Petition extends Model
     const TYPE_LAST = 'last';
     const TYPE_SIGNED = 'signed';
     const TYPE_MANAGED = 'managed';
-    const TYPE_GROUP = 'group';
     const ACTION_TYPE_EDIT = 'edit';
 
     public static function getPopular(int $offset = 0, array $friendIds = [])
@@ -45,13 +44,12 @@ class Petition extends Model
         }
         $redisPetitionIds = Redis::lrange(Petition::TYPE_POPULAR, $offset, $offset + 10);
         $petitionIds = $redisPetitionIds;
-        // TODO: replace count(user_id) with prod value
         if (!$redisPetitionIds) {
             $petitions = Signature::select('petition_id', Signature::raw('count(user_id)'), 'completed')
                 ->join('petitions', 'petition_id', '=', 'id')
                 ->whereRaw('signed_at >= date_trunc(\'second\', current_timestamp - interval \'1 week\')')
                 ->groupBy('petition_id', 'completed')
-                ->havingRaw('completed = false AND count(user_id) > ?', [2]) // 140 / 7 = 20 signatures per day
+                ->havingRaw('completed = false AND count(user_id) > ?', [20]) // 140 / 7 = 20 signatures per day
                 ->orderByRaw('count(user_id) desc, petition_id asc')
                 ->limit(100)
                 ->get();
