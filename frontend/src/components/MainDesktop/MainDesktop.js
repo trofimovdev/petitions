@@ -98,7 +98,7 @@ const MainDesktop = ({
     ).offsetHeight;
     if (
       currentPetitions &&
-      currentPetitions.length > 10 &&
+      currentPetitions.length >= 10 &&
       scrollPosition + 1300 > petitionsContainerHeight &&
       !loadingStatus &&
       !endStatus
@@ -260,14 +260,16 @@ const MainDesktop = ({
                 </div>
               );
             })}
-            {currentPetitions.length === 0 ? (
-              activeTab === "managed" ? (
-                <Footer>
-                  Создавайте петиции, чтобы решать реальные проблемы
-                </Footer>
-              ) : (
-                <Footer>Тут ничего нет ¯\_(ツ)_/¯</Footer>
-              )
+            {currentPetitions.length === 0 && activeTab === "managed" ? (
+              <Footer>
+                Создавайте петиции, чтобы решать реальные проблемы
+              </Footer>
+            ) : currentPetitions.length === 0 && activeTab === "popular" ? (
+              <Footer>Скоро здесь будут популярные петиции</Footer>
+            ) : currentPetitions.length === 0 && activeTab === "signed" ? (
+              <Footer>Пока что вы не подписали ни одной петиции</Footer>
+            ) : currentPetitions.length === 0 && activeTab === "last" ? (
+              <Footer>Пока что нет ни одной петиции</Footer>
             ) : (currentPetitions.length > 0 && endStatus) ||
               (currentPetitions.length > 0 &&
                 currentPetitions.length < 10 &&

@@ -40,28 +40,30 @@ const PetitionDesktop = ({
   const [shareLoadingStatus, setShareLoadingStatus] = useState(false);
 
   useEffect(() => {
-    api.setLocationHash(`p${currentPetition.id.toString()}`);
-    if (loadingStatus) {
-      if (launchParameters.vk_access_token_settings.includes("friends")) {
-        loadPetitions(`petitions`, true, {
-          petition_id: currentPetition.id.toString()
-        })
-          .then(response => {
-            setLoadingStatus(false);
-            if (response.length > 0) {
-              setCurrent(response[0]);
-            }
+    if (currentPetition.id) {
+      api.setLocationHash(`p${currentPetition.id.toString()}`);
+      if (loadingStatus) {
+        if (launchParameters.vk_access_token_settings.includes("friends")) {
+          loadPetitions(`petitions`, true, {
+            petition_id: currentPetition.id.toString()
           })
-          .catch(() => {});
-      } else {
-        loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
-          .then(response => {
-            setLoadingStatus(false);
-            if (response.length > 0) {
-              setCurrent(response[0]);
-            }
-          })
-          .catch(() => {});
+            .then(response => {
+              setLoadingStatus(false);
+              if (response.length > 0) {
+                setCurrent(response[0]);
+              }
+            })
+            .catch(() => {});
+        } else {
+          loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
+            .then(response => {
+              setLoadingStatus(false);
+              if (response.length > 0) {
+                setCurrent(response[0]);
+              }
+            })
+            .catch(() => {});
+        }
       }
     }
     return () => {};
@@ -218,7 +220,11 @@ const PetitionDesktop = ({
               before={
                 <a
                   className="Petition__creator__avatar"
-                  href={`https://vk.com/id${currentPetition.owner_id}`}
+                  href={
+                    parseInt(currentPetition.owner_id) < 0
+                      ? `https://vk.com/${currentPetition.owner.screen_name}`
+                      : `https://vk.com/id${currentPetition.user_id}`
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -227,16 +233,27 @@ const PetitionDesktop = ({
               }
               multiline
             >
+              {parseInt(currentPetition.owner_id) < 0 && "Сообщество «"}
               <Link
-                href={`https://vk.com/id${currentPetition.owner_id}`}
+                href={
+                  parseInt(currentPetition.owner_id) < 0
+                    ? `https://vk.com/${currentPetition.owner.screen_name}`
+                    : `https://vk.com/id${currentPetition.user_id}`
+                }
                 target="_blank"
                 rel="noopener noreferrer"
-                className="Petition__creator__link"
+                className="PetitionDesktop__creator__link"
               >
-                {`${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
-              </Link>
+                {parseInt(currentPetition.owner_id) < 0
+                  ? `${currentPetition.owner.name}`
+                  : `${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
+              </Link>{parseInt(currentPetition.owner_id) < 0 && "» "}
               {`${
-                currentPetition.owner.sex === 2 ? "создал " : "создала "
+                parseInt(currentPetition.owner_id) < 0
+                  ? "создало "
+                  : parseInt(currentPetition.owner.sex) === 2
+                  ? " создал "
+                  : " создала "
               } петицию${
                 currentPetition.directed_to.length > 0 ? `, адресованную ` : ""
               }`}

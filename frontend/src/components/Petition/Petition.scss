@@ -25,6 +25,9 @@
 
     &__shown .PanelHeader__in {
       background: var(--background_content) !important;
+      .PanelHeaderButton {
+        color: $petition-back-button-color !important;
+      }
     }
   }
 
@@ -87,7 +90,6 @@
 
     &__link {
       font-weight: 600;
-      margin-right: 4px;
     }
 
     .Cell {

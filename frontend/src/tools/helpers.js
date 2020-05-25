@@ -49,7 +49,8 @@ export const loadPetitions = (method, withFriends = true, params = {}) => {
 
     api
       .getAccessToken(7442034, "friends")
-      .then(({ accessToken }) => {
+      .then(data => {
+        const { accessToken } = data;
         api
           .callAPIMethod("friends.get", {
             access_token: accessToken,
@@ -67,12 +68,16 @@ export const loadPetitions = (method, withFriends = true, params = {}) => {
               },
               "POST"
             )
-              .then(response => resolve(response))
+              .then(response => {
+                resolve(response);
+              })
               .catch(e => reject(e));
           })
           .catch(e => reject(e));
       })
-      .catch(e => reject(e));
+      .catch(e => {
+        reject(e);
+      });
   });
 };
 
@@ -123,7 +128,7 @@ export const userStackText = friends => {
   if (friends.length === 1) {
     return (
       <>
-        {friends[0].user.sex === 2 ? "Подписал " : "Подписала "}
+        {parseInt(friends[0].user.sex) === 2 ? "Подписал " : "Подписала "}
         {getLinkName(friends[0])}
       </>
     );

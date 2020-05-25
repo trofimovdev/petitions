@@ -102,39 +102,21 @@ const EditPetitionTabbar = ({
                       "friends"
                     )
                   ) {
-                    loadPetitions(
-                      "petitions",
-                      true,
-                      launchParameters.vk_group_id ? { type: "group" } : {}
-                    )
+                    loadPetitions("petitions", true)
                       .then(response => {
-                        if (launchParameters.vk_group_id) {
-                          setLast(response.group || []);
-                          setManaged(response.managed || []);
-                        } else {
-                          setPopular(response.popular || []);
-                          setLast(response.last || []);
-                          setSigned(response.signed || []);
-                          setManaged(response.managed || []);
-                        }
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
                       })
                       .catch(() => {});
                   } else {
-                    loadPetitions(
-                      "petitions",
-                      false,
-                      launchParameters.vk_group_id ? { type: "group" } : {}
-                    )
+                    loadPetitions("petitions", false)
                       .then(response => {
-                        if (launchParameters.vk_group_id) {
-                          setLast(response.group || []);
-                          setManaged(response.managed || []);
-                        } else {
-                          setPopular(response.popular || []);
-                          setLast(response.last || []);
-                          setSigned(response.signed || []);
-                          setManaged(response.managed || []);
-                        }
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
                       })
                       .catch(() => {});
                   }
@@ -222,39 +204,21 @@ const EditPetitionTabbar = ({
                 if (
                   launchParameters.vk_access_token_settings.includes("friends")
                 ) {
-                  loadPetitions(
-                    "petitions",
-                    true,
-                    launchParameters.vk_group_id ? { type: "group" } : {}
-                  )
+                  loadPetitions("petitions", true)
                     .then(response => {
-                      if (launchParameters.vk_group_id) {
-                        setLast(response.group || []);
-                        setManaged(response.managed || []);
-                      } else {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      }
+                      setPopular(response.popular || []);
+                      setLast(response.last || []);
+                      setSigned(response.signed || []);
+                      setManaged(response.managed || []);
                     })
                     .catch(() => {});
                 } else {
-                  loadPetitions(
-                    "petitions",
-                    false,
-                    launchParameters.vk_group_id ? { type: "group" } : {}
-                  )
+                  loadPetitions("petitions", false)
                     .then(response => {
-                      if (launchParameters.vk_group_id) {
-                        setLast(response.group || []);
-                        setManaged(response.managed || []);
-                      } else {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      }
+                      setPopular(response.popular || []);
+                      setLast(response.last || []);
+                      setSigned(response.signed || []);
+                      setManaged(response.managed || []);
                     })
                     .catch(() => {});
                 }

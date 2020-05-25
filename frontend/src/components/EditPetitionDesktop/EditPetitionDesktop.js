@@ -157,6 +157,7 @@ const EditPetitionDesktop = ({
             id="need_signatures"
             name="need_signatures"
             type="number"
+            pattern="\d*"
             value={form.need_signatures ? parseInt(form.need_signatures) : ""}
             onChange={onChange}
             placeholder="Введите количество подписей"
@@ -222,7 +223,7 @@ const EditPetitionDesktop = ({
         </Div>
 
         <Div className="form__row">
-          <label htmlFor="text">
+          <label htmlFor="text" className="form__row__fix">
             Обложка для мобильной версии
             <TooltipTag>
               Рекомендуемый размер изображения: 1440x768px
@@ -298,39 +299,21 @@ const EditPetitionDesktop = ({
                         "friends"
                       )
                     ) {
-                      loadPetitions(
-                        "petitions",
-                        true,
-                        launchParameters.vk_group_id ? { type: "group" } : {}
-                      )
+                      loadPetitions("petitions", true)
                         .then(response => {
-                          if (launchParameters.vk_group_id) {
-                            setLast(response.group || []);
-                            setManaged(response.managed || []);
-                          } else {
-                            setPopular(response.popular || []);
-                            setLast(response.last || []);
-                            setSigned(response.signed || []);
-                            setManaged(response.managed || []);
-                          }
+                          setPopular(response.popular || []);
+                          setLast(response.last || []);
+                          setSigned(response.signed || []);
+                          setManaged(response.managed || []);
                         })
                         .catch(() => {});
                     } else {
-                      loadPetitions(
-                        "petitions",
-                        false,
-                        launchParameters.vk_group_id ? { type: "group" } : {}
-                      )
+                      loadPetitions("petitions", false)
                         .then(response => {
-                          if (launchParameters.vk_group_id) {
-                            setLast(response.group || []);
-                            setManaged(response.managed || []);
-                          } else {
-                            setPopular(response.popular || []);
-                            setLast(response.last || []);
-                            setSigned(response.signed || []);
-                            setManaged(response.managed || []);
-                          }
+                          setPopular(response.popular || []);
+                          setLast(response.last || []);
+                          setSigned(response.signed || []);
+                          setManaged(response.managed || []);
                         })
                         .catch(() => {});
                     }
@@ -391,39 +374,21 @@ const EditPetitionDesktop = ({
                       "friends"
                     )
                   ) {
-                    loadPetitions(
-                      "petitions",
-                      true,
-                      launchParameters.vk_group_id ? { type: "group" } : {}
-                    )
+                    loadPetitions("petitions", true)
                       .then(response => {
-                        if (launchParameters.vk_group_id) {
-                          setLast(response.group || []);
-                          setManaged(response.managed || []);
-                        } else {
-                          setPopular(response.popular || []);
-                          setLast(response.last || []);
-                          setSigned(response.signed || []);
-                          setManaged(response.managed || []);
-                        }
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
                       })
                       .catch(() => {});
                   } else {
-                    loadPetitions(
-                      "petitions",
-                      false,
-                      launchParameters.vk_group_id ? { type: "group" } : {}
-                    )
+                    loadPetitions("petitions", false)
                       .then(response => {
-                        if (launchParameters.vk_group_id) {
-                          setLast(response.group || []);
-                          setManaged(response.managed || []);
-                        } else {
-                          setPopular(response.popular || []);
-                          setLast(response.last || []);
-                          setSigned(response.signed || []);
-                          setManaged(response.managed || []);
-                        }
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
                       })
                       .catch(() => {});
                   }

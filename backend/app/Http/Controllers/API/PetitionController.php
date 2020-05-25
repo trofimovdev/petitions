@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller as Controller;
 use App\Http\Requests\SignRequest;
 use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\OkResponse;
+use App\Models\Group;
 use App\Models\Petition;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -100,14 +101,14 @@ class PetitionController extends Controller
 
                 if (!is_null($mobilePhoto)) {
                     $mobilePhotoSize = getimagesize($mobilePhoto);
-                    if ($mobilePhotoSize[0] < 100 || $mobilePhotoSize[1]) {
+                    if ($mobilePhotoSize[0] < 100 || $mobilePhotoSize[1] < 100) {
                         return new ErrorResponse(400, 'Слишком маленькое изображение');
                     }
                 }
 
                 if (!is_null($webPhoto)) {
                     $webPhotoSize = getimagesize($webPhoto);
-                    if ($webPhotoSize[0] < 100 || $webPhotoSize[1]) {
+                    if ($webPhotoSize[0] < 100 || $webPhotoSize[1] < 100) {
                         return new ErrorResponse(400, 'Слишком маленькое изображение');
                     }
                 }
@@ -117,7 +118,14 @@ class PetitionController extends Controller
                     $webPhoto = $photo;
                 }
 
-                return new OkResponse(Petition::createPetition($request, $title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto));
+                $createdPetition = Petition::createPetition($request, $title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto);
+                if (is_null($createdPetition['mobile_photo_url'])) {
+                    $createdPetition['mobile_photo_url'] = config('app.server_url') . 'static/' . Petition::DEFAULT_MOBILE_IMAGE_NAME;
+                }
+                if (is_null($createdPetition['web_photo_url'])) {
+                    $createdPetition['web_photo_url'] = config('app.server_url') . 'static/' . Petition::DEFAULT_WEB_IMAGE_NAME;
+                }
+                return new OkResponse($createdPetition);
         }
 
         return $this->getPetitions($request, $type, $offset, $petitionId, $friendIds);
@@ -161,7 +169,7 @@ class PetitionController extends Controller
 
     public function update(SignRequest $request, $petitionId)
     {
-        if (!empty($request->viewerGroupRole) && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+        if ($request->groupId && !empty($request->viewerGroupRole) && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
             return new ErrorResponse(403, 'Access denied');
         }
 
@@ -179,7 +187,7 @@ class PetitionController extends Controller
         if (!$petition) {
             return new ErrorResponse(404, 'Петиция не найдена');
         }
-        if ($petition['owner_id'] !== $request->userId) {
+        if (!$request->groupId && $petition['owner_id'] !== $request->userId) {
             return new ErrorResponse(403, 'Access denied');
         }
         if ($petition['completed'] && is_null($request->completed)) {
@@ -202,7 +210,6 @@ class PetitionController extends Controller
         if (!is_null($request->completed)) {
             $data['completed'] = (bool)$request->completed;
         }
-
 
         $photo = null;
         $mobilePhoto = null;
@@ -272,7 +279,6 @@ class PetitionController extends Controller
             $data['web_photo_url'] = config('app.server_url') . 'static/' . $webPhotoName;
         }
 
-
         Petition::where('id', '=', $petitionId)
             ->update($data);
 
@@ -299,11 +305,21 @@ class PetitionController extends Controller
                 return new OkResponse(Petition::getManaged($request->userId, $offset, $friendIds, $request->groupId));
 
             default:
+                if ($request->groupId && in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+                    return new OkResponse([
+                        Petition::TYPE_LAST => Petition::getLast(0, $friendIds, $request->groupId),
+                        Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds, $request->groupId),
+                    ]);
+                } else if ($request->groupId) {
+                    return new OkResponse([
+                        Petition::TYPE_LAST => Petition::getLast(0, $friendIds, $request->groupId)
+                    ]);
+                }
                 return new OkResponse([
                     Petition::TYPE_POPULAR => Petition::getPopular(0, $friendIds),
-                    Petition::TYPE_LAST => Petition::getLast(0, $friendIds, $request->groupId),
+                    Petition::TYPE_LAST => Petition::getLast(0, $friendIds),
                     Petition::TYPE_SIGNED => Petition::getSigned($request->userId, 0, $friendIds),
-                    Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds, $request->groupId),
+                    Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds)
                 ]);
         }
     }

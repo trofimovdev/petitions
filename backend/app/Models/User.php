@@ -8,13 +8,14 @@ use Illuminate\Support\Facades\Redis;
 class User
 {
     const CACHE_TTL = 900;
+    const PREFIX = 'u';
 
     public static function getUsers(array $userIds = [])
     {
         $missingUserIds = [];
         $users = [];
         foreach ($userIds as $userId) {
-            $user = Redis::hgetall('u' . $userId);
+            $user = Redis::hgetall(User::PREFIX . $userId);
             if (!$user) {
                 $missingUserIds[] = $userId;
                 continue;
@@ -66,11 +67,11 @@ class User
         }
 
         foreach ($usersData as $userData) {
-            $user = [];
-            $users[$userData->id] = (array)$userData;
+            $user = (array)$userData;
+            $users[$userData->id] = $user;
             if ($cache) {
-                Redis::hmset('u' . $userData->id, $user);
-                Redis::expire('u' . $userData->id, User::CACHE_TTL);
+                Redis::hmset(User::PREFIX . $userData->id, $user);
+                Redis::expire(User::PREFIX . $userData->id, User::CACHE_TTL);
             }
         }
         return $users;
