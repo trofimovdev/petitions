@@ -38,3 +38,6 @@
   padding-top: 20px !important; }
   .ManagementFeed__spinner__bottom {
     margin-bottom: 30px; }
+
+.ManagementFeedConst .Snackbar {
+  margin-bottom: var(--tabbar_height); }
