@@ -22,7 +22,7 @@ import {
   setManaged,
   setCurrent
 } from "./store/petitions/actions";
-import { setLaunchParameters } from "./store/data/actions";
+import { setInitError, setLaunchParameters } from "./store/data/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -41,7 +41,9 @@ const initPetitions = launchParameters => {
           onLoad(r);
           resolve();
         })
-        .catch(e => {
+        .catch(() => {
+          console.log("asfdfsdsdf");
+          store.dispatch(setInitError(true));
           reject();
         });
     } else {
@@ -50,7 +52,9 @@ const initPetitions = launchParameters => {
           onLoad(r);
           resolve();
         })
-        .catch(e => {
+        .catch(() => {
+          console.log("kiokkiik");
+          store.dispatch(setInitError(true));
           reject();
         });
     }
@@ -102,9 +106,11 @@ api
       } else {
         store.dispatch(setStory("petitions", "feed"));
         store.dispatch(setPage("petitions", "petition"));
-        initPetitions(launchParameters).then(() => {
-          store.dispatch(setCurrent({ id: petitionId[1] }));
-        });
+        initPetitions(launchParameters)
+          .then(() => {
+            store.dispatch(setCurrent({ id: petitionId[1] }));
+          })
+          .catch(() => {});
         return;
       }
     } else if (!isAppUser) {
