@@ -498,7 +498,7 @@ const ManagementFeed = ({
     <Panel
       id={id}
       separator={false}
-      className={`${
+      className={`ManagementFeedConst ${
         managedPetitions !== undefined &&
         managedPetitions.length > 0 &&
         (!launchParameters.vk_group_id ||

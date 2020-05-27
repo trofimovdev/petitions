@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Icon56CheckCircleOutline from "@vkontakte/icons/dist/56/check_circle_outline";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { setPage, openModal } from "../../store/router/actions";
+import { setPage } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
 import "./DonePetitionDesktop.css";
 
@@ -37,6 +37,7 @@ const DonePetitionDesktop = ({ id, setPage, currentPetition, setCurrent }) => {
         className="DonePetitionDesktop__fixed-layout"
       >
         <a
+          href="#back"
           className="DonePetitionDesktop__fixed-layout__link"
           onClick={() => {
             setPage("petitions", "");
