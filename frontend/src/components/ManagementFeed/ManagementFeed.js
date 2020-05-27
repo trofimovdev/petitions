@@ -32,6 +32,7 @@ import Icon24DoneOutline from "@vkontakte/icons/dist/24/done_outline";
 import Icon28ChevronRightCircleOutline from "@vkontakte/icons/dist/28/chevron_right_circle_outline";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import ErrorCard from "../ErrorCard/ErrorCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import PetitionCard from "../PetitionCard/PetitionCard";
 import { setPage, openPopout, closePopout } from "../../store/router/actions";
@@ -60,7 +61,8 @@ const ManagementFeed = ({
   closePopout,
   setFormType,
   setEdit,
-  setInitialEdit
+  setInitialEdit,
+  initError
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
@@ -540,7 +542,9 @@ const ManagementFeed = ({
         </div>
       </PanelHeader>
 
-      {managedPetitions !== undefined ? (
+      {initError ? (
+        <ErrorCard />
+      ) : managedPetitions !== undefined ? (
         managedPetitions.length === 0 ? (
           <Placeholder
             className={getClassName("Placeholder", platform)}
@@ -615,7 +619,8 @@ const mapStateToProps = state => {
     activeView: state.router.activeView,
     activePanel: state.router.activePanel,
     managedPetitions: state.petitions.managed,
-    launchParameters: state.data.launchParameters
+    launchParameters: state.data.launchParameters,
+    initError: state.data.initError
   };
 };
 
@@ -650,7 +655,8 @@ ManagementFeed.propTypes = {
   closePopout: PropTypes.func.isRequired,
   setFormType: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
-  setInitialEdit: PropTypes.func.isRequired
+  setInitialEdit: PropTypes.func.isRequired,
+  initError: PropTypes.bool
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManagementFeed);

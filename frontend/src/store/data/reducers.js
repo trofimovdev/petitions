@@ -1,8 +1,13 @@
-import { SET_FRIENDS_CARD_STATUS, SET_LAUNCH_PARAMETERS } from "./actionTypes";
+import {
+  SET_FRIENDS_CARD_STATUS,
+  SET_LAUNCH_PARAMETERS,
+  SET_INIT_ERROR
+} from "./actionTypes";
 
 const initialState = {
   friendsCardStatus: true,
-  launchParameters: undefined
+  launchParameters: undefined,
+  initError: false
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -18,6 +23,13 @@ const dataReducer = (state = initialState, action) => {
       return {
         ...state,
         launchParameters: action.payload
+      };
+    }
+
+    case SET_INIT_ERROR: {
+      return {
+        ...state,
+        initError: action.payload
       };
     }
 

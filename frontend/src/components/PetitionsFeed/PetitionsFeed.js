@@ -18,6 +18,7 @@ import "./PetititonsFeed.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import ErrorCard from "../ErrorCard/ErrorCard";
 import PetitionCard from "../PetitionCard/PetitionCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import FriendsCard from "../FriendsCard/FriendsCard";
@@ -38,7 +39,8 @@ const PetitionsFeed = ({
   launchParameters,
   setPopular,
   setLast,
-  setSigned
+  setSigned,
+  initError
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
@@ -203,7 +205,9 @@ const PetitionsFeed = ({
           )}
         </div>
       </PanelHeaderSimple>
-      {currentPetitions !== undefined ? (
+      {initError ? (
+        <ErrorCard />
+      ) : currentPetitions !== undefined ? (
         <PullToRefresh
           onRefresh={onRefresh}
           isFetching={fetchingStatus}
@@ -258,7 +262,8 @@ const mapStateToProps = state => {
     activeStory: state.router.activeStory,
     activePanel: state.router.activePanel,
     currentPetitions: state.petitions[state.router.activeTab.feed],
-    launchParameters: state.data.launchParameters
+    launchParameters: state.data.launchParameters,
+    initError: state.data.initError
   };
 };
 
@@ -290,7 +295,8 @@ PetitionsFeed.propTypes = {
   launchParameters: PropTypes.object.isRequired,
   setPopular: PropTypes.func.isRequired,
   setLast: PropTypes.func.isRequired,
-  setSigned: PropTypes.func.isRequired
+  setSigned: PropTypes.func.isRequired,
+  initError: PropTypes.bool
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionsFeed);

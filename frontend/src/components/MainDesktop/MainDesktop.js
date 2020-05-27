@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { TabList, TabItem, Link } from "@happysanta/vk-app-ui";
+import { TabList, TabItem, Link, Notify } from "@happysanta/vk-app-ui";
 import {
   Div,
   Footer,
@@ -38,7 +38,8 @@ const MainDesktop = ({
   setSigned,
   setManaged,
   launchParameters,
-  setFormType
+  setFormType,
+  initError
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
@@ -239,7 +240,13 @@ const MainDesktop = ({
         )}
       </TabList>
       <Div className="wrapper" id="petitionsContainer">
-        {currentPetitions !== undefined ? (
+        {initError ? (
+          <Notify type="error">
+            <strong>Что-то пошло не так...</strong>
+            <br />
+            Попробуйте еще раз через несколько минут
+          </Notify>
+        ) : currentPetitions !== undefined ? (
           <PullToRefresh onRefresh={onRefresh} isFetching={fetchingStatus}>
             <FriendsCard />
             {currentPetitions.map((item, index) => {
@@ -295,7 +302,8 @@ const mapStateToProps = state => {
   return {
     activeTab: state.router.activeTab.feed,
     currentPetitions: state.petitions[state.router.activeTab.feed],
-    launchParameters: state.data.launchParameters
+    launchParameters: state.data.launchParameters,
+    initError: state.data.initError
   };
 };
 
@@ -328,7 +336,8 @@ MainDesktop.propTypes = {
   setSigned: PropTypes.func.isRequired,
   setManaged: PropTypes.func.isRequired,
   launchParameters: PropTypes.object.isRequired,
-  setFormType: PropTypes.func.isRequired
+  setFormType: PropTypes.func.isRequired,
+  initError: PropTypes.bool
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainDesktop);
