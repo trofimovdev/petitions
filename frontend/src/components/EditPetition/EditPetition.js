@@ -7,9 +7,7 @@ import {
   Input,
   Textarea,
   Snackbar,
-  Avatar,
-  getClassName,
-  usePlatform
+  Avatar
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./EditPetition.css";
@@ -37,7 +35,6 @@ const EditPetition = ({
 }) => {
   const [snackbar, setSnackbar] = useState(null);
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
-  const platform = usePlatform();
 
   const checkFileSize = fileSize => {
     if (fileSize > MAX_FILE_SIZE) {

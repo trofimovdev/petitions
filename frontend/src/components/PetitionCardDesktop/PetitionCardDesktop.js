@@ -1,5 +1,5 @@
 import React from "react";
-import { Div, Card, UsersStack, ScreenSpinner } from "@vkontakte/vkui";
+import { Div, Card, UsersStack } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
