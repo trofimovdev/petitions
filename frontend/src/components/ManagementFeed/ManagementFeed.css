@@ -1,0 +1,43 @@
+.Placeholder--ios {
+  margin-top: calc(5px + var(--panelheader_height_ios) + var(--safe-area-inset-top)); }
+
+.Placeholder--android {
+  margin-top: calc(5px + var(--panelheader_height_android) + var(--safe-area-inset-top)); }
+
+.FeedFooter {
+  margin-top: 0 !important; }
+
+.HeaderButton__wrapper {
+  width: 100%;
+  z-index: 999 !important; }
+  .HeaderButton__wrapper--ios {
+    top: calc(37px + var(--safe-area-inset-top)) !important; }
+  .HeaderButton__wrapper--android {
+    top: calc(40px + var(--safe-area-inset-top)) !important; }
+
+.View--animated .HeaderButton__wrapper--android {
+  margin-top: 23px !important; }
+
+.ManagementFeed .PanelHeader--android .PanelHeader__in, .ManagementFeed .PanelHeader--android .PanelHeader__content {
+  height: calc(69px + var(--panelheader_height_android)) !important;
+  margin-top: -23px !important; }
+
+.ManagementFeed .PanelHeader--ios .PanelHeader__in, .ManagementFeed .PanelHeader--ios .PanelHeader__content {
+  height: calc(52px + var(--panelheader_height_ios)) !important; }
+
+.ManagementFeed .Panel__in {
+  padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important; }
+
+.ManagementFeed .Separator--ios.PanelHeader__separator {
+  padding-top: 52px !important; }
+
+.ManagementFeed .Separator--android.PanelHeader__separator {
+  padding-top: 48px !important; }
+
+.ManagementFeed__spinner {
+  padding-top: 20px !important; }
+  .ManagementFeed__spinner__bottom {
+    margin-bottom: 30px; }
+
+.ManagementFeedConst .Snackbar {
+  margin-bottom: var(--tabbar_height); }

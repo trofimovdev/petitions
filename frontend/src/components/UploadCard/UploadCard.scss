@@ -1,0 +1,112 @@
+@import "src/style/_vars.scss";
+
+.UploadCard {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+
+  &__l &__card,
+  &__l &__card__content {
+    height: 188px;
+  }
+
+  &__m &__card,
+  &__m &__card__content {
+    height: 84px;
+
+    &__text {
+      margin-top: 0;
+      margin-bottom: 5px;
+    }
+  }
+
+  &__top {
+    margin: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  &__bottom {
+    margin: 8px 0 0 0 !important;
+    font-size: 13px;
+    color: $petition-create-upload-card-bottom-text-color;
+  }
+
+  &__card {
+    border: 1px solid var(--field_border);
+    border-width: 0.5px;
+    overflow: hidden;
+
+    &__cancel-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.24);
+      z-index: 2;
+      color: #fff;
+      padding: 4px;
+    }
+
+    &__content {
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      color: $petition-create-upload-card-color;
+
+      &__text {
+        margin-top: 14px;
+        margin-bottom: 8px;
+      }
+
+      & > img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 0%;
+      }
+
+      .Icon--28,
+      .Icon--28 > svg {
+        width: 48px !important;
+        height: 48px !important;
+      }
+    }
+  }
+}
+
+.EditPetitionDesktop {
+  .UploadCard {
+    padding: 0 !important;
+    border-radius: 2px;
+
+    &__card,
+    &__card__cancel-button {
+      border-radius: 5px !important;
+    }
+
+    .Link {
+      color: $petition-desktop-link-color;
+      font-weight: normal;
+    }
+
+    &__l .UploadCard__card,
+    &__l .UploadCard__card__content {
+      height: 151px;
+      width: 283px;
+
+      &__text {
+        margin-top: 0;
+        margin-bottom: 5px;
+      }
+    }
+
+    &__m .UploadCard__card,
+    &__m .UploadCard__card__content {
+      height: 151px !important;
+    }
+  }
+}

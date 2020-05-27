@@ -1,0 +1,38 @@
+@import "../../style/vars";
+
+:root {
+  --text-color: #000;
+}
+
+body[scheme="space_gray"] {
+  --text-color: #fff;
+}
+
+.DonePetition {
+  .Placeholder__text {
+    font-size: 20px !important;
+    color: var(--text-color) !important;
+    font-weight: 600 !important;
+  }
+
+  &__icon {
+    color: $petition-done-icon-color !important;
+  }
+
+  &__title {
+    word-break: break-all;
+    word-break: break-word;
+  }
+
+  &__fixed-layout {
+    padding-bottom: var(--safe-area-inset-bottom) !important;
+  }
+
+  &__buttons > * {
+    margin-bottom: 12px;
+  }
+
+  &__buttons > *:last-child {
+    margin-bottom: 0;
+  }
+}

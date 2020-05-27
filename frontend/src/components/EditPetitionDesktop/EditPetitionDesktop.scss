@@ -1,0 +1,66 @@
+@import "src/style/_vars.scss";
+
+.EditPetitionDesktop {
+  margin-top: 45px;
+
+  .form {
+    &__row {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+
+        .TooltipDesk__text__hs0tag {
+          font-weight: normal;
+        }
+      }
+
+      textarea {
+        height: 200px;
+      }
+
+      &_error__text {
+        display: none;
+      }
+
+      &_error {
+        input:not(:focus),
+        textarea:not(:focus) {
+          background: var(--field_error_background);
+          border-color: var(--field_error_border);
+        }
+
+        & > .form__row_error__text {
+          display: block;
+          padding: 0;
+          margin: 5px 0 0 0;
+          color: var(--field_error_border);
+          font-size: 14px;
+        }
+      }
+
+      &__fix {
+        .TooltipDesk__tag__hs0tag {
+          letter-spacing: 1px;
+        }
+      }
+    }
+
+    &__button {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .Button__hs0tag {
+        margin-right: 8px;
+      }
+    }
+
+    .UploadCard__card__content {
+      color: $petition-create-desktop-upload-card-color !important;
+    }
+  }
+}

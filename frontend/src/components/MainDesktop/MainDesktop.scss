@@ -1,0 +1,34 @@
+.DesktopContainer {
+  .TabList__hs0tag {
+    position: fixed !important;
+    background: #fff !important;
+    width: 100%;
+    z-index: 4;
+  }
+
+  .create {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &__icon {
+      color: #2a5885;
+      opacity: .5;
+      margin-right: 3px;
+      margin-left: -3px;
+    }
+
+    &:hover .create__icon {
+      opacity: 0.75;
+    }
+  }
+
+  .wrapper {
+    padding-top: 57px;
+  }
+
+  .PullToRefresh__content {
+    padding-bottom: 20px;
+    overflow: visible;
+  }
+}

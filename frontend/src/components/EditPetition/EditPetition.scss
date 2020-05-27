@@ -1,0 +1,39 @@
+@import "src/style/_vars.scss";
+
+.EditPetition {
+  & > .Panel__in {
+    padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
+  }
+
+  .Snackbar {
+    padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
+  }
+
+  .PanelHeaderButton {
+    color: $petition-create-upload-back-button-color !important;
+  }
+}
+
+.EditForm {
+  &__input-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &__input-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    input {
+      flex-grow: 2;
+    }
+
+    .Icon {
+      z-index: 2;
+      color: $petition-create-mention-icon-color;
+      margin-right: 8px;
+    }
+  }
+}

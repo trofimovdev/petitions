@@ -1,0 +1,71 @@
+.Placeholder {
+  &--ios {
+    margin-top: calc(5px + var(--panelheader_height_ios) + var(--safe-area-inset-top));
+  }
+
+  &--android {
+    margin-top: calc(5px + var(--panelheader_height_android) + var(--safe-area-inset-top));
+  }
+}
+
+.FeedFooter {
+  margin-top: 0 !important;
+}
+
+.HeaderButton__wrapper {
+  width: 100%;
+  z-index: 999 !important;
+
+  &--ios {
+    top: calc(37px + var(--safe-area-inset-top)) !important;
+  }
+
+  &--android {
+    top: calc(40px + var(--safe-area-inset-top)) !important;
+  }
+}
+
+.View--animated .HeaderButton__wrapper--android {
+  margin-top: 23px !important;
+}
+
+.ManagementFeed {
+  .PanelHeader--android {
+    .PanelHeader__in, .PanelHeader__content {
+      height: calc(69px + var(--panelheader_height_android)) !important;
+      margin-top: -23px !important;
+    }
+  }
+
+  .PanelHeader--ios {
+    .PanelHeader__in, .PanelHeader__content {
+      height: calc(52px + var(--panelheader_height_ios)) !important; // 52px - высота кнопки на iOS
+    }
+  }
+
+  .Panel__in {
+    padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important;
+  }
+
+  .Separator--ios.PanelHeader__separator {
+    padding-top: 52px !important; // 33px - высота HorizontalScroll с Tabs внутри на iOS
+  }
+
+  .Separator--android.PanelHeader__separator {
+    padding-top: 48px !important; // 48px - высота HorizontalScroll с Tabs внутри на Android
+  }
+
+  &__spinner {
+    padding-top: 20px !important;
+
+    &__bottom {
+      margin-bottom: 30px;
+    }
+  }
+}
+
+.ManagementFeedConst {
+  .Snackbar {
+    margin-bottom: var(--tabbar_height);
+  }
+}

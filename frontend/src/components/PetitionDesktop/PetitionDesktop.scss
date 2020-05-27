@@ -1,0 +1,142 @@
+@import "src/style/_vars.scss";
+
+.PetitionDesktop {
+  &__image {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 0%;
+    }
+  }
+
+  &__back {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.44);
+    padding: 5px 12px 5px 9px;
+    border-radius: 28px;
+    color: #fff;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    transition: .1s;
+
+    &__icon {
+      transform: rotate(180deg);
+      margin-right: 2px;
+    }
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.55);
+      cursor: pointer;
+    }
+  }
+
+  &__wrapper {
+    padding: 10px 20px;
+
+    h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .PetitionProgress {
+      margin-top: 10px;
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+
+    &__buttons {
+      display: flex;
+      flex-direction: row;
+      height: 30px;
+
+      &__share {
+        width: 30px;
+        height: 30px;
+        margin-left: 10px;
+
+        &__icon {
+          color: #55677d;
+          transform: scale(0.8);
+          margin-left: -12px;
+          margin-top: -4px;
+        }
+
+        .WaitDots__hs0tag {
+          height: auto !important;
+          margin-left: -12px !important;
+        }
+      }
+    }
+  }
+
+  &__users-stack {
+    margin: 12px 0 12px 0 !important;
+    padding: 0;
+
+    .UsersStack__text__link {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+
+  &__text {
+    white-space: pre-wrap;
+
+  }
+
+  &__creator {
+    margin-top: 15px;
+
+    .Cell {
+      &__children {
+        font-size: 14px;
+        color: $petition-desktop-creator-text-color !important;
+      }
+
+      &__main {
+        margin-left: 12px;
+      }
+    }
+
+    &__link {
+      font-weight: 600;
+      margin-right: 0;
+      color: $petition-desktop-link-color !important;
+    }
+  }
+
+  .Separator__in,
+  .Cell__in {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .UsersStack {
+    flex-direction: row-reverse;
+    padding: 0;
+
+    &__text {
+      margin: 0;
+    }
+
+    &__photos {
+      margin: 0 0 0 8px;
+    }
+  }
+}

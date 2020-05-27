@@ -1,0 +1,120 @@
+@import "src/style/_vars.scss";
+@import "src/style/index.scss";
+
+.Petition {
+  & > .Panel__in {
+    padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
+  }
+
+  &--signed > .Panel__in {
+    padding-bottom: calc(102px + var(--safe-area-inset-bottom)) !important; // 102px - высота таббара
+  }
+
+  &__header .PanelHeader__in {
+    transition: .15s;
+  }
+
+  &__header {
+    .PanelHeaderButton {
+      color: #fff !important;
+    }
+
+    &__hidden .PanelHeader__in {
+      background: transparent !important;
+    }
+
+    &__shown .PanelHeader__in {
+      background: var(--background_content) !important;
+      .PanelHeaderButton {
+        color: $petition-back-button-color !important;
+      }
+    }
+  }
+
+  &__image {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 0%;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      display: inline-block;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
+    }
+  }
+
+  &__info {
+    padding-bottom: 0;
+  }
+
+  &__info h1 {
+    font-size: 20px;
+    margin: 0 0 14px 0 !important;
+  }
+
+  &__users-stack {
+    margin: 12px 0 12px 0 !important;
+    padding: 0;
+
+    .UsersStack__text__link {
+      pointer-events: none;
+      cursor: default;
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+
+  &__text {
+    p {
+      white-space: pre-wrap;
+      margin: 0;
+    }
+  }
+
+  &__creator {
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    &__link {
+      font-weight: 600;
+    }
+
+    .Cell {
+      &__children {
+        font-size: 14px;
+        color: $petition-creator-text-color;
+      }
+
+      &__main {
+        margin-left: 12px;
+      }
+    }
+  }
+
+  &__link {
+    font-weight: 600;
+  }
+}
+
+.Petition .PullToRefresh {
+  &--ios {
+    margin-top: calc(0px - var(--safe-area-inset-top) - var(--panelheader_height_ios)) !important;
+  }
+
+  &--android {
+    margin-top: calc(var(--safe-area-inset-top) - var(--panelheader_height_android)) !important;
+  }
+}

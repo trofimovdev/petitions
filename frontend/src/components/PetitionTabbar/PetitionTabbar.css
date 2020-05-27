@@ -1,0 +1,24 @@
+.PetitionTabbar {
+  height: calc(68px + var(--safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: var(--safe-area-inset-bottom) !important; }
+  .PetitionTabbar--signed {
+    height: calc(102px + var(--safe-area-inset-bottom)) !important; }
+  .PetitionTabbar__signed {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4bb34b; }
+    .PetitionTabbar__signed__icon {
+      margin-right: 10px; }
+  .PetitionTabbar__buttons {
+    display: flex;
+    height: 44px !important; }
+    .PetitionTabbar__buttons__sign--completed {
+      color: #818c99; }
+    .PetitionTabbar__buttons > * {
+      margin-right: 8px; }
+    .PetitionTabbar__buttons > *:last-child {
+      margin-right: 0; }
