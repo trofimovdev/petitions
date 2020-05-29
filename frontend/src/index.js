@@ -42,7 +42,6 @@ const initPetitions = launchParameters => {
           resolve();
         })
         .catch(() => {
-          console.log("asfdfsdsdf");
           store.dispatch(setInitError(true));
           reject();
         });
@@ -53,7 +52,6 @@ const initPetitions = launchParameters => {
           resolve();
         })
         .catch(() => {
-          console.log("kiokkiik");
           store.dispatch(setInitError(true));
           reject();
         });

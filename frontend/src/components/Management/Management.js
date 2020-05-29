@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import ManagementFeed from "../ManagementFeed/ManagementFeed";
 import EditPetition from "../EditPetition/EditPetition";
 import PetitionModal from "../PetitionModal/PetititonModal";
-import { goBack } from "../../store/router/actions";
+import { goBack, closeModal } from "../../store/router/actions";
 import Petition from "../Petition/Petiton";
 import "./Management.css";
 import SplashScreen from "../SplashScreen/SplashScreen";
@@ -24,7 +24,12 @@ const Management = ({
   return (
     <View
       id={id}
-      modal={<PetitionModal activeModal={activeModal} />}
+      modal={
+        <PetitionModal
+          activeModal={activeModal}
+          closeModal={() => closeModal()}
+        />
+      }
       activePanel={activePanel}
       header={false}
       onSwipeBack={goBack}
@@ -60,7 +65,8 @@ const mapDispatchToProps = dispatch => {
     dispatch,
     ...bindActionCreators(
       {
-        goBack
+        goBack,
+        closeModal
       },
       dispatch
     )
@@ -74,7 +80,8 @@ Management.propTypes = {
   history: PropTypes.array.isRequired,
   activeModal: PropTypes.string,
   formType: PropTypes.string.isRequired,
-  popout: PropTypes.object
+  popout: PropTypes.object,
+  closeModal: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Management);
