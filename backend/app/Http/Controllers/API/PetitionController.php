@@ -27,7 +27,7 @@ class PetitionController extends Controller
         if (empty($petitionId)) {
             return new ErrorResponse(400, 'Invalid params');
         }
-        return new OkResponse(Petition::getPetitions([$petitionId], $withOwner = true, [], true, $request->userId, true, false, $defaultImages));
+        return new OkResponse(Petition::getPetitions([$petitionId], true, [], true, $request->userId, true, true, $defaultImages));
     }
 
     public function store(SignRequest $request)
@@ -87,6 +87,8 @@ class PetitionController extends Controller
                 $title = Petition::filterString($title);
                 $text = Petition::filterString($text);
                 $directedTo = Petition::filterString($directedTo);
+                $directedTo = isset($directedTo) ? $directedTo : null;
+
                 if (empty($title) || empty($text) || empty($needSignatures)) {
                     return new ErrorResponse(400, 'Invalid params');
                 }

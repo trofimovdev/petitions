@@ -39,18 +39,18 @@ body[scheme="space_gray"] {
 .Petition--signed > .Panel__in {
   padding-bottom: calc(102px + var(--safe-area-inset-bottom)) !important; }
 
-.Petition__header .PanelHeader__in {
-  transition: .15s; }
-
 .Petition__header .PanelHeaderButton {
   color: #fff !important; }
 
-.Petition__header__hidden .PanelHeader__in {
+.Petition__header__hidden .PanelHeader__in,
+.Petition__header__hidden .PanelHeader__fixed {
   background: transparent !important; }
 
-.Petition__header__shown .PanelHeader__in {
+.Petition__header__shown .PanelHeader__in,
+.Petition__header__shown .PanelHeader__fixed {
   background: var(--background_content) !important; }
-  .Petition__header__shown .PanelHeader__in .PanelHeaderButton {
+  .Petition__header__shown .PanelHeader__in .PanelHeaderButton,
+  .Petition__header__shown .PanelHeader__fixed .PanelHeaderButton {
     color: #AAAEB2 !important; }
 
 .Petition__image {

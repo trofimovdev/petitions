@@ -227,7 +227,7 @@ const Petition = ({
                   href={
                     parseInt(currentPetition.owner_id) < 0
                       ? `https://vk.com/${currentPetition.owner.screen_name}`
-                      : `https://vk.com/id${currentPetition.user_id}`
+                      : `https://vk.com/id${currentPetition.owner_id}`
                   }
                   target="_blank"
                   rel="noopener noreferrer"
@@ -242,7 +242,7 @@ const Petition = ({
                 href={
                   parseInt(currentPetition.owner_id) < 0
                     ? `https://vk.com/${currentPetition.owner.screen_name}`
-                    : `https://vk.com/id${currentPetition.user_id}`
+                    : `https://vk.com/id${currentPetition.owner_id}`
                 }
                 target="_blank"
                 rel="noopener noreferrer"

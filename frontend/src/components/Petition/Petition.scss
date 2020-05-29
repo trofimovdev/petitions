@@ -10,20 +10,18 @@
     padding-bottom: calc(102px + var(--safe-area-inset-bottom)) !important; // 102px - высота таббара
   }
 
-  &__header .PanelHeader__in {
-    transition: .15s;
-  }
-
   &__header {
     .PanelHeaderButton {
       color: #fff !important;
     }
 
-    &__hidden .PanelHeader__in {
+    &__hidden .PanelHeader__in,
+    &__hidden .PanelHeader__fixed {
       background: transparent !important;
     }
 
-    &__shown .PanelHeader__in {
+    &__shown .PanelHeader__in,
+    &__shown .PanelHeader__fixed {
       background: var(--background_content) !important;
       .PanelHeaderButton {
         color: $petition-back-button-color !important;

@@ -476,6 +476,9 @@ const PetitionModal = ({
                   })
                   .catch(() => closePopout());
               };
+              img.onerror = () => {
+                closePopout();
+              };
               img.src = currentPetition.mobile_photo_url;
             }}
           >
