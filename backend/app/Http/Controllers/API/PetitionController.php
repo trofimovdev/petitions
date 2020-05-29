@@ -25,7 +25,7 @@ class PetitionController extends Controller
         $petitionId = (int)$petitionId;
         $defaultImages = (bool)($request->type !== Petition::ACTION_TYPE_EDIT);
         if (empty($petitionId)) {
-            return new ErrorResponse(400, 'Invalid params');
+            return new ErrorResponse(400, 'Недействительные параметры');
         }
         return new OkResponse(Petition::getPetitions([$petitionId], true, [], true, $request->userId, true, true, $defaultImages));
     }
@@ -33,7 +33,7 @@ class PetitionController extends Controller
     public function store(SignRequest $request)
     {
         if (User::checkIsBanned($request->userId)) {
-            return new ErrorResponse(403, 'Suspicious account');
+            return new ErrorResponse(403, 'Подозрительный аккаунт');
         }
 
         $type = (string)$request->type;
@@ -51,7 +51,7 @@ class PetitionController extends Controller
         switch ($type) {
             case 'create':
                 if (!empty($request->viewerGroupRole) && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
-                    return new ErrorResponse(403, 'Access denied');
+                    return new ErrorResponse(403, 'Доступ запрещен');
                 }
 
                 $title = (string)$request->title;
@@ -90,7 +90,7 @@ class PetitionController extends Controller
                 $directedTo = isset($directedTo) ? $directedTo : null;
 
                 if (empty($title) || empty($text) || empty($needSignatures)) {
-                    return new ErrorResponse(400, 'Invalid params');
+                    return new ErrorResponse(400, 'Недействительные параметры');
                 }
 
                 if (mb_strlen($title) === 0 || mb_strlen($title) > 150 ||
@@ -136,25 +136,25 @@ class PetitionController extends Controller
     public function destroy(SignRequest $request, $petitionId)
     {
         if (!empty($request->viewerGroupRole) && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
-            return new ErrorResponse(403, 'Access denied');
+            return new ErrorResponse(403, 'Доступ запрещен');
         }
 
         $petitionId = (int)$petitionId;
         if (empty($petitionId)) {
-            return new ErrorResponse(400, 'Invalid params');
+            return new ErrorResponse(400, 'Недействительные параметры');
         }
 
         if (User::checkIsBanned($request->userId)) {
-            return new ErrorResponse(403, 'Suspicious account');
+            return new ErrorResponse(403, 'Подозрительный аккаунт');
         }
 
         $petition = Petition::where('id', '=', $petitionId)
             ->first();
         if (!$petition) {
-            return new ErrorResponse(404, 'Petition not found');
+            return new ErrorResponse(404, 'Петиция не найдена');
         }
         if ($petition['owner_id'] !== $request->userId) {
-            return new ErrorResponse(403, 'Access denied');
+            return new ErrorResponse(403, 'Доступ запрещен');
         }
 
         if (!is_null($petition->mobile_photo_url)) {
@@ -172,16 +172,16 @@ class PetitionController extends Controller
     public function update(SignRequest $request, $petitionId)
     {
         if ($request->groupId && !empty($request->viewerGroupRole) && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
-            return new ErrorResponse(403, 'Access denied');
+            return new ErrorResponse(403, 'Доступ запрещен');
         }
 
         $petitionId = (int)$petitionId;
         if (empty($petitionId)) {
-            return new ErrorResponse(400, 'Invalid params');
+            return new ErrorResponse(400, 'Недействительные параметры');
         }
 
         if (User::checkIsBanned($request->userId)) {
-            return new ErrorResponse(403, 'Suspicious account');
+            return new ErrorResponse(403, 'Подозрительный аккаунт');
         }
 
         $petition = Petition::where('id', '=', $petitionId)
@@ -190,7 +190,7 @@ class PetitionController extends Controller
             return new ErrorResponse(404, 'Петиция не найдена');
         }
         if (!$request->groupId && $petition['owner_id'] !== $request->userId) {
-            return new ErrorResponse(403, 'Access denied');
+            return new ErrorResponse(403, 'Доступ запрещен');
         }
         if ($petition['completed'] && is_null($request->completed)) {
             return new ErrorResponse(403, 'Петиция уже завершена');

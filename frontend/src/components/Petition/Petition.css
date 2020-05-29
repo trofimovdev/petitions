@@ -107,6 +107,9 @@ body[scheme="space_gray"] {
 .Petition__link {
   font-weight: 600; }
 
+.Petition .Snackbar {
+  padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; }
+
 .Petition .PullToRefresh--ios {
   margin-top: calc(0px - var(--safe-area-inset-top) - var(--panelheader_height_ios)) !important; }
 

@@ -105,6 +105,10 @@
   &__link {
     font-weight: 600;
   }
+
+  .Snackbar {
+    padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
+  }
 }
 
 .Petition .PullToRefresh {

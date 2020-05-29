@@ -3,7 +3,8 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding-bottom: var(--safe-area-inset-bottom) !important; }
+  padding-bottom: var(--safe-area-inset-bottom) !important;
+  z-index: 10; }
   .PetitionTabbar--signed {
     height: calc(102px + var(--safe-area-inset-bottom)) !important; }
   .PetitionTabbar__signed {

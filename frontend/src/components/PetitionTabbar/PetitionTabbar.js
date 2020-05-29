@@ -63,14 +63,14 @@ const PetitionTabbar = ({
           });
           signedPetitions.unshift(currentPetition);
           setSigned(signedPetitions);
-          setFetchingStatus(false);
           api.notificationOccurred("success").catch(() => {});
+          setFetchingStatus(false);
         }
       })
       .catch(({ message }) => {
-        setFetchingStatus(false);
         setSnackbarError(message);
         api.selectionChanged().catch(() => {});
+        setFetchingStatus(false);
       });
   };
 
@@ -88,14 +88,14 @@ const PetitionTabbar = ({
               return item.id !== currentPetition.id;
             })
           );
-          setFetchingStatus(false);
           api.selectionChanged().catch(() => {});
+          setFetchingStatus(false);
         }
       })
       .catch(({ code, message }) => {
-        setFetchingStatus(false);
         setSnackbarError(message);
         api.selectionChanged().catch(() => {});
+        setFetchingStatus(false);
       });
   };
 
