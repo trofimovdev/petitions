@@ -60,7 +60,6 @@ const initPetitions = launchParameters => {
   });
 };
 
-api.initApp();
 api.onUpdateConfig(({ scheme }) => {
   store.dispatch(setColorScheme(scheme));
   console.log(scheme);
@@ -91,6 +90,8 @@ api.onUpdateConfig(({ scheme }) => {
 window.addEventListener("popstate", () => {
   store.dispatch(goBack());
 });
+
+api.initApp();
 
 let isAppUser = false;
 api

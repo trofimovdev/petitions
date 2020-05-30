@@ -167,6 +167,7 @@ const PetitionTabbar = ({
               signPetition();
             }
           }}
+          disabled={fetchingStatus}
         >
           {!fetchingStatus ? (
             currentPetition.completed ? (

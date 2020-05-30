@@ -45,7 +45,7 @@ const EditPetitionDesktop = ({
   launchParameters
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(null);
-  const [ts, setTs] = useState(undefined);
+  const [ts, setTs] = useState({ time: undefined, message: undefined });
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
 
   const checkFileSize = fileSize => {
@@ -86,7 +86,7 @@ const EditPetitionDesktop = ({
 
   const onChange = e => {
     const { name, value } = e.currentTarget;
-    setForm({ ...form, ...{ [name]: value } });
+    setForm({ ...form, ...{ [name]: value.replace(/[^\x00-\x7F]/g, "") } });
   };
 
   const onCancel = e => {
@@ -318,11 +318,11 @@ const EditPetitionDesktop = ({
                         .catch(() => {});
                     }
                     setFetchingStatus(false);
-                    setTs(Date.now());
+                    setTs({ time: Date.now(), message: "Изменения сохранены" });
                   })
                   .catch(({ message }) => {
                     setFetchingStatus(false);
-                    // error {{ message }}
+                    setTs({ time: Date.now(), message });
                   });
                 return;
               }
@@ -406,19 +406,17 @@ const EditPetitionDesktop = ({
                   });
                   setPage("done", "");
                 })
-                .catch(({ code, message }) => {
+                .catch(({ message }) => {
                   setFetchingStatus(false);
-                  // error {{ message }}
+                  setTs({ time: Date.now(), message });
                 });
             }}
           >
             {buttonText}
           </Button>
-          {formType === "edit" && (
-            <FadeInOut ts={ts}>
-              <Gray>Изменения сохранены</Gray>
-            </FadeInOut>
-          )}
+          <FadeInOut ts={ts.time}>
+            <Gray>{ts.message}</Gray>
+          </FadeInOut>
         </Div>
       </Div>
     </div>

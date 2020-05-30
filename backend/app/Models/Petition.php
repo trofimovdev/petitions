@@ -199,7 +199,7 @@ class Petition extends Model
 
     public static function filterString(string $string)
     {
-        return preg_replace("/[^\Wa-zA-Z0-9 ]/", "", $string);
+        return preg_replace("/[^[:print:]\s]/", "", $string);
     }
 
     public static function exifRotate($image)

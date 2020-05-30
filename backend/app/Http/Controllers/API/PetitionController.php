@@ -87,7 +87,7 @@ class PetitionController extends Controller
                 $title = Petition::filterString($title);
                 $text = Petition::filterString($text);
                 $directedTo = Petition::filterString($directedTo);
-                $directedTo = isset($directedTo) ? $directedTo : null;
+                $directedTo = isset($directedTo) && !is_null($directedTo) ? $directedTo : null;
 
                 if (empty($title) || empty($text) || empty($needSignatures)) {
                     return new ErrorResponse(400, 'Недействительные параметры');
@@ -196,11 +196,14 @@ class PetitionController extends Controller
             return new ErrorResponse(403, 'Петиция уже завершена');
         }
 
+        $title = Petition::filterString((string)$request->title);
+        $text = Petition::filterString((string)$request->text);
+
         $data = [];
-        if (!is_null($request->title)) {
+        if (!is_null($title)) {
             $data['title'] = Petition::filterString((string)$request->title);
         }
-        if (!is_null($request->text)) {
+        if (!is_null($text)) {
             $data['text'] = Petition::filterString((string)$request->text);
         }
         if (!is_null($request->need_signatures)) {

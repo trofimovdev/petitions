@@ -88,7 +88,7 @@ const EditPetition = ({
 
   const onChange = e => {
     const { name, value } = e.currentTarget;
-    setForm({ ...form, ...{ [name]: value } });
+    setForm({ ...form, ...{ [name]: value.replace(/[^\x00-\x7F]/g, "") } });
   };
 
   const onCancel = e => {
@@ -118,6 +118,7 @@ const EditPetition = ({
       reader.readAsDataURL(files[0]);
     }
   };
+
 
   return (
     <Panel id={id} separator={false} className="EditPetition">
