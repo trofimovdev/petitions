@@ -62,7 +62,6 @@ const initPetitions = launchParameters => {
 
 api.onUpdateConfig(({ scheme }) => {
   store.dispatch(setColorScheme(scheme));
-  console.log(scheme);
   setTimeout(() => {
     switch (scheme) {
       case "space_gray":
@@ -133,7 +132,10 @@ api
           .then(() => {
             store.dispatch(setCurrent({ id: petitionId[1] }));
           })
-          .catch(() => {});
+          .catch(() => {
+            store.dispatch(setPage("petitions", "feed"));
+            store.dispatch(setInitError(true));
+          });
         return;
       }
     } else if (!isAppUser) {

@@ -95,7 +95,7 @@ class PetitionController extends Controller
 
                 if (mb_strlen($title) === 0 || mb_strlen($title) > 150 ||
                     mb_strlen($text) === 0 || mb_strlen($text) > 3000 ||
-                    $needSignatures === 0 || $needSignatures > 10000000 ||
+                    $needSignatures < 1 || $needSignatures > 10000000 ||
                     mb_strlen($directedTo) > 255
                 ) {
                     return new ErrorResponse(400, 'Превышены ограничения');
@@ -214,6 +214,14 @@ class PetitionController extends Controller
         }
         if (!is_null($request->completed)) {
             $data['completed'] = (bool)$request->completed;
+        }
+
+        if ((isset($data['title']) && (mb_strlen($data['title']) === 0 || mb_strlen($data['title']) > 150)) ||
+            (isset($data['text']) && (mb_strlen($data['text']) === 0 || mb_strlen($data['text']) > 3000)) ||
+            (isset($data['need_signatures']) && ($data['need_signatures'] < 1 || $data['need_signatures'] > 10000000)) ||
+            (isset($data['directed_to']) && mb_strlen($data['directed_to']) > 255)
+        ) {
+            return new ErrorResponse(400, 'Превышены ограничения');
         }
 
         $photo = null;

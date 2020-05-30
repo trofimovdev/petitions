@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Button } from "@happysanta/vk-app-ui";
+import { Button, Notify } from "@happysanta/vk-app-ui";
 import {
   Avatar,
   Cell,
@@ -10,7 +10,8 @@ import {
   Placeholder,
   Separator,
   Spinner,
-  UsersStack
+  UsersStack,
+  Div
 } from "@vkontakte/vkui";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import "./PetitionDesktop.css";
@@ -30,7 +31,6 @@ const PetitionDesktop = ({
   setCurrent,
   launchParameters,
   currentPetition,
-  setLaunchParameters,
   setPage,
   signedPetitions,
   setSigned
@@ -38,6 +38,7 @@ const PetitionDesktop = ({
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [shareLoadingStatus, setShareLoadingStatus] = useState(false);
+  const [initError, setInitError] = useState(undefined);
 
   useEffect(() => {
     if (currentPetition.id) {
@@ -53,7 +54,7 @@ const PetitionDesktop = ({
                 setCurrent(response[0]);
               }
             })
-            .catch(() => {});
+            .catch(() => setInitError(true));
         } else {
           loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
             .then(response => {
@@ -62,7 +63,7 @@ const PetitionDesktop = ({
                 setCurrent(response[0]);
               }
             })
-            .catch(() => {});
+            .catch(() => setInitError(true));
         }
       }
     }
@@ -117,7 +118,15 @@ const PetitionDesktop = ({
 
   return (
     <div id={id} className="PetitionDesktop">
-      {Object.keys(currentPetition).length < 3 && !loadingStatus ? (
+      {initError ? (
+        <Div>
+          <Notify type="error">
+            <strong>Что-то пошло не так...</strong>
+            <br />
+            Попробуйте еще раз через несколько минут
+          </Notify>
+        </Div>
+      ) : Object.keys(currentPetition).length < 3 && !loadingStatus ? (
         <Placeholder
           action={
             <Button
@@ -247,7 +256,8 @@ const PetitionDesktop = ({
                 {parseInt(currentPetition.owner_id) < 0
                   ? `${currentPetition.owner.name}`
                   : `${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
-              </Link>{parseInt(currentPetition.owner_id) < 0 && "» "}
+              </Link>
+              {parseInt(currentPetition.owner_id) < 0 && "» "}
               {`${
                 parseInt(currentPetition.owner_id) < 0
                   ? "создало "
@@ -323,7 +333,6 @@ PetitionDesktop.propTypes = {
   setCurrent: PropTypes.func.isRequired,
   launchParameters: PropTypes.object.isRequired,
   currentPetition: PropTypes.object,
-  setLaunchParameters: PropTypes.func.isRequired,
   setPage: PropTypes.func.isRequired,
   signedPetitions: PropTypes.array,
   setSigned: PropTypes.func.isRequired
