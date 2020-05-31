@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {Avatar, Div, Snackbar} from "@vkontakte/vkui";
+import { Avatar, Div, Snackbar } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./EditPetitionDesktop.css";
 import Icon48Camera from "@vkontakte/icons/dist/48/camera";
@@ -141,24 +141,26 @@ const EditPetitionDesktop = ({
         goBack={() => setPage("petitions", "")}
       />
       <Div className="form">
-        <Div
-          className={`form__row ${
-            form.title && form.title.length > 150 ? "form__row_error" : ""
-          }`}
-        >
-          <label htmlFor="title">Название петиции</label>
-          <Input
-            id="title"
-            name="title"
-            type="text"
-            value={form.title ? form.title : ""}
-            onChange={onChange}
-            placeholder="Введите название"
-          />
-          <p className="form__row_error__text">
-            Слишком длинное название петиции
-          </p>
-        </Div>
+        {formType === "create" && (
+          <Div
+            className={`form__row ${
+              form.title && form.title.length > 150 ? "form__row_error" : ""
+            }`}
+          >
+            <label htmlFor="title">Название петиции</label>
+            <Input
+              id="title"
+              name="title"
+              type="text"
+              value={form.title ? form.title : ""}
+              onChange={onChange}
+              placeholder="Введите название"
+            />
+            <p className="form__row_error__text">
+              Слишком длинное название петиции
+            </p>
+          </Div>
+        )}
 
         <Div
           className={`form__row ${
@@ -375,17 +377,6 @@ const EditPetitionDesktop = ({
                     mobile_photo_url: response.mobile_photo_url,
                     web_photo_url: response.web_photo_url
                   });
-                  // setManaged(
-                  //   [
-                  //     {
-                  //       id: response.id,
-                  //       title: response.title,
-                  //       web_photo_url: response.web_photo_url,
-                  //       count_signatures: response.count_signatures,
-                  //       need_signatures: response.need_signatures
-                  //     }
-                  //   ].concat(managedPetitions)
-                  // );
                   if (
                     launchParameters.vk_access_token_settings.includes(
                       "friends"
