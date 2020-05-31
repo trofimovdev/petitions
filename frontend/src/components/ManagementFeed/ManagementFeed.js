@@ -41,7 +41,10 @@ import {
   setManaged,
   setFormType,
   setEdit,
-  setInitialEdit
+  setInitialEdit,
+  setLast,
+  setPopular,
+  setSigned
 } from "../../store/petitions/actions";
 import FriendsCard from "../FriendsCard/FriendsCard";
 import { loadPetitions, loadPhoto } from "../../tools/helpers";
@@ -62,7 +65,13 @@ const ManagementFeed = ({
   setFormType,
   setEdit,
   setInitialEdit,
-  initError
+  initError,
+  setLast,
+  lastPetitions,
+  setPopular,
+  popularPetitions,
+  setSigned,
+  signedPetitions
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
@@ -171,16 +180,30 @@ const ManagementFeed = ({
                 { completed: false },
                 "PATCH"
               )
-                .then(response => {
-                  setManaged(
-                    managedPetitions.map((item, index) => {
-                      if (item.id === petitionId) {
-                        item.completed = false;
-                        return item;
-                      }
-                      return item;
-                    })
-                  );
+                .then(() => {
+                  if (
+                    launchParameters.vk_access_token_settings.includes(
+                      "friends"
+                    )
+                  ) {
+                    loadPetitions("petitions", true)
+                      .then(response => {
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
+                      })
+                      .catch(() => {});
+                  } else {
+                    loadPetitions("petitions", false)
+                      .then(response => {
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
+                      })
+                      .catch(() => {});
+                  }
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -239,14 +262,24 @@ const ManagementFeed = ({
                 { completed: true },
                 "PATCH"
               )
-                .then(response => {
+                .then(() => {
                   setManaged(
-                    managedPetitions.map((item, index) => {
+                    managedPetitions.map(item => {
                       if (item.id === petitionId) {
                         item.completed = true;
                         return item;
                       }
                       return item;
+                    })
+                  );
+                  setLast(
+                    lastPetitions.filter(item => {
+                      return item.id !== petitionId;
+                    })
+                  );
+                  setPopular(
+                    popularPetitions.filter(item => {
+                      return item.id !== petitionId;
                     })
                   );
                   setSnackbar(
@@ -321,6 +354,21 @@ const ManagementFeed = ({
                               return item.id !== petitionId;
                             })
                           );
+                          setLast(
+                            lastPetitions.filter(item => {
+                              return item.id !== petitionId;
+                            })
+                          );
+                          setPopular(
+                            popularPetitions.filter(item => {
+                              return item.id !== petitionId;
+                            })
+                          );
+                          setSigned(
+                            signedPetitions.filter(item => {
+                              return item.id !== petitionId;
+                            })
+                          );
                           setSnackbar(
                             <Snackbar
                               layout="vertical"
@@ -344,7 +392,7 @@ const ManagementFeed = ({
                             </Snackbar>
                           );
                         })
-                        .catch(({ message }) => {
+                        .catch(() => {
                           closePopout();
                           setSnackbar(
                             <Snackbar
@@ -620,7 +668,10 @@ const mapStateToProps = state => {
     activePanel: state.router.activePanel,
     managedPetitions: state.petitions.managed,
     launchParameters: state.data.launchParameters,
-    initError: state.data.initError
+    initError: state.data.initError,
+    lastPetitions: state.petitions.last,
+    popularPetitions: state.petitions.popular,
+    signedPetitions: state.petitions.signed
   };
 };
 
@@ -636,7 +687,10 @@ const mapDispatchToProps = dispatch => {
         closePopout,
         setFormType,
         setEdit,
-        setInitialEdit
+        setInitialEdit,
+        setLast,
+        setPopular,
+        setSigned
       },
       dispatch
     )
@@ -656,7 +710,13 @@ ManagementFeed.propTypes = {
   setFormType: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setInitialEdit: PropTypes.func.isRequired,
-  initError: PropTypes.bool
+  initError: PropTypes.bool,
+  setLast: PropTypes.func.isRequired,
+  lastPetitions: PropTypes.array,
+  setPopular: PropTypes.func.isRequired,
+  popularPetitions: PropTypes.array,
+  setSigned: PropTypes.func.isRequired,
+  signedPetitions: PropTypes.array
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManagementFeed);

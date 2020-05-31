@@ -219,7 +219,7 @@ const PetitionCardDesktop = ({
                         { completed: false },
                         "PATCH"
                       )
-                        .then(response => {
+                        .then(() => {
                           if (
                             launchParameters.vk_access_token_settings.includes(
                               "friends"
@@ -252,7 +252,7 @@ const PetitionCardDesktop = ({
                       { completed: true },
                       "PATCH"
                     )
-                      .then(response => {
+                      .then(() => {
                         if (
                           launchParameters.vk_access_token_settings.includes(
                             "friends"

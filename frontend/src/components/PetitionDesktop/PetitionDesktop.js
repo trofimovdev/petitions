@@ -19,7 +19,13 @@ import Icon16Chevron from "@vkontakte/icons/dist/16/chevron";
 import Icon24ShareOutline from "@vkontakte/icons/dist/24/share_outline";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import { userStackText, loadPetitions } from "../../tools/helpers";
-import { setCurrent, setSigned } from "../../store/petitions/actions";
+import {
+  setCurrent,
+  setLast,
+  setManaged,
+  setPopular,
+  setSigned
+} from "../../store/petitions/actions";
 import { setLaunchParameters } from "../../store/data/actions";
 import { setPage } from "../../store/router/actions";
 import Backend from "../../tools/Backend";
@@ -33,7 +39,13 @@ const PetitionDesktop = ({
   currentPetition,
   setPage,
   signedPetitions,
-  setSigned
+  setSigned,
+  setLast,
+  lastPetitions,
+  setPopular,
+  popularPetitions,
+  setManaged,
+  managedPetitions
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
@@ -84,8 +96,35 @@ const PetitionDesktop = ({
             ...currentPetition,
             ...{ signed: true, count_signatures: parseInt(r) }
           });
-          signedPetitions.unshift(currentPetition);
+          signedPetitions.unshift({
+            ...currentPetition,
+            ...{ signed: true, count_signatures: parseInt(r) }
+          });
           setSigned(signedPetitions);
+          setLast(
+            lastPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
+            })
+          );
+          setPopular(
+            popularPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
+            })
+          );
+          setManaged(
+            managedPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
+            })
+          );
           setFetchingStatus(false);
         }
       })
@@ -106,6 +145,30 @@ const PetitionDesktop = ({
           setSigned(
             signedPetitions.filter(item => {
               return item.id !== currentPetition.id;
+            })
+          );
+          setLast(
+            lastPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
+            })
+          );
+          setPopular(
+            popularPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
+            })
+          );
+          setManaged(
+            managedPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
             })
           );
           setFetchingStatus(false);
@@ -309,7 +372,10 @@ const mapStateToProps = state => {
     activeTab: state.router.activeTab.feed,
     launchParameters: state.data.launchParameters,
     currentPetition: state.petitions.current,
-    signedPetitions: state.petitions.signed
+    signedPetitions: state.petitions.signed,
+    lastPetitions: state.petitions.last,
+    popularPetitions: state.petitions.popular,
+    managedPetitions: state.petitions.managed
   };
 };
 
@@ -321,7 +387,10 @@ const mapDispatchToProps = dispatch => {
         setCurrent,
         setLaunchParameters,
         setPage,
-        setSigned
+        setSigned,
+        setLast,
+        setPopular,
+        setManaged
       },
       dispatch
     )
@@ -335,7 +404,13 @@ PetitionDesktop.propTypes = {
   currentPetition: PropTypes.object,
   setPage: PropTypes.func.isRequired,
   signedPetitions: PropTypes.array,
-  setSigned: PropTypes.func.isRequired
+  setSigned: PropTypes.func.isRequired,
+  setLast: PropTypes.func.isRequired,
+  lastPetitions: PropTypes.array,
+  setPopular: PropTypes.func.isRequired,
+  popularPetitions: PropTypes.array,
+  setManaged: PropTypes.func.isRequired,
+  managedPetitions: PropTypes.array
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionDesktop);

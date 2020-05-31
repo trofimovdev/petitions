@@ -198,18 +198,19 @@ class PetitionController extends Controller
 
         $title = Petition::filterString((string)$request->title);
         $text = Petition::filterString((string)$request->text);
+        $directedTo = Petition::filterString((string)$request->directed_to);
 
         $data = [];
-        if (!is_null($title)) {
+        if (!is_null($request->title) && !is_null($title)) {
             $data['title'] = Petition::filterString((string)$request->title);
         }
-        if (!is_null($text)) {
+        if (!is_null($request->text) && !is_null($text)) {
             $data['text'] = Petition::filterString((string)$request->text);
         }
         if (!is_null($request->need_signatures)) {
             $data['need_signatures'] = (integer)$request->need_signatures;
         }
-        if ($request->directed_to) {
+        if (!is_null($request->directed_to) && !is_null($directedTo)) {
             $data['directed_to'] = Petition::filterString((string)$request->directed_to);
         }
         if (!is_null($request->completed)) {
@@ -315,7 +316,10 @@ class PetitionController extends Controller
                 return new OkResponse(Petition::getSigned($request->userId, $offset, $friendIds));
 
             case Petition::TYPE_MANAGED:
-                return new OkResponse(Petition::getManaged($request->userId, $offset, $friendIds, $request->groupId));
+                if ($request->groupId && in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+                    return new OkResponse(Petition::getManaged($request->userId, $offset, $friendIds, $request->groupId));
+                }
+                return new OkResponse(Petition::getManaged($request->userId, $offset, $friendIds));
 
             default:
                 if ($request->groupId && in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
