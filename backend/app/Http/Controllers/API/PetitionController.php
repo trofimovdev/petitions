@@ -196,33 +196,29 @@ class PetitionController extends Controller
             return new ErrorResponse(403, 'Петиция уже завершена');
         }
 
-        $title = Petition::filterString((string)$request->title);
         $text = Petition::filterString((string)$request->text);
         $directedTo = Petition::filterString((string)$request->directed_to);
 
         $data = [];
-        if (isset($request->title) && !is_null($title)) {
-            $data['title'] = Petition::filterString((string)$request->title);
-        }
         if (isset($request->text) && !is_null($text)) {
-            $data['text'] = Petition::filterString((string)$request->text);
+            $data['text'] = $text;
         }
         if (isset($request->need_signatures)) {
             $data['need_signatures'] = (integer)$request->need_signatures;
         }
         if (isset($request->directed_to) && !is_null($directedTo)) {
-            $data['directed_to'] = Petition::filterString((string)$request->directed_to);
+            $data['directed_to'] = $directedTo;
         }
         if (isset($request->completed)) {
             $data['completed'] = (bool)$request->completed;
         }
 
-        if ((isset($data['title']) && (mb_strlen($data['title']) === 0 || mb_strlen($data['title']) > 150)) ||
+        if (
             (isset($data['text']) && (mb_strlen($data['text']) === 0 || mb_strlen($data['text']) > 3000)) ||
             (isset($data['need_signatures']) && ($data['need_signatures'] < 1 || $data['need_signatures'] > 10000000)) ||
             (isset($data['directed_to']) && mb_strlen($data['directed_to']) > 255)
         ) {
-            return new ErrorResponse(400, 'Превышены ограничения');
+            return new ErrorResponse(400, 'Недействительные параметры');
         }
 
         $photo = null;

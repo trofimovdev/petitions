@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Div } from "@vkontakte/vkui";
+import {Avatar, Div, Snackbar} from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./EditPetitionDesktop.css";
 import Icon48Camera from "@vkontakte/icons/dist/48/camera";
@@ -55,6 +55,13 @@ const EditPetitionDesktop = ({
     return true;
   };
 
+  const checkFileType = type => {
+    if (!["image/png", "image/jpeg", "image/jpg"].includes(type)) {
+      return false;
+    }
+    return true;
+  };
+
   let setForm = () => {};
   let form = {};
   let panelTitle = "";
@@ -86,7 +93,17 @@ const EditPetitionDesktop = ({
 
   const onChange = e => {
     const { name, value } = e.currentTarget;
-    setForm({ ...form, ...{ [name]: value.replace(/[^\x00-\x7F]/g, "") } });
+    setForm({
+      ...form,
+      ...{
+        [name]: value
+          .replace(/[^[:print:]\s]/, "")
+          .replace(
+            /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
+            ""
+          )
+      }
+    });
   };
 
   const onCancel = e => {
@@ -107,7 +124,7 @@ const EditPetitionDesktop = ({
         const preview = j.target.result;
         const file = files[0];
         const fileSize = j.total; // в байтах
-        if (!checkFileSize(fileSize)) {
+        if (!checkFileSize(fileSize) || !checkFileType(file.type)) {
           return;
         }
         const file_preview = `${file_id}_preview`;
