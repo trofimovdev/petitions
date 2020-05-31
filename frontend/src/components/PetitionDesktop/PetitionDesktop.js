@@ -203,7 +203,7 @@ const PetitionDesktop = ({
           }
           stretched
         >
-          Кажется, эта петиция была удалена.
+          Петиция не найдена
         </Placeholder>
       ) : Object.keys(currentPetition).length > 2 ? (
         <>

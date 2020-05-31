@@ -89,7 +89,7 @@ class PetitionController extends Controller
                 $directedTo = Petition::filterString($directedTo);
                 $directedTo = isset($directedTo) && !is_null($directedTo) ? $directedTo : null;
 
-                if (empty($title) || empty($text) || empty($needSignatures)) {
+                if (is_null($title) || is_null($text) || is_null($needSignatures)) {
                     return new ErrorResponse(400, 'Недействительные параметры');
                 }
 
@@ -98,7 +98,7 @@ class PetitionController extends Controller
                     $needSignatures < 1 || $needSignatures > 10000000 ||
                     mb_strlen($directedTo) > 255
                 ) {
-                    return new ErrorResponse(400, 'Превышены ограничения');
+                    return new ErrorResponse(400, 'Недействительные параметры');
                 }
 
                 if (!is_null($mobilePhoto)) {
@@ -201,19 +201,19 @@ class PetitionController extends Controller
         $directedTo = Petition::filterString((string)$request->directed_to);
 
         $data = [];
-        if (!is_null($request->title) && !is_null($title)) {
+        if (isset($request->title) && !is_null($title)) {
             $data['title'] = Petition::filterString((string)$request->title);
         }
-        if (!is_null($request->text) && !is_null($text)) {
+        if (isset($request->text) && !is_null($text)) {
             $data['text'] = Petition::filterString((string)$request->text);
         }
-        if (!is_null($request->need_signatures)) {
+        if (isset($request->need_signatures)) {
             $data['need_signatures'] = (integer)$request->need_signatures;
         }
-        if (!is_null($request->directed_to) && !is_null($directedTo)) {
+        if (isset($request->directed_to) && !is_null($directedTo)) {
             $data['directed_to'] = Petition::filterString((string)$request->directed_to);
         }
-        if (!is_null($request->completed)) {
+        if (isset($request->completed)) {
             $data['completed'] = (bool)$request->completed;
         }
 
