@@ -96,7 +96,7 @@ const EditPetitionTabbar = ({
                 }
               });
               Backend.request(`petitions/${form.id}`, changed, "PATCH")
-                .then(response => {
+                .then(() => {
                   if (
                     launchParameters.vk_access_token_settings.includes(
                       "friends"

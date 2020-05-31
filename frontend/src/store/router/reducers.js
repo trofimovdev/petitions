@@ -270,6 +270,7 @@ const routerReducer = (state = initialState, action) => {
     }
 
     case OPEN_MODAL: {
+      api.disableSwipeBack();
       window.history.pushState(null, null);
 
       const activeModal = action.payload || null;
@@ -302,6 +303,7 @@ const routerReducer = (state = initialState, action) => {
     }
 
     case CLOSE_MODAL: {
+      api.enableSwipeBack();
       const activeModal =
         state.modalHistory[state.activeView][
           state.modalHistory[state.activeView].length - 2

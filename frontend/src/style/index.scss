@@ -1,12 +1,15 @@
 @import "_vars.scss";
 
+* {
+  font-family: -apple-system, BlinkMacSystemFont, Arial, Roboto, Open Sans, Helvetica Neue, Roboto, sans-serif !important;
+}
+
 body {
   margin: 0;
   padding: 0;
   background: #FFF;
   color: #000;
   direction: ltr;
-  font-family: -apple-system, BlinkMacSystemFont, Roboto, Open Sans, Helvetica Neue, sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

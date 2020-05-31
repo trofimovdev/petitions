@@ -27,7 +27,10 @@ import {
   setSigned,
   setFormType,
   setEdit,
-  setInitialEdit
+  setInitialEdit,
+  setLast,
+  setPopular,
+  setManaged
 } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
 import { loadPetitions, loadPhoto } from "../../tools/helpers";
@@ -48,7 +51,13 @@ const PetitionTabbar = ({
   setInitialEdit,
   openPopout,
   closePopout,
-  setSnackbarError
+  setSnackbarError,
+  setLast,
+  lastPetitions,
+  setPopular,
+  popularPetitions,
+  setManaged,
+  managedPetitions
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
 
@@ -61,16 +70,43 @@ const PetitionTabbar = ({
             ...currentPetition,
             ...{ signed: true, count_signatures: parseInt(r) }
           });
-          signedPetitions.unshift(currentPetition);
+          signedPetitions.unshift({
+            ...currentPetition,
+            ...{ signed: true, count_signatures: parseInt(r) }
+          });
           setSigned(signedPetitions);
-          setFetchingStatus(false);
+          setLast(
+            lastPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
+            })
+          );
+          setPopular(
+            popularPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
+            })
+          );
+          setManaged(
+            managedPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
+            })
+          );
           api.notificationOccurred("success").catch(() => {});
+          setFetchingStatus(false);
         }
       })
       .catch(({ message }) => {
-        setFetchingStatus(false);
         setSnackbarError(message);
         api.selectionChanged().catch(() => {});
+        setFetchingStatus(false);
       });
   };
 
@@ -88,14 +124,38 @@ const PetitionTabbar = ({
               return item.id !== currentPetition.id;
             })
           );
-          setFetchingStatus(false);
+          setLast(
+            lastPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
+            })
+          );
+          setPopular(
+            popularPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
+            })
+          );
+          setManaged(
+            managedPetitions.map(item => {
+              if (item.id === currentPetition.id) {
+                item.count_signatures = r;
+              }
+              return item;
+            })
+          );
           api.selectionChanged().catch(() => {});
+          setFetchingStatus(false);
         }
       })
-      .catch(({ code, message }) => {
-        setFetchingStatus(false);
+      .catch(({ message }) => {
         setSnackbarError(message);
         api.selectionChanged().catch(() => {});
+        setFetchingStatus(false);
       });
   };
 
@@ -167,6 +227,7 @@ const PetitionTabbar = ({
               signPetition();
             }
           }}
+          disabled={fetchingStatus}
         >
           {!fetchingStatus ? (
             currentPetition.completed ? (
@@ -190,7 +251,10 @@ const PetitionTabbar = ({
         >
           <Icon28ShareOutline />
         </Button>
-        {currentPetition.owner_id === parseInt(launchParameters.vk_user_id) && (
+        {(currentPetition.owner_id === parseInt(launchParameters.vk_user_id) ||
+          ["moder", "editor", "admin"].includes(
+            launchParameters.vk_viewer_group_role
+          )) && (
           <Button
             size="l"
             mode="secondary"
@@ -265,7 +329,10 @@ const mapStateToProps = state => {
     currentPetition: state.petitions.current,
     launchParameters: state.data.launchParameters,
     signedPetitions: state.petitions.signed,
-    activeView: state.router.activeView
+    activeView: state.router.activeView,
+    lastPetitions: state.petitions.last,
+    popularPetitions: state.petitions.popular,
+    managedPetitions: state.petitions.managed
   };
 };
 
@@ -282,7 +349,10 @@ const mapDispatchToProps = dispatch => {
         setEdit,
         setInitialEdit,
         openPopout,
-        closePopout
+        closePopout,
+        setLast,
+        setPopular,
+        setManaged
       },
       dispatch
     )
@@ -303,7 +373,13 @@ PetitionTabbar.propTypes = {
   setInitialEdit: PropTypes.func.isRequired,
   openPopout: PropTypes.func.isRequired,
   closePopout: PropTypes.func.isRequired,
-  setSnackbarError: PropTypes.func.isRequired
+  setSnackbarError: PropTypes.func.isRequired,
+  setLast: PropTypes.func.isRequired,
+  lastPetitions: PropTypes.array,
+  setPopular: PropTypes.func.isRequired,
+  popularPetitions: PropTypes.array,
+  setManaged: PropTypes.func.isRequired,
+  managedPetitions: PropTypes.array
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionTabbar);

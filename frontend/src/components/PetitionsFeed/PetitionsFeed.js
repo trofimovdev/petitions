@@ -233,7 +233,7 @@ const PetitionsFeed = ({
           {currentPetitions.length === 0 && activeTab.feed === "popular" ? (
             <Footer>Скоро здесь будут популярные петиции</Footer>
           ) : currentPetitions.length === 0 && activeTab.feed === "signed" ? (
-            <Footer>Пока что вы не подписали ни одной петиции</Footer>
+            <Footer>Пока что Вы не подписали ни одной петиции</Footer>
           ) : currentPetitions.length === 0 && activeTab.feed === "last" ? (
             <Footer>Пока что нет ни одной петиции</Footer>
           ) : (currentPetitions.length > 0 && endStatus) ||

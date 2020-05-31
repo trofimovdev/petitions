@@ -45,11 +45,18 @@ const EditPetitionDesktop = ({
   launchParameters
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(null);
-  const [ts, setTs] = useState(undefined);
+  const [ts, setTs] = useState({ time: undefined, message: undefined });
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
 
   const checkFileSize = fileSize => {
     if (fileSize > MAX_FILE_SIZE) {
+      return false;
+    }
+    return true;
+  };
+
+  const checkFileType = type => {
+    if (!["image/png", "image/jpeg", "image/jpg"].includes(type)) {
       return false;
     }
     return true;
@@ -86,7 +93,17 @@ const EditPetitionDesktop = ({
 
   const onChange = e => {
     const { name, value } = e.currentTarget;
-    setForm({ ...form, ...{ [name]: value } });
+    setForm({
+      ...form,
+      ...{
+        [name]: value
+          .replace(/[^[:print:]\s]/, "")
+          .replace(
+            /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
+            ""
+          )
+      }
+    });
   };
 
   const onCancel = e => {
@@ -107,7 +124,7 @@ const EditPetitionDesktop = ({
         const preview = j.target.result;
         const file = files[0];
         const fileSize = j.total; // в байтах
-        if (!checkFileSize(fileSize)) {
+        if (!checkFileSize(fileSize) || !checkFileType(file.type)) {
           return;
         }
         const file_preview = `${file_id}_preview`;
@@ -124,24 +141,26 @@ const EditPetitionDesktop = ({
         goBack={() => setPage("petitions", "")}
       />
       <Div className="form">
-        <Div
-          className={`form__row ${
-            form.title && form.title.length > 150 ? "form__row_error" : ""
-          }`}
-        >
-          <label htmlFor="title">Название петиции</label>
-          <Input
-            id="title"
-            name="title"
-            type="text"
-            value={form.title ? form.title : ""}
-            onChange={onChange}
-            placeholder="Введите название"
-          />
-          <p className="form__row_error__text">
-            Слишком длинное название петиции
-          </p>
-        </Div>
+        {formType === "create" && (
+          <Div
+            className={`form__row ${
+              form.title && form.title.length > 150 ? "form__row_error" : ""
+            }`}
+          >
+            <label htmlFor="title">Название петиции</label>
+            <Input
+              id="title"
+              name="title"
+              type="text"
+              value={form.title ? form.title : ""}
+              onChange={onChange}
+              placeholder="Введите название"
+            />
+            <p className="form__row_error__text">
+              Слишком длинное название петиции
+            </p>
+          </Div>
+        )}
 
         <Div
           className={`form__row ${
@@ -318,11 +337,11 @@ const EditPetitionDesktop = ({
                         .catch(() => {});
                     }
                     setFetchingStatus(false);
-                    setTs(Date.now());
+                    setTs({ time: Date.now(), message: "Изменения сохранены" });
                   })
                   .catch(({ message }) => {
                     setFetchingStatus(false);
-                    // error {{ message }}
+                    setTs({ time: Date.now(), message });
                   });
                 return;
               }
@@ -358,17 +377,6 @@ const EditPetitionDesktop = ({
                     mobile_photo_url: response.mobile_photo_url,
                     web_photo_url: response.web_photo_url
                   });
-                  // setManaged(
-                  //   [
-                  //     {
-                  //       id: response.id,
-                  //       title: response.title,
-                  //       web_photo_url: response.web_photo_url,
-                  //       count_signatures: response.count_signatures,
-                  //       need_signatures: response.need_signatures
-                  //     }
-                  //   ].concat(managedPetitions)
-                  // );
                   if (
                     launchParameters.vk_access_token_settings.includes(
                       "friends"
@@ -406,19 +414,17 @@ const EditPetitionDesktop = ({
                   });
                   setPage("done", "");
                 })
-                .catch(({ code, message }) => {
+                .catch(({ message }) => {
                   setFetchingStatus(false);
-                  // error {{ message }}
+                  setTs({ time: Date.now(), message });
                 });
             }}
           >
             {buttonText}
           </Button>
-          {formType === "edit" && (
-            <FadeInOut ts={ts}>
-              <Gray>Изменения сохранены</Gray>
-            </FadeInOut>
-          )}
+          <FadeInOut ts={ts.time}>
+            <Gray>{ts.message}</Gray>
+          </FadeInOut>
         </Div>
       </Div>
     </div>

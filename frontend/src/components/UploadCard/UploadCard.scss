@@ -34,6 +34,7 @@
     border: 1px solid var(--field_border);
     border-width: 0.5px;
     overflow: hidden;
+    z-index: 3;
 
     &__cancel-button {
       position: absolute;

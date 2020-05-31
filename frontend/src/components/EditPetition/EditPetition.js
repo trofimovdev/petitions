@@ -61,6 +61,31 @@ const EditPetition = ({
     return true;
   };
 
+  const checkFileType = type => {
+    if (!["image/png", "image/jpeg", "image/jpg"].includes(type)) {
+      setSnackbar(
+        <Snackbar
+          layout="vertical"
+          onClose={() => setSnackbar()}
+          before={
+            <Avatar
+              size={24}
+              style={{
+                backgroundColor: "var(--destructive)"
+              }}
+            >
+              <Icon24Cancel fill="#fff" width={14} height={14} />
+            </Avatar>
+          }
+        >
+          Это не изображение
+        </Snackbar>
+      );
+      return false;
+    }
+    return true;
+  };
+
   let setForm = () => {};
   let form = {};
   let panelTitle = "";
@@ -88,7 +113,17 @@ const EditPetition = ({
 
   const onChange = e => {
     const { name, value } = e.currentTarget;
-    setForm({ ...form, ...{ [name]: value } });
+    setForm({
+      ...form,
+      ...{
+        [name]: value
+          .replace(/[^[:print:]\s]/g, "")
+          .replace(
+            /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
+            ""
+          )
+      }
+    });
   };
 
   const onCancel = e => {
@@ -109,9 +144,10 @@ const EditPetition = ({
         const preview = j.target.result;
         const file = files[0];
         const fileSize = j.total; // в байтах
-        if (!checkFileSize(fileSize)) {
+        if (!checkFileSize(fileSize) || !checkFileType(file.type)) {
           return;
         }
+        // const ext = /[^.]+$/.exec(filename)
         const file_preview = `${file_id}_preview`;
         setForm({ ...form, ...{ [file_preview]: preview, [file_id]: file } });
       };
@@ -136,21 +172,23 @@ const EditPetition = ({
         {panelTitle}
       </PanelHeader>
       <FormLayout className="EditForm">
-        <Input
-          type="text"
-          top="Название"
-          // TODO: вынести в константу с бэкенда
-          status={form.title && form.title.length > 150 ? "error" : ""}
-          bottom={
-            form.title && form.title.length > 150
-              ? "Слишком длинное название петиции"
-              : ""
-          }
-          value={form.title ? form.title : ""}
-          name="title"
-          onChange={onChange}
-          placeholder="Введите название"
-        />
+        {formType === "create" && (
+          <Input
+            type="text"
+            top="Название"
+            // TODO: вынести в константу с бэкенда
+            status={form.title && form.title.length > 150 ? "error" : ""}
+            bottom={
+              form.title && form.title.length > 150
+                ? "Слишком длинное название петиции"
+                : ""
+            }
+            value={form.title ? form.title : ""}
+            name="title"
+            onChange={onChange}
+            placeholder="Введите название"
+          />
+        )}
         <Textarea
           name="text"
           top="Текст петиции"

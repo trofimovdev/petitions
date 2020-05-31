@@ -4,6 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
+import bridge from "@vkontakte/vk-bridge";
 import store from "./store";
 import "./style/index.css";
 import App from "./App";
@@ -42,7 +43,6 @@ const initPetitions = launchParameters => {
           resolve();
         })
         .catch(() => {
-          console.log("asfdfsdsdf");
           store.dispatch(setInitError(true));
           reject();
         });
@@ -53,7 +53,6 @@ const initPetitions = launchParameters => {
           resolve();
         })
         .catch(() => {
-          console.log("kiokkiik");
           store.dispatch(setInitError(true));
           reject();
         });
@@ -61,14 +60,37 @@ const initPetitions = launchParameters => {
   });
 };
 
-api.initApp();
 api.onUpdateConfig(({ scheme }) => {
   store.dispatch(setColorScheme(scheme));
+  setTimeout(() => {
+    switch (scheme) {
+      case "space_gray":
+        bridge
+          .send("VKWebAppSetViewSettings", {
+            status_bar_style: "light",
+            action_bar_color: "#19191a"
+          })
+          .catch(() => {});
+        break;
+
+      default:
+      case "bright_light":
+        bridge
+          .send("VKWebAppSetViewSettings", {
+            status_bar_style: "dark",
+            action_bar_color: "#fff"
+          })
+          .catch(() => {});
+        break;
+    }
+  }, 1000);
 });
 
 window.addEventListener("popstate", () => {
   store.dispatch(goBack());
 });
+
+api.initApp();
 
 let isAppUser = false;
 api
@@ -110,7 +132,10 @@ api
           .then(() => {
             store.dispatch(setCurrent({ id: petitionId[1] }));
           })
-          .catch(() => {});
+          .catch(() => {
+            store.dispatch(setPage("petitions", "feed"));
+            store.dispatch(setInitError(true));
+          });
         return;
       }
     } else if (!isAppUser) {
