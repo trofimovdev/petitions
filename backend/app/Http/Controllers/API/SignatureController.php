@@ -17,7 +17,7 @@ class SignatureController extends Controller
     {
         $petitionId = (int)$petitionId;
         if (empty($petitionId)) {
-            return new ErrorResponse(400, 'Invalid params');
+            return new ErrorResponse(400, 'Недействительные параметры');
         }
         return new OkResponse(Signature::getUsers($petitionId, [$request->userId]));
     }
@@ -26,27 +26,27 @@ class SignatureController extends Controller
     {
         $petitionId = (int)$petitionId;
         if (empty($petitionId)) {
-            return new ErrorResponse(400, 'Invalid params');
+            return new ErrorResponse(400, 'Недействительные параметры');
         }
 
         if (User::checkIsBanned($request->userId)) {
-            return new ErrorResponse(403, 'Suspicious account');
+            return new ErrorResponse(403, 'Подозрительный аккаунт');
         }
 
         $signature = Signature::where('petition_id', '=', $petitionId)
             ->where('user_id', '=', $request->userId)
             ->exists();
         if ($signature) {
-            return new ErrorResponse(409, 'Already signed');
+            return new ErrorResponse(409, 'Петиция уже подписана');
         }
 
         $petitions = Petition::getPetitions([$petitionId]);
         if (count($petitions) !== 1) {
-            return new ErrorResponse(404, 'Petition not found');
+            return new ErrorResponse(404, 'Петиция не найдена' . count($petitions));
         }
         $petition = $petitions[0];
         if ($petition['completed'] === true) {
-            return new ErrorResponse(403, 'Signature completed');
+            return new ErrorResponse(403, 'Сбор подписей уже завершен');
         }
 
         $signature = new Signature;

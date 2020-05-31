@@ -19,10 +19,6 @@ body[scheme="space_gray"] {
       margin-bottom: 32px !important;
     }
 
-    &__in {
-      //margin-top: -20%;
-    }
-
     &__header {
       font-weight: 800;
       font-family: var(--font-tt);
@@ -39,5 +35,11 @@ body[scheme="space_gray"] {
 
   .FixedLayout--bottom {
     padding-bottom: var(--safe-area-inset-bottom) !important;
+  }
+}
+
+@media (max-height: 635px) {
+  .Placeholder__icon {
+    margin-top: -60px !important;
   }
 }

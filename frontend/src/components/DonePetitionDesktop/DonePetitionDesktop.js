@@ -37,7 +37,6 @@ const DonePetitionDesktop = ({ id, setPage, currentPetition, setCurrent }) => {
         className="DonePetitionDesktop__fixed-layout"
       >
         <a
-          href="#back"
           className="DonePetitionDesktop__fixed-layout__link"
           onClick={() => {
             setPage("petitions", "");

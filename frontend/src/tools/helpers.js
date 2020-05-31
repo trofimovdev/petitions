@@ -71,9 +71,13 @@ export const loadPetitions = (method, withFriends = true, params = {}) => {
               .then(response => {
                 resolve(response);
               })
-              .catch(e => reject(e));
+              .catch(e => {
+                reject(e);
+              });
           })
-          .catch(e => reject(e));
+          .catch(e => {
+            reject(e);
+          });
       })
       .catch(e => {
         reject(e);

@@ -274,7 +274,7 @@ const MainDesktop = ({
             ) : currentPetitions.length === 0 && activeTab === "popular" ? (
               <Footer>Скоро здесь будут популярные петиции</Footer>
             ) : currentPetitions.length === 0 && activeTab === "signed" ? (
-              <Footer>Пока что вы не подписали ни одной петиции</Footer>
+              <Footer>Пока что Вы не подписали ни одной петиции</Footer>
             ) : currentPetitions.length === 0 && activeTab === "last" ? (
               <Footer>Пока что нет ни одной петиции</Footer>
             ) : (currentPetitions.length > 0 && endStatus) ||

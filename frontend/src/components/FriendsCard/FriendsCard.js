@@ -98,7 +98,7 @@ const FriendsCard = ({
                 <Icon16Cancel />
               </div>
               <div className="FriendsCard__card__content">
-                Разрешите доступ к списку друзей, чтобы узнать кто из них уже
+                Разрешите доступ к списку друзей, чтобы узнать, кто из них уже
                 проголосовал
                 <Link
                   className="FriendsCard__card__content__link"

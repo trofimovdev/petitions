@@ -54,7 +54,9 @@ const mapStateToProps = state => {
     activeStory: state.router.activeStory,
     activeTab: state.router.activeTab,
     scrollPosition: state.router.scrollPosition,
-    history: state.router.panelsHistory[state.router.activeView] || []
+    history: !state.router.activeModals[state.router.activeView]
+      ? state.router.panelsHistory[state.router.activeView] || []
+      : []
   };
 };
 
