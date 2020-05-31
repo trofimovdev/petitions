@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Avatar, Div, Snackbar } from "@vkontakte/vkui";
+import { Div } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./EditPetitionDesktop.css";
 import Icon48Camera from "@vkontakte/icons/dist/48/camera";
