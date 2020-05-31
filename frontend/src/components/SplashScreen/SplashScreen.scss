@@ -37,3 +37,9 @@ body[scheme="space_gray"] {
     padding-bottom: var(--safe-area-inset-bottom) !important;
   }
 }
+
+@media (max-height: 635px) {
+  .Placeholder__icon {
+    margin-top: -60px !important;
+  }
+}
