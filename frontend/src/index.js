@@ -206,4 +206,7 @@ api
       </Provider>,
       document.getElementById("root")
     );
+    if (process.env.NODE_ENV === "development") {
+      import("./eruda").then(({ default: eruda }) => {});
+    }
   });

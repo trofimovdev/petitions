@@ -35,10 +35,20 @@
 
     & > * {
       margin-right: 8px;
+      white-space: nowrap;
     }
 
     & > *:last-child {
       margin-right: 0;
+    }
+  }
+}
+
+@media (max-width: 350px) {
+  .PetitionTabbar {
+    .Button--sz-xl,
+    .Button--sz-xl .Button__content {
+      padding: 0 !important;;
     }
   }
 }

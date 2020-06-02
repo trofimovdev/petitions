@@ -281,8 +281,8 @@ class Petition extends Model
         }
 
         $photo = imagecrop($photo, ['x' => round(($photoWidth - $width) / 2), 'y' => 0, 'width' => $width, 'height' => $height]);
-        $extension = '.png';
-        imagepng($photo, base_path() . '/storage/app/public/static/' . $name . $type . $extension);
+        $extension = '.jpg';
+        imagejpeg($photo, base_path() . '/storage/app/public/static/' . $name . $type . $extension);
 
         return $name . $type . $extension;
     }

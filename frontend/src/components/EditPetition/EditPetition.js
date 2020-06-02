@@ -34,6 +34,7 @@ const EditPetition = ({
   createPetitions
 }) => {
   const [snackbar, setSnackbar] = useState(null);
+  const [uploadCardZIndex, setUploadCardZIndex] = useState(10);
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
 
   const checkFileSize = fileSize => {
@@ -152,6 +153,7 @@ const EditPetition = ({
         setForm({ ...form, ...{ [file_preview]: preview, [file_id]: file } });
       };
       reader.readAsDataURL(files[0]);
+      setUploadCardZIndex(Math.floor(Math.random() * (10 - 5 + 1)) + 5);
     }
   };
 
@@ -257,6 +259,7 @@ const EditPetition = ({
           bottomText="Рекомендуемый размер изображения: 1440×768px"
           onCancel={onCancel}
           img={form.file1_preview ? form.file1_preview : null}
+          zIndex={uploadCardZIndex}
         />
         <UploadCard
           id={2}
@@ -268,6 +271,7 @@ const EditPetition = ({
           bottomText="Рекомендуемый размер изображения: 1360×320px"
           onCancel={onCancel}
           img={form.file2_preview ? form.file2_preview : null}
+          zIndex={uploadCardZIndex}
         />
       </FormLayout>
 
