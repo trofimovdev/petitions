@@ -103,8 +103,30 @@ const PetitionTabbar = ({
           setFetchingStatus(false);
         }
       })
-      .catch(({ message }) => {
-        setSnackbarError(message);
+      .catch(({ code, message }) => {
+        if (code === 409 || code === 404) {
+          if (launchParameters.vk_access_token_settings.includes("friends")) {
+            loadPetitions(`petitions`, true, {
+              petition_id: currentPetition.id.toString()
+            })
+              .then(response => {
+                if (response.length > 0) {
+                  setCurrent(response[0]);
+                }
+              })
+              .catch(() => {});
+          } else {
+            loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
+              .then(response => {
+                if (response.length > 0) {
+                  setCurrent(response[0]);
+                }
+              })
+              .catch(() => {});
+          }
+        } else {
+          setSnackbarError(message);
+        }
         api.selectionChanged().catch(() => {});
         setFetchingStatus(false);
       });
@@ -152,8 +174,30 @@ const PetitionTabbar = ({
           setFetchingStatus(false);
         }
       })
-      .catch(({ message }) => {
-        setSnackbarError(message);
+      .catch(({ code, message }) => {
+        if (code === 409 || code === 404) {
+          if (launchParameters.vk_access_token_settings.includes("friends")) {
+            loadPetitions(`petitions`, true, {
+              petition_id: currentPetition.id.toString()
+            })
+              .then(response => {
+                if (response.length > 0) {
+                  setCurrent(response[0]);
+                }
+              })
+              .catch(() => {});
+          } else {
+            loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
+              .then(response => {
+                if (response.length > 0) {
+                  setCurrent(response[0]);
+                }
+              })
+              .catch(() => {});
+          }
+        } else {
+          setSnackbarError(message);
+        }
         api.selectionChanged().catch(() => {});
         setFetchingStatus(false);
       });

@@ -69,34 +69,34 @@ class SignatureController extends Controller
     {
         $petitionId = (int)$petitionId;
         if (empty($petitionId)) {
-            return new ErrorResponse(400, 'Invalid params');
+            return new ErrorResponse(400, 'Недействительные параметры');
         }
 
         if (User::checkIsBanned($request->userId)) {
-            return new ErrorResponse(403, 'Suspicious account');
+            return new ErrorResponse(403, 'Подозрительный аккаунт');
         }
 
         $signature = Signature::where('petition_id', '=', $petitionId)
             ->where('user_id', '=', $request->userId)
             ->exists();
         if (!$signature) {
-            return new ErrorResponse(404, 'Signature not found');
+            return new ErrorResponse(404, 'Подпись не найдена');
         }
 
         $petitions = Petition::getPetitions([$petitionId]);
         if (count($petitions) !== 1) {
-            return new ErrorResponse(404, 'Petition not found');
+            return new ErrorResponse(404, 'Петиция не найдена');
         }
         $petition = $petitions[0];
         if ($petition['completed'] === true) {
-            return new ErrorResponse(403, 'Signature completed');
+            return new ErrorResponse(403, 'Сбор завершен');
         }
 
         $signature = Signature::where('petition_id', '=', $petitionId)
             ->where('user_id', '=', $request->userId)
             ->delete();
         if (!$signature) {
-            return new ErrorResponse(500, 'Signature not deleted');
+            return new ErrorResponse(500, 'Подпись не удалена');
         }
 
         Petition::where('id', '=', $petitionId)
