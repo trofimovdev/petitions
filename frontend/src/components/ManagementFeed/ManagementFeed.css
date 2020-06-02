@@ -40,4 +40,4 @@
     margin-bottom: 30px; }
 
 .ManagementFeedConst .Snackbar {
-  margin-bottom: var(--tabbar_height); }
+  padding-bottom: calc(var(--tabbar_height) + var(--safe-area-inset-bottom)) !important; }

@@ -193,14 +193,18 @@ const MainDesktop = ({
             >
               Петиции сообщества
             </TabItem>
-            <TabItem
-              selected={activeTab === "managed"}
-              onClick={() => {
-                setActiveTab("feed", "managed", true);
-              }}
-            >
-              Управление
-            </TabItem>
+            {["moder", "editor", "admin"].includes(
+              launchParameters.vk_viewer_group_role
+            ) && (
+              <TabItem
+                selected={activeTab === "managed"}
+                onClick={() => {
+                  setActiveTab("feed", "managed", true);
+                }}
+              >
+                Управление
+              </TabItem>
+            )}
           </>
         ) : (
           <>

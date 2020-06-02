@@ -34,7 +34,7 @@
     border: 1px solid var(--field_border);
     border-width: 0.5px;
     overflow: hidden;
-    z-index: 3;
+    z-index: 10;
 
     &__cancel-button {
       position: absolute;
@@ -42,7 +42,7 @@
       right: 10px;
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.24);
-      z-index: 2;
+      z-index: 10;
       color: #fff;
       padding: 4px;
     }

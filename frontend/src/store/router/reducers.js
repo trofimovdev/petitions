@@ -161,7 +161,9 @@ const routerReducer = (state = initialState, action) => {
 
         scrollPosition: {
           ...state.scrollPosition,
-          [`${state.activeStory}_${state.activeView}_${state.activePanel}`]: window.pageYOffset
+          [`${state.activeStory}_${state.activeView}_${state.activePanel}_${
+            state.activeTab[state.activePanel]
+          }`]: window.pageYOffset
         }
       };
     }

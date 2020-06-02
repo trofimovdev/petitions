@@ -1,5 +1,6 @@
 * {
-  font-family: -apple-system, BlinkMacSystemFont, Arial, Roboto, Open Sans, Helvetica Neue, Roboto, sans-serif !important; }
+  font-family: -apple-system, BlinkMacSystemFont, Arial, Roboto, Open Sans, Helvetica Neue, Roboto, sans-serif !important;
+  user-select: none !important; }
 
 body {
   margin: 0;

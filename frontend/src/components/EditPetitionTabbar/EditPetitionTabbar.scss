@@ -6,6 +6,7 @@
   flex-direction: column;
   justify-content: flex-end;
   padding-bottom: var(--safe-area-inset-bottom) !important;
+  z-index: 10;
 
   &::before {
     position: absolute;

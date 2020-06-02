@@ -401,17 +401,7 @@ const EditPetitionDesktop = ({
                       .catch(() => {});
                   }
                   setFetchingStatus(false);
-                  setCreate({
-                    title: undefined,
-                    text: undefined,
-                    need_signatures: undefined,
-                    directed_to: undefined,
-                    file: undefined,
-                    file1: undefined,
-                    file1_preview: undefined,
-                    file2: undefined,
-                    file2_preview: undefined
-                  });
+                  setCreate({});
                   setPage("done", "");
                 })
                 .catch(({ message }) => {

@@ -17,14 +17,18 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import "./PetitionDesktop.css";
 import Icon16Chevron from "@vkontakte/icons/dist/16/chevron";
 import Icon24ShareOutline from "@vkontakte/icons/dist/24/share_outline";
+import Icon24GearOutline from "@vkontakte/icons/dist/24/gear_outline";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
-import { userStackText, loadPetitions } from "../../tools/helpers";
+import { userStackText, loadPetitions, loadPhoto } from "../../tools/helpers";
 import {
   setCurrent,
   setLast,
   setManaged,
   setPopular,
-  setSigned
+  setSigned,
+  setInitialEdit,
+  setEdit,
+  setFormType
 } from "../../store/petitions/actions";
 import { setLaunchParameters } from "../../store/data/actions";
 import { setPage } from "../../store/router/actions";
@@ -45,11 +49,15 @@ const PetitionDesktop = ({
   setPopular,
   popularPetitions,
   setManaged,
-  managedPetitions
+  managedPetitions,
+  setInitialEdit,
+  setEdit,
+  setFormType
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [shareLoadingStatus, setShareLoadingStatus] = useState(false);
+  const [settingsStatus, setSettingsStatus] = useState(false);
   const [initError, setInitError] = useState(undefined);
 
   useEffect(() => {
@@ -179,6 +187,31 @@ const PetitionDesktop = ({
       });
   };
 
+  const openEditForm = (
+    file1_preview,
+    file1,
+    file2_preview,
+    file2,
+    response
+  ) => {
+    const editForm = {
+      id: response.id,
+      title: response.title,
+      text: response.text,
+      need_signatures: response.need_signatures,
+      directed_to: response.directed_to,
+      file1_preview,
+      file1,
+      file2_preview,
+      file2
+    };
+    setSettingsStatus(false);
+    setInitialEdit(editForm);
+    setEdit(editForm);
+    setFormType("edit");
+    setPage("edit", "", false, false, [], true);
+  };
+
   return (
     <div id={id} className="PetitionDesktop">
       {initError ? (
@@ -271,6 +304,68 @@ const PetitionDesktop = ({
                   }}
                 >
                   <Icon24ShareOutline className="PetitionDesktop__info__buttons__share__icon" />
+                </Button>
+                <Button
+                  mode="secondary"
+                  loading={settingsStatus}
+                  className="PetitionDesktop__info__buttons__settings"
+                  onClick={() => {
+                    setSettingsStatus(true);
+                    loadPetitions(
+                      `petitions/${currentPetition.id.toString()}`,
+                      false,
+                      { type: "edit" }
+                    )
+                      .then(response => {
+                        response = response[0];
+                        loadPhoto(response.mobile_photo_url)
+                          .then(data1 => {
+                            loadPhoto(response.web_photo_url)
+                              .then(data2 => {
+                                openEditForm(
+                                  data1[1],
+                                  data1[0],
+                                  data2[1],
+                                  data2[0],
+                                  response
+                                );
+                              })
+                              .catch(() => {
+                                openEditForm(
+                                  data1[1],
+                                  data1[0],
+                                  undefined,
+                                  undefined,
+                                  response
+                                );
+                              });
+                          })
+                          .catch(() => {
+                            loadPhoto(response.web_photo_url)
+                              .then(data2 => {
+                                openEditForm(
+                                  undefined,
+                                  undefined,
+                                  data2[1],
+                                  data2[0],
+                                  response
+                                );
+                              })
+                              .catch(() => {
+                                openEditForm(
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  response
+                                );
+                              });
+                          });
+                      })
+                      .catch(() => {});
+                  }}
+                >
+                  <Icon24GearOutline className="PetitionDesktop__info__buttons__settings__icon" />
                 </Button>
               </div>
               {currentPetition.friends && currentPetition.friends.length > 0 && (
@@ -390,7 +485,10 @@ const mapDispatchToProps = dispatch => {
         setSigned,
         setLast,
         setPopular,
-        setManaged
+        setManaged,
+        setInitialEdit,
+        setEdit,
+        setFormType
       },
       dispatch
     )
@@ -410,7 +508,10 @@ PetitionDesktop.propTypes = {
   setPopular: PropTypes.func.isRequired,
   popularPetitions: PropTypes.array,
   setManaged: PropTypes.func.isRequired,
-  managedPetitions: PropTypes.array
+  managedPetitions: PropTypes.array,
+  setInitialEdit: PropTypes.func.isRequired,
+  setEdit: PropTypes.func.isRequired,
+  setFormType: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionDesktop);

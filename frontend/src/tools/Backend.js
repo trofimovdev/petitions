@@ -3,6 +3,9 @@ import ConnectionError from "./ConnectionError";
 export default class Backend {
   static __call(method, params = {}, httpMethod = "GET") {
     let url = `https://petitions.w82.vkforms.ru/api/${method}`;
+    if (process.env.NODE_ENV === "development") {
+      url = `https://petitions.trofimov.dev/api/${method}`;
+    }
     const requestParams = {
       method: httpMethod || "GET",
       cache: "no-cache",

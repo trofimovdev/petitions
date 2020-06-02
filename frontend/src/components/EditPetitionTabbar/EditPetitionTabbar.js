@@ -223,20 +223,10 @@ const EditPetitionTabbar = ({
                     .catch(() => {});
                 }
                 closePopout();
-                setCreate({
-                  title: undefined,
-                  text: undefined,
-                  need_signatures: undefined,
-                  directed_to: undefined,
-                  file: undefined,
-                  file1: undefined,
-                  file1_preview: undefined,
-                  file2: undefined,
-                  file2_preview: undefined
-                });
+                setCreate({});
                 setPage(activeView, "done", false, true, ["done"]);
               })
-              .catch(({ code, message }) => {
+              .catch(({ message }) => {
                 closePopout();
                 setSnackbar(
                   <Snackbar
