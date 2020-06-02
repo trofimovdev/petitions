@@ -13,7 +13,8 @@ const UploadCard = ({
   size,
   bottomText,
   onCancel,
-  img = null
+  img = null,
+  zIndex = 10
 }) => {
   return (
     <Div className={`UploadCard UploadCard__${size}`}>
@@ -38,7 +39,7 @@ const UploadCard = ({
               <Icon16Cancel />
             </div>
           )}
-          <div className="UploadCard__card__content ">
+          <div className="UploadCard__card__content" style={{ zIndex: zIndex }}>
             {img ? (
               <img src={img} alt="petition" />
             ) : (
@@ -64,7 +65,8 @@ UploadCard.propTypes = {
   size: PropTypes.string.isRequired,
   bottomText: PropTypes.string,
   onCancel: PropTypes.func.isRequired,
-  img: PropTypes.string
+  img: PropTypes.string,
+  zIndex: PropTypes.number
 };
 
 export default UploadCard;
