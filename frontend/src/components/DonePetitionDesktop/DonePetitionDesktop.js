@@ -36,14 +36,14 @@ const DonePetitionDesktop = ({ id, setPage, currentPetition, setCurrent }) => {
         vertical="bottom"
         className="DonePetitionDesktop__fixed-layout"
       >
-        <a
+        <div
           className="DonePetitionDesktop__fixed-layout__link"
           onClick={() => {
             setPage("petitions", "");
           }}
         >
           Вернуться к списку петиций
-        </a>
+        </div>
       </FixedLayout>
     </div>
   );

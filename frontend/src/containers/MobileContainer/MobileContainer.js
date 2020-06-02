@@ -30,22 +30,6 @@ const MobileContainer = ({
         : scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
         ? scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
         : 0;
-    console.log("activeStory", activeStory);
-    console.log("activeView", activeView);
-    console.log("activePanel", activePanel);
-    console.log("activeTab[activePanel]", activeTab[activePanel]);
-
-    console.log(
-      "scrollPosition[${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}]",
-      scrollPosition[
-        `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
-      ]
-    );
-    console.log(
-      "scrollPosition[${activeStory}_${activeView}_${activePanel}]",
-      scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
-    );
-    console.log("apply", pageScrollPosition);
     window.scroll(0, pageScrollPosition);
 
     return () => {};
