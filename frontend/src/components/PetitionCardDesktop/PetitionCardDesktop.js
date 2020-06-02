@@ -130,7 +130,6 @@ const PetitionCardDesktop = ({
       file2_preview,
       file2
     };
-    // closePopout();
     setInitialEdit(editForm);
     setEdit(editForm);
     setFormType("edit");

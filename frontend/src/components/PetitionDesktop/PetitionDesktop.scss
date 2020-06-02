@@ -67,6 +67,11 @@
       flex-direction: row;
       height: 30px;
 
+      .WaitDots__hs0tag {
+        height: auto !important;
+        margin-left: -12px !important;
+      }
+
       &__share {
         width: 30px;
         height: 30px;
@@ -78,10 +83,18 @@
           margin-left: -12px;
           margin-top: -4px;
         }
+      }
 
-        .WaitDots__hs0tag {
-          height: auto !important;
-          margin-left: -12px !important;
+      &__settings {
+        width: 30px;
+        height: 30px;
+        margin-left: 10px;
+
+        &__icon {
+          color: #55677d;
+          transform: scale(0.8);
+          margin-left: -10px;
+          margin-top: -2px;
         }
       }
     }

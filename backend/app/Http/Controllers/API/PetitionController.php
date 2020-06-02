@@ -50,7 +50,7 @@ class PetitionController extends Controller
 
         switch ($type) {
             case 'create':
-                if (!empty($request->viewerGroupRole) && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+                if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
                     return new ErrorResponse(403, 'Доступ запрещен');
                 }
 
@@ -135,7 +135,7 @@ class PetitionController extends Controller
 
     public function destroy(SignRequest $request, $petitionId)
     {
-        if (!empty($request->viewerGroupRole) && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+        if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
 
@@ -153,7 +153,7 @@ class PetitionController extends Controller
         if (!$petition) {
             return new ErrorResponse(404, 'Петиция не найдена');
         }
-        if ($petition['owner_id'] !== $request->userId) {
+        if (!$request->groupId && $petition['owner_id'] !== $request->userId) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
 
@@ -171,7 +171,7 @@ class PetitionController extends Controller
 
     public function update(SignRequest $request, $petitionId)
     {
-        if ($request->groupId && !empty($request->viewerGroupRole) && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+        if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
 
@@ -189,7 +189,7 @@ class PetitionController extends Controller
         if (!$petition) {
             return new ErrorResponse(404, 'Петиция не найдена');
         }
-        if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin']) || $petition['owner_id'] !== $request->userId) {
+        if (!$request->groupId && $petition['owner_id'] !== $request->userId) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
         if ($petition['completed'] && is_null($request->completed)) {

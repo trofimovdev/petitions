@@ -311,7 +311,6 @@ const PetitionTabbar = ({
                 { type: "edit" }
               )
                 .then(response => {
-                  // TODO: remove eslint problems
                   response = response[0];
                   loadPhoto(response.mobile_photo_url)
                     .then(data1 => {
