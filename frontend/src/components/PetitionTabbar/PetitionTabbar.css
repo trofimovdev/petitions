@@ -20,6 +20,12 @@
     .PetitionTabbar__buttons__sign--completed {
       color: #818c99; }
     .PetitionTabbar__buttons > * {
-      margin-right: 8px; }
+      margin-right: 8px;
+      white-space: nowrap; }
     .PetitionTabbar__buttons > *:last-child {
       margin-right: 0; }
+
+@media (max-width: 350px) {
+  .PetitionTabbar .Button--sz-xl,
+  .PetitionTabbar .Button--sz-xl .Button__content {
+    padding: 0 !important; } }
