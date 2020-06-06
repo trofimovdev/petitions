@@ -23,7 +23,7 @@ import {
   setManaged,
   setCurrent
 } from "./store/petitions/actions";
-import { setInitError, setLaunchParameters } from "./store/data/actions";
+import { setInitError, setLaunchParameters, setOnline } from "./store/data/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -88,6 +88,13 @@ api.onUpdateConfig(({ scheme }) => {
 
 window.addEventListener("popstate", () => {
   store.dispatch(goBack());
+});
+window.addEventListener("offline", () => {
+  store.dispatch(setOnline(false));
+  store.dispatch(setStory("petitions", "internet", false));
+});
+window.addEventListener("online", () => {
+  store.dispatch(setOnline(true));
 });
 
 api.initApp();
@@ -177,25 +184,25 @@ api
       } else {
         store.dispatch(setActiveTab("feed", feedTab[1]));
       }
-      store.dispatch(setStory("petitions", "feed"));
+      store.dispatch(setStory("petitions", "feed", false));
     } else if (managed) {
       if (launchParameters.vk_platform === "desktop_web") {
         store.dispatch(setActiveTab("feed", "managed"));
-        store.dispatch(setStory("petitions", ""));
+        store.dispatch(setStory("petitions", "", false));
       } else if (
         ["moder", "editor", "admin"].includes(
           launchParameters.vk_viewer_group_role
         )
       ) {
         store.dispatch(setActiveTab("feed", "last"));
-        store.dispatch(setStory("management", "feed"));
+        store.dispatch(setStory("management", "feed", false));
       } else {
         store.dispatch(setActiveTab("feed", "last"));
-        store.dispatch(setStory("petitions", "feed"));
+        store.dispatch(setStory("petitions", "feed", false));
       }
     } else {
       store.dispatch(setActiveTab("feed", "last"));
-      store.dispatch(setStory("petitions", "feed"));
+      store.dispatch(setStory("petitions", "feed", false));
     }
     initPetitions(launchParameters);
   })
