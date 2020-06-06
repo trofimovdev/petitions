@@ -90,8 +90,6 @@ const routerReducer = (state = initialState, action) => {
     }
 
     case SET_STORY: {
-      window.history.pushState(null, null);
-
       let viewsHistory = state.viewsHistory[action.payload.story] || [
         action.payload.story
       ];
@@ -106,6 +104,8 @@ const routerReducer = (state = initialState, action) => {
         : action.payload.initialPanel;
 
       if (action.payload.withHistory) {
+        window.history.pushState(null, null);
+
         if (action.payload.story === state.activeStory) {
           if (panelsHistory.length > 1) {
             const firstPanel = panelsHistory.shift();

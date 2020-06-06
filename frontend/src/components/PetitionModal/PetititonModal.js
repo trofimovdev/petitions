@@ -102,6 +102,7 @@ const PetitionModal = ({
             <div
               className="PetitionModal__button-wrapper"
               onClick={() => {
+                closePopout();
                 openPopout(<ScreenSpinner />);
 
                 const canvas = document.createElement("canvas");
@@ -133,7 +134,6 @@ const PetitionModal = ({
                 ctx.arcTo(0, canvas.height, 0, 0, borderRadius);
                 ctx.clip();
                 ctx.fill();
-
                 const img = new Image();
                 img.crossOrigin = "Anonymous";
                 img.onload = () => {
@@ -418,7 +418,9 @@ const PetitionModal = ({
                         }
                       ]
                     })
-                    .catch(() => closePopout());
+                    .catch(() => {
+                      closePopout();
+                    });
                 };
                 img.onerror = () => {
                   closePopout();

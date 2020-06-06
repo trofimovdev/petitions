@@ -23,7 +23,7 @@ import {
   setLast,
   setSigned
 } from "../../store/petitions/actions";
-import { setPage } from "../../store/router/actions";
+import { goBack } from "../../store/router/actions";
 import HeaderDesktop from "../HeaderDesktop/HeaderDesktop";
 import Backend from "../../tools/Backend";
 import { loadPetitions } from "../../tools/helpers";
@@ -42,7 +42,8 @@ const EditPetitionDesktop = ({
   setPopular,
   setLast,
   setSigned,
-  launchParameters
+  launchParameters,
+                               goBack
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(null);
   const [ts, setTs] = useState({ time: undefined, message: undefined });
@@ -134,11 +135,29 @@ const EditPetitionDesktop = ({
     }
   };
 
+  const onNumberChange = e => {
+    const { name, value } = e.currentTarget;
+    setForm({
+      ...form,
+      ...{
+        [name]: value
+          .replace(/[^[:print:]\s]/g, "")
+          .replace(
+            /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
+            ""
+          )
+          .replace(/[^0-9]/g, "")
+      }
+    });
+  };
+
   return (
     <div id={id} className="EditPetitionDesktop">
       <HeaderDesktop
         title={panelTitle}
-        goBack={() => setPage("petitions", "")}
+        goBack={() => {
+          goBack();
+        }}
       />
       <Div className="form">
         {formType === "create" && (
@@ -175,10 +194,9 @@ const EditPetitionDesktop = ({
           <Input
             id="need_signatures"
             name="need_signatures"
-            type="number"
             pattern="\d*"
             value={form.need_signatures ? parseInt(form.need_signatures) : ""}
-            onChange={onChange}
+            onChange={onNumberChange}
             placeholder="Введите количество подписей"
           />
           <p className="form__row_error__text">
@@ -439,7 +457,7 @@ const mapDispatchToProps = dispatch => {
       {
         setEdit,
         setCreate,
-        setPage,
+        goBack,
         setCurrent,
         setManaged,
         setPopular,
@@ -465,7 +483,8 @@ EditPetitionDesktop.propTypes = {
   setPopular: PropTypes.func.isRequired,
   setLast: PropTypes.func.isRequired,
   setSigned: PropTypes.func.isRequired,
-  launchParameters: PropTypes.object.isRequired
+  launchParameters: PropTypes.object.isRequired,
+  goBack: PropTypes.func.isRequired
 };
 
 export default connect(
