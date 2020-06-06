@@ -1,13 +1,15 @@
 import {
   SET_FRIENDS_CARD_STATUS,
   SET_LAUNCH_PARAMETERS,
-  SET_INIT_ERROR
+  SET_INIT_ERROR,
+  SET_ONLINE
 } from "./actionTypes";
 
 const initialState = {
   friendsCardStatus: true,
   launchParameters: undefined,
-  initError: false
+  initError: false,
+  online: true
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -30,6 +32,13 @@ const dataReducer = (state = initialState, action) => {
       return {
         ...state,
         initError: action.payload
+      };
+    }
+
+    case SET_ONLINE: {
+      return {
+        ...state,
+        online: action.payload
       };
     }
 

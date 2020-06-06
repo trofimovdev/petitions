@@ -16,6 +16,7 @@ import {
 } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
 import EditPetition from "../EditPetition/EditPetition";
+import NoInternet from "../NoInternet/NoInternet";
 
 const Petitions = ({
   activeTab,
@@ -44,6 +45,7 @@ const Petitions = ({
       <PetitionsFeed id="feed" activeTab={activeTab} />
       <Petition id="petition" />
       <EditPetition id="edit" />
+      <NoInternet id="internet" />
     </View>
   );
 };

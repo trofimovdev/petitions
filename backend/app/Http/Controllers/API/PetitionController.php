@@ -153,7 +153,10 @@ class PetitionController extends Controller
         if (!$petition) {
             return new ErrorResponse(404, 'Петиция не найдена');
         }
-        if (!$request->groupId && $petition['owner_id'] !== $request->userId) {
+        if (
+            !$request->groupId && $petition['owner_id'] !== $request->userId ||
+            $request->groupId && !is_null($petition['group_id'])
+        ) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
 
@@ -189,7 +192,10 @@ class PetitionController extends Controller
         if (!$petition) {
             return new ErrorResponse(404, 'Петиция не найдена');
         }
-        if (!$request->groupId && $petition['owner_id'] !== $request->userId) {
+        if (
+            !$request->groupId && $petition['owner_id'] !== $request->userId ||
+            $request->groupId && !is_null($petition['group_id'])
+        ) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
         if ($petition['completed'] && is_null($request->completed)) {

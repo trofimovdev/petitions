@@ -305,68 +305,74 @@ const PetitionDesktop = ({
                 >
                   <Icon24ShareOutline className="PetitionDesktop__info__buttons__share__icon" />
                 </Button>
-                <Button
-                  mode="secondary"
-                  loading={settingsStatus}
-                  className="PetitionDesktop__info__buttons__settings"
-                  onClick={() => {
-                    setSettingsStatus(true);
-                    loadPetitions(
-                      `petitions/${currentPetition.id.toString()}`,
-                      false,
-                      { type: "edit" }
-                    )
-                      .then(response => {
-                        response = response[0];
-                        loadPhoto(response.mobile_photo_url)
-                          .then(data1 => {
-                            loadPhoto(response.web_photo_url)
-                              .then(data2 => {
-                                openEditForm(
-                                  data1[1],
-                                  data1[0],
-                                  data2[1],
-                                  data2[0],
-                                  response
-                                );
-                              })
-                              .catch(() => {
-                                openEditForm(
-                                  data1[1],
-                                  data1[0],
-                                  undefined,
-                                  undefined,
-                                  response
-                                );
-                              });
-                          })
-                          .catch(() => {
-                            loadPhoto(response.web_photo_url)
-                              .then(data2 => {
-                                openEditForm(
-                                  undefined,
-                                  undefined,
-                                  data2[1],
-                                  data2[0],
-                                  response
-                                );
-                              })
-                              .catch(() => {
-                                openEditForm(
-                                  undefined,
-                                  undefined,
-                                  undefined,
-                                  undefined,
-                                  response
-                                );
-                              });
-                          });
-                      })
-                      .catch(() => {});
-                  }}
-                >
-                  <Icon24GearOutline className="PetitionDesktop__info__buttons__settings__icon" />
-                </Button>
+                {(currentPetition.owner_id ===
+                  parseInt(launchParameters.vk_user_id) ||
+                  ["moder", "editor", "admin"].includes(
+                    launchParameters.vk_viewer_group_role
+                  )) && (
+                  <Button
+                    mode="secondary"
+                    loading={settingsStatus}
+                    className="PetitionDesktop__info__buttons__settings"
+                    onClick={() => {
+                      setSettingsStatus(true);
+                      loadPetitions(
+                        `petitions/${currentPetition.id.toString()}`,
+                        false,
+                        { type: "edit" }
+                      )
+                        .then(response => {
+                          response = response[0];
+                          loadPhoto(response.mobile_photo_url)
+                            .then(data1 => {
+                              loadPhoto(response.web_photo_url)
+                                .then(data2 => {
+                                  openEditForm(
+                                    data1[1],
+                                    data1[0],
+                                    data2[1],
+                                    data2[0],
+                                    response
+                                  );
+                                })
+                                .catch(() => {
+                                  openEditForm(
+                                    data1[1],
+                                    data1[0],
+                                    undefined,
+                                    undefined,
+                                    response
+                                  );
+                                });
+                            })
+                            .catch(() => {
+                              loadPhoto(response.web_photo_url)
+                                .then(data2 => {
+                                  openEditForm(
+                                    undefined,
+                                    undefined,
+                                    data2[1],
+                                    data2[0],
+                                    response
+                                  );
+                                })
+                                .catch(() => {
+                                  openEditForm(
+                                    undefined,
+                                    undefined,
+                                    undefined,
+                                    undefined,
+                                    response
+                                  );
+                                });
+                            });
+                        })
+                        .catch(() => {});
+                    }}
+                  >
+                    <Icon24GearOutline className="PetitionDesktop__info__buttons__settings__icon" />
+                  </Button>
+                )}
               </div>
               {currentPetition.friends && currentPetition.friends.length > 0 && (
                 <UsersStack

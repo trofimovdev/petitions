@@ -219,7 +219,10 @@ class Petition extends Model
         $regex_dingbats = '/[\x{2700}-\x{27BF}]/u';
         $clear_string = preg_replace($regex_dingbats, '', $clear_string);
 
-        $clear_string = preg_replace("/[^\p{L}\p{N}\p{P}\s]/u", "", $clear_string);
+        $clear_string = preg_replace('/[^\p{L}\p{N}\p{P}\s]/u', '', $clear_string);
+        $clear_string = preg_replace('/\n\n+/', "\n\n", $clear_string);
+        $clear_string = preg_replace('/\t\t+/', "\t", $clear_string);
+        $clear_string = preg_replace('/  +/', " ", $clear_string);
         return htmlspecialchars_decode(htmlspecialchars($clear_string, ENT_SUBSTITUTE, 'UTF-8'));
     }
 
@@ -302,21 +305,6 @@ class Petition extends Model
         if ($this->directed_to) {
             foreach (explode(',', $this->directed_to) as $item) {
                 $petition['directed_to'][] = $item;
-//            preg_match('/^@\S+ \(.+\)$/', $item, $matches);
-//            if (!$matches) {
-//                $petition['directed_to'][] = $item;
-//                continue;
-//            }
-//            preg_match('/^@(\S+)/', $matches[0], $link);
-//            preg_match('/\((.+)\)$/', $matches[0], $name);
-//            if (!$link || !$name) {
-//                $petition['directed_to'][] = $item;
-//                continue;
-//            }
-//            $petition['directed_to'][] = [
-//                'link' => 'https://vk.com/' . $link[1],
-//                'name' => $name[1]
-//            ];
             }
         }
         if ($text) {

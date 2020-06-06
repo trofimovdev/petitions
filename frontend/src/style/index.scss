@@ -2,10 +2,10 @@
 
 * {
   font-family: -apple-system, BlinkMacSystemFont, Arial, Roboto, Open Sans, Helvetica Neue, Roboto, sans-serif !important;
-  user-select: none !important;
 }
 
 body {
+  user-select: none;
   margin: 0;
   padding: 0;
   background: #FFF;
@@ -46,4 +46,8 @@ body[scheme="space_gray"] {
   &__content {
     overflow: visible;
   }
+}
+
+button::-moz-focus-inner {
+  border: 0;
 }

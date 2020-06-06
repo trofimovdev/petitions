@@ -34,7 +34,6 @@ const EditPetition = ({
   createPetitions
 }) => {
   const [snackbar, setSnackbar] = useState(null);
-  const [uploadCardZIndex, setUploadCardZIndex] = useState(10);
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
 
   const checkFileSize = fileSize => {
@@ -153,8 +152,23 @@ const EditPetition = ({
         setForm({ ...form, ...{ [file_preview]: preview, [file_id]: file } });
       };
       reader.readAsDataURL(files[0]);
-      setUploadCardZIndex(Math.floor(Math.random() * (10 - 5 + 1)) + 5);
     }
+  };
+
+  const onNumberChange = e => {
+    const { name, value } = e.currentTarget;
+    setForm({
+      ...form,
+      ...{
+        [name]: value
+          .replace(/[^[:print:]\s]/g, "")
+          .replace(
+            /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
+            ""
+          )
+          .replace(/[^0-9]/g, "")
+      }
+    });
   };
 
   return (
@@ -206,7 +220,6 @@ const EditPetition = ({
           placeholder="Введите текст"
         />
         <Input
-          type="number"
           top="Необходимое количество подписей"
           name="need_signatures"
           pattern="\d*"
@@ -228,7 +241,7 @@ const EditPetition = ({
               ? `Минимально можно собрать 1 подпись`
               : "")
           }
-          onChange={onChange}
+          onChange={onNumberChange}
           placeholder="Введите количество подписей"
         />
 
@@ -259,7 +272,6 @@ const EditPetition = ({
           bottomText="Рекомендуемый размер изображения: 1440×768px"
           onCancel={onCancel}
           img={form.file1_preview ? form.file1_preview : null}
-          zIndex={uploadCardZIndex}
         />
         <UploadCard
           id={2}
@@ -271,7 +283,6 @@ const EditPetition = ({
           bottomText="Рекомендуемый размер изображения: 1360×320px"
           onCancel={onCancel}
           img={form.file2_preview ? form.file2_preview : null}
-          zIndex={uploadCardZIndex}
         />
       </FormLayout>
 

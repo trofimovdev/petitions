@@ -34,7 +34,6 @@
     border: 1px solid var(--field_border);
     border-width: 0.5px;
     overflow: hidden;
-    z-index: 10;
 
     &__cancel-button {
       position: absolute;
@@ -68,6 +67,7 @@
         height: 100%;
         object-fit: cover;
         object-position: 50% 0%;
+        z-index: 9;
       }
 
       .Icon--28,
