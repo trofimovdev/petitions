@@ -219,7 +219,7 @@ class Petition extends Model
         $regex_dingbats = '/[\x{2700}-\x{27BF}]/u';
         $clear_string = preg_replace($regex_dingbats, '', $clear_string);
 
-        $clear_string = preg_replace('/[^\p{L}\p{N}\p{P}\s]/u', '', $clear_string);
+        $clear_string = preg_replace('/[^\p{L}\p{N}\p{P}\p{S}\s]/u', '', $clear_string);
         $clear_string = preg_replace('/\n\n+/', "\n\n", $clear_string);
         $clear_string = preg_replace('/\t\t+/', "\t", $clear_string);
         $clear_string = preg_replace('/  +/', " ", $clear_string);
@@ -295,13 +295,13 @@ class Petition extends Model
         if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
             return false;
         }
-//        if (
-//            !is_null($petition) &&
-//            (!$request->groupId && $petition['owner_id'] !== $request->userId ||
-//            $request->groupId && $petition['group_id'] !== $request->groupId)
-//        ) {
-//            return false;
-//        }
+        if (
+            !is_null($petition) &&
+            (!$request->groupId && $petition['owner_id'] !== $request->userId ||
+            $request->groupId && $petition['group_id'] !== $request->groupId)
+        ) {
+            return false;
+        }
         return true;
     }
 

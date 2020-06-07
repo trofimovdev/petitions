@@ -26,7 +26,7 @@ import {
 import { goBack } from "../../store/router/actions";
 import HeaderDesktop from "../HeaderDesktop/HeaderDesktop";
 import Backend from "../../tools/Backend";
-import { loadPetitions } from "../../tools/helpers";
+import { loadPetitions, filterString } from "../../tools/helpers";
 
 const EditPetitionDesktop = ({
   id,
@@ -43,7 +43,7 @@ const EditPetitionDesktop = ({
   setLast,
   setSigned,
   launchParameters,
-                               goBack
+  goBack
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(null);
   const [ts, setTs] = useState({ time: undefined, message: undefined });
@@ -97,12 +97,7 @@ const EditPetitionDesktop = ({
     setForm({
       ...form,
       ...{
-        [name]: value
-          .replace(/[^[:print:]\s]/, "")
-          .replace(
-            /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
-            ""
-          )
+        [name]: filterString(value)
       }
     });
   };
