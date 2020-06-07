@@ -50,7 +50,7 @@ class PetitionController extends Controller
 
         switch ($type) {
             case 'create':
-                if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+                if (!Petition::checkPermissions($request)) {
                     return new ErrorResponse(403, 'Доступ запрещен');
                 }
 
@@ -135,7 +135,7 @@ class PetitionController extends Controller
 
     public function destroy(SignRequest $request, $petitionId)
     {
-        if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+        if (!Petition::checkPermissions($request)) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
 
@@ -153,10 +153,7 @@ class PetitionController extends Controller
         if (!$petition) {
             return new ErrorResponse(404, 'Петиция не найдена');
         }
-        if (
-            !$request->groupId && $petition['owner_id'] !== $request->userId ||
-            $request->groupId && !is_null($petition['group_id'])
-        ) {
+        if (!Petition::checkPermissions($request, $petition)) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
 
@@ -174,7 +171,7 @@ class PetitionController extends Controller
 
     public function update(SignRequest $request, $petitionId)
     {
-        if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+        if (!Petition::checkPermissions($request)) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
 
@@ -192,10 +189,7 @@ class PetitionController extends Controller
         if (!$petition) {
             return new ErrorResponse(404, 'Петиция не найдена');
         }
-        if (
-            !$request->groupId && $petition['owner_id'] !== $request->userId ||
-            $request->groupId && !is_null($petition['group_id'])
-        ) {
+        if (!Petition::checkPermissions($request, $petition)) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
         if ($petition['completed'] && is_null($request->completed)) {

@@ -290,6 +290,21 @@ class Petition extends Model
         return $name . $type . $extension;
     }
 
+    public static function checkPermissions(SignRequest $request, Petition $petition = null)
+    {
+        if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+            return false;
+        }
+//        if (
+//            !is_null($petition) &&
+//            (!$request->groupId && $petition['owner_id'] !== $request->userId ||
+//            $request->groupId && $petition['group_id'] !== $request->groupId)
+//        ) {
+//            return false;
+//        }
+        return true;
+    }
+
     public function toPetitionView(bool $text = true, bool $ownerId = true, bool $defaultImages = true)
     {
         $petition = [
