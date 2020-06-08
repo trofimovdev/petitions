@@ -247,7 +247,7 @@ const routerReducer = (state = initialState, action) => {
           setPanel = panelsHistoryNew[0];
         }
       } else {
-        api.closeApp("success");
+        api.closeApp("success", {});
       }
 
       if (panelsHistory.length === 1) {

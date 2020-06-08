@@ -36,6 +36,7 @@ class Petition extends Model
     const TYPE_SIGNED = 'signed';
     const TYPE_MANAGED = 'managed';
     const ACTION_TYPE_EDIT = 'edit';
+    const MAX_PETITIONS_PER_HOUR = 3;
 
     public static function getPopular(int $offset = 0, array $friendIds = [])
     {
@@ -219,7 +220,7 @@ class Petition extends Model
         $regex_dingbats = '/[\x{2700}-\x{27BF}]/u';
         $clear_string = preg_replace($regex_dingbats, '', $clear_string);
 
-        $clear_string = preg_replace('/[^\p{L}\p{N}\p{P}\s]/u', '', $clear_string);
+        $clear_string = preg_replace('/[^\p{L}\p{N}\p{P}\p{S}\s]/u', '', $clear_string);
         $clear_string = preg_replace('/\n\n+/', "\n\n", $clear_string);
         $clear_string = preg_replace('/\t\t+/', "\t", $clear_string);
         $clear_string = preg_replace('/  +/', " ", $clear_string);
@@ -288,6 +289,32 @@ class Petition extends Model
         imagejpeg($photo, base_path() . '/storage/app/public/static/' . $name . $type . $extension);
 
         return $name . $type . $extension;
+    }
+
+    public static function checkPermissions(SignRequest $request, Petition $petition = null)
+    {
+        if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+            return false;
+        }
+        if (
+            !is_null($petition) &&
+            (!$request->groupId && $petition['owner_id'] !== $request->userId ||
+            $request->groupId && $petition['group_id'] !== $request->groupId)
+        ) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function getPetitionsNumber(int $userId)
+    {
+        $petitionsNumber = Petition::where('owner_id', $userId)
+            ->whereRaw('created_at >= date_trunc(\'second\', current_timestamp - interval \'1 hour\')')
+            ->count();
+        if ($petitionsNumber) {
+            return $petitionsNumber;
+        }
+        return 0;
     }
 
     public function toPetitionView(bool $text = true, bool $ownerId = true, bool $defaultImages = true)

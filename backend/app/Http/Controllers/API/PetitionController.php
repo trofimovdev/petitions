@@ -50,7 +50,7 @@ class PetitionController extends Controller
 
         switch ($type) {
             case 'create':
-                if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+                if (!Petition::checkPermissions($request)) {
                     return new ErrorResponse(403, 'Доступ запрещен');
                 }
 
@@ -120,6 +120,10 @@ class PetitionController extends Controller
                     $webPhoto = $photo;
                 }
 
+                if (Petition::getPetitionsNumber($request->userId) > Petition::MAX_PETITIONS_PER_HOUR) {
+                    return new ErrorResponse(403, 'В последнее время вы создавали слишком много петиций');
+                }
+
                 $createdPetition = Petition::createPetition($request, $title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto);
                 if (is_null($createdPetition['mobile_photo_url'])) {
                     $createdPetition['mobile_photo_url'] = config('app.server_url') . 'static/' . Petition::DEFAULT_MOBILE_IMAGE_NAME;
@@ -135,7 +139,7 @@ class PetitionController extends Controller
 
     public function destroy(SignRequest $request, $petitionId)
     {
-        if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+        if (!Petition::checkPermissions($request)) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
 
@@ -153,10 +157,7 @@ class PetitionController extends Controller
         if (!$petition) {
             return new ErrorResponse(404, 'Петиция не найдена');
         }
-        if (
-            !$request->groupId && $petition['owner_id'] !== $request->userId ||
-            $request->groupId && !is_null($petition['group_id'])
-        ) {
+        if (!Petition::checkPermissions($request, $petition)) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
 
@@ -174,7 +175,7 @@ class PetitionController extends Controller
 
     public function update(SignRequest $request, $petitionId)
     {
-        if ($request->groupId && !in_array($request->viewerGroupRole, ['moder', 'editor', 'admin'])) {
+        if (!Petition::checkPermissions($request)) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
 
@@ -192,10 +193,7 @@ class PetitionController extends Controller
         if (!$petition) {
             return new ErrorResponse(404, 'Петиция не найдена');
         }
-        if (
-            !$request->groupId && $petition['owner_id'] !== $request->userId ||
-            $request->groupId && !is_null($petition['group_id'])
-        ) {
+        if (!Petition::checkPermissions($request, $petition)) {
             return new ErrorResponse(403, 'Доступ запрещен');
         }
         if ($petition['completed'] && is_null($request->completed)) {
