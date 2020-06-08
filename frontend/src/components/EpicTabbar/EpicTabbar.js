@@ -16,7 +16,7 @@ const EpicTabbar = ({ setStory, activeStory, launchParameters }) => (
     <Tabbar className="EpicTabbar">
       <TabbarItem
         onClick={() => {
-          setStory("petitions", "feed");
+          setStory("petitions", "feed", false);
           api.selectionChanged().catch(() => {});
         }}
         selected={activeStory === "petitions"}
@@ -31,7 +31,7 @@ const EpicTabbar = ({ setStory, activeStory, launchParameters }) => (
         )) && (
         <TabbarItem
           onClick={() => {
-            setStory("management", "feed");
+            setStory("management", "feed", false);
             api.selectionChanged().catch(() => {});
           }}
           selected={activeStory === "management"}

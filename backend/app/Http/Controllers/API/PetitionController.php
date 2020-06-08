@@ -120,6 +120,10 @@ class PetitionController extends Controller
                     $webPhoto = $photo;
                 }
 
+                if (Petition::getPetitionsNumber($request->userId) > Petition::MAX_PETITIONS_PER_HOUR) {
+                    return new ErrorResponse(403, 'В последнее время вы создавали слишком много петиций');
+                }
+
                 $createdPetition = Petition::createPetition($request, $title, $text, $needSignatures, $directedTo, $mobilePhoto, $webPhoto);
                 if (is_null($createdPetition['mobile_photo_url'])) {
                     $createdPetition['mobile_photo_url'] = config('app.server_url') . 'static/' . Petition::DEFAULT_MOBILE_IMAGE_NAME;

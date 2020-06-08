@@ -36,6 +36,7 @@ class Petition extends Model
     const TYPE_SIGNED = 'signed';
     const TYPE_MANAGED = 'managed';
     const ACTION_TYPE_EDIT = 'edit';
+    const MAX_PETITIONS_PER_HOUR = 3;
 
     public static function getPopular(int $offset = 0, array $friendIds = [])
     {
@@ -303,6 +304,17 @@ class Petition extends Model
             return false;
         }
         return true;
+    }
+
+    public static function getPetitionsNumber(int $userId)
+    {
+        $petitionsNumber = Petition::where('owner_id', $userId)
+            ->whereRaw('created_at >= date_trunc(\'second\', current_timestamp - interval \'1 hour\')')
+            ->count();
+        if ($petitionsNumber) {
+            return $petitionsNumber;
+        }
+        return 0;
     }
 
     public function toPetitionView(bool $text = true, bool $ownerId = true, bool $defaultImages = true)

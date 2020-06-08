@@ -23,7 +23,7 @@ import {
   setLast,
   setSigned
 } from "../../store/petitions/actions";
-import { goBack } from "../../store/router/actions";
+import { goBack, setPage } from "../../store/router/actions";
 import HeaderDesktop from "../HeaderDesktop/HeaderDesktop";
 import Backend from "../../tools/Backend";
 import { loadPetitions, filterString } from "../../tools/helpers";
@@ -457,7 +457,8 @@ const mapDispatchToProps = dispatch => {
         setManaged,
         setPopular,
         setLast,
-        setSigned
+        setSigned,
+        setPage
       },
       dispatch
     )
