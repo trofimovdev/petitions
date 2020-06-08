@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Requests\SignRequest;
+use Carbon\Carbon;
 use ErrorException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
@@ -48,7 +49,7 @@ class Petition extends Model
         if (!$redisPetitionIds) {
             $petitions = Signature::select('petition_id', Signature::raw('count(user_id)'), 'completed')
                 ->join('petitions', 'petition_id', '=', 'id')
-                ->whereRaw('signed_at >= date_trunc(\'second\', current_timestamp - interval \'1 week\')')
+                ->where('signed_at', '>=', (new Carbon())->subWeek())
                 ->groupBy('petition_id', 'completed')
                 ->havingRaw('completed = false AND count(user_id) > ?', [20]) // 140 / 7 = 20 signatures per day
                 ->orderByRaw('count(user_id) desc, petition_id asc')
@@ -309,7 +310,7 @@ class Petition extends Model
     public static function getPetitionsNumber(int $userId)
     {
         $petitionsNumber = Petition::where('owner_id', $userId)
-            ->whereRaw('created_at >= date_trunc(\'second\', current_timestamp - interval \'1 hour\')')
+            ->where('craeted_at', '>=', (new Carbon())->subHours(1))
             ->count();
         if ($petitionsNumber) {
             return $petitionsNumber;
