@@ -307,10 +307,10 @@ class Petition extends Model
         return true;
     }
 
-    public static function getPetitionsNumber(int $userId)
+    public static function getCreatedPetitionsNumber(int $userId)
     {
         $petitionsNumber = Petition::where('owner_id', $userId)
-            ->where('craeted_at', '>=', (new Carbon())->subHours(1))
+            ->where('created_at', '>=', (new Carbon())->subHours(1))
             ->count();
         if ($petitionsNumber) {
             return $petitionsNumber;
