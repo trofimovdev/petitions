@@ -120,7 +120,7 @@ class PetitionController extends Controller
                     $webPhoto = $photo;
                 }
 
-                if (Petition::getPetitionsNumber($request->userId) > Petition::MAX_PETITIONS_PER_HOUR) {
+                if (Petition::getCreatedPetitionsNumber($request->userId) > Petition::MAX_PETITIONS_PER_HOUR) {
                     return new ErrorResponse(403, 'В последнее время вы создавали слишком много петиций');
                 }
 
