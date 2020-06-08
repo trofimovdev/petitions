@@ -21,6 +21,7 @@ import UploadCard from "../UploadCard/UploadCard";
 import EditPetitionTabbar from "../EditPetitionTabbar/EditPetitionTabbar";
 import { goBack } from "../../store/router/actions";
 import { setEdit, setCreate } from "../../store/petitions/actions";
+import { filterString } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -116,12 +117,7 @@ const EditPetition = ({
     setForm({
       ...form,
       ...{
-        [name]: value
-          .replace(/[^[:print:]\s]/g, "")
-          .replace(
-            /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
-            ""
-          )
+        [name]: filterString(value)
       }
     });
   };

@@ -155,7 +155,7 @@ api
         if (launchParameters.vk_platform === "desktop_web") {
           store.dispatch(setPage("splashscreen", ""));
         } else {
-          store.dispatch(setStory("petitions", "splashscreen", false));
+          store.dispatch(setStory("petitions", "splashscreen"));
         }
       } else if (managed) {
         store.dispatch(setActiveTab("feed", "last"));
@@ -166,16 +166,16 @@ api
             launchParameters.vk_viewer_group_role
           )
         ) {
-          store.dispatch(setStory("management", "splashscreen", false));
+          store.dispatch(setStory("management", "splashscreen"));
         } else {
-          store.dispatch(setStory("petitions", "splashscreen", false));
+          store.dispatch(setStory("petitions", "splashscreen"));
         }
       } else {
         store.dispatch(setActiveTab("feed", "last"));
         if (launchParameters.vk_platform === "desktop_web") {
           store.dispatch(setPage("splashscreen", ""));
         } else {
-          store.dispatch(setStory("petitions", "splashscreen", false));
+          store.dispatch(setStory("petitions", "splashscreen"));
         }
       }
     } else if (feedTab) {
@@ -184,25 +184,25 @@ api
       } else {
         store.dispatch(setActiveTab("feed", feedTab[1]));
       }
-      store.dispatch(setStory("petitions", "feed", false));
+      store.dispatch(setStory("petitions", "feed",));
     } else if (managed) {
       if (launchParameters.vk_platform === "desktop_web") {
         store.dispatch(setActiveTab("feed", "managed"));
-        store.dispatch(setStory("petitions", "", false));
+        store.dispatch(setStory("petitions", ""));
       } else if (
         ["moder", "editor", "admin"].includes(
           launchParameters.vk_viewer_group_role
         )
       ) {
         store.dispatch(setActiveTab("feed", "last"));
-        store.dispatch(setStory("management", "feed", false));
+        store.dispatch(setStory("management", "feed"));
       } else {
         store.dispatch(setActiveTab("feed", "last"));
-        store.dispatch(setStory("petitions", "feed", false));
+        store.dispatch(setStory("petitions", "feed"));
       }
     } else {
       store.dispatch(setActiveTab("feed", "last"));
-      store.dispatch(setStory("petitions", "feed", false));
+      store.dispatch(setStory("petitions", "feed"));
     }
     initPetitions(launchParameters);
   })
