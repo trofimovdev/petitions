@@ -221,9 +221,6 @@ const routerReducer = (state = initialState, action) => {
       const viewsHistory = state.viewsHistory[state.activeStory] || [];
       const { storiesHistory } = state;
 
-      console.log("panelsHistory", panelsHistory);
-      console.log("viewsHistory", viewsHistory);
-
       if (panelsHistory.length > 1) {
         panelsHistory.pop();
 
