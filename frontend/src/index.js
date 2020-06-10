@@ -47,7 +47,7 @@ const initPetitions = launchParameters => {
           onLoad(r);
           resolve();
         })
-        .catch(() => {
+        .catch(e => {
           store.dispatch(setInitError(true));
           reject();
         });
@@ -57,7 +57,7 @@ const initPetitions = launchParameters => {
           onLoad(r);
           resolve();
         })
-        .catch(() => {
+        .catch(e => {
           store.dispatch(setInitError(true));
           reject();
         });

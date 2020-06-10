@@ -189,11 +189,13 @@ const EditPetitionTabbar = ({
                 } else {
                   formData.append(pair[0], pair[1]);
                 }
-                console.log(pair);
               }
             });
             formData.append("type", "create");
             const controller = new AbortController();
+            window.removeEventListener("popstate", () => {
+              store.dispatch(goBack());
+            });
             window.addEventListener("popstate", () => {
               controller.abort();
             });
@@ -236,6 +238,9 @@ const EditPetitionTabbar = ({
                 setPage(activeView, "done", false, true, ["done"]);
               })
               .catch(({ message }) => {
+                window.removeEventListener("popstate", () => {
+                  controller.abort();
+                });
                 window.addEventListener("popstate", () => {
                   store.dispatch(goBack());
                 });

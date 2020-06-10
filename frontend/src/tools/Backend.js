@@ -56,6 +56,11 @@ export default class Backend {
 
   static request(method, params, httpMethod = "GET", retry = 5, signal = null) {
     return new Promise((resolve, reject) => {
+      if (signal) {
+        signal.addEventListener("abort", () => {
+          reject();
+        });
+      }
       try {
         Backend.__call(method, params, httpMethod, signal)
           .then(r => {
@@ -76,7 +81,7 @@ export default class Backend {
               });
             } else if (retry > 0) {
               setTimeout(() => {
-                Backend.request(method, params, httpMethod, retry - 1)
+                Backend.request(method, params, httpMethod, retry - 1, signal)
                   .then(resolve)
                   .catch(reject);
               }, Math.random() * 1000);
@@ -89,7 +94,7 @@ export default class Backend {
           .catch(e => {
             if (e && e.network && retry > 0) {
               setTimeout(() => {
-                Backend.request(method, params, httpMethod, retry - 1)
+                Backend.request(method, params, httpMethod, retry - 1, signal)
                   .then(resolve)
                   .catch(reject);
               }, Math.random() * 1000);
