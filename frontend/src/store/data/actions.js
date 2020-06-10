@@ -2,7 +2,8 @@ import {
   SET_FRIENDS_CARD_STATUS,
   SET_LAUNCH_PARAMETERS,
   SET_INIT_ERROR,
-  SET_ONLINE
+  SET_ONLINE,
+  SET_APP_ID
 } from "./actionTypes";
 
 export const setFriendsCardStatus = status => ({
@@ -22,5 +23,10 @@ export const setInitError = value => ({
 
 export const setOnline = value => ({
   type: SET_ONLINE,
+  payload: value
+});
+
+export const setAppID = value => ({
+  type: SET_APP_ID,
   payload: value
 });

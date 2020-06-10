@@ -305,7 +305,7 @@ const PetitionCardDesktop = ({
           <UsersStack
             className="PetitionCardDesktop__users-stack"
             photos={friends.slice(0, 3).map(item => {
-              return item.user.photo_50;
+              return item.user.photo_100;
             })}
           >
             {userStackText(friends)}

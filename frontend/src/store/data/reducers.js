@@ -2,7 +2,8 @@ import {
   SET_FRIENDS_CARD_STATUS,
   SET_LAUNCH_PARAMETERS,
   SET_INIT_ERROR,
-  SET_ONLINE
+  SET_ONLINE,
+  SET_APP_ID
 } from "./actionTypes";
 
 const initialState = {
@@ -39,6 +40,13 @@ const dataReducer = (state = initialState, action) => {
       return {
         ...state,
         online: action.payload
+      };
+    }
+
+    case SET_APP_ID: {
+      return {
+        ...state,
+        appId: action.payload
       };
     }
 

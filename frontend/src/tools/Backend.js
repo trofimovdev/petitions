@@ -1,9 +1,10 @@
 import ConnectionError from "./ConnectionError";
+import { isDevEnv } from "./helpers";
 
 export default class Backend {
-  static __call(method, params = {}, httpMethod = "GET") {
+  static __call(method, params = {}, httpMethod = "GET", signal) {
     let url = `https://petitions.w82.vkforms.ru/api/${method}`;
-    if (process.env.NODE_ENV === "development") {
+    if (isDevEnv()) {
       url = `https://petitions.trofimov.dev/api/${method}`;
     }
     const requestParams = {
@@ -12,7 +13,8 @@ export default class Backend {
       redirect: "error",
       headers: {
         "X-vk-sign": window.location.search
-      }
+      },
+      signal
     };
 
     if (
@@ -52,10 +54,10 @@ export default class Backend {
     });
   }
 
-  static request(method, params, httpMethod = "GET", retry = 5) {
+  static request(method, params, httpMethod = "GET", retry = 5, signal = null) {
     return new Promise((resolve, reject) => {
       try {
-        Backend.__call(method, params, httpMethod)
+        Backend.__call(method, params, httpMethod, signal)
           .then(r => {
             const contentType = r.headers.get("Content-Type");
             if (contentType && contentType.indexOf("application/json") !== -1) {

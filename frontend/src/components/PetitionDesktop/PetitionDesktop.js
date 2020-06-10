@@ -52,7 +52,8 @@ const PetitionDesktop = ({
   managedPetitions,
   setInitialEdit,
   setEdit,
-  setFormType
+  setFormType,
+  appId
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
@@ -293,7 +294,7 @@ const PetitionDesktop = ({
                     api
                       .postToWall(
                         "",
-                        `https://vk.com/app7442034#p${currentPetition.id}`
+                        `https://vk.com/app${appId}#p${currentPetition.id}`
                       )
                       .then(() => {
                         setShareLoadingStatus(false);
@@ -378,7 +379,7 @@ const PetitionDesktop = ({
                 <UsersStack
                   className="PetitionDesktop__users-stack"
                   photos={currentPetition.friends.slice(0, 3).map(item => {
-                    return item.user.photo_50;
+                    return item.user.photo_100;
                   })}
                 >
                   {userStackText(currentPetition.friends)}
@@ -395,13 +396,15 @@ const PetitionDesktop = ({
                   className="Petition__creator__avatar"
                   href={
                     parseInt(currentPetition.owner_id) < 0
-                      ? `https://vk.com/${currentPetition.owner.screen_name}`
+                      ? `https://vk.com/public${Math.abs(
+                          currentPetition.owner_id
+                        )}`
                       : `https://vk.com/id${currentPetition.owner_id}`
                   }
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Avatar src={currentPetition.owner.photo_50} size={40} />
+                  <Avatar src={currentPetition.owner.photo_100} size={40} />
                 </a>
               }
               multiline
@@ -410,7 +413,9 @@ const PetitionDesktop = ({
               <Link
                 href={
                   parseInt(currentPetition.owner_id) < 0
-                    ? `https://vk.com/${currentPetition.owner.screen_name}`
+                    ? `https://vk.com/public${Math.abs(
+                        currentPetition.owner_id
+                      )}`
                     : `https://vk.com/id${currentPetition.owner_id}`
                 }
                 target="_blank"
@@ -476,7 +481,8 @@ const mapStateToProps = state => {
     signedPetitions: state.petitions.signed,
     lastPetitions: state.petitions.last,
     popularPetitions: state.petitions.popular,
-    managedPetitions: state.petitions.managed
+    managedPetitions: state.petitions.managed,
+    appId: state.data.appId
   };
 };
 
@@ -517,7 +523,8 @@ PetitionDesktop.propTypes = {
   managedPetitions: PropTypes.array,
   setInitialEdit: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
-  setFormType: PropTypes.func.isRequired
+  setFormType: PropTypes.func.isRequired,
+  appId: PropTypes.number.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionDesktop);

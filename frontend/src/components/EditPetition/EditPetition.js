@@ -124,9 +124,10 @@ const EditPetition = ({
 
   const onCancel = e => {
     const file_preview = `${e.currentTarget.id}_preview`;
+    delete form[e.currentTarget.id];
+    delete form[file_preview];
     setForm({
-      ...form,
-      ...{ [e.currentTarget.id]: undefined, [file_preview]: undefined }
+      ...form
     });
     e.preventDefault();
   };
@@ -217,6 +218,7 @@ const EditPetition = ({
         <Input
           top="Необходимое количество подписей"
           name="need_signatures"
+          type="number"
           pattern="\d*"
           value={form.need_signatures ? parseInt(form.need_signatures) : ""}
           status={

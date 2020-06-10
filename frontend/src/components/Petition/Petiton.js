@@ -207,7 +207,7 @@ const Petition = ({
                 <UsersStack
                   className="Petition__users-stack"
                   photos={currentPetition.friends.slice(0, 3).map(item => {
-                    return item.user.photo_50;
+                    return item.user.photo_100;
                   })}
                 >
                   {userStackText(currentPetition.friends)}
@@ -226,13 +226,15 @@ const Petition = ({
                   className="Petition__creator__avatar"
                   href={
                     parseInt(currentPetition.owner_id) < 0
-                      ? `https://vk.com/${currentPetition.owner.screen_name}`
+                      ? `https://vk.com/public${Math.abs(
+                          currentPetition.owner_id
+                        )}`
                       : `https://vk.com/id${currentPetition.owner_id}`
                   }
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Avatar src={currentPetition.owner.photo_50} size={40} />
+                  <Avatar src={currentPetition.owner.photo_100} size={40} />
                 </a>
               }
               multiline
@@ -241,7 +243,9 @@ const Petition = ({
               <Link
                 href={
                   parseInt(currentPetition.owner_id) < 0
-                    ? `https://vk.com/${currentPetition.owner.screen_name}`
+                    ? `https://vk.com/public${Math.abs(
+                        currentPetition.owner_id
+                      )}`
                     : `https://vk.com/id${currentPetition.owner_id}`
                 }
                 target="_blank"
@@ -251,7 +255,8 @@ const Petition = ({
                 {parseInt(currentPetition.owner_id) < 0
                   ? `${currentPetition.owner.name}`
                   : `${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
-              </Link>{parseInt(currentPetition.owner_id) < 0 && "» "}
+              </Link>
+              {parseInt(currentPetition.owner_id) < 0 && "» "}
               {`${
                 parseInt(currentPetition.owner_id) < 0
                   ? "создало "
