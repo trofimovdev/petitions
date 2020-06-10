@@ -188,7 +188,6 @@ const EditPetition = ({
           <Input
             type="text"
             top="Название"
-            // TODO: вынести в константу с бэкенда
             status={form.title && form.title.length > 150 ? "error" : ""}
             bottom={
               form.title && form.title.length > 150
@@ -220,7 +219,6 @@ const EditPetition = ({
           name="need_signatures"
           pattern="\d*"
           value={form.need_signatures ? parseInt(form.need_signatures) : ""}
-          // TODO: вынести в константу с бэкенда
           status={
             !form.need_signatures ||
             (form.need_signatures <= 10000000 && form.need_signatures >= 1)
