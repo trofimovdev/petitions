@@ -18,6 +18,7 @@ import "./PetitionDesktop.css";
 import Icon16Chevron from "@vkontakte/icons/dist/16/chevron";
 import Icon24ShareOutline from "@vkontakte/icons/dist/24/share_outline";
 import Icon24GearOutline from "@vkontakte/icons/dist/24/gear_outline";
+import Linkify from "react-linkify";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import { userStackText, loadPetitions, loadPhoto } from "../../tools/helpers";
 import {
@@ -213,6 +214,12 @@ const PetitionDesktop = ({
     setPage("edit", "", false, false, [], true);
   };
 
+  const linkDecorator = (href, text, key) => (
+    <Link href={href} key={key} target="_blank" className="PetitionDesktop__link">
+      {text}
+    </Link>
+  );
+
   return (
     <div id={id} className="PetitionDesktop">
       {initError ? (
@@ -387,7 +394,9 @@ const PetitionDesktop = ({
               )}
             </div>
             <Separator />
-            <p className="PetitionDesktop__text">{currentPetition.text}</p>
+            <Linkify componentDecorator={linkDecorator}>
+              <p className="PetitionDesktop__text">{currentPetition.text}</p>
+            </Linkify>
             <Separator />
             <Cell
               className="PetitionDesktop__creator"

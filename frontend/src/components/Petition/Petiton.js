@@ -24,6 +24,7 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Linkify from "react-linkify";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
 import { goBack } from "../../store/router/actions";
@@ -146,6 +147,12 @@ const Petition = ({
     setCurrent
   ]);
 
+  const linkDecorator = (href, text, key) => (
+    <Link href={href} key={key} target="_blank">
+      {text}
+    </Link>
+  );
+
   return (
     <Panel
       id={id}
@@ -216,7 +223,9 @@ const Petition = ({
             </Div>
             <Separator />
             <Div className="Petition__text">
-              <p>{currentPetition.text}</p>
+              <Linkify componentDecorator={linkDecorator}>
+                <p>{currentPetition.text}</p>
+              </Linkify>
             </Div>
             <Separator />
             <Cell
