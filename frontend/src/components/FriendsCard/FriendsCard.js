@@ -86,6 +86,7 @@ const FriendsCard = ({
     setFriendsCardStatus(false);
     api.selectionChanged().catch(() => {});
   };
+
   return (
     <>
       {!friendsCardStatus ||

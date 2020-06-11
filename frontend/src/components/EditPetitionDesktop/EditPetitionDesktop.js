@@ -105,7 +105,7 @@ const EditPetitionDesktop = ({
   const onCancel = e => {
     const file_preview = `${e.currentTarget.id}_preview`;
     delete form[e.currentTarget.id];
-    delete form.file_preview;
+    delete form[file_preview];
     setForm({
       ...form
     });
