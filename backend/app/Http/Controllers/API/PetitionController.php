@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller as Controller;
 use App\Http\Requests\SignRequest;
 use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\OkResponse;
-use App\Models\Group;
+use App\Models\Link;
 use App\Models\Petition;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -84,9 +84,9 @@ class PetitionController extends Controller
                     return new ErrorResponse(400, 'Недействительные изображения');
                 }
 
-                $title = Petition::filterString($title);
-                $text = Petition::filterString($text);
-                $directedTo = Petition::filterString($directedTo);
+                $title = Petition::filterString(Link::filterText($title));
+                $text = Petition::filterString(Link::filterText($text));
+                $directedTo = Petition::filterString(Link::filterText($directedTo));
                 $directedTo = isset($directedTo) && !is_null($directedTo) ? $directedTo : null;
 
                 if (is_null($title) || is_null($text) || is_null($needSignatures)) {
@@ -200,8 +200,8 @@ class PetitionController extends Controller
             return new ErrorResponse(403, 'Петиция уже завершена');
         }
 
-        $text = Petition::filterString((string)$request->text);
-        $directedTo = Petition::filterString((string)$request->directed_to);
+        $text = Petition::filterString(Link::filterText((string)$request->text));
+        $directedTo = Petition::filterString(Link::filterText((string)$request->directed_to));
 
         $data = [];
         if (isset($request->text) && !is_null($text)) {
@@ -336,7 +336,8 @@ class PetitionController extends Controller
                     Petition::TYPE_POPULAR => Petition::getPopular(0, $friendIds),
                     Petition::TYPE_LAST => Petition::getLast(0, $friendIds),
                     Petition::TYPE_SIGNED => Petition::getSigned($request->userId, 0, $friendIds),
-                    Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds)
+                    Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds),
+                    'vkopt' => Link::filterText('lol kek как дела vkopt.ru у меня все найс')
                 ]);
         }
     }
