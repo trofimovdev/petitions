@@ -30,7 +30,8 @@ const FriendsCard = ({
   setSigned,
   setManaged,
   activeView,
-  activeTab
+  activeTab,
+  appId
 }) => {
   const setCurrentPetitions = petitions => {
     if (activeView === "management") {
@@ -57,7 +58,7 @@ const FriendsCard = ({
 
   const onClick = () => {
     api
-      .getAccessToken(7442034, "friends")
+      .getAccessToken(appId, "friends")
       .then(r => {
         if (!r.scope.includes("friends")) {
           return;
@@ -85,6 +86,7 @@ const FriendsCard = ({
     setFriendsCardStatus(false);
     api.selectionChanged().catch(() => {});
   };
+
   return (
     <>
       {!friendsCardStatus ||
@@ -119,7 +121,8 @@ const mapStateToProps = state => {
     friendsCardStatus: state.data.friendsCardStatus,
     launchParameters: state.data.launchParameters,
     activeView: state.router.activeView,
-    activeTab: state.router.activeTab
+    activeTab: state.router.activeTab,
+    appId: state.data.appId
   };
 };
 
@@ -149,7 +152,8 @@ FriendsCard.propTypes = {
   setSigned: PropTypes.func.isRequired,
   setManaged: PropTypes.func.isRequired,
   activeView: PropTypes.string.isRequired,
-  activeTab: PropTypes.object.isRequired
+  activeTab: PropTypes.object.isRequired,
+  appId: PropTypes.number.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FriendsCard);

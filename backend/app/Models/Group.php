@@ -24,7 +24,7 @@ class Group
         }
 
         $tempMissingGroupIds = [];
-        $groupFields = ['photo_50'];
+        $groupFields = ['photo_100'];
         foreach ($missingGroupIds as $missingGroupId) {
             if (sizeof($tempMissingGroupIds) === 500) {
                 $missingGroups = Group::getGroupsFromAPI($tempMissingGroupIds, $groupFields);
