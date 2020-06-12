@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use ErrorException;
+use VK\Client\Enums\VKLanguage;
+use VK\Client\VKApiClient;
 
 class Link
 {
@@ -11,7 +13,10 @@ class Link
     public static function isBanned(string $link, int $try = 0)
     {
         try {
-            $data = json_decode(file_get_contents('https://api.vk.com/method/utils.checkLink?url=' . $link . '&access_token=' . config('app.service') . '&v=5.103&lang=ru'))->response;
+            $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+            $data = $vk->utils()->checkLink(config('app.service'), [
+                'url'  => $link
+            ]);
         } catch (ErrorException $e) {
             if ($try === 5) {
                 return null;
@@ -19,11 +24,11 @@ class Link
             return Link::isBanned($link, $try + 1);
         }
 
-        if ($data->status === 'processing') {
+        if ($data['status'] === 'processing') {
             return Link::isBanned($link, $try);
         }
 
-        return $data->status === 'banned';
+        return $data['status'] === 'banned';
     }
 
     public static function filterText(string $text)
