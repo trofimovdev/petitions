@@ -3,9 +3,9 @@ import { isDevEnv } from "./helpers";
 
 export default class Backend {
   static __call(method, params = {}, httpMethod = "GET", signal) {
-    let url = `https://petitions.w82.vkforms.ru/api/${method}`;
+    let url = `${process.env.REACT_APP_API_HOST}${method}`;
     if (isDevEnv()) {
-      url = `https://petitions.trofimov.dev/api/${method}`;
+      url = `${process.env.REACT_APP_DEV_API_HOST}${method}`;
     }
     const requestParams = {
       method: httpMethod || "GET",
