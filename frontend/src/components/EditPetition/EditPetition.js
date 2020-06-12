@@ -124,9 +124,10 @@ const EditPetition = ({
 
   const onCancel = e => {
     const file_preview = `${e.currentTarget.id}_preview`;
+    delete form[e.currentTarget.id];
+    delete form[file_preview];
     setForm({
-      ...form,
-      ...{ [e.currentTarget.id]: undefined, [file_preview]: undefined }
+      ...form
     });
     e.preventDefault();
   };
@@ -188,7 +189,6 @@ const EditPetition = ({
           <Input
             type="text"
             top="Название"
-            // TODO: вынести в константу с бэкенда
             status={form.title && form.title.length > 150 ? "error" : ""}
             bottom={
               form.title && form.title.length > 150
@@ -218,9 +218,9 @@ const EditPetition = ({
         <Input
           top="Необходимое количество подписей"
           name="need_signatures"
+          type="number"
           pattern="\d*"
           value={form.need_signatures ? parseInt(form.need_signatures) : ""}
-          // TODO: вынести в константу с бэкенда
           status={
             !form.need_signatures ||
             (form.need_signatures <= 10000000 && form.need_signatures >= 1)

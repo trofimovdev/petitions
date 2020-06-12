@@ -2,6 +2,7 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import React from "react";
 import Backend from "./Backend";
 import ConnectionError from "./ConnectionError";
+import store from "../store";
 
 const api = new VKMiniAppAPI();
 
@@ -48,7 +49,7 @@ export const loadPetitions = (method, withFriends = true, params = {}) => {
     }
 
     api
-      .getAccessToken(7442034, "friends")
+      .getAccessToken(store.getState().data.appId, "friends")
       .then(data => {
         const { accessToken } = data;
         api

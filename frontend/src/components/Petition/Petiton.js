@@ -24,6 +24,7 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Linkify from "react-linkify";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
 import { goBack } from "../../store/router/actions";
@@ -146,6 +147,12 @@ const Petition = ({
     setCurrent
   ]);
 
+  const linkDecorator = (href, text, key) => (
+    <Link href={href} key={key} target="_blank">
+      {text}
+    </Link>
+  );
+
   return (
     <Panel
       id={id}
@@ -207,7 +214,7 @@ const Petition = ({
                 <UsersStack
                   className="Petition__users-stack"
                   photos={currentPetition.friends.slice(0, 3).map(item => {
-                    return item.user.photo_50;
+                    return item.user.photo_100;
                   })}
                 >
                   {userStackText(currentPetition.friends)}
@@ -216,7 +223,9 @@ const Petition = ({
             </Div>
             <Separator />
             <Div className="Petition__text">
-              <p>{currentPetition.text}</p>
+              <Linkify componentDecorator={linkDecorator}>
+                <p>{currentPetition.text}</p>
+              </Linkify>
             </Div>
             <Separator />
             <Cell
@@ -226,13 +235,15 @@ const Petition = ({
                   className="Petition__creator__avatar"
                   href={
                     parseInt(currentPetition.owner_id) < 0
-                      ? `https://vk.com/${currentPetition.owner.screen_name}`
+                      ? `https://vk.com/public${Math.abs(
+                          currentPetition.owner_id
+                        )}`
                       : `https://vk.com/id${currentPetition.owner_id}`
                   }
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Avatar src={currentPetition.owner.photo_50} size={40} />
+                  <Avatar src={currentPetition.owner.photo_100} size={40} />
                 </a>
               }
               multiline
@@ -241,7 +252,9 @@ const Petition = ({
               <Link
                 href={
                   parseInt(currentPetition.owner_id) < 0
-                    ? `https://vk.com/${currentPetition.owner.screen_name}`
+                    ? `https://vk.com/public${Math.abs(
+                        currentPetition.owner_id
+                      )}`
                     : `https://vk.com/id${currentPetition.owner_id}`
                 }
                 target="_blank"
@@ -251,7 +264,8 @@ const Petition = ({
                 {parseInt(currentPetition.owner_id) < 0
                   ? `${currentPetition.owner.name}`
                   : `${currentPetition.owner.first_name} ${currentPetition.owner.last_name}`}
-              </Link>{parseInt(currentPetition.owner_id) < 0 && "» "}
+              </Link>
+              {parseInt(currentPetition.owner_id) < 0 && "» "}
               {`${
                 parseInt(currentPetition.owner_id) < 0
                   ? "создало "

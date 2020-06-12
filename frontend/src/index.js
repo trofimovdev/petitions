@@ -15,7 +15,7 @@ import {
   goBack
 } from "./store/router/actions";
 import { setColorScheme } from "./store/ui/actions";
-import { loadPetitions } from "./tools/helpers";
+import { loadPetitions, isDevEnv } from "./tools/helpers";
 import {
   setPopular,
   setLast,
@@ -23,7 +23,12 @@ import {
   setManaged,
   setCurrent
 } from "./store/petitions/actions";
-import { setInitError, setLaunchParameters, setOnline } from "./store/data/actions";
+import {
+  setInitError,
+  setLaunchParameters,
+  setOnline,
+  setAppID
+} from "./store/data/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -42,7 +47,7 @@ const initPetitions = launchParameters => {
           onLoad(r);
           resolve();
         })
-        .catch(() => {
+        .catch(e => {
           store.dispatch(setInitError(true));
           reject();
         });
@@ -52,13 +57,19 @@ const initPetitions = launchParameters => {
           onLoad(r);
           resolve();
         })
-        .catch(() => {
+        .catch(e => {
           store.dispatch(setInitError(true));
           reject();
         });
     }
   });
 };
+
+if (isDevEnv()) {
+  store.dispatch(setAppID(7338958));
+} else {
+  store.dispatch(setAppID(7442034));
+}
 
 api.onUpdateConfig(({ scheme }) => {
   store.dispatch(setColorScheme(scheme));
@@ -184,7 +195,7 @@ api
       } else {
         store.dispatch(setActiveTab("feed", feedTab[1]));
       }
-      store.dispatch(setStory("petitions", "feed",));
+      store.dispatch(setStory("petitions", "feed"));
     } else if (managed) {
       if (launchParameters.vk_platform === "desktop_web") {
         store.dispatch(setActiveTab("feed", "managed"));
@@ -213,7 +224,7 @@ api
       </Provider>,
       document.getElementById("root")
     );
-    if (process.env.NODE_ENV === "development") {
+    if (isDevEnv()) {
       import("./eruda").then(({ default: eruda }) => {});
     }
   });

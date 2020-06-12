@@ -24,7 +24,7 @@ class User
         }
 
         $tempMissingUserIds = [];
-        $userFields = ['photo_50', 'sex'];
+        $userFields = ['photo_100', 'sex'];
         foreach ($missingUserIds as $missingUserId) {
             if (sizeof($tempMissingUserIds) === 1000) {
                 $missingUsers = User::getUsersFromAPI($tempMissingUserIds, $userFields);

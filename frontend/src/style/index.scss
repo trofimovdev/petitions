@@ -19,22 +19,22 @@ body {
 }
 
 /* total width */
-body::-webkit-scrollbar {
+*::-webkit-scrollbar {
   background-color:#fff;
   width: 10px
 }
 
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background-color: #fff
 }
 
-body::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background-color: #babac0;
   border-radius: 16px;
   border: 2px solid #fff
 }
 
-body::-webkit-scrollbar-button {
+*::-webkit-scrollbar-button {
   display: none;
 }
 
@@ -50,4 +50,8 @@ body[scheme="space_gray"] {
 
 button::-moz-focus-inner {
   border: 0;
+}
+
+.react-swipeable-view-container > * {
+  height: calc(100vh - var(--tabbar_height) - (33px + var(--panelheader_height_ios)) - 1);
 }
