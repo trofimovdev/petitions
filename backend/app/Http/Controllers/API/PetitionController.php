@@ -336,8 +336,7 @@ class PetitionController extends Controller
                     Petition::TYPE_POPULAR => Petition::getPopular(0, $friendIds),
                     Petition::TYPE_LAST => Petition::getLast(0, $friendIds),
                     Petition::TYPE_SIGNED => Petition::getSigned($request->userId, 0, $friendIds),
-                    Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds),
-                    'vkopt' => Link::filterText('lol kek как дела vkopt.ru у меня все найс')
+                    Petition::TYPE_MANAGED => Petition::getManaged($request->userId, 0, $friendIds)
                 ]);
         }
     }
