@@ -1,10 +1,11 @@
 import ConnectionError from "./ConnectionError";
+import { isDevEnv } from "./helpers";
 
 export default class Backend {
   static __call(method, params = {}, httpMethod = "GET") {
-    let url = `https://petitions.w82.vkforms.ru/api/${method}`;
-    if (process.env.NODE_ENV === "development") {
-      url = `https://petitions.trofimov.dev/api/${method}`;
+    let url = `${process.env.REACT_APP_API_HOST}${method}`;
+    if (isDevEnv()) {
+      url = `${process.env.REACT_APP_DEV_API_HOST}${method}`;
     }
     const requestParams = {
       method: httpMethod || "GET",

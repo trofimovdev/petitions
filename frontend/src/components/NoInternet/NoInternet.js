@@ -4,11 +4,11 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
-import { setStory } from "../../store/router/actions";
+import { setPage } from "../../store/router/actions";
 
 const api = new VKMiniAppAPI();
 
-const NoInternet = ({ id, setStory, online }) => {
+const NoInternet = ({ id, setPage, online }) => {
   return (
     <Panel id={id} separator={false}>
       <Placeholder
@@ -18,7 +18,7 @@ const NoInternet = ({ id, setStory, online }) => {
             <Button
               size="l"
               onClick={() => {
-                setStory("petitions", "feed", false);
+                setPage("petitions", "feed");
                 api.selectionChanged().catch(() => {});
               }}
             >
@@ -44,7 +44,7 @@ const mapDispatchToProps = dispatch => {
     dispatch,
     ...bindActionCreators(
       {
-        setStory
+        setPage
       },
       dispatch
     )
@@ -53,7 +53,7 @@ const mapDispatchToProps = dispatch => {
 
 NoInternet.propTypes = {
   id: PropTypes.string.isRequired,
-  setStory: PropTypes.func.isRequired,
+  setPage: PropTypes.func.isRequired,
   online: PropTypes.bool
 };
 

@@ -38,7 +38,8 @@ const PetitionModal = ({
   activeModal,
   openPopout,
   closePopout,
-  launchParameters
+  launchParameters,
+  appId
 }) => {
   const fragmentText = (text, maxWidth, ctx) => {
     const words = text.split(" ");
@@ -391,7 +392,7 @@ const PetitionModal = ({
                               {
                                 action_type: "app",
                                 action: {
-                                  app_id: 7442034,
+                                  app_id: appId,
                                   app_context: `#p${currentPetition.id}`
                                 },
                                 clickable_area: [
@@ -444,7 +445,7 @@ const PetitionModal = ({
               api.selectionChanged().catch(() => {});
               api.postToWall(
                 "",
-                `https://vk.com/app7442034#p${currentPetition.id}`
+                `https://vk.com/app${appId}#p${currentPetition.id}`
               );
             }}
           >
@@ -463,7 +464,9 @@ const PetitionModal = ({
             className="PetitionModal__button-wrapper"
             onClick={() => {
               api.selectionChanged().catch(() => {});
-              api.shareLink(`https://vk.com/app7442034#p${currentPetition.id}`);
+              api.shareLink(
+                `https://vk.com/app${appId}#p${currentPetition.id}`
+              );
             }}
           >
             <Button
@@ -485,7 +488,8 @@ const PetitionModal = ({
 const mapStateToProps = state => {
   return {
     currentPetition: state.petitions.current,
-    launchParameters: state.data.launchParameters
+    launchParameters: state.data.launchParameters,
+    appId: state.data.appId
   };
 };
 
@@ -509,7 +513,8 @@ PetitionModal.propTypes = {
   activeModal: PropTypes.string,
   openPopout: PropTypes.func.isRequired,
   closePopout: PropTypes.func.isRequired,
-  launchParameters: PropTypes.object.isRequired
+  launchParameters: PropTypes.object.isRequired,
+  appId: PropTypes.number.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionModal);

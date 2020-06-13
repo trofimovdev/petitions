@@ -116,6 +116,10 @@
     word-break: break-word;
   }
 
+  &__link {
+    color: $petition-desktop-link-color !important;
+  }
+
   &__creator {
     margin-top: 15px;
 

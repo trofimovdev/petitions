@@ -2,6 +2,8 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import React from "react";
 import Backend from "./Backend";
 import ConnectionError from "./ConnectionError";
+import store from "../store";
+import {goBack} from "../store/router/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -48,7 +50,7 @@ export const loadPetitions = (method, withFriends = true, params = {}) => {
     }
 
     api
-      .getAccessToken(7442034, "friends")
+      .getAccessToken(store.getState().data.appId, "friends")
       .then(data => {
         const { accessToken } = data;
         api
@@ -192,4 +194,8 @@ export const filterString = string => {
   clearString = clearString.replace(/\t\t+/g, "\t");
   clearString = clearString.replace(/  +/g, " ");
   return clearString;
+};
+
+export const storeGoBack = () => {
+  store.dispatch(goBack());
 };

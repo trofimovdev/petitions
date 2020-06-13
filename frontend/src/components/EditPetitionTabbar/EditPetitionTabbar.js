@@ -30,7 +30,7 @@ import {
   setSigned
 } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
-import { loadPetitions } from "../../tools/helpers";
+import { loadPetitions, storeGoBack } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -191,6 +191,7 @@ const EditPetitionTabbar = ({
               }
             });
             formData.append("type", "create");
+            window.removeEventListener("popstate", storeGoBack);
             Backend.request("petitions", formData, "POST")
               .then(response => {
                 setCurrent({
@@ -224,9 +225,11 @@ const EditPetitionTabbar = ({
                 }
                 closePopout();
                 setCreate({});
+                window.addEventListener("popstate", storeGoBack);
                 setPage(activeView, "done", false, true, ["done"]);
               })
               .catch(({ message }) => {
+                window.addEventListener("popstate", storeGoBack);
                 closePopout();
                 setSnackbar(
                   <Snackbar
