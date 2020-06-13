@@ -4,6 +4,8 @@ namespace App\Models;
 
 use ErrorException;
 use Illuminate\Support\Facades\Redis;
+use VK\Client\VKApiClient;
+use VK\Client\Enums\VKLanguage;
 
 class User
 {
@@ -58,7 +60,11 @@ class User
 
         $users = [];
         try {
-            $usersData = json_decode(file_get_contents('https://api.vk.com/method/users.get?user_ids=' . join(',', $userIds) . '&fields=' . join(',', $fields) . '&access_token=' . config('app.service') . '&v=5.103&lang=ru'))->response;
+            $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+            $usersData = $vk->users()->get(config('app.service'), [
+                'user_ids'  => $userIds,
+                'fields'    => $fields,
+            ]);
         } catch (ErrorException $e) {
             if ($try === 5) {
                 return null;
@@ -66,12 +72,12 @@ class User
             return User::getUsersFromAPI($userIds, $fields, true, $try + 1);
         }
 
-        foreach ($usersData as $userData) {
-            $user = (array)$userData;
-            $users[$userData->id] = $user;
+        foreach ($usersData as $user) {
+            $user = (array)$user;
+            $users[$user['id']] = $user;
             if ($cache) {
-                Redis::hmset(User::PREFIX . $userData->id, $user);
-                Redis::expire(User::PREFIX . $userData->id, User::CACHE_TTL);
+                Redis::hmset(User::PREFIX . $user['id'], $user);
+                Redis::expire(User::PREFIX . $user['id'], User::CACHE_TTL);
             }
         }
         return $users;

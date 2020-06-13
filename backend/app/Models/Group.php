@@ -4,6 +4,8 @@ namespace App\Models;
 
 use ErrorException;
 use Illuminate\Support\Facades\Redis;
+use VK\Client\Enums\VKLanguage;
+use VK\Client\VKApiClient;
 
 class Group
 {
@@ -59,7 +61,11 @@ class Group
 
         $groups = [];
         try {
-            $groupsData = json_decode(file_get_contents('https://api.vk.com/method/groups.getById?group_ids=' . join(',', $groupIds) . '&fields=' . join(',', $fields) . '&access_token=' . config('app.service') . '&v=5.103&lang=ru'))->response;
+            $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+            $groupsData = $vk->groups()->getById(config('app.service'), [
+                'group_ids'  => $groupIds,
+                'fields'    => $fields,
+            ]);
         } catch (ErrorException $e) {
             if ($try === 5) {
                 return null;
@@ -67,12 +73,12 @@ class Group
             return Group::getGroupsFromAPI($groupIds, $fields, true, $try + 1);
         }
 
-        foreach ($groupsData as $groupData) {
-            $group = (array)$groupData;
-            $groups[$groupData->id] = $group;
+        foreach ($groupsData as $group) {
+            $group = (array)$group;
+            $groups[$group['id']] = $group;
             if ($cache) {
-                Redis::hmset(Group::PREFIX . $groupData->id, $group);
-                Redis::expire(Group::PREFIX . $groupData->id, Group::CACHE_TTL);
+                Redis::hmset(Group::PREFIX . $group['id'], $group);
+                Redis::expire(Group::PREFIX . $group['id'], Group::CACHE_TTL);
             }
         }
         return $groups;

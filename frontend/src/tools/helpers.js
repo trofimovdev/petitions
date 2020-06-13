@@ -3,6 +3,7 @@ import React from "react";
 import Backend from "./Backend";
 import ConnectionError from "./ConnectionError";
 import store from "../store";
+import {goBack} from "../store/router/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -193,4 +194,8 @@ export const filterString = string => {
   clearString = clearString.replace(/\t\t+/g, "\t");
   clearString = clearString.replace(/  +/g, " ");
   return clearString;
+};
+
+export const storeGoBack = () => {
+  store.dispatch(goBack());
 };

@@ -11,11 +11,10 @@ import App from "./App";
 import {
   setActiveTab,
   setStory,
-  setPage,
-  goBack
+  setPage
 } from "./store/router/actions";
 import { setColorScheme } from "./store/ui/actions";
-import { loadPetitions, isDevEnv } from "./tools/helpers";
+import { loadPetitions, isDevEnv, storeGoBack } from "./tools/helpers";
 import {
   setPopular,
   setLast,
@@ -97,9 +96,7 @@ api.onUpdateConfig(({ scheme }) => {
   }, 1000);
 });
 
-window.addEventListener("popstate", () => {
-  store.dispatch(goBack());
-});
+window.addEventListener("popstate", storeGoBack);
 window.addEventListener("offline", () => {
   store.dispatch(setOnline(false));
   store.dispatch(setStory("petitions", "internet", false));

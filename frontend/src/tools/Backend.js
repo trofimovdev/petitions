@@ -2,10 +2,10 @@ import ConnectionError from "./ConnectionError";
 import { isDevEnv } from "./helpers";
 
 export default class Backend {
-  static __call(method, params = {}, httpMethod = "GET", signal) {
-    let url = `https://petitions.w82.vkforms.ru/api/${method}`;
+  static __call(method, params = {}, httpMethod = "GET") {
+    let url = `${process.env.REACT_APP_API_HOST}${method}`;
     if (isDevEnv()) {
-      url = `https://petitions.trofimov.dev/api/${method}`;
+      url = `${process.env.REACT_APP_DEV_API_HOST}${method}`;
     }
     const requestParams = {
       method: httpMethod || "GET",
@@ -13,8 +13,7 @@ export default class Backend {
       redirect: "error",
       headers: {
         "X-vk-sign": window.location.search
-      },
-      signal
+      }
     };
 
     if (
@@ -54,15 +53,10 @@ export default class Backend {
     });
   }
 
-  static request(method, params, httpMethod = "GET", retry = 5, signal = null) {
+  static request(method, params, httpMethod = "GET", retry = 5) {
     return new Promise((resolve, reject) => {
-      if (signal) {
-        signal.addEventListener("abort", () => {
-          reject();
-        });
-      }
       try {
-        Backend.__call(method, params, httpMethod, signal)
+        Backend.__call(method, params, httpMethod)
           .then(r => {
             const contentType = r.headers.get("Content-Type");
             if (contentType && contentType.indexOf("application/json") !== -1) {
@@ -81,7 +75,7 @@ export default class Backend {
               });
             } else if (retry > 0) {
               setTimeout(() => {
-                Backend.request(method, params, httpMethod, retry - 1, signal)
+                Backend.request(method, params, httpMethod, retry - 1)
                   .then(resolve)
                   .catch(reject);
               }, Math.random() * 1000);
@@ -94,7 +88,7 @@ export default class Backend {
           .catch(e => {
             if (e && e.network && retry > 0) {
               setTimeout(() => {
-                Backend.request(method, params, httpMethod, retry - 1, signal)
+                Backend.request(method, params, httpMethod, retry - 1)
                   .then(resolve)
                   .catch(reject);
               }, Math.random() * 1000);
