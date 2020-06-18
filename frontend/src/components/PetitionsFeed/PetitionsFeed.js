@@ -50,7 +50,15 @@ const PetitionsFeed = ({
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [endStatus, setEndStatus] = useState(false);
-  const [indexTab, setIndexTab] = useState(activeTab.feed === "popular" ? 0 : activeTab.feed === "last" ? 1 : activeTab.feed === "signed" ? 2 : 1);
+  const [indexTab, setIndexTab] = useState(
+    activeTab.feed === "popular"
+      ? 0
+      : activeTab.feed === "last"
+      ? 1
+      : activeTab.feed === "signed"
+      ? 2
+      : 1
+  );
 
   const handleChangeIndex = useCallback(
     event => {
@@ -261,70 +269,113 @@ const PetitionsFeed = ({
         isFetching={fetchingStatus}
         id="petitionsContainer"
       >
-        <SwipeableViews index={indexTab} onChangeIndex={handleChangeIndex}>
-          {[popularPetitions, lastPetitions, signedPetitions].map(
-            (currentPetitions, i) => {
-              if (initError) {
+        {!launchParameters.vk_group_id ? (
+          <SwipeableViews index={indexTab} onChangeIndex={handleChangeIndex}>
+            {[popularPetitions, lastPetitions, signedPetitions].map(
+              (currentPetitions, i) => {
+                if (initError) {
+                  return (
+                    <div key={i}>
+                      <ErrorCard />
+                    </div>
+                  );
+                }
+                if (!currentPetitions) {
+                  return (
+                    <div key={i}>
+                      <Spinner
+                        size="regular"
+                        className="PetitionsFeed__spinner"
+                      />
+                    </div>
+                  );
+                }
                 return (
                   <div key={i}>
-                    <ErrorCard />
+                    <FriendsCard />
+                    {currentPetitions.map((item, index) => {
+                      return (
+                        <div key={index}>
+                          <PetitionCard
+                            id={item.id}
+                            title={item.title}
+                            countSignatures={item.count_signatures}
+                            needSignatures={item.need_signatures}
+                            mobilePhotoUrl={item.mobile_photo_url}
+                            friends={item.friends || []}
+                            completed={item.completed}
+                          />
+                          {index < currentPetitions.length - 1 && <Separator />}
+                        </div>
+                      );
+                    })}
+                    {currentPetitions.length === 0 &&
+                    activeTab.feed === "popular" ? (
+                      <Footer>Скоро здесь будут популярные петиции</Footer>
+                    ) : currentPetitions.length === 0 &&
+                      activeTab.feed === "signed" ? (
+                      <Footer>Пока что Вы не подписали ни одной петиции</Footer>
+                    ) : currentPetitions.length === 0 &&
+                      activeTab.feed === "last" ? (
+                      <Footer>Пока что нет ни одной петиции</Footer>
+                    ) : (currentPetitions.length > 0 && endStatus) ||
+                      (currentPetitions.length > 0 &&
+                        currentPetitions.length < 10 &&
+                        !endStatus) ? (
+                      <></>
+                    ) : (
+                      <Spinner
+                        size="regular"
+                        className="PetitionsFeed__spinner__bottom"
+                      />
+                    )}
                   </div>
                 );
               }
-              if (!currentPetitions) {
-                return (
-                  <div key={i}>
-                    <Spinner
-                      size="regular"
-                      className="PetitionsFeed__spinner"
-                    />
-                  </div>
-                );
-              }
-              return (
-                <div key={i}>
-                  <FriendsCard />
-                  {currentPetitions.map((item, index) => {
-                    return (
-                      <div key={index}>
-                        <PetitionCard
-                          id={item.id}
-                          title={item.title}
-                          countSignatures={item.count_signatures}
-                          needSignatures={item.need_signatures}
-                          mobilePhotoUrl={item.mobile_photo_url}
-                          friends={item.friends || []}
-                          completed={item.completed}
-                        />
-                        {index < currentPetitions.length - 1 && <Separator />}
-                      </div>
-                    );
-                  })}
-                  {currentPetitions.length === 0 &&
-                  activeTab.feed === "popular" ? (
-                    <Footer>Скоро здесь будут популярные петиции</Footer>
-                  ) : currentPetitions.length === 0 &&
-                    activeTab.feed === "signed" ? (
-                    <Footer>Пока что Вы не подписали ни одной петиции</Footer>
-                  ) : currentPetitions.length === 0 &&
-                    activeTab.feed === "last" ? (
-                    <Footer>Пока что нет ни одной петиции</Footer>
-                  ) : (currentPetitions.length > 0 && endStatus) ||
-                    (currentPetitions.length > 0 &&
-                      currentPetitions.length < 10 &&
-                      !endStatus) ? (
-                    <></>
-                  ) : (
-                    <Spinner
-                      size="regular"
-                      className="PetitionsFeed__spinner__bottom"
-                    />
-                  )}
-                </div>
-              );
-            }
-          )}
-        </SwipeableViews>
+            )}
+          </SwipeableViews>
+        ) : (
+          <>
+            {initError ? (
+              <ErrorCard />
+            ) : !lastPetitions ? (
+              <Spinner size="regular" className="PetitionsFeed__spinner" />
+            ) : (
+              <>
+                <FriendsCard />
+                {lastPetitions.map((item, index) => {
+                  return (
+                    <div key={index}>
+                      <PetitionCard
+                        id={item.id}
+                        title={item.title}
+                        countSignatures={item.count_signatures}
+                        needSignatures={item.need_signatures}
+                        mobilePhotoUrl={item.mobile_photo_url}
+                        friends={item.friends || []}
+                        completed={item.completed}
+                      />
+                      {index < lastPetitions.length - 1 && <Separator />}
+                    </div>
+                  );
+                })}
+                {lastPetitions.length === 0 ? (
+                  <Footer>Пока что нет ни одной петиции</Footer>
+                ) : (lastPetitions.length > 0 && endStatus) ||
+                  (lastPetitions.length > 0 &&
+                    lastPetitions.length < 10 &&
+                    !endStatus) ? (
+                  <></>
+                ) : (
+                  <Spinner
+                    size="regular"
+                    className="PetitionsFeed__spinner__bottom"
+                  />
+                )}
+              </>
+            )}
+          </>
+        )}
       </PullToRefresh>
 
       <EpicTabbar activeStory={activeStory} setStory={setStory} />
