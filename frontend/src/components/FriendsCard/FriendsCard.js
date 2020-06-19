@@ -57,6 +57,10 @@ const FriendsCard = ({
   };
 
   const onClick = () => {
+    if (friendsCardStatus !== true) {
+      return;
+    }
+    setFriendsCardStatus(2);
     api
       .getAccessToken(appId, "friends")
       .then(r => {
@@ -77,9 +81,9 @@ const FriendsCard = ({
             setFriendsCardStatus(false);
             setCurrentPetitions(response);
           })
-          .catch(() => {});
+          .catch(() => setFriendsCardStatus(true));
       })
-      .catch(() => {});
+      .catch(() => setFriendsCardStatus(true));
   };
 
   const onClose = () => {
