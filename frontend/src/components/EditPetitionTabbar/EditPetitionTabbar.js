@@ -68,10 +68,12 @@ const EditPetitionTabbar = ({
             if (formType === "edit") {
               const changed = new FormData();
               Object.entries(form).forEach(pair => {
+                console.log(pair);
                 if (
                   !pair[0].includes("preview") &&
                   initialEditPetitions[pair[0]] !== pair[1]
                 ) {
+                  console.log(initialEditPetitions[pair[0]], pair);
                   if (
                     ["file1", "file2"].includes(pair[0]) &&
                     form.file1_preview === form.file2_preview &&
