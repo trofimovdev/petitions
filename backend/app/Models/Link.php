@@ -5,6 +5,7 @@ namespace App\Models;
 use ErrorException;
 use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
+use VK\Exceptions\Api\VKApiParamException;
 
 class Link
 {
@@ -15,8 +16,12 @@ class Link
         try {
             $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
             $data = $vk->utils()->checkLink(config('app.service'), [
-                'url'  => $link
+                'url' => $link
             ]);
+        } catch (VKApiParamException $e) {
+            if ($e->getCode() === 100) {
+                return false;
+            }
         } catch (ErrorException $e) {
             if ($try === 5) {
                 return null;
@@ -43,6 +48,7 @@ class Link
                 continue;
             }
             $text = str_replace($link, '', $text);
+            continue;
         }
         return $text;
     }
