@@ -17,6 +17,7 @@ import Icon28CameraOutline from "@vkontakte/icons/dist/28/camera_outline";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import EXIF from "exif-js";
 import UploadCard from "../UploadCard/UploadCard";
 import EditPetitionTabbar from "../EditPetitionTabbar/EditPetitionTabbar";
 import { goBack } from "../../store/router/actions";
@@ -132,6 +133,27 @@ const EditPetition = ({
     e.preventDefault();
   };
 
+  const resetOrientation = (srcBase64, srcOrientation, callback) => {
+    const img = new Image();
+
+    img.onload = () => {
+      const { width } = img;
+      const { height } = img;
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = width;
+      canvas.height = height;
+
+      // draw image
+      ctx.drawImage(img, 0, 0);
+
+      // export base64
+      callback(canvas.toDataURL());
+    };
+    img.src = srcBase64;
+  };
+
   const handleFiles = e => {
     const file_id = e.currentTarget.id;
     const { files } = e.target;
@@ -144,9 +166,16 @@ const EditPetition = ({
         if (!checkFileSize(fileSize) || !checkFileType(file.type)) {
           return;
         }
-        // const ext = /[^.]+$/.exec(filename)
-        const file_preview = `${file_id}_preview`;
-        setForm({ ...form, ...{ [file_preview]: preview, [file_id]: file } });
+        EXIF.getData(file, function() {
+          const orientation = EXIF.getTag(this, "Orientation") || 0;
+          resetOrientation(preview, orientation, data => {
+            const file_preview = `${file_id}_preview`;
+            setForm({
+              ...form,
+              ...{ [file_preview]: data, [file_id]: file }
+            });
+          });
+        });
       };
       reader.readAsDataURL(files[0]);
     }
