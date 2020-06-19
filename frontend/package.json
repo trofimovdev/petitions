@@ -50,6 +50,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-linkify": "^1.0.0-alpha",
+    "react-pullable": "^1.0.5",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-swipeable-views": "^0.13.9",

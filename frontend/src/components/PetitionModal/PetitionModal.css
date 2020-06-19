@@ -39,9 +39,6 @@ body[scheme="space_gray"] {
 button::-moz-focus-inner {
   border: 0; }
 
-.react-swipeable-view-container > * {
-  height: calc(100vh - var(--tabbar_height) - (33px + var(--panelheader_height_ios)) - 1); }
-
 .PetitionModal {
   display: flex;
   flex-direction: row;
