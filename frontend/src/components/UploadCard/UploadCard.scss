@@ -35,6 +35,10 @@
     border-width: 0.5px;
     overflow: hidden;
 
+    &:hover {
+      cursor: pointer;
+    }
+
     &__cancel-button {
       position: absolute;
       top: 10px;
