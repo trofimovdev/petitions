@@ -48,7 +48,6 @@ class Link
                 continue;
             }
             $text = str_replace($link, '', $text);
-            continue;
         }
         return $text;
     }
