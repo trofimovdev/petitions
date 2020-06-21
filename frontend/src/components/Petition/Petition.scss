@@ -61,6 +61,7 @@
   &__info h1 {
     font-size: 20px;
     margin: 0 0 14px 0 !important;
+    user-select: text;
   }
 
   &__users-stack {
@@ -79,6 +80,7 @@
     p {
       white-space: pre-wrap;
       margin: 0;
+      user-select: text;
     }
   }
 
