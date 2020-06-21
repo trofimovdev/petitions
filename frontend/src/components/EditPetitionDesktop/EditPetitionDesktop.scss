@@ -20,6 +20,11 @@
 
       textarea {
         height: 200px;
+        user-select: text;
+      }
+
+      input {
+        user-select: text;
       }
 
       &_error__text {
