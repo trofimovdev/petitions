@@ -164,7 +164,6 @@ const PetitionsFeed = ({
   }, [activeTab, activePanel]);
 
   const platform = usePlatform();
-  console.log("render");
 
   return (
     <Panel
