@@ -321,8 +321,7 @@ const mapDispatchToProps = {
   setEdit,
   setInitialEdit,
   openPopout,
-  closePopout,
-  initPetitions
+  closePopout
 };
 
 PetitionTabbar.propTypes = {
@@ -342,8 +341,7 @@ PetitionTabbar.propTypes = {
   setSnackbarError: PropTypes.func.isRequired,
   lastPetitions: PropTypes.array,
   popularPetitions: PropTypes.array,
-  managedPetitions: PropTypes.array,
-  initPetitions: PropTypes.func.isRequired
+  managedPetitions: PropTypes.array
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionTabbar);

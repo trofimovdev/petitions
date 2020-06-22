@@ -62,8 +62,7 @@ const ManagementFeed = ({
   setFormType,
   setEdit,
   setInitialEdit,
-  initError,
-  initPetitions
+  initError
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
@@ -612,8 +611,7 @@ const mapDispatchToProps = {
   closePopout,
   setFormType,
   setEdit,
-  setInitialEdit,
-  initPetitions
+  setInitialEdit
 };
 
 ManagementFeed.propTypes = {
@@ -629,8 +627,7 @@ ManagementFeed.propTypes = {
   setFormType: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setInitialEdit: PropTypes.func.isRequired,
-  initError: PropTypes.bool,
-  initPetitions: PropTypes.func.isRequired
+  initError: PropTypes.bool
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManagementFeed);

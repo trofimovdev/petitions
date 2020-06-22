@@ -225,8 +225,7 @@ const mapDispatchToProps = {
   openPopout,
   closePopout,
   setPage,
-  setCurrent,
-  initPetitions
+  setCurrent
 };
 
 EditPetitionTabbar.propTypes = {
@@ -242,8 +241,7 @@ EditPetitionTabbar.propTypes = {
   activeView: PropTypes.string.isRequired,
   setCurrent: PropTypes.func.isRequired,
   setCreate: PropTypes.func.isRequired,
-  launchParameters: PropTypes.object.isRequired,
-  initPetitions: PropTypes.func.isRequired
+  launchParameters: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditPetitionTabbar);

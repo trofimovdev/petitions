@@ -316,8 +316,10 @@ const EditPetition = ({
           !(
             form.title &&
             form.title.length <= 150 &&
+            form.title.trim().length > 0 &&
             form.text &&
             form.text.length <= 3000 &&
+            form.text.trim().length > 0 &&
             form.need_signatures &&
             form.need_signatures >= 1 &&
             form.need_signatures <= 10000000 &&

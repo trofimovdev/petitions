@@ -70,7 +70,7 @@ api
   .then(isAppUser_response => {
     const petitionRegExp = new RegExp("^#p(\\d+)$");
     const feedRegExp = new RegExp("^#(popular|last|signed)$");
-    const managedRegExp = new RegExp("^#managed$");
+    const managedRegExp = new RegExp("^#managed?$");
     const windowSearch = window.location.search.split("%23");
     let petitionId =
       window.location.hash.match(petitionRegExp) ||

@@ -283,8 +283,7 @@ const mapDispatchToProps = {
   setInitialEdit,
   setPopular,
   setLast,
-  setSigned,
-  initPetitions
+  setSigned
 };
 
 PetitionCardDesktop.propTypes = {
@@ -303,8 +302,7 @@ PetitionCardDesktop.propTypes = {
   setFormType: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setInitialEdit: PropTypes.func.isRequired,
-  launchParameters: PropTypes.object.isRequired,
-  initPetitions: PropTypes.func.isRequired
+  launchParameters: PropTypes.object.isRequired
 };
 
 export default connect(

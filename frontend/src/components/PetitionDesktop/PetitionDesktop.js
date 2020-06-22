@@ -51,8 +51,7 @@ const PetitionDesktop = ({
   setInitialEdit,
   setEdit,
   setFormType,
-  appId,
-  initPetitions
+  appId
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
@@ -449,8 +448,7 @@ const mapDispatchToProps = {
   setManaged,
   setInitialEdit,
   setEdit,
-  setFormType,
-  initPetitions
+  setFormType
 };
 
 PetitionDesktop.propTypes = {
@@ -466,8 +464,7 @@ PetitionDesktop.propTypes = {
   setInitialEdit: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setFormType: PropTypes.func.isRequired,
-  appId: PropTypes.number.isRequired,
-  initPetitions: PropTypes.func.isRequired
+  appId: PropTypes.number.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionDesktop);

@@ -131,7 +131,6 @@ const PetitionsFeed = ({
 
   useEffect(() => {
     if (activePanel === "feed") {
-      window.history.replaceState(null, null);
       api.setLocationHash(activeTab.feed);
     }
     return () => {};

@@ -297,8 +297,10 @@ const EditPetitionDesktop = ({
               !(
                 form.title &&
                 form.title.length <= 150 &&
+                form.title.trim().length > 0 &&
                 form.text &&
                 form.text.length <= 3000 &&
+                form.text.trim().length > 0 &&
                 form.need_signatures &&
                 form.need_signatures >= 1 &&
                 form.need_signatures <= 10000000 &&
@@ -425,8 +427,7 @@ const mapDispatchToProps = {
   setCreate,
   goBack,
   setCurrent,
-  setPage,
-  initPetitions
+  setPage
 };
 
 EditPetitionDesktop.propTypes = {
@@ -440,8 +441,7 @@ EditPetitionDesktop.propTypes = {
   setCurrent: PropTypes.func.isRequired,
   initialEditPetitions: PropTypes.object.isRequired,
   launchParameters: PropTypes.object.isRequired,
-  goBack: PropTypes.func.isRequired,
-  initPetitions: PropTypes.func.isRequired
+  goBack: PropTypes.func.isRequired
 };
 
 export default connect(
