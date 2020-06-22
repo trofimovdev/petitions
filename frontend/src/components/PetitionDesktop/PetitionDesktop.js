@@ -43,14 +43,10 @@ const PetitionDesktop = ({
   launchParameters,
   currentPetition,
   setPage,
-  signedPetitions,
   setSigned,
   setLast,
-  lastPetitions,
   setPopular,
-  popularPetitions,
   setManaged,
-  managedPetitions,
   setInitialEdit,
   setEdit,
   setFormType,
@@ -106,35 +102,25 @@ const PetitionDesktop = ({
             ...currentPetition,
             ...{ signed: true, count_signatures: parseInt(r) }
           });
-          signedPetitions.unshift({
-            ...currentPetition,
-            ...{ signed: true, count_signatures: parseInt(r) }
-          });
-          setSigned(signedPetitions);
-          setLast(
-            lastPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setPopular(
-            popularPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setManaged(
-            managedPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
+          if (launchParameters.vk_access_token_settings.includes("friends")) {
+            loadPetitions("petitions", true)
+              .then(response => {
+                setPopular(response.popular || []);
+                setLast(response.last || []);
+                setSigned(response.signed || []);
+                setManaged(response.managed || []);
+              })
+              .catch(() => {});
+          } else {
+            loadPetitions("petitions", false)
+              .then(response => {
+                setPopular(response.popular || []);
+                setLast(response.last || []);
+                setSigned(response.signed || []);
+                setManaged(response.managed || []);
+              })
+              .catch(() => {});
+          }
           setFetchingStatus(false);
         }
       })
@@ -152,35 +138,25 @@ const PetitionDesktop = ({
             ...currentPetition,
             ...{ signed: false, count_signatures: parseInt(r) }
           });
-          setSigned(
-            signedPetitions.filter(item => {
-              return item.id !== currentPetition.id;
-            })
-          );
-          setLast(
-            lastPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setPopular(
-            popularPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setManaged(
-            managedPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
+          if (launchParameters.vk_access_token_settings.includes("friends")) {
+            loadPetitions("petitions", true)
+              .then(response => {
+                setPopular(response.popular || []);
+                setLast(response.last || []);
+                setSigned(response.signed || []);
+                setManaged(response.managed || []);
+              })
+              .catch(() => {});
+          } else {
+            loadPetitions("petitions", false)
+              .then(response => {
+                setPopular(response.popular || []);
+                setLast(response.last || []);
+                setSigned(response.signed || []);
+                setManaged(response.managed || []);
+              })
+              .catch(() => {});
+          }
           setFetchingStatus(false);
         }
       })
@@ -215,7 +191,12 @@ const PetitionDesktop = ({
   };
 
   const linkDecorator = (href, text, key) => (
-    <Link href={href} key={key} target="_blank" className="PetitionDesktop__link">
+    <Link
+      href={href}
+      key={key}
+      target="_blank"
+      className="PetitionDesktop__link"
+    >
       {text}
     </Link>
   );
@@ -487,10 +468,6 @@ const mapStateToProps = state => {
     activeTab: state.router.activeTab.feed,
     launchParameters: state.data.launchParameters,
     currentPetition: state.petitions.current,
-    signedPetitions: state.petitions.signed,
-    lastPetitions: state.petitions.last,
-    popularPetitions: state.petitions.popular,
-    managedPetitions: state.petitions.managed,
     appId: state.data.appId
   };
 };
@@ -522,14 +499,10 @@ PetitionDesktop.propTypes = {
   launchParameters: PropTypes.object.isRequired,
   currentPetition: PropTypes.object,
   setPage: PropTypes.func.isRequired,
-  signedPetitions: PropTypes.array,
   setSigned: PropTypes.func.isRequired,
   setLast: PropTypes.func.isRequired,
-  lastPetitions: PropTypes.array,
   setPopular: PropTypes.func.isRequired,
-  popularPetitions: PropTypes.array,
   setManaged: PropTypes.func.isRequired,
-  managedPetitions: PropTypes.array,
   setInitialEdit: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setFormType: PropTypes.func.isRequired,

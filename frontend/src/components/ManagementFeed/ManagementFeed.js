@@ -67,11 +67,8 @@ const ManagementFeed = ({
   setInitialEdit,
   initError,
   setLast,
-  lastPetitions,
   setPopular,
-  popularPetitions,
-  setSigned,
-  signedPetitions
+  setSigned
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
@@ -263,25 +260,29 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(() => {
-                  setManaged(
-                    managedPetitions.map(item => {
-                      if (item.id === petitionId) {
-                        item.completed = true;
-                        return item;
-                      }
-                      return item;
-                    })
-                  );
-                  setLast(
-                    lastPetitions.filter(item => {
-                      return item.id !== petitionId;
-                    })
-                  );
-                  setPopular(
-                    popularPetitions.filter(item => {
-                      return item.id !== petitionId;
-                    })
-                  );
+                  if (
+                    launchParameters.vk_access_token_settings.includes(
+                      "friends"
+                    )
+                  ) {
+                    loadPetitions("petitions", true)
+                      .then(response => {
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
+                      })
+                      .catch(() => {});
+                  } else {
+                    loadPetitions("petitions", false)
+                      .then(response => {
+                        setPopular(response.popular || []);
+                        setLast(response.last || []);
+                        setSigned(response.signed || []);
+                        setManaged(response.managed || []);
+                      })
+                      .catch(() => {});
+                  }
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -349,26 +350,29 @@ const ManagementFeed = ({
                       Backend.request(`petitions/${petitionId}`, {}, "DELETE")
                         .then(r => {
                           closePopout();
-                          setManaged(
-                            managedPetitions.filter(item => {
-                              return item.id !== petitionId;
-                            })
-                          );
-                          setLast(
-                            lastPetitions.filter(item => {
-                              return item.id !== petitionId;
-                            })
-                          );
-                          setPopular(
-                            popularPetitions.filter(item => {
-                              return item.id !== petitionId;
-                            })
-                          );
-                          setSigned(
-                            signedPetitions.filter(item => {
-                              return item.id !== petitionId;
-                            })
-                          );
+                          if (
+                            launchParameters.vk_access_token_settings.includes(
+                              "friends"
+                            )
+                          ) {
+                            loadPetitions("petitions", true)
+                              .then(response => {
+                                setPopular(response.popular || []);
+                                setLast(response.last || []);
+                                setSigned(response.signed || []);
+                                setManaged(response.managed || []);
+                              })
+                              .catch(() => {});
+                          } else {
+                            loadPetitions("petitions", false)
+                              .then(response => {
+                                setPopular(response.popular || []);
+                                setLast(response.last || []);
+                                setSigned(response.signed || []);
+                                setManaged(response.managed || []);
+                              })
+                              .catch(() => {});
+                          }
                           setSnackbar(
                             <Snackbar
                               layout="vertical"
@@ -668,10 +672,7 @@ const mapStateToProps = state => {
     activePanel: state.router.activePanel,
     managedPetitions: state.petitions.managed,
     launchParameters: state.data.launchParameters,
-    initError: state.data.initError,
-    lastPetitions: state.petitions.last,
-    popularPetitions: state.petitions.popular,
-    signedPetitions: state.petitions.signed
+    initError: state.data.initError
   };
 };
 
@@ -712,11 +713,8 @@ ManagementFeed.propTypes = {
   setInitialEdit: PropTypes.func.isRequired,
   initError: PropTypes.bool,
   setLast: PropTypes.func.isRequired,
-  lastPetitions: PropTypes.array,
   setPopular: PropTypes.func.isRequired,
-  popularPetitions: PropTypes.array,
-  setSigned: PropTypes.func.isRequired,
-  signedPetitions: PropTypes.array
+  setSigned: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManagementFeed);

@@ -70,35 +70,25 @@ const PetitionTabbar = ({
             ...currentPetition,
             ...{ signed: true, count_signatures: parseInt(r) }
           });
-          signedPetitions.unshift({
-            ...currentPetition,
-            ...{ signed: true, count_signatures: parseInt(r) }
-          });
-          setSigned(signedPetitions);
-          setLast(
-            lastPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setPopular(
-            popularPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setManaged(
-            managedPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
+          if (launchParameters.vk_access_token_settings.includes("friends")) {
+            loadPetitions("petitions", true)
+              .then(response => {
+                setPopular(response.popular || []);
+                setLast(response.last || []);
+                setSigned(response.signed || []);
+                setManaged(response.managed || []);
+              })
+              .catch(() => {});
+          } else {
+            loadPetitions("petitions", false)
+              .then(response => {
+                setPopular(response.popular || []);
+                setLast(response.last || []);
+                setSigned(response.signed || []);
+                setManaged(response.managed || []);
+              })
+              .catch(() => {});
+          }
           api.notificationOccurred("success").catch(() => {});
           setFetchingStatus(false);
         }
@@ -141,35 +131,25 @@ const PetitionTabbar = ({
             ...currentPetition,
             ...{ signed: false, count_signatures: parseInt(r) }
           });
-          setSigned(
-            signedPetitions.filter(item => {
-              return item.id !== currentPetition.id;
-            })
-          );
-          setLast(
-            lastPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setPopular(
-            popularPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setManaged(
-            managedPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
+          if (launchParameters.vk_access_token_settings.includes("friends")) {
+            loadPetitions("petitions", true)
+              .then(response => {
+                setPopular(response.popular || []);
+                setLast(response.last || []);
+                setSigned(response.signed || []);
+                setManaged(response.managed || []);
+              })
+              .catch(() => {});
+          } else {
+            loadPetitions("petitions", false)
+              .then(response => {
+                setPopular(response.popular || []);
+                setLast(response.last || []);
+                setSigned(response.signed || []);
+                setManaged(response.managed || []);
+              })
+              .catch(() => {});
+          }
           api.selectionChanged().catch(() => {});
           setFetchingStatus(false);
         }
