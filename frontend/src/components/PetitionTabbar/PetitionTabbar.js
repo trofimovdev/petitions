@@ -27,13 +27,10 @@ import {
   setSigned,
   setFormType,
   setEdit,
-  setInitialEdit,
-  setLast,
-  setPopular,
-  setManaged
+  setInitialEdit
 } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
-import { loadPetitions, loadPhoto } from "../../tools/helpers";
+import { initPetitions, loadPetitions, loadPhoto } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -42,8 +39,6 @@ const PetitionTabbar = ({
   currentPetition,
   launchParameters,
   setCurrent,
-  setSigned,
-  signedPetitions,
   activeView,
   setPage,
   setFormType,
@@ -51,13 +46,7 @@ const PetitionTabbar = ({
   setInitialEdit,
   openPopout,
   closePopout,
-  setSnackbarError,
-  setLast,
-  lastPetitions,
-  setPopular,
-  popularPetitions,
-  setManaged,
-  managedPetitions
+  setSnackbarError
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
 
@@ -70,25 +59,7 @@ const PetitionTabbar = ({
             ...currentPetition,
             ...{ signed: true, count_signatures: parseInt(r) }
           });
-          if (launchParameters.vk_access_token_settings.includes("friends")) {
-            loadPetitions("petitions", true)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          } else {
-            loadPetitions("petitions", false)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          }
+          initPetitions(launchParameters);
           api.notificationOccurred("success").catch(() => {});
           setFetchingStatus(false);
         }
@@ -131,25 +102,7 @@ const PetitionTabbar = ({
             ...currentPetition,
             ...{ signed: false, count_signatures: parseInt(r) }
           });
-          if (launchParameters.vk_access_token_settings.includes("friends")) {
-            loadPetitions("petitions", true)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          } else {
-            loadPetitions("petitions", false)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          }
+          initPetitions(launchParameters);
           api.selectionChanged().catch(() => {});
           setFetchingStatus(false);
         }
@@ -373,9 +326,7 @@ const mapDispatchToProps = dispatch => {
         setInitialEdit,
         openPopout,
         closePopout,
-        setLast,
-        setPopular,
-        setManaged
+        initPetitions
       },
       dispatch
     )
@@ -397,12 +348,10 @@ PetitionTabbar.propTypes = {
   openPopout: PropTypes.func.isRequired,
   closePopout: PropTypes.func.isRequired,
   setSnackbarError: PropTypes.func.isRequired,
-  setLast: PropTypes.func.isRequired,
   lastPetitions: PropTypes.array,
-  setPopular: PropTypes.func.isRequired,
   popularPetitions: PropTypes.array,
-  setManaged: PropTypes.func.isRequired,
-  managedPetitions: PropTypes.array
+  managedPetitions: PropTypes.array,
+  initPetitions: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionTabbar);

@@ -107,7 +107,8 @@ api
       } else {
         store.dispatch(setStory("petitions", "feed"));
         store.dispatch(setPage("petitions", "petition"));
-        initPetitions(launchParameters)
+        store
+          .dispatch(initPetitions(launchParameters))
           .then(() => {
             store.dispatch(setCurrent({ id: petitionId[1] }));
           })
@@ -176,7 +177,7 @@ api
       store.dispatch(setActiveTab("feed", "last"));
       store.dispatch(setStory("petitions", "feed"));
     }
-    initPetitions(launchParameters);
+    store.dispatch(initPetitions(launchParameters));
   })
   .then(() => {
     ReactDOM.render(

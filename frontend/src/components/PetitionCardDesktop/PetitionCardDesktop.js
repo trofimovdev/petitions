@@ -18,7 +18,7 @@ import {
   setSigned
 } from "../../store/petitions/actions";
 import { setPage } from "../../store/router/actions";
-import { userStackText, loadPetitions, loadPhoto } from "../../tools/helpers";
+import {userStackText, loadPetitions, loadPhoto, initPetitions} from "../../tools/helpers";
 import Backend from "../../tools/Backend";
 
 const PetitionCardDesktop = ({
@@ -72,28 +72,8 @@ const PetitionCardDesktop = ({
     }
 
     Backend.request(`petitions/${id}`, {}, "DELETE")
-      .then(r => {
-        if (launchParameters.vk_access_token_settings.includes("friends")) {
-          loadPetitions("petitions", true)
-            .then(response => {
-              setPopular(response.popular || []);
-              setLast(response.last || []);
-              setSigned(response.signed || []);
-              setManaged(response.managed || []);
-              setPopout();
-            })
-            .catch(() => {});
-        } else {
-          loadPetitions("petitions", false)
-            .then(response => {
-              setPopular(response.popular || []);
-              setLast(response.last || []);
-              setSigned(response.signed || []);
-              setManaged(response.managed || []);
-              setPopout();
-            })
-            .catch(() => {});
-        }
+      .then(() => {
+        initPetitions(launchParameters);
       })
       .catch(({ errorMessage }) => {
         setPopout(
@@ -198,50 +178,14 @@ const PetitionCardDesktop = ({
       if (completed) {
         Backend.request(`petitions/${id}`, { completed: false }, "PATCH")
           .then(() => {
-            if (launchParameters.vk_access_token_settings.includes("friends")) {
-              loadPetitions("petitions", true)
-                .then(response => {
-                  setPopular(response.popular || []);
-                  setLast(response.last || []);
-                  setSigned(response.signed || []);
-                  setManaged(response.managed || []);
-                })
-                .catch(() => {});
-            } else {
-              loadPetitions("petitions", false)
-                .then(response => {
-                  setPopular(response.popular || []);
-                  setLast(response.last || []);
-                  setSigned(response.signed || []);
-                  setManaged(response.managed || []);
-                })
-                .catch(() => {});
-            }
+            initPetitions(launchParameters);
           })
           .catch(() => {});
         return;
       }
       Backend.request(`petitions/${id}`, { completed: true }, "PATCH")
         .then(() => {
-          if (launchParameters.vk_access_token_settings.includes("friends")) {
-            loadPetitions("petitions", true)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          } else {
-            loadPetitions("petitions", false)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          }
+          initPetitions(launchParameters);
         })
         .catch(() => {});
     }
@@ -365,10 +309,8 @@ PetitionCardDesktop.propTypes = {
   setFormType: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setInitialEdit: PropTypes.func.isRequired,
-  setPopular: PropTypes.func.isRequired,
-  setLast: PropTypes.func.isRequired,
-  setSigned: PropTypes.func.isRequired,
-  launchParameters: PropTypes.object.isRequired
+  launchParameters: PropTypes.object.isRequired,
+  initPetitions: PropTypes.func.isRequired
 };
 
 export default connect(

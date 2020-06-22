@@ -20,7 +20,12 @@ import Icon24ShareOutline from "@vkontakte/icons/dist/24/share_outline";
 import Icon24GearOutline from "@vkontakte/icons/dist/24/gear_outline";
 import Linkify from "react-linkify";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
-import { userStackText, loadPetitions, loadPhoto } from "../../tools/helpers";
+import {
+  userStackText,
+  loadPetitions,
+  loadPhoto,
+  initPetitions
+} from "../../tools/helpers";
 import {
   setCurrent,
   setLast,
@@ -50,7 +55,8 @@ const PetitionDesktop = ({
   setInitialEdit,
   setEdit,
   setFormType,
-  appId
+  appId,
+  initPetitions
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
@@ -102,25 +108,7 @@ const PetitionDesktop = ({
             ...currentPetition,
             ...{ signed: true, count_signatures: parseInt(r) }
           });
-          if (launchParameters.vk_access_token_settings.includes("friends")) {
-            loadPetitions("petitions", true)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          } else {
-            loadPetitions("petitions", false)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          }
+          initPetitions(launchParameters);
           setFetchingStatus(false);
         }
       })
@@ -138,25 +126,7 @@ const PetitionDesktop = ({
             ...currentPetition,
             ...{ signed: false, count_signatures: parseInt(r) }
           });
-          if (launchParameters.vk_access_token_settings.includes("friends")) {
-            loadPetitions("petitions", true)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          } else {
-            loadPetitions("petitions", false)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          }
+          initPetitions(launchParameters);
           setFetchingStatus(false);
         }
       })
@@ -487,7 +457,8 @@ const mapDispatchToProps = dispatch => {
         setManaged,
         setInitialEdit,
         setEdit,
-        setFormType
+        setFormType,
+        initPetitions
       },
       dispatch
     )
@@ -507,7 +478,8 @@ PetitionDesktop.propTypes = {
   setInitialEdit: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setFormType: PropTypes.func.isRequired,
-  appId: PropTypes.number.isRequired
+  appId: PropTypes.number.isRequired,
+  initPetitions: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionDesktop);

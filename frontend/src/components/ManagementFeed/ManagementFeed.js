@@ -35,22 +35,21 @@ import { bindActionCreators } from "redux";
 import ErrorCard from "../ErrorCard/ErrorCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import PetitionCard from "../PetitionCard/PetitionCard";
-import { setPage, openPopout, closePopout } from "../../store/router/actions";
+import {
+  setPage,
+  openPopout,
+  closePopout
+} from "../../store/router/actions";
 import {
   setCurrent,
   setManaged,
   setFormType,
   setEdit,
-  setInitialEdit,
-  setLast,
-  setPopular,
-  setSigned
+  setInitialEdit
 } from "../../store/petitions/actions";
 import FriendsCard from "../FriendsCard/FriendsCard";
 import { loadPetitions, initPetitions, loadPhoto } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
-import store from "../../store";
-import {setInitError} from "../../store/data/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -68,9 +67,7 @@ const ManagementFeed = ({
   setEdit,
   setInitialEdit,
   initError,
-  setLast,
-  setPopular,
-  setSigned
+  initPetitions
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
@@ -117,7 +114,6 @@ const ManagementFeed = ({
                 type: "edit"
               })
                 .then(response => {
-                  // TODO: remove eslint problems
                   response = response[0];
                   loadPhoto(response.mobile_photo_url)
                     .then(data1 => {
@@ -204,7 +200,7 @@ const ManagementFeed = ({
                     </Snackbar>
                   );
                 })
-                .catch(() => {
+                .catch(e => {
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -220,7 +216,7 @@ const ManagementFeed = ({
                         </Avatar>
                       }
                     >
-                      Что-то пошло не так
+                      Что-то п22ошло не так
                     </Snackbar>
                   );
                 });
@@ -264,7 +260,7 @@ const ManagementFeed = ({
                     </Snackbar>
                   );
                 })
-                .catch(() => {
+                .catch(e => {
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -625,9 +621,7 @@ const mapDispatchToProps = dispatch => {
         setFormType,
         setEdit,
         setInitialEdit,
-        setLast,
-        setPopular,
-        setSigned
+        initPetitions
       },
       dispatch
     )
@@ -648,9 +642,7 @@ ManagementFeed.propTypes = {
   setEdit: PropTypes.func.isRequired,
   setInitialEdit: PropTypes.func.isRequired,
   initError: PropTypes.bool,
-  setLast: PropTypes.func.isRequired,
-  setPopular: PropTypes.func.isRequired,
-  setSigned: PropTypes.func.isRequired
+  initPetitions: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManagementFeed);

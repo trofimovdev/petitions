@@ -15,19 +15,11 @@ import {
 } from "@happysanta/vk-app-ui";
 import EXIF from "exif-js";
 import UploadCard from "../UploadCard/UploadCard";
-import {
-  setEdit,
-  setCreate,
-  setCurrent,
-  setManaged,
-  setPopular,
-  setLast,
-  setSigned
-} from "../../store/petitions/actions";
+import { setEdit, setCreate, setCurrent } from "../../store/petitions/actions";
 import { goBack, setPage } from "../../store/router/actions";
 import HeaderDesktop from "../HeaderDesktop/HeaderDesktop";
 import Backend from "../../tools/Backend";
-import { loadPetitions, filterString } from "../../tools/helpers";
+import { filterString, initPetitions } from "../../tools/helpers";
 
 const EditPetitionDesktop = ({
   id,
@@ -38,11 +30,7 @@ const EditPetitionDesktop = ({
   editPetitions,
   createPetitions,
   setCurrent,
-  setManaged,
   initialEditPetitions,
-  setPopular,
-  setLast,
-  setSigned,
   launchParameters,
   goBack
 }) => {
@@ -356,30 +344,8 @@ const EditPetitionDesktop = ({
                   }
                 });
                 Backend.request(`petitions/${form.id}`, changed, "PATCH")
-                  .then(response => {
-                    if (
-                      launchParameters.vk_access_token_settings.includes(
-                        "friends"
-                      )
-                    ) {
-                      loadPetitions("petitions", true)
-                        .then(response => {
-                          setPopular(response.popular || []);
-                          setLast(response.last || []);
-                          setSigned(response.signed || []);
-                          setManaged(response.managed || []);
-                        })
-                        .catch(() => {});
-                    } else {
-                      loadPetitions("petitions", false)
-                        .then(response => {
-                          setPopular(response.popular || []);
-                          setLast(response.last || []);
-                          setSigned(response.signed || []);
-                          setManaged(response.managed || []);
-                        })
-                        .catch(() => {});
-                    }
+                  .then(() => {
+                    initPetitions(launchParameters);
                     setFetchingStatus(false);
                     setTs({ time: Date.now(), message: "Изменения сохранены" });
                   })
@@ -421,29 +387,7 @@ const EditPetitionDesktop = ({
                     mobile_photo_url: response.mobile_photo_url,
                     web_photo_url: response.web_photo_url
                   });
-                  if (
-                    launchParameters.vk_access_token_settings.includes(
-                      "friends"
-                    )
-                  ) {
-                    loadPetitions("petitions", true)
-                      .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      })
-                      .catch(() => {});
-                  } else {
-                    loadPetitions("petitions", false)
-                      .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      })
-                      .catch(() => {});
-                  }
+                  initPetitions(launchParameters);
                   setFetchingStatus(false);
                   setCreate({});
                   setPage("done", "");
@@ -485,11 +429,8 @@ const mapDispatchToProps = dispatch => {
         setCreate,
         goBack,
         setCurrent,
-        setManaged,
-        setPopular,
-        setLast,
-        setSigned,
-        setPage
+        setPage,
+        initPetitions
       },
       dispatch
     )
@@ -505,13 +446,10 @@ EditPetitionDesktop.propTypes = {
   editPetitions: PropTypes.object.isRequired,
   createPetitions: PropTypes.object.isRequired,
   setCurrent: PropTypes.func.isRequired,
-  setManaged: PropTypes.func.isRequired,
   initialEditPetitions: PropTypes.object.isRequired,
-  setPopular: PropTypes.func.isRequired,
-  setLast: PropTypes.func.isRequired,
-  setSigned: PropTypes.func.isRequired,
   launchParameters: PropTypes.object.isRequired,
-  goBack: PropTypes.func.isRequired
+  goBack: PropTypes.func.isRequired,
+  initPetitions: PropTypes.func.isRequired
 };
 
 export default connect(

@@ -2,10 +2,15 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import React from "react";
 import Backend from "./Backend";
 import ConnectionError from "./ConnectionError";
+import { goBack } from "../store/router/actions";
+import {
+  setLast,
+  setManaged,
+  setPopular,
+  setSigned
+} from "../store/petitions/actions";
+import { setInitError } from "../store/data/actions";
 import store from "../store";
-import {goBack} from "../store/router/actions";
-import {setLast, setManaged, setPopular, setSigned} from "../store/petitions/actions";
-import {setInitError} from "../store/data/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -202,35 +207,36 @@ export const storeGoBack = () => {
   store.dispatch(goBack());
 };
 
-const onLoad = response => {
-  store.dispatch(setPopular(response.popular || []));
-  store.dispatch(setLast(response.last || []));
-  store.dispatch(setSigned(response.signed || []));
-  store.dispatch(setManaged(response.managed || []));
-};
-
 export const initPetitions = launchParameters => {
-  return new Promise((resolve, reject) => {
-    if (launchParameters.vk_access_token_settings.includes("friends")) {
-      loadPetitions("petitions", true)
-        .then(r => {
-          onLoad(r);
-          resolve();
-        })
-        .catch(() => {
-          store.dispatch(setInitError(true));
-          reject();
-        });
-    } else {
-      loadPetitions("petitions", false)
-        .then(r => {
-          onLoad(r);
-          resolve();
-        })
-        .catch(() => {
-          store.dispatch(setInitError(true));
-          reject();
-        });
-    }
-  });
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      if (launchParameters.vk_access_token_settings.includes("friends")) {
+        loadPetitions("petitions", true)
+          .then(r => {
+            dispatch(setPopular(r.popular || []));
+            dispatch(setLast(r.last || []));
+            dispatch(setSigned(r.signed || []));
+            dispatch(setManaged(r.managed || []));
+            resolve();
+          })
+          .catch(() => {
+            dispatch(setInitError(true));
+            reject();
+          });
+      } else {
+        loadPetitions("petitions", false)
+          .then(r => {
+            dispatch(setPopular(r.popular || []));
+            dispatch(setLast(r.last || []));
+            dispatch(setSigned(r.signed || []));
+            dispatch(setManaged(r.managed || []));
+            resolve();
+          })
+          .catch(() => {
+            dispatch(setInitError(true));
+            reject();
+          });
+      }
+    });
+  };
 };
