@@ -92,10 +92,10 @@ const EditPetitionDesktop = ({
 
   const onCancel = e => {
     const file_preview = `${e.currentTarget.id}_preview`;
-    form[e.currentTarget.id] = undefined;
-    form[file_preview] = undefined;
     setForm({
-      ...form
+      ...form,
+      [e.currentTarget.id]: undefined,
+      [file_preview]: undefined
     });
     e.preventDefault();
   };
