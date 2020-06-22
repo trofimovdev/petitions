@@ -45,6 +45,7 @@ import {
 import FriendsCard from "../FriendsCard/FriendsCard";
 import { loadPetitions, initPetitions, loadPhoto } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
+import store from "../../store";
 
 const api = new VKMiniAppAPI();
 
@@ -171,7 +172,7 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(() => {
-                  initPetitions(launchParameters);
+                  store.dispatch(initPetitions(launchParameters));
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -231,7 +232,7 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(() => {
-                  initPetitions(launchParameters);
+                  store.dispatch(initPetitions(launchParameters));
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -299,7 +300,7 @@ const ManagementFeed = ({
                       Backend.request(`petitions/${petitionId}`, {}, "DELETE")
                         .then(() => {
                           closePopout();
-                          initPetitions(launchParameters);
+                          store.dispatch(initPetitions(launchParameters));
                           setSnackbar(
                             <Snackbar
                               layout="vertical"

@@ -38,6 +38,7 @@ import {
 import { setLaunchParameters } from "../../store/data/actions";
 import { setPage } from "../../store/router/actions";
 import Backend from "../../tools/Backend";
+import store from "../../store";
 
 const api = new VKMiniAppAPI();
 
@@ -103,7 +104,7 @@ const PetitionDesktop = ({
             ...currentPetition,
             ...{ signed: true, count_signatures: parseInt(r) }
           });
-          initPetitions(launchParameters);
+          store.dispatch(initPetitions(launchParameters));
           setFetchingStatus(false);
         }
       })
@@ -121,7 +122,7 @@ const PetitionDesktop = ({
             ...currentPetition,
             ...{ signed: false, count_signatures: parseInt(r) }
           });
-          initPetitions(launchParameters);
+          store.dispatch(initPetitions(launchParameters));
           setFetchingStatus(false);
         }
       })

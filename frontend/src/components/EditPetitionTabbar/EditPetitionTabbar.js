@@ -23,6 +23,7 @@ import {
 import { setCreate, setCurrent } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
 import { initPetitions, storeGoBack } from "../../tools/helpers";
+import store from "../../store";
 
 const api = new VKMiniAppAPI();
 
@@ -85,7 +86,7 @@ const EditPetitionTabbar = ({
               });
               Backend.request(`petitions/${form.id}`, changed, "PATCH")
                 .then(() => {
-                  initPetitions(launchParameters);
+                  store.dispatch(initPetitions(launchParameters));
                   closePopout();
                   api.notificationOccurred("success").catch(() => {});
                   setSnackbar(
@@ -168,7 +169,7 @@ const EditPetitionTabbar = ({
                   mobile_photo_url: response.mobile_photo_url,
                   web_photo_url: response.web_photo_url
                 });
-                initPetitions(launchParameters);
+                store.dispatch(initPetitions(launchParameters));
                 closePopout();
                 setCreate({});
                 window.addEventListener("popstate", storeGoBack);

@@ -24,6 +24,7 @@ import {
   initPetitions
 } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
+import store from "../../store";
 
 const PetitionCardDesktop = ({
   id,
@@ -73,7 +74,7 @@ const PetitionCardDesktop = ({
 
     Backend.request(`petitions/${id}`, {}, "DELETE")
       .then(() => {
-        initPetitions(launchParameters);
+        store.dispatch(initPetitions(launchParameters)).then(() => setPopout());
       })
       .catch(({ errorMessage }) => {
         setPopout(
@@ -178,14 +179,14 @@ const PetitionCardDesktop = ({
       if (completed) {
         Backend.request(`petitions/${id}`, { completed: false }, "PATCH")
           .then(() => {
-            initPetitions(launchParameters);
+            store.dispatch(initPetitions(launchParameters));
           })
           .catch(() => {});
         return;
       }
       Backend.request(`petitions/${id}`, { completed: true }, "PATCH")
         .then(() => {
-          initPetitions(launchParameters);
+          store.dispatch(initPetitions(launchParameters));
         })
         .catch(() => {});
     }
@@ -282,7 +283,8 @@ const mapDispatchToProps = {
   setInitialEdit,
   setPopular,
   setLast,
-  setSigned
+  setSigned,
+  initPetitions
 };
 
 PetitionCardDesktop.propTypes = {

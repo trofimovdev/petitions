@@ -208,6 +208,7 @@ export const storeGoBack = () => {
 };
 
 export const initPetitions = launchParameters => {
+  console.log("initPetitions");
   return dispatch => {
     return new Promise((resolve, reject) => {
       loadPetitions(
@@ -215,6 +216,7 @@ export const initPetitions = launchParameters => {
         launchParameters.vk_access_token_settings.includes("friends")
       )
         .then(r => {
+          console.log(r);
           dispatch(setPopular(r.popular || []));
           dispatch(setLast(r.last || []));
           dispatch(setSigned(r.signed || []));
@@ -222,6 +224,7 @@ export const initPetitions = launchParameters => {
           resolve();
         })
         .catch(() => {
+          console.log("erorr");
           dispatch(setInitError(true));
           reject();
         });

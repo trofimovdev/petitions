@@ -19,6 +19,7 @@ import { goBack, setPage } from "../../store/router/actions";
 import HeaderDesktop from "../HeaderDesktop/HeaderDesktop";
 import Backend from "../../tools/Backend";
 import { filterString, initPetitions } from "../../tools/helpers";
+import store from "../../store";
 
 const EditPetitionDesktop = ({
   id,
@@ -344,7 +345,7 @@ const EditPetitionDesktop = ({
                 });
                 Backend.request(`petitions/${form.id}`, changed, "PATCH")
                   .then(() => {
-                    initPetitions(launchParameters);
+                    store.dispatch(initPetitions(launchParameters));
                     setFetchingStatus(false);
                     setTs({ time: Date.now(), message: "Изменения сохранены" });
                   })
@@ -386,7 +387,7 @@ const EditPetitionDesktop = ({
                     mobile_photo_url: response.mobile_photo_url,
                     web_photo_url: response.web_photo_url
                   });
-                  initPetitions(launchParameters);
+                  store.dispatch(initPetitions(launchParameters));
                   setFetchingStatus(false);
                   setCreate({});
                   setPage("done", "");
