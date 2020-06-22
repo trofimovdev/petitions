@@ -47,8 +47,10 @@ import {
   setSigned
 } from "../../store/petitions/actions";
 import FriendsCard from "../FriendsCard/FriendsCard";
-import { loadPetitions, loadPhoto } from "../../tools/helpers";
+import { loadPetitions, initPetitions, loadPhoto } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
+import store from "../../store";
+import {setInitError} from "../../store/data/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -178,29 +180,7 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(() => {
-                  if (
-                    launchParameters.vk_access_token_settings.includes(
-                      "friends"
-                    )
-                  ) {
-                    loadPetitions("petitions", true)
-                      .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      })
-                      .catch(() => {});
-                  } else {
-                    loadPetitions("petitions", false)
-                      .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      })
-                      .catch(() => {});
-                  }
+                  initPetitions(launchParameters);
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -260,29 +240,7 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(() => {
-                  if (
-                    launchParameters.vk_access_token_settings.includes(
-                      "friends"
-                    )
-                  ) {
-                    loadPetitions("petitions", true)
-                      .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      })
-                      .catch(() => {});
-                  } else {
-                    loadPetitions("petitions", false)
-                      .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      })
-                      .catch(() => {});
-                  }
+                  initPetitions(launchParameters);
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -348,31 +306,9 @@ const ManagementFeed = ({
                     action: () => {
                       openPopout(<ScreenSpinner />);
                       Backend.request(`petitions/${petitionId}`, {}, "DELETE")
-                        .then(r => {
+                        .then(() => {
                           closePopout();
-                          if (
-                            launchParameters.vk_access_token_settings.includes(
-                              "friends"
-                            )
-                          ) {
-                            loadPetitions("petitions", true)
-                              .then(response => {
-                                setPopular(response.popular || []);
-                                setLast(response.last || []);
-                                setSigned(response.signed || []);
-                                setManaged(response.managed || []);
-                              })
-                              .catch(() => {});
-                          } else {
-                            loadPetitions("petitions", false)
-                              .then(response => {
-                                setPopular(response.popular || []);
-                                setLast(response.last || []);
-                                setSigned(response.signed || []);
-                                setManaged(response.managed || []);
-                              })
-                              .catch(() => {});
-                          }
+                          initPetitions(launchParameters);
                           setSnackbar(
                             <Snackbar
                               layout="vertical"

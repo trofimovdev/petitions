@@ -10,14 +10,8 @@ import "./style/index.css";
 import App from "./App";
 import { setActiveTab, setStory, setPage } from "./store/router/actions";
 import { setColorScheme } from "./store/ui/actions";
-import { loadPetitions, isDevEnv, storeGoBack } from "./tools/helpers";
-import {
-  setPopular,
-  setLast,
-  setSigned,
-  setManaged,
-  setCurrent
-} from "./store/petitions/actions";
+import { initPetitions, isDevEnv, storeGoBack } from "./tools/helpers";
+import { setCurrent } from "./store/petitions/actions";
 import {
   setInitError,
   setLaunchParameters,
@@ -26,39 +20,6 @@ import {
 } from "./store/data/actions";
 
 const api = new VKMiniAppAPI();
-
-const onLoad = response => {
-  store.dispatch(setPopular(response.popular || []));
-  store.dispatch(setLast(response.last || []));
-  store.dispatch(setSigned(response.signed || []));
-  store.dispatch(setManaged(response.managed || []));
-};
-
-const initPetitions = launchParameters => {
-  return new Promise((resolve, reject) => {
-    if (launchParameters.vk_access_token_settings.includes("friends")) {
-      loadPetitions("petitions", true)
-        .then(r => {
-          onLoad(r);
-          resolve();
-        })
-        .catch(e => {
-          store.dispatch(setInitError(true));
-          reject();
-        });
-    } else {
-      loadPetitions("petitions", false)
-        .then(r => {
-          onLoad(r);
-          resolve();
-        })
-        .catch(e => {
-          store.dispatch(setInitError(true));
-          reject();
-        });
-    }
-  });
-};
 
 if (isDevEnv()) {
   store.dispatch(setAppID(7338958));

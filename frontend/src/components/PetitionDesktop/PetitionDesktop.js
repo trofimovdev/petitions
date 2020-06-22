@@ -196,6 +196,7 @@ const PetitionDesktop = ({
       key={key}
       target="_blank"
       className="PetitionDesktop__link"
+      rel="noopener noreferrer"
     >
       {text}
     </Link>
