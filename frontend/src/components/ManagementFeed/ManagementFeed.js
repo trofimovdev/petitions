@@ -211,7 +211,7 @@ const ManagementFeed = ({
                         </Avatar>
                       }
                     >
-                      Что-то п22ошло не так
+                      Что-то пошло не так
                     </Snackbar>
                   );
                 });
