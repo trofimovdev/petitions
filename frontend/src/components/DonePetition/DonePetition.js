@@ -10,7 +10,6 @@ import {
 import PropTypes from "prop-types";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon56CheckCircleOutline from "@vkontakte/icons/dist/56/check_circle_outline";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { setPage, openModal } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
@@ -82,18 +81,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setPage,
-        setCurrent,
-        openModal
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setPage,
+  setCurrent,
+  openModal
 };
 
 DonePetition.propTypes = {

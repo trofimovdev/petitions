@@ -3,7 +3,6 @@ import { Div } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./EditPetitionDesktop.css";
 import Icon48Camera from "@vkontakte/icons/dist/48/camera";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
   Input,
@@ -420,21 +419,13 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setEdit,
-        setCreate,
-        goBack,
-        setCurrent,
-        setPage,
-        initPetitions
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setEdit,
+  setCreate,
+  goBack,
+  setCurrent,
+  setPage,
+  initPetitions
 };
 
 EditPetitionDesktop.propTypes = {

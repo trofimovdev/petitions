@@ -3,7 +3,6 @@ import { Div, Card, Link } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./FriendsCard.css";
 import Icon16Cancel from "@vkontakte/icons/dist/16/cancel";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import {
@@ -130,22 +129,15 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setFriendsCardStatus,
-        setLaunchParameters,
-        setPopular,
-        setLast,
-        setSigned,
-        setManaged
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setFriendsCardStatus,
+  setLaunchParameters,
+  setPopular,
+  setLast,
+  setSigned,
+  setManaged
 };
+
 FriendsCard.propTypes = {
   friendsCardStatus: PropTypes.bool.isRequired,
   setFriendsCardStatus: PropTypes.func.isRequired,

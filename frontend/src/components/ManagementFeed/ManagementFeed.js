@@ -31,15 +31,10 @@ import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import Icon24DoneOutline from "@vkontakte/icons/dist/24/done_outline";
 import Icon28ChevronRightCircleOutline from "@vkontakte/icons/dist/28/chevron_right_circle_outline";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import ErrorCard from "../ErrorCard/ErrorCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import PetitionCard from "../PetitionCard/PetitionCard";
-import {
-  setPage,
-  openPopout,
-  closePopout
-} from "../../store/router/actions";
+import { setPage, openPopout, closePopout } from "../../store/router/actions";
 import {
   setCurrent,
   setManaged,
@@ -608,24 +603,16 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setPage,
-        setCurrent,
-        setManaged,
-        openPopout,
-        closePopout,
-        setFormType,
-        setEdit,
-        setInitialEdit,
-        initPetitions
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setPage,
+  setCurrent,
+  setManaged,
+  openPopout,
+  closePopout,
+  setFormType,
+  setEdit,
+  setInitialEdit,
+  initPetitions
 };
 
 ManagementFeed.propTypes = {

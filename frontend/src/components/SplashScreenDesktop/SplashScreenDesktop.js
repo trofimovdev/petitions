@@ -1,7 +1,6 @@
 import React from "react";
 import { Div, Separator } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import { Welcome, Button, Link, TabItem, TabList } from "@happysanta/vk-app-ui";
@@ -83,16 +82,8 @@ const SplashScreenDesktop = ({ id, setPage }) => {
   );
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setPage
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setPage
 };
 
 SplashScreenDesktop.propTypes = {

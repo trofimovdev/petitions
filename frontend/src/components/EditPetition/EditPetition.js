@@ -15,7 +15,6 @@ import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon28CameraOutline from "@vkontakte/icons/dist/28/camera_outline";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import EXIF from "exif-js";
 import UploadCard from "../UploadCard/UploadCard";
@@ -342,18 +341,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        goBack,
-        setEdit,
-        setCreate
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  goBack,
+  setEdit,
+  setCreate
 };
 
 EditPetition.propTypes = {

@@ -10,7 +10,6 @@ import {
 import "./EditPetitionTabbar.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import Icon24DoneOutline from "@vkontakte/icons/dist/24/done_outline";
@@ -218,23 +217,15 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        goBack,
-        setCreate,
-        openModal,
-        openPopout,
-        closePopout,
-        setPage,
-        setCurrent,
-        initPetitions
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  goBack,
+  setCreate,
+  openModal,
+  openPopout,
+  closePopout,
+  setPage,
+  setCurrent,
+  initPetitions
 };
 
 EditPetitionTabbar.propTypes = {

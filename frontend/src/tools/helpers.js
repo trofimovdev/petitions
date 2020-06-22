@@ -210,33 +210,21 @@ export const storeGoBack = () => {
 export const initPetitions = launchParameters => {
   return dispatch => {
     return new Promise((resolve, reject) => {
-      if (launchParameters.vk_access_token_settings.includes("friends")) {
-        loadPetitions("petitions", true)
-          .then(r => {
-            dispatch(setPopular(r.popular || []));
-            dispatch(setLast(r.last || []));
-            dispatch(setSigned(r.signed || []));
-            dispatch(setManaged(r.managed || []));
-            resolve();
-          })
-          .catch(() => {
-            dispatch(setInitError(true));
-            reject();
-          });
-      } else {
-        loadPetitions("petitions", false)
-          .then(r => {
-            dispatch(setPopular(r.popular || []));
-            dispatch(setLast(r.last || []));
-            dispatch(setSigned(r.signed || []));
-            dispatch(setManaged(r.managed || []));
-            resolve();
-          })
-          .catch(() => {
-            dispatch(setInitError(true));
-            reject();
-          });
-      }
+      loadPetitions(
+        "petitions",
+        launchParameters.vk_access_token_settings.includes("friends")
+      )
+        .then(r => {
+          dispatch(setPopular(r.popular || []));
+          dispatch(setLast(r.last || []));
+          dispatch(setSigned(r.signed || []));
+          dispatch(setManaged(r.managed || []));
+          resolve();
+        })
+        .catch(() => {
+          dispatch(setInitError(true));
+          reject();
+        });
     });
   };
 };

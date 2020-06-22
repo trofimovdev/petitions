@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { Button, Notify } from "@happysanta/vk-app-ui";
 import {
   Avatar,
@@ -48,10 +47,6 @@ const PetitionDesktop = ({
   launchParameters,
   currentPetition,
   setPage,
-  setSigned,
-  setLast,
-  setPopular,
-  setManaged,
   setInitialEdit,
   setEdit,
   setFormType,
@@ -443,26 +438,18 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setCurrent,
-        setLaunchParameters,
-        setPage,
-        setSigned,
-        setLast,
-        setPopular,
-        setManaged,
-        setInitialEdit,
-        setEdit,
-        setFormType,
-        initPetitions
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setCurrent,
+  setLaunchParameters,
+  setPage,
+  setSigned,
+  setLast,
+  setPopular,
+  setManaged,
+  setInitialEdit,
+  setEdit,
+  setFormType,
+  initPetitions
 };
 
 PetitionDesktop.propTypes = {

@@ -1,7 +1,6 @@
 import React from "react";
 import { View } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import ManagementFeed from "../ManagementFeed/ManagementFeed";
 import EditPetition from "../EditPetition/EditPetition";
@@ -60,17 +59,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        goBack,
-        closeModal
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  goBack,
+  closeModal
 };
 
 Management.propTypes = {

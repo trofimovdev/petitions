@@ -2,7 +2,6 @@ import React from "react";
 import { Div, Card, UsersStack } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { DropList, ModalDialog } from "@happysanta/vk-app-ui";
 import Icon28ChevronDownOutline from "@vkontakte/icons/dist/28/chevron_down_outline";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
@@ -18,7 +17,12 @@ import {
   setSigned
 } from "../../store/petitions/actions";
 import { setPage } from "../../store/router/actions";
-import {userStackText, loadPetitions, loadPhoto, initPetitions} from "../../tools/helpers";
+import {
+  userStackText,
+  loadPetitions,
+  loadPhoto,
+  initPetitions
+} from "../../tools/helpers";
 import Backend from "../../tools/Backend";
 
 const PetitionCardDesktop = ({
@@ -32,14 +36,10 @@ const PetitionCardDesktop = ({
   managementArrow,
   friends,
   completed,
-  setManaged,
   setPopout,
   setFormType,
   setEdit,
   setInitialEdit,
-  setPopular,
-  setLast,
-  setSigned,
   launchParameters
 }) => {
   const deletePetition = (retry = false, message = "") => {
@@ -273,24 +273,16 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setPage,
-        setCurrent,
-        setManaged,
-        setFormType,
-        setEdit,
-        setInitialEdit,
-        setPopular,
-        setLast,
-        setSigned
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setPage,
+  setCurrent,
+  setManaged,
+  setFormType,
+  setEdit,
+  setInitialEdit,
+  setPopular,
+  setLast,
+  setSigned
 };
 
 PetitionCardDesktop.propTypes = {
