@@ -8,11 +8,7 @@ import bridge from "@vkontakte/vk-bridge";
 import store from "./store";
 import "./style/index.css";
 import App from "./App";
-import {
-  setActiveTab,
-  setStory,
-  setPage
-} from "./store/router/actions";
+import { setActiveTab, setStory, setPage } from "./store/router/actions";
 import { setColorScheme } from "./store/ui/actions";
 import { loadPetitions, isDevEnv, storeGoBack } from "./tools/helpers";
 import {
@@ -113,10 +109,17 @@ api
   .then(isAppUser_response => {
     const petitionRegExp = new RegExp("^#p(\\d+)$");
     const feedRegExp = new RegExp("^#(popular|last|signed)$");
-    const managedRegExp = new RegExp("^#managed");
-    let petitionId = window.location.hash.match(petitionRegExp);
-    const feedTab = window.location.hash.match(feedRegExp);
-    const managed = window.location.hash.match(managedRegExp);
+    const managedRegExp = new RegExp("^#managed$");
+    const windowSearch = window.location.search.split("%23");
+    let petitionId =
+      window.location.hash.match(petitionRegExp) ||
+      `#${windowSearch[windowSearch.length - 1]}`.match(petitionRegExp);
+    const feedTab =
+      window.location.hash.match(feedRegExp) ||
+      `#${windowSearch[windowSearch.length - 1]}`.match(feedRegExp);
+    const managed =
+      window.location.hash.match(managedRegExp) ||
+      `#${windowSearch[windowSearch.length - 1]}`.match(managedRegExp);
     const launchParameters = Object.fromEntries(
       new URLSearchParams(window.location.search)
     );

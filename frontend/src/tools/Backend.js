@@ -7,12 +7,14 @@ export default class Backend {
     if (isDevEnv()) {
       url = `${process.env.REACT_APP_DEV_API_HOST}${method}`;
     }
+
+    const windowSearch = window.location.search.split("%23");
     const requestParams = {
       method: httpMethod || "GET",
       cache: "no-cache",
       redirect: "error",
       headers: {
-        "X-vk-sign": window.location.search
+        "X-vk-sign": windowSearch[0]
       }
     };
 
