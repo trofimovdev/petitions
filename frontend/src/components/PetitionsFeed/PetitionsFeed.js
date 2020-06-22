@@ -17,7 +17,6 @@ import PropTypes from "prop-types";
 import "./PetititonsFeed.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import ErrorCard from "../ErrorCard/ErrorCard";
 import PetitionCard from "../PetitionCard/PetitionCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
@@ -65,27 +64,19 @@ const PetitionsFeed = ({
 
   const onRefresh = () => {
     setFetchingStatus(true);
-    if (launchParameters.vk_access_token_settings.includes("friends")) {
-      loadPetitions("petitions", true, {
+    loadPetitions(
+      "petitions",
+      launchParameters.vk_access_token_settings.includes("friends"),
+      {
         type: activeTab.feed
+      }
+    )
+      .then(response => {
+        setFetchingStatus(false);
+        setCurrentPetitions(response);
+        api.selectionChanged().catch(() => {});
       })
-        .then(response => {
-          setFetchingStatus(false);
-          setCurrentPetitions(response);
-          api.selectionChanged().catch(() => {});
-        })
-        .catch(() => {});
-    } else {
-      loadPetitions("petitions", false, {
-        type: activeTab.feed
-      })
-        .then(response => {
-          setFetchingStatus(false);
-          setCurrentPetitions(response);
-          api.selectionChanged().catch(() => {});
-        })
-        .catch(() => {});
-    }
+      .catch(() => {});
   };
 
   const onScroll = () => {
@@ -106,45 +97,28 @@ const PetitionsFeed = ({
     ) {
       // загружать новые карточки когда юзер пролистнет 5 карточку
       setLoadingStatus(true);
-      if (launchParameters.vk_access_token_settings.includes("friends")) {
-        loadPetitions("petitions", true, {
+      loadPetitions(
+        "petitions",
+        launchParameters.vk_access_token_settings.includes("friends"),
+        {
           offset: currentPetitions.length,
           type: activeTab.feed
+        }
+      )
+        .then(r => {
+          if (r.length === 0) {
+            setEndStatus(true);
+            return;
+          }
+          const petitions = currentPetitions
+            .concat(r)
+            .filter((value, index, self) => {
+              return self.indexOf(value) === index;
+            });
+          setCurrentPetitions(petitions);
+          setLoadingStatus(false);
         })
-          .then(r => {
-            if (r.length === 0) {
-              setEndStatus(true);
-              return;
-            }
-            const petitions = currentPetitions
-              .concat(r)
-              .filter((value, index, self) => {
-                return self.indexOf(value) === index;
-              });
-            setCurrentPetitions(petitions);
-            setLoadingStatus(false);
-          })
-          .catch(() => {});
-      } else {
-        loadPetitions("petitions", false, {
-          offset: currentPetitions.length,
-          type: activeTab.feed
-        })
-          .then(r => {
-            if (r.length === 0) {
-              setEndStatus(true);
-              return;
-            }
-            const petitions = currentPetitions
-              .concat(r)
-              .filter((value, index, self) => {
-                return self.indexOf(value) === index;
-              });
-            setCurrentPetitions(petitions);
-            setLoadingStatus(false);
-          })
-          .catch(() => {});
-      }
+        .catch(() => {});
     }
   };
 
@@ -266,21 +240,13 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setActiveTab,
-        setStory,
-        setPage,
-        setPopular,
-        setLast,
-        setSigned
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setActiveTab,
+  setStory,
+  setPage,
+  setPopular,
+  setLast,
+  setSigned
 };
 
 PetitionsFeed.propTypes = {

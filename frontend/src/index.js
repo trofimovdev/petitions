@@ -8,20 +8,10 @@ import bridge from "@vkontakte/vk-bridge";
 import store from "./store";
 import "./style/index.css";
 import App from "./App";
-import {
-  setActiveTab,
-  setStory,
-  setPage
-} from "./store/router/actions";
+import { setActiveTab, setStory, setPage } from "./store/router/actions";
 import { setColorScheme } from "./store/ui/actions";
-import { loadPetitions, isDevEnv, storeGoBack } from "./tools/helpers";
-import {
-  setPopular,
-  setLast,
-  setSigned,
-  setManaged,
-  setCurrent
-} from "./store/petitions/actions";
+import { initPetitions, isDevEnv, storeGoBack } from "./tools/helpers";
+import { setCurrent } from "./store/petitions/actions";
 import {
   setInitError,
   setLaunchParameters,
@@ -30,39 +20,6 @@ import {
 } from "./store/data/actions";
 
 const api = new VKMiniAppAPI();
-
-const onLoad = response => {
-  store.dispatch(setPopular(response.popular || []));
-  store.dispatch(setLast(response.last || []));
-  store.dispatch(setSigned(response.signed || []));
-  store.dispatch(setManaged(response.managed || []));
-};
-
-const initPetitions = launchParameters => {
-  return new Promise((resolve, reject) => {
-    if (launchParameters.vk_access_token_settings.includes("friends")) {
-      loadPetitions("petitions", true)
-        .then(r => {
-          onLoad(r);
-          resolve();
-        })
-        .catch(e => {
-          store.dispatch(setInitError(true));
-          reject();
-        });
-    } else {
-      loadPetitions("petitions", false)
-        .then(r => {
-          onLoad(r);
-          resolve();
-        })
-        .catch(e => {
-          store.dispatch(setInitError(true));
-          reject();
-        });
-    }
-  });
-};
 
 if (isDevEnv()) {
   store.dispatch(setAppID(7338958));
@@ -113,10 +70,17 @@ api
   .then(isAppUser_response => {
     const petitionRegExp = new RegExp("^#p(\\d+)$");
     const feedRegExp = new RegExp("^#(popular|last|signed)$");
-    const managedRegExp = new RegExp("^#managed");
-    let petitionId = window.location.hash.match(petitionRegExp);
-    const feedTab = window.location.hash.match(feedRegExp);
-    const managed = window.location.hash.match(managedRegExp);
+    const managedRegExp = new RegExp("^#managed$");
+    const windowSearch = window.location.search.split("%23");
+    let petitionId =
+      window.location.hash.match(petitionRegExp) ||
+      `#${windowSearch[windowSearch.length - 1]}`.match(petitionRegExp);
+    const feedTab =
+      window.location.hash.match(feedRegExp) ||
+      `#${windowSearch[windowSearch.length - 1]}`.match(feedRegExp);
+    const managed =
+      window.location.hash.match(managedRegExp) ||
+      `#${windowSearch[windowSearch.length - 1]}`.match(managedRegExp);
     const launchParameters = Object.fromEntries(
       new URLSearchParams(window.location.search)
     );
@@ -143,7 +107,8 @@ api
       } else {
         store.dispatch(setStory("petitions", "feed"));
         store.dispatch(setPage("petitions", "petition"));
-        initPetitions(launchParameters)
+        store
+          .dispatch(initPetitions(launchParameters))
           .then(() => {
             store.dispatch(setCurrent({ id: petitionId[1] }));
           })
@@ -212,7 +177,7 @@ api
       store.dispatch(setActiveTab("feed", "last"));
       store.dispatch(setStory("petitions", "feed"));
     }
-    initPetitions(launchParameters);
+    store.dispatch(initPetitions(launchParameters));
   })
   .then(() => {
     ReactDOM.render(

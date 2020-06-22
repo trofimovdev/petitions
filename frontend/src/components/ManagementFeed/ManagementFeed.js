@@ -31,7 +31,6 @@ import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import Icon24DoneOutline from "@vkontakte/icons/dist/24/done_outline";
 import Icon28ChevronRightCircleOutline from "@vkontakte/icons/dist/28/chevron_right_circle_outline";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import ErrorCard from "../ErrorCard/ErrorCard";
 import EpicTabbar from "../EpicTabbar/EpicTabbar";
 import PetitionCard from "../PetitionCard/PetitionCard";
@@ -41,13 +40,10 @@ import {
   setManaged,
   setFormType,
   setEdit,
-  setInitialEdit,
-  setLast,
-  setPopular,
-  setSigned
+  setInitialEdit
 } from "../../store/petitions/actions";
 import FriendsCard from "../FriendsCard/FriendsCard";
-import { loadPetitions, loadPhoto } from "../../tools/helpers";
+import { loadPetitions, initPetitions, loadPhoto } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
 
 const api = new VKMiniAppAPI();
@@ -66,12 +62,7 @@ const ManagementFeed = ({
   setEdit,
   setInitialEdit,
   initError,
-  setLast,
-  lastPetitions,
-  setPopular,
-  popularPetitions,
-  setSigned,
-  signedPetitions
+  initPetitions
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
@@ -118,7 +109,6 @@ const ManagementFeed = ({
                 type: "edit"
               })
                 .then(response => {
-                  // TODO: remove eslint problems
                   response = response[0];
                   loadPhoto(response.mobile_photo_url)
                     .then(data1 => {
@@ -181,29 +171,7 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(() => {
-                  if (
-                    launchParameters.vk_access_token_settings.includes(
-                      "friends"
-                    )
-                  ) {
-                    loadPetitions("petitions", true)
-                      .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      })
-                      .catch(() => {});
-                  } else {
-                    loadPetitions("petitions", false)
-                      .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      })
-                      .catch(() => {});
-                  }
+                  initPetitions(launchParameters);
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -227,7 +195,7 @@ const ManagementFeed = ({
                     </Snackbar>
                   );
                 })
-                .catch(() => {
+                .catch(e => {
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -263,25 +231,7 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(() => {
-                  setManaged(
-                    managedPetitions.map(item => {
-                      if (item.id === petitionId) {
-                        item.completed = true;
-                        return item;
-                      }
-                      return item;
-                    })
-                  );
-                  setLast(
-                    lastPetitions.filter(item => {
-                      return item.id !== petitionId;
-                    })
-                  );
-                  setPopular(
-                    popularPetitions.filter(item => {
-                      return item.id !== petitionId;
-                    })
-                  );
+                  initPetitions(launchParameters);
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -305,7 +255,7 @@ const ManagementFeed = ({
                     </Snackbar>
                   );
                 })
-                .catch(() => {
+                .catch(e => {
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -347,28 +297,9 @@ const ManagementFeed = ({
                     action: () => {
                       openPopout(<ScreenSpinner />);
                       Backend.request(`petitions/${petitionId}`, {}, "DELETE")
-                        .then(r => {
+                        .then(() => {
                           closePopout();
-                          setManaged(
-                            managedPetitions.filter(item => {
-                              return item.id !== petitionId;
-                            })
-                          );
-                          setLast(
-                            lastPetitions.filter(item => {
-                              return item.id !== petitionId;
-                            })
-                          );
-                          setPopular(
-                            popularPetitions.filter(item => {
-                              return item.id !== petitionId;
-                            })
-                          );
-                          setSigned(
-                            signedPetitions.filter(item => {
-                              return item.id !== petitionId;
-                            })
-                          );
+                          initPetitions(launchParameters);
                           setSnackbar(
                             <Snackbar
                               layout="vertical"
@@ -668,33 +599,20 @@ const mapStateToProps = state => {
     activePanel: state.router.activePanel,
     managedPetitions: state.petitions.managed,
     launchParameters: state.data.launchParameters,
-    initError: state.data.initError,
-    lastPetitions: state.petitions.last,
-    popularPetitions: state.petitions.popular,
-    signedPetitions: state.petitions.signed
+    initError: state.data.initError
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setPage,
-        setCurrent,
-        setManaged,
-        openPopout,
-        closePopout,
-        setFormType,
-        setEdit,
-        setInitialEdit,
-        setLast,
-        setPopular,
-        setSigned
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setPage,
+  setCurrent,
+  setManaged,
+  openPopout,
+  closePopout,
+  setFormType,
+  setEdit,
+  setInitialEdit,
+  initPetitions
 };
 
 ManagementFeed.propTypes = {
@@ -711,12 +629,7 @@ ManagementFeed.propTypes = {
   setEdit: PropTypes.func.isRequired,
   setInitialEdit: PropTypes.func.isRequired,
   initError: PropTypes.bool,
-  setLast: PropTypes.func.isRequired,
-  lastPetitions: PropTypes.array,
-  setPopular: PropTypes.func.isRequired,
-  popularPetitions: PropTypes.array,
-  setSigned: PropTypes.func.isRequired,
-  signedPetitions: PropTypes.array
+  initPetitions: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManagementFeed);

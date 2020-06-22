@@ -15,7 +15,6 @@ import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon28CameraOutline from "@vkontakte/icons/dist/28/camera_outline";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import EXIF from "exif-js";
 import UploadCard from "../UploadCard/UploadCard";
@@ -125,8 +124,8 @@ const EditPetition = ({
 
   const onCancel = e => {
     const file_preview = `${e.currentTarget.id}_preview`;
-    delete form[e.currentTarget.id];
-    delete form[file_preview];
+    form[e.currentTarget.id] = undefined;
+    form[file_preview] = undefined;
     setForm({
       ...form
     });
@@ -342,18 +341,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        goBack,
-        setEdit,
-        setCreate
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  goBack,
+  setEdit,
+  setCreate
 };
 
 EditPetition.propTypes = {

@@ -2,7 +2,6 @@ import React from "react";
 import { View } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import PetitionsFeed from "../PetitionsFeed/PetitionsFeed";
 import Petition from "../Petition/Petiton";
 import PetitionModal from "../PetitionModal/PetititonModal";
@@ -65,21 +64,13 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setActiveTab,
-        setStory,
-        setPage,
-        setCurrent,
-        goBack,
-        closeModal
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setActiveTab,
+  setStory,
+  setPage,
+  setCurrent,
+  goBack,
+  closeModal
 };
 
 Petitions.propTypes = {

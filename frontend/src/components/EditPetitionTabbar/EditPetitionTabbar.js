@@ -10,7 +10,6 @@ import {
 import "./EditPetitionTabbar.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import Icon24DoneOutline from "@vkontakte/icons/dist/24/done_outline";
@@ -21,16 +20,9 @@ import {
   closePopout,
   setPage
 } from "../../store/router/actions";
-import {
-  setCreate,
-  setCurrent,
-  setLast,
-  setManaged,
-  setPopular,
-  setSigned
-} from "../../store/petitions/actions";
+import { setCreate, setCurrent } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
-import { loadPetitions, storeGoBack } from "../../tools/helpers";
+import { initPetitions, storeGoBack } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -46,11 +38,7 @@ const EditPetitionTabbar = ({
   setPage,
   activeView,
   setCurrent,
-  setManaged,
   setCreate,
-  setPopular,
-  setLast,
-  setSigned,
   launchParameters
 }) => {
   return (
@@ -97,29 +85,7 @@ const EditPetitionTabbar = ({
               });
               Backend.request(`petitions/${form.id}`, changed, "PATCH")
                 .then(() => {
-                  if (
-                    launchParameters.vk_access_token_settings.includes(
-                      "friends"
-                    )
-                  ) {
-                    loadPetitions("petitions", true)
-                      .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      })
-                      .catch(() => {});
-                  } else {
-                    loadPetitions("petitions", false)
-                      .then(response => {
-                        setPopular(response.popular || []);
-                        setLast(response.last || []);
-                        setSigned(response.signed || []);
-                        setManaged(response.managed || []);
-                      })
-                      .catch(() => {});
-                  }
+                  initPetitions(launchParameters);
                   closePopout();
                   api.notificationOccurred("success").catch(() => {});
                   setSnackbar(
@@ -202,27 +168,7 @@ const EditPetitionTabbar = ({
                   mobile_photo_url: response.mobile_photo_url,
                   web_photo_url: response.web_photo_url
                 });
-                if (
-                  launchParameters.vk_access_token_settings.includes("friends")
-                ) {
-                  loadPetitions("petitions", true)
-                    .then(response => {
-                      setPopular(response.popular || []);
-                      setLast(response.last || []);
-                      setSigned(response.signed || []);
-                      setManaged(response.managed || []);
-                    })
-                    .catch(() => {});
-                } else {
-                  loadPetitions("petitions", false)
-                    .then(response => {
-                      setPopular(response.popular || []);
-                      setLast(response.last || []);
-                      setSigned(response.signed || []);
-                      setManaged(response.managed || []);
-                    })
-                    .catch(() => {});
-                }
+                initPetitions(launchParameters);
                 closePopout();
                 setCreate({});
                 window.addEventListener("popstate", storeGoBack);
@@ -271,26 +217,15 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        goBack,
-        setCreate,
-        openModal,
-        openPopout,
-        closePopout,
-        setPage,
-        setCurrent,
-        setManaged,
-        setPopular,
-        setLast,
-        setSigned
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  goBack,
+  setCreate,
+  openModal,
+  openPopout,
+  closePopout,
+  setPage,
+  setCurrent,
+  initPetitions
 };
 
 EditPetitionTabbar.propTypes = {
@@ -305,12 +240,9 @@ EditPetitionTabbar.propTypes = {
   setPage: PropTypes.func.isRequired,
   activeView: PropTypes.string.isRequired,
   setCurrent: PropTypes.func.isRequired,
-  setManaged: PropTypes.func.isRequired,
   setCreate: PropTypes.func.isRequired,
-  setPopular: PropTypes.func.isRequired,
-  setLast: PropTypes.func.isRequired,
-  setSigned: PropTypes.func.isRequired,
-  launchParameters: PropTypes.object.isRequired
+  launchParameters: PropTypes.object.isRequired,
+  initPetitions: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditPetitionTabbar);

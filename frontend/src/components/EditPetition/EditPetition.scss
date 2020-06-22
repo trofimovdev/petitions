@@ -12,6 +12,11 @@
   .PanelHeaderButton {
     color: $petition-create-upload-back-button-color !important;
   }
+
+  input,
+  textarea {
+    user-select: text;
+  }
 }
 
 .EditForm {

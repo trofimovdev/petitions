@@ -2,7 +2,6 @@ import React from "react";
 import { Button, Panel, Placeholder } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import { setPage } from "../../store/router/actions";
 
@@ -39,16 +38,8 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setPage
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setPage
 };
 
 NoInternet.propTypes = {

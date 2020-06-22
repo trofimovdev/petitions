@@ -21,7 +21,6 @@ import PropTypes from "prop-types";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 // TODO: move to vk-mini-apps-api
 import bridge from "@vkontakte/vk-bridge";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
   closeModal,
@@ -493,18 +492,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        closeModal,
-        openPopout,
-        closePopout
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  closeModal,
+  openPopout,
+  closePopout
 };
 
 PetitionModal.propTypes = {

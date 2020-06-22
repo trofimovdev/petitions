@@ -6,7 +6,6 @@ import Icon28WriteSquareOutline from "@vkontakte/icons/dist/28/write_square_outl
 import Icon28SettingsOutline from "@vkontakte/icons/dist/28/settings_outline";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { setStory } from "../../store/router/actions";
 
 const api = new VKMiniAppAPI();
@@ -52,16 +51,8 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setStory
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setStory
 };
 
 EpicTabbar.propTypes = {

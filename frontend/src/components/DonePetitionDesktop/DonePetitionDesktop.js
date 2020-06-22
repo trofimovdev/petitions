@@ -2,7 +2,6 @@ import React from "react";
 import { Placeholder, Link, FixedLayout } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import Icon56CheckCircleOutline from "@vkontakte/icons/dist/56/check_circle_outline";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { setPage } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
@@ -55,17 +54,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setPage,
-        setCurrent
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setPage,
+  setCurrent
 };
 
 DonePetitionDesktop.propTypes = {

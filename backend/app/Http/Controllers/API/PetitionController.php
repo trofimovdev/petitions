@@ -197,7 +197,7 @@ class PetitionController extends Controller
             return new ErrorResponse(403, 'Доступ запрещен');
         }
         if ($petition['completed'] && is_null($request->completed)) {
-            return new ErrorResponse(403, 'Петиция уже завершена');
+            return new ErrorResponse(403, 'Сбор подписей уже завершен');
         }
 
         $text = Petition::filterString(Link::filterText((string)$request->text));

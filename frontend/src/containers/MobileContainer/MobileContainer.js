@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { Epic } from "@vkontakte/vkui";
 import { goBack } from "../../store/router/actions";
 import "@vkontakte/vkui/dist/vkui.css";
@@ -61,16 +60,8 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        goBack
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  goBack
 };
 
 MobileContainer.propTypes = {

@@ -2,7 +2,6 @@ import React from "react";
 import { Div, Card, UsersStack } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { DropList, ModalDialog } from "@happysanta/vk-app-ui";
 import Icon28ChevronDownOutline from "@vkontakte/icons/dist/28/chevron_down_outline";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
@@ -18,7 +17,12 @@ import {
   setSigned
 } from "../../store/petitions/actions";
 import { setPage } from "../../store/router/actions";
-import { userStackText, loadPetitions, loadPhoto } from "../../tools/helpers";
+import {
+  userStackText,
+  loadPetitions,
+  loadPhoto,
+  initPetitions
+} from "../../tools/helpers";
 import Backend from "../../tools/Backend";
 
 const PetitionCardDesktop = ({
@@ -32,14 +36,10 @@ const PetitionCardDesktop = ({
   managementArrow,
   friends,
   completed,
-  setManaged,
   setPopout,
   setFormType,
   setEdit,
   setInitialEdit,
-  setPopular,
-  setLast,
-  setSigned,
   launchParameters
 }) => {
   const deletePetition = (retry = false, message = "") => {
@@ -72,28 +72,8 @@ const PetitionCardDesktop = ({
     }
 
     Backend.request(`petitions/${id}`, {}, "DELETE")
-      .then(r => {
-        if (launchParameters.vk_access_token_settings.includes("friends")) {
-          loadPetitions("petitions", true)
-            .then(response => {
-              setPopular(response.popular || []);
-              setLast(response.last || []);
-              setSigned(response.signed || []);
-              setManaged(response.managed || []);
-              setPopout();
-            })
-            .catch(() => {});
-        } else {
-          loadPetitions("petitions", false)
-            .then(response => {
-              setPopular(response.popular || []);
-              setLast(response.last || []);
-              setSigned(response.signed || []);
-              setManaged(response.managed || []);
-              setPopout();
-            })
-            .catch(() => {});
-        }
+      .then(() => {
+        initPetitions(launchParameters);
       })
       .catch(({ errorMessage }) => {
         setPopout(
@@ -198,50 +178,14 @@ const PetitionCardDesktop = ({
       if (completed) {
         Backend.request(`petitions/${id}`, { completed: false }, "PATCH")
           .then(() => {
-            if (launchParameters.vk_access_token_settings.includes("friends")) {
-              loadPetitions("petitions", true)
-                .then(response => {
-                  setPopular(response.popular || []);
-                  setLast(response.last || []);
-                  setSigned(response.signed || []);
-                  setManaged(response.managed || []);
-                })
-                .catch(() => {});
-            } else {
-              loadPetitions("petitions", false)
-                .then(response => {
-                  setPopular(response.popular || []);
-                  setLast(response.last || []);
-                  setSigned(response.signed || []);
-                  setManaged(response.managed || []);
-                })
-                .catch(() => {});
-            }
+            initPetitions(launchParameters);
           })
           .catch(() => {});
         return;
       }
       Backend.request(`petitions/${id}`, { completed: true }, "PATCH")
         .then(() => {
-          if (launchParameters.vk_access_token_settings.includes("friends")) {
-            loadPetitions("petitions", true)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          } else {
-            loadPetitions("petitions", false)
-              .then(response => {
-                setPopular(response.popular || []);
-                setLast(response.last || []);
-                setSigned(response.signed || []);
-                setManaged(response.managed || []);
-              })
-              .catch(() => {});
-          }
+          initPetitions(launchParameters);
         })
         .catch(() => {});
     }
@@ -329,24 +273,16 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setPage,
-        setCurrent,
-        setManaged,
-        setFormType,
-        setEdit,
-        setInitialEdit,
-        setPopular,
-        setLast,
-        setSigned
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setPage,
+  setCurrent,
+  setManaged,
+  setFormType,
+  setEdit,
+  setInitialEdit,
+  setPopular,
+  setLast,
+  setSigned
 };
 
 PetitionCardDesktop.propTypes = {
@@ -365,10 +301,8 @@ PetitionCardDesktop.propTypes = {
   setFormType: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setInitialEdit: PropTypes.func.isRequired,
-  setPopular: PropTypes.func.isRequired,
-  setLast: PropTypes.func.isRequired,
-  setSigned: PropTypes.func.isRequired,
-  launchParameters: PropTypes.object.isRequired
+  launchParameters: PropTypes.object.isRequired,
+  initPetitions: PropTypes.func.isRequired
 };
 
 export default connect(

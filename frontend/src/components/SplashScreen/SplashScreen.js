@@ -2,7 +2,6 @@ import React from "react";
 import { Panel, Placeholder, Button, FixedLayout, Div } from "@vkontakte/vkui";
 import "./SplashScreen.css";
 import PropTypes from "prop-types";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PetitionCard from "../PetitionCard/PetitionCard";
@@ -64,16 +63,8 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setPage
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setPage
 };
 
 SplashScreen.propTypes = {

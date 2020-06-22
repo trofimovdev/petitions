@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { Button, Notify } from "@happysanta/vk-app-ui";
 import {
   Avatar,
@@ -20,7 +19,12 @@ import Icon24ShareOutline from "@vkontakte/icons/dist/24/share_outline";
 import Icon24GearOutline from "@vkontakte/icons/dist/24/gear_outline";
 import Linkify from "react-linkify";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
-import { userStackText, loadPetitions, loadPhoto } from "../../tools/helpers";
+import {
+  userStackText,
+  loadPetitions,
+  loadPhoto,
+  initPetitions
+} from "../../tools/helpers";
 import {
   setCurrent,
   setLast,
@@ -43,18 +47,11 @@ const PetitionDesktop = ({
   launchParameters,
   currentPetition,
   setPage,
-  signedPetitions,
-  setSigned,
-  setLast,
-  lastPetitions,
-  setPopular,
-  popularPetitions,
-  setManaged,
-  managedPetitions,
   setInitialEdit,
   setEdit,
   setFormType,
-  appId
+  appId,
+  initPetitions
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
@@ -106,35 +103,7 @@ const PetitionDesktop = ({
             ...currentPetition,
             ...{ signed: true, count_signatures: parseInt(r) }
           });
-          signedPetitions.unshift({
-            ...currentPetition,
-            ...{ signed: true, count_signatures: parseInt(r) }
-          });
-          setSigned(signedPetitions);
-          setLast(
-            lastPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setPopular(
-            popularPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setManaged(
-            managedPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
+          initPetitions(launchParameters);
           setFetchingStatus(false);
         }
       })
@@ -152,35 +121,7 @@ const PetitionDesktop = ({
             ...currentPetition,
             ...{ signed: false, count_signatures: parseInt(r) }
           });
-          setSigned(
-            signedPetitions.filter(item => {
-              return item.id !== currentPetition.id;
-            })
-          );
-          setLast(
-            lastPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setPopular(
-            popularPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
-          setManaged(
-            managedPetitions.map(item => {
-              if (item.id === currentPetition.id) {
-                item.count_signatures = r;
-              }
-              return item;
-            })
-          );
+          initPetitions(launchParameters);
           setFetchingStatus(false);
         }
       })
@@ -215,7 +156,13 @@ const PetitionDesktop = ({
   };
 
   const linkDecorator = (href, text, key) => (
-    <Link href={href} key={key} target="_blank" className="PetitionDesktop__link">
+    <Link
+      href={href}
+      key={key}
+      target="_blank"
+      className="PetitionDesktop__link"
+      rel="noopener noreferrer"
+    >
       {text}
     </Link>
   );
@@ -487,33 +434,22 @@ const mapStateToProps = state => {
     activeTab: state.router.activeTab.feed,
     launchParameters: state.data.launchParameters,
     currentPetition: state.petitions.current,
-    signedPetitions: state.petitions.signed,
-    lastPetitions: state.petitions.last,
-    popularPetitions: state.petitions.popular,
-    managedPetitions: state.petitions.managed,
     appId: state.data.appId
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setCurrent,
-        setLaunchParameters,
-        setPage,
-        setSigned,
-        setLast,
-        setPopular,
-        setManaged,
-        setInitialEdit,
-        setEdit,
-        setFormType
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setCurrent,
+  setLaunchParameters,
+  setPage,
+  setSigned,
+  setLast,
+  setPopular,
+  setManaged,
+  setInitialEdit,
+  setEdit,
+  setFormType,
+  initPetitions
 };
 
 PetitionDesktop.propTypes = {
@@ -522,18 +458,15 @@ PetitionDesktop.propTypes = {
   launchParameters: PropTypes.object.isRequired,
   currentPetition: PropTypes.object,
   setPage: PropTypes.func.isRequired,
-  signedPetitions: PropTypes.array,
   setSigned: PropTypes.func.isRequired,
   setLast: PropTypes.func.isRequired,
-  lastPetitions: PropTypes.array,
   setPopular: PropTypes.func.isRequired,
-  popularPetitions: PropTypes.array,
   setManaged: PropTypes.func.isRequired,
-  managedPetitions: PropTypes.array,
   setInitialEdit: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setFormType: PropTypes.func.isRequired,
-  appId: PropTypes.number.isRequired
+  appId: PropTypes.number.isRequired,
+  initPetitions: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionDesktop);
