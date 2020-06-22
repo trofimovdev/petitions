@@ -23,7 +23,6 @@ import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import Linkify from "react-linkify";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
@@ -322,17 +321,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        goBack,
-        setCurrent
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  goBack,
+  setCurrent
 };
 
 Petition.propTypes = {

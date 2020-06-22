@@ -2,8 +2,15 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import React from "react";
 import Backend from "./Backend";
 import ConnectionError from "./ConnectionError";
+import { goBack } from "../store/router/actions";
+import {
+  setLast,
+  setManaged,
+  setPopular,
+  setSigned
+} from "../store/petitions/actions";
+import { setInitError } from "../store/data/actions";
 import store from "../store";
-import {goBack} from "../store/router/actions";
 
 const api = new VKMiniAppAPI();
 
@@ -198,4 +205,26 @@ export const filterString = string => {
 
 export const storeGoBack = () => {
   store.dispatch(goBack());
+};
+
+export const initPetitions = launchParameters => {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      loadPetitions(
+        "petitions",
+        launchParameters.vk_access_token_settings.includes("friends")
+      )
+        .then(r => {
+          dispatch(setPopular(r.popular || []));
+          dispatch(setLast(r.last || []));
+          dispatch(setSigned(r.signed || []));
+          dispatch(setManaged(r.managed || []));
+          resolve();
+        })
+        .catch(() => {
+          dispatch(setInitError(true));
+          reject();
+        });
+    });
+  };
 };

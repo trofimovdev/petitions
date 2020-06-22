@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { TabList, TabItem, Link, Notify } from "@happysanta/vk-app-ui";
 import {
   Div,
@@ -71,25 +70,18 @@ const MainDesktop = ({
 
   const onRefresh = () => {
     setFetchingStatus(true);
-    if (launchParameters.vk_access_token_settings.includes("friends")) {
-      loadPetitions("petitions", true, {
+    loadPetitions(
+      "petitions",
+      launchParameters.vk_access_token_settings.includes("friends"),
+      {
         type: activeTab
+      }
+    )
+      .then(response => {
+        setFetchingStatus(false);
+        setCurrentPetitions(response);
       })
-        .then(response => {
-          setFetchingStatus(false);
-          setCurrentPetitions(response);
-        })
-        .catch(() => {});
-    } else {
-      loadPetitions("petitions", false, {
-        type: activeTab
-      })
-        .then(response => {
-          setFetchingStatus(false);
-          setCurrentPetitions(response);
-        })
-        .catch(() => {});
-    }
+      .catch(() => {});
   };
 
   const onScroll = () => {
@@ -106,45 +98,28 @@ const MainDesktop = ({
     ) {
       // загружать новые карточки когда юзер пролистнет 5 карточку
       setLoadingStatus(true);
-      if (launchParameters.vk_access_token_settings.includes("friends")) {
-        loadPetitions("petitions", true, {
+      loadPetitions(
+        "petitions",
+        launchParameters.vk_access_token_settings.includes("friends"),
+        {
           offset: currentPetitions.length,
           type: activeTab
+        }
+      )
+        .then(r => {
+          if (r.length === 0) {
+            setEndStatus(true);
+            return;
+          }
+          const petitions = currentPetitions
+            .concat(r)
+            .filter((value, index, self) => {
+              return self.indexOf(value) === index;
+            });
+          setCurrentPetitions(petitions);
+          setLoadingStatus(false);
         })
-          .then(r => {
-            if (r.length === 0) {
-              setEndStatus(true);
-              return;
-            }
-            const petitions = currentPetitions
-              .concat(r)
-              .filter((value, index, self) => {
-                return self.indexOf(value) === index;
-              });
-            setCurrentPetitions(petitions);
-            setLoadingStatus(false);
-          })
-          .catch(() => {});
-      } else {
-        loadPetitions("petitions", false, {
-          offset: currentPetitions.length,
-          type: activeTab
-        })
-          .then(r => {
-            if (r.length === 0) {
-              setEndStatus(true);
-              return;
-            }
-            const petitions = currentPetitions
-              .concat(r)
-              .filter((value, index, self) => {
-                return self.indexOf(value) === index;
-              });
-            setCurrentPetitions(petitions);
-            setLoadingStatus(false);
-          })
-          .catch(() => {});
-      }
+        .catch(() => {});
     }
   };
 
@@ -311,22 +286,14 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setActiveTab,
-        setPage,
-        setPopular,
-        setLast,
-        setSigned,
-        setManaged,
-        setFormType
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setActiveTab,
+  setPage,
+  setPopular,
+  setLast,
+  setSigned,
+  setManaged,
+  setFormType
 };
 
 MainDesktop.propTypes = {

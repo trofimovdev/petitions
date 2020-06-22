@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { PageRoot } from "@happysanta/vk-app-ui";
 import "@happysanta/vk-app-ui/dist/vkappui.css";
 import MainDesktop from "../../components/MainDesktop/MainDesktop";
@@ -36,17 +35,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators({}, dispatch)
-  };
-};
-
 DesktopContainer.propTypes = {
   activeTab: PropTypes.object,
   activeView: PropTypes.string.isRequired,
   scrollPosition: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DesktopContainer);
+export default connect(mapStateToProps, null)(DesktopContainer);

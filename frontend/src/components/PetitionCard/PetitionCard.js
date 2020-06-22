@@ -5,7 +5,6 @@ import "./PetitionCard.css";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon28MoreHorizontal from "@vkontakte/icons/dist/28/more_horizontal";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import { setPage } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
@@ -83,17 +82,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-    ...bindActionCreators(
-      {
-        setPage,
-        setCurrent
-      },
-      dispatch
-    )
-  };
+const mapDispatchToProps = {
+  setPage,
+  setCurrent
 };
 
 PetitionCard.propTypes = {
