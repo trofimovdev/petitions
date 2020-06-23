@@ -28,6 +28,7 @@ if (isDevEnv()) {
 }
 
 api.onUpdateConfig(({ scheme }) => {
+  console.log(scheme);
   store.dispatch(setColorScheme(scheme));
   setTimeout(() => {
     switch (scheme) {
