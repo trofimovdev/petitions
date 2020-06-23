@@ -247,7 +247,7 @@ const PetitionDesktop = ({
                     setShareLoadingStatus(true);
                     api
                       .postToWall(
-                        "",
+                        currentPetition.title,
                         `https://vk.com/app${appId}#p${currentPetition.id}`
                       )
                       .then(() => {

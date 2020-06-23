@@ -443,7 +443,7 @@ const PetitionModal = ({
             onClick={() => {
               api.selectionChanged().catch(() => {});
               api.postToWall(
-                "",
+                currentPetition.title,
                 `https://vk.com/app${appId}#p${currentPetition.id}`
               );
             }}
