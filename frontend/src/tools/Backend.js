@@ -65,12 +65,6 @@ export default class Backend {
               r.json().then(data => {
                 if (data.response !== undefined) {
                   resolve(data.response);
-                } else if (
-                  data.error !== undefined &&
-                  data.error &&
-                  data.error.message !== undefined
-                ) {
-                  reject(data.error);
                 } else {
                   reject(data);
                 }

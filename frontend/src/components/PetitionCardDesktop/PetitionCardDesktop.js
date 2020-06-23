@@ -53,7 +53,7 @@ const PetitionCardDesktop = ({
           className="PetitionCardDesktop__modal"
           loading
         >
-          {{ message }}
+          {message}
         </ModalDialog>
       );
     } else {
@@ -76,18 +76,21 @@ const PetitionCardDesktop = ({
       .then(() => {
         store.dispatch(initPetitions(launchParameters)).then(() => setPopout());
       })
-      .catch(({ errorMessage }) => {
+      .catch(e => {
+        const errorMessage =
+          e instanceof TypeError ? e.message : e.error.message;
         setPopout(
           <ModalDialog
             header="Что-то пошло не так"
             confirmText="Повторить"
             cancelText="Отменить"
             className="PetitionCardDesktop__modal"
-            loading
             onClose={() => setPopout()}
-            onConfirm={() => deletePetition(retry, errorMessage)}
+            onConfirm={() => {
+              deletePetition(true, errorMessage);
+            }}
           >
-            {{ message }}
+            {errorMessage}
           </ModalDialog>
         );
       });

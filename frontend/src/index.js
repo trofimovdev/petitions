@@ -28,7 +28,6 @@ if (isDevEnv()) {
 }
 
 api.onUpdateConfig(({ scheme }) => {
-  console.log(scheme);
   store.dispatch(setColorScheme(scheme));
   setTimeout(() => {
     switch (scheme) {
@@ -38,7 +37,7 @@ api.onUpdateConfig(({ scheme }) => {
             status_bar_style: "light",
             action_bar_color: "#19191a"
           })
-          .catch(e => console.log(e));
+          .catch(() => {});
         break;
 
       default:
@@ -48,7 +47,7 @@ api.onUpdateConfig(({ scheme }) => {
             status_bar_style: "dark",
             action_bar_color: "#fff"
           })
-          .catch(e => console.log(e));
+          .catch(() => {});
         break;
     }
   }, 2000);
