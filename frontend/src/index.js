@@ -38,7 +38,7 @@ api.onUpdateConfig(({ scheme }) => {
             status_bar_style: "light",
             action_bar_color: "#19191a"
           })
-          .catch(() => {});
+          .catch(e => console.log(e));
         break;
 
       default:
@@ -48,10 +48,10 @@ api.onUpdateConfig(({ scheme }) => {
             status_bar_style: "dark",
             action_bar_color: "#fff"
           })
-          .catch(() => {});
+          .catch(e => console.log(e));
         break;
     }
-  }, 1000);
+  }, 2000);
 });
 
 window.addEventListener("popstate", storeGoBack);
