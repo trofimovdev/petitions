@@ -112,7 +112,9 @@ const EditPetitionTabbar = ({
                     </Snackbar>
                   );
                 })
-                .catch(({ message }) => {
+                .catch(e => {
+                  const errorMessage =
+                    e instanceof TypeError ? e.message : e.error.message;
                   closePopout();
                   api.notificationOccurred("success").catch(() => {});
                   setSnackbar(
@@ -130,7 +132,7 @@ const EditPetitionTabbar = ({
                         </Avatar>
                       }
                     >
-                      {message}
+                      {errorMessage}
                     </Snackbar>
                   );
                 });

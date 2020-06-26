@@ -7,11 +7,14 @@ import {
   Input,
   Textarea,
   Snackbar,
-  Avatar
+  Avatar,
+  usePlatform,
+  ANDROID
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./EditPetition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
+import Icon24Back from "@vkontakte/icons/dist/24/back";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon28CameraOutline from "@vkontakte/icons/dist/28/camera_outline";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
@@ -36,6 +39,7 @@ const EditPetition = ({
 }) => {
   const [snackbar, setSnackbar] = useState(null);
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
+  const platform = usePlatform();
 
   const checkFileSize = fileSize => {
     if (fileSize > MAX_FILE_SIZE) {
@@ -206,7 +210,7 @@ const EditPetition = ({
               api.selectionChanged().catch(() => {});
             }}
           >
-            <Icon28ChevronBack />
+            {platform === ANDROID ? <Icon24Back /> : <Icon28ChevronBack />}
           </PanelHeaderButton>
         }
       >
@@ -232,7 +236,6 @@ const EditPetition = ({
         <Textarea
           name="text"
           top="Текст петиции"
-          // TODO: вынести в константу с бэкенда
           status={form.text && form.text.length > 3000 ? "error" : ""}
           bottom={
             form.text && form.text.length > 3000

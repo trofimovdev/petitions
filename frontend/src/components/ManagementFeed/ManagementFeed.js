@@ -231,6 +231,15 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(() => {
+                  setManaged(
+                    managedPetitions.map(item => {
+                      if (item.id === petitionId) {
+                        item.completed = true;
+                        return item;
+                      }
+                      return item;
+                    })
+                  );
                   store.dispatch(initPetitions(launchParameters));
                   setSnackbar(
                     <Snackbar
@@ -255,7 +264,7 @@ const ManagementFeed = ({
                     </Snackbar>
                   );
                 })
-                .catch(e => {
+                .catch(() => {
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -298,6 +307,11 @@ const ManagementFeed = ({
                       openPopout(<ScreenSpinner />);
                       Backend.request(`petitions/${petitionId}`, {}, "DELETE")
                         .then(() => {
+                          setManaged(
+                            managedPetitions.filter(
+                              item => item.id !== petitionId
+                            )
+                          );
                           closePopout();
                           store.dispatch(initPetitions(launchParameters));
                           setSnackbar(

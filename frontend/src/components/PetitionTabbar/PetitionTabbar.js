@@ -204,7 +204,7 @@ const PetitionTabbar = ({
               signPetition();
             }
           }}
-          disabled={fetchingStatus}
+          disabled={fetchingStatus || currentPetition.completed}
         >
           {!fetchingStatus ? (
             currentPetition.completed ? (
@@ -291,6 +291,7 @@ const PetitionTabbar = ({
                 })
                 .catch(() => {});
             }}
+            disabled={currentPetition.completed}
           >
             <Icon28SettingsOutline />
           </Button>

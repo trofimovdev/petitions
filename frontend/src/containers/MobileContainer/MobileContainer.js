@@ -22,11 +22,12 @@ const MobileContainer = ({
       activeTab &&
       scrollPosition[
         `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
-      ]
+      ] !== undefined
         ? scrollPosition[
             `${activeStory}_${activeView}_${activePanel}_${activeTab[activePanel]}`
           ]
-        : scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
+        : scrollPosition[`${activeStory}_${activeView}_${activePanel}`] !==
+          undefined
         ? scrollPosition[`${activeStory}_${activeView}_${activePanel}`]
         : 0;
     window.scroll(0, pageScrollPosition);
