@@ -1,5 +1,4 @@
-import "core-js/features/map";
-import "core-js/features/set";
+import "core-js/";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";

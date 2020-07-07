@@ -7,7 +7,7 @@ import {
 } from "./actionTypes";
 
 const initialState = {
-  friendsCardStatus: true,
+  friendsCardStatus: 1,
   launchParameters: undefined,
   initError: false,
   online: true

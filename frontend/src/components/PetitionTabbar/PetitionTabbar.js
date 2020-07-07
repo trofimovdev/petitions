@@ -64,8 +64,8 @@ const PetitionTabbar = ({
           setFetchingStatus(false);
         }
       })
-      .catch(({ code, message }) => {
-        if (code === 409 || code === 404) {
+      .catch(({ error }) => {
+        if (error.code === 409 || error.code === 404) {
           if (launchParameters.vk_access_token_settings.includes("friends")) {
             loadPetitions(`petitions`, true, {
               petition_id: currentPetition.id.toString()
@@ -86,7 +86,7 @@ const PetitionTabbar = ({
               .catch(() => {});
           }
         } else {
-          setSnackbarError(message);
+          setSnackbarError(error.message);
         }
         api.selectionChanged().catch(() => {});
         setFetchingStatus(false);
@@ -107,8 +107,8 @@ const PetitionTabbar = ({
           setFetchingStatus(false);
         }
       })
-      .catch(({ code, message }) => {
-        if (code === 409 || code === 404) {
+      .catch(({ error }) => {
+        if (error.code === 409 || error.code === 404) {
           if (launchParameters.vk_access_token_settings.includes("friends")) {
             loadPetitions(`petitions`, true, {
               petition_id: currentPetition.id.toString()
@@ -129,7 +129,7 @@ const PetitionTabbar = ({
               .catch(() => {});
           }
         } else {
-          setSnackbarError(message);
+          setSnackbarError(error.message);
         }
         api.selectionChanged().catch(() => {});
         setFetchingStatus(false);

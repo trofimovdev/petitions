@@ -35,7 +35,8 @@ const EditPetition = ({
   setEdit,
   setCreate,
   editPetitions,
-  createPetitions
+  createPetitions,
+  initialEditPetitions
 }) => {
   const [snackbar, setSnackbar] = useState(null);
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
@@ -316,6 +317,7 @@ const EditPetition = ({
       {snackbar}
       <EditPetitionTabbar
         disabled={
+          (formType === "edit" && initialEditPetitions === form) ||
           !(
             form.title &&
             form.title.length <= 150 &&
@@ -342,7 +344,8 @@ const mapStateToProps = state => {
     activePanel: state.router.activePanel,
     formType: state.petitions.formType,
     editPetitions: state.petitions.edit,
-    createPetitions: state.petitions.create
+    createPetitions: state.petitions.create,
+    initialEditPetitions: state.petitions.initialEdit
   };
 };
 
@@ -359,7 +362,8 @@ EditPetition.propTypes = {
   setEdit: PropTypes.func.isRequired,
   setCreate: PropTypes.func.isRequired,
   editPetitions: PropTypes.object.isRequired,
-  createPetitions: PropTypes.object.isRequired
+  createPetitions: PropTypes.object.isRequired,
+  initialEditPetitions: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditPetition);

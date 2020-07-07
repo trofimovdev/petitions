@@ -177,7 +177,7 @@ const EditPetitionTabbar = ({
                 window.addEventListener("popstate", storeGoBack);
                 setPage(activeView, "done", false, true, ["done"]);
               })
-              .catch(({ message }) => {
+              .catch(({ error }) => {
                 window.addEventListener("popstate", storeGoBack);
                 closePopout();
                 setSnackbar(
@@ -195,7 +195,7 @@ const EditPetitionTabbar = ({
                       </Avatar>
                     }
                   >
-                    {message}
+                    {error.message}
                   </Snackbar>
                 );
               });
