@@ -10,24 +10,25 @@ import { setStory } from "../../store/router/actions";
 
 const api = new VKMiniAppAPI();
 
-const EpicTabbar = ({ setStory, activeStory, launchParameters }) => (
-  <FixedLayout vertical="bottom" className="Tabbar">
-    <Tabbar className="EpicTabbar">
-      <TabbarItem
-        onClick={() => {
-          setStory("petitions", "feed");
-          api.selectionChanged().catch(() => {});
-        }}
-        selected={activeStory === "petitions"}
-        data-story="petitionsTab"
-        text="Петиции"
-      >
-        <Icon28WriteSquareOutline />
-      </TabbarItem>
-      {(!launchParameters.vk_group_id ||
-        ["moder", "editor", "admin"].includes(
-          launchParameters.vk_viewer_group_role
-        )) && (
+const EpicTabbar = ({ setStory, activeStory, launchParameters }) =>
+  (!launchParameters.vk_group_id ||
+    ["moder", "editor", "admin"].includes(
+      launchParameters.vk_viewer_group_role
+    )) && (
+    <FixedLayout vertical="bottom" className="Tabbar">
+      <Tabbar className="EpicTabbar">
+        <TabbarItem
+          onClick={() => {
+            setStory("petitions", "feed");
+            api.selectionChanged().catch(() => {});
+          }}
+          selected={activeStory === "petitions"}
+          data-story="petitionsTab"
+          text="Петиции"
+        >
+          <Icon28WriteSquareOutline />
+        </TabbarItem>
+
         <TabbarItem
           onClick={() => {
             setStory("management", "feed");
@@ -39,10 +40,9 @@ const EpicTabbar = ({ setStory, activeStory, launchParameters }) => (
         >
           <Icon28SettingsOutline />
         </TabbarItem>
-      )}
-    </Tabbar>
-  </FixedLayout>
-);
+      </Tabbar>
+    </FixedLayout>
+  );
 
 const mapStateToProps = state => {
   return {

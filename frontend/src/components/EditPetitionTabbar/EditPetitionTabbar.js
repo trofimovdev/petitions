@@ -23,6 +23,7 @@ import {
 import { setCreate, setCurrent } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
 import { initPetitions, storeGoBack } from "../../tools/helpers";
+import store from "../../store";
 
 const api = new VKMiniAppAPI();
 
@@ -85,7 +86,7 @@ const EditPetitionTabbar = ({
               });
               Backend.request(`petitions/${form.id}`, changed, "PATCH")
                 .then(() => {
-                  initPetitions(launchParameters);
+                  store.dispatch(initPetitions(launchParameters));
                   closePopout();
                   api.notificationOccurred("success").catch(() => {});
                   setSnackbar(
@@ -168,13 +169,13 @@ const EditPetitionTabbar = ({
                   mobile_photo_url: response.mobile_photo_url,
                   web_photo_url: response.web_photo_url
                 });
-                initPetitions(launchParameters);
+                store.dispatch(initPetitions(launchParameters));
                 closePopout();
                 setCreate({});
                 window.addEventListener("popstate", storeGoBack);
                 setPage(activeView, "done", false, true, ["done"]);
               })
-              .catch(({ message }) => {
+              .catch(({ error }) => {
                 window.addEventListener("popstate", storeGoBack);
                 closePopout();
                 setSnackbar(
@@ -192,7 +193,7 @@ const EditPetitionTabbar = ({
                       </Avatar>
                     }
                   >
-                    {message}
+                    {error.message}
                   </Snackbar>
                 );
               });
@@ -224,8 +225,7 @@ const mapDispatchToProps = {
   openPopout,
   closePopout,
   setPage,
-  setCurrent,
-  initPetitions
+  setCurrent
 };
 
 EditPetitionTabbar.propTypes = {
@@ -241,8 +241,7 @@ EditPetitionTabbar.propTypes = {
   activeView: PropTypes.string.isRequired,
   setCurrent: PropTypes.func.isRequired,
   setCreate: PropTypes.func.isRequired,
-  launchParameters: PropTypes.object.isRequired,
-  initPetitions: PropTypes.func.isRequired
+  launchParameters: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditPetitionTabbar);

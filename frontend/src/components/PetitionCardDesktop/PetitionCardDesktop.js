@@ -24,6 +24,7 @@ import {
   initPetitions
 } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
+import store from "../../store";
 
 const PetitionCardDesktop = ({
   id,
@@ -52,7 +53,7 @@ const PetitionCardDesktop = ({
           className="PetitionCardDesktop__modal"
           loading
         >
-          {{ message }}
+          {message}
         </ModalDialog>
       );
     } else {
@@ -73,20 +74,21 @@ const PetitionCardDesktop = ({
 
     Backend.request(`petitions/${id}`, {}, "DELETE")
       .then(() => {
-        initPetitions(launchParameters);
+        store.dispatch(initPetitions(launchParameters)).then(() => setPopout());
       })
-      .catch(({ errorMessage }) => {
+      .catch(({ message }) => {
         setPopout(
           <ModalDialog
             header="Что-то пошло не так"
             confirmText="Повторить"
             cancelText="Отменить"
             className="PetitionCardDesktop__modal"
-            loading
             onClose={() => setPopout()}
-            onConfirm={() => deletePetition(retry, errorMessage)}
+            onConfirm={() => {
+              deletePetition(true, message);
+            }}
           >
-            {{ message }}
+            {message}
           </ModalDialog>
         );
       });
@@ -178,14 +180,14 @@ const PetitionCardDesktop = ({
       if (completed) {
         Backend.request(`petitions/${id}`, { completed: false }, "PATCH")
           .then(() => {
-            initPetitions(launchParameters);
+            store.dispatch(initPetitions(launchParameters));
           })
           .catch(() => {});
         return;
       }
       Backend.request(`petitions/${id}`, { completed: true }, "PATCH")
         .then(() => {
-          initPetitions(launchParameters);
+          store.dispatch(initPetitions(launchParameters));
         })
         .catch(() => {});
     }
@@ -301,8 +303,7 @@ PetitionCardDesktop.propTypes = {
   setFormType: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setInitialEdit: PropTypes.func.isRequired,
-  launchParameters: PropTypes.object.isRequired,
-  initPetitions: PropTypes.func.isRequired
+  launchParameters: PropTypes.object.isRequired
 };
 
 export default connect(

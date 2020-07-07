@@ -45,6 +45,7 @@ import {
 import FriendsCard from "../FriendsCard/FriendsCard";
 import { loadPetitions, initPetitions, loadPhoto } from "../../tools/helpers";
 import Backend from "../../tools/Backend";
+import store from "../../store";
 
 const api = new VKMiniAppAPI();
 
@@ -61,8 +62,7 @@ const ManagementFeed = ({
   setFormType,
   setEdit,
   setInitialEdit,
-  initError,
-  initPetitions
+  initError
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
@@ -171,7 +171,7 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(() => {
-                  initPetitions(launchParameters);
+                  store.dispatch(initPetitions(launchParameters));
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -231,7 +231,16 @@ const ManagementFeed = ({
                 "PATCH"
               )
                 .then(() => {
-                  initPetitions(launchParameters);
+                  setManaged(
+                    managedPetitions.map(item => {
+                      if (item.id === petitionId) {
+                        item.completed = true;
+                        return item;
+                      }
+                      return item;
+                    })
+                  );
+                  store.dispatch(initPetitions(launchParameters));
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -255,7 +264,7 @@ const ManagementFeed = ({
                     </Snackbar>
                   );
                 })
-                .catch(e => {
+                .catch(() => {
                   setSnackbar(
                     <Snackbar
                       layout="vertical"
@@ -298,8 +307,13 @@ const ManagementFeed = ({
                       openPopout(<ScreenSpinner />);
                       Backend.request(`petitions/${petitionId}`, {}, "DELETE")
                         .then(() => {
+                          setManaged(
+                            managedPetitions.filter(
+                              item => item.id !== petitionId
+                            )
+                          );
                           closePopout();
-                          initPetitions(launchParameters);
+                          store.dispatch(initPetitions(launchParameters));
                           setSnackbar(
                             <Snackbar
                               layout="vertical"
@@ -611,8 +625,7 @@ const mapDispatchToProps = {
   closePopout,
   setFormType,
   setEdit,
-  setInitialEdit,
-  initPetitions
+  setInitialEdit
 };
 
 ManagementFeed.propTypes = {
@@ -628,8 +641,7 @@ ManagementFeed.propTypes = {
   setFormType: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setInitialEdit: PropTypes.func.isRequired,
-  initError: PropTypes.bool,
-  initPetitions: PropTypes.func.isRequired
+  initError: PropTypes.bool
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManagementFeed);

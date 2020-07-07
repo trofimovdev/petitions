@@ -1,5 +1,4 @@
-import "core-js/features/map";
-import "core-js/features/set";
+import "core-js";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -50,7 +49,7 @@ api.onUpdateConfig(({ scheme }) => {
           .catch(() => {});
         break;
     }
-  }, 1000);
+  }, 2000);
 });
 
 window.addEventListener("popstate", storeGoBack);
@@ -70,7 +69,7 @@ api
   .then(isAppUser_response => {
     const petitionRegExp = new RegExp("^#p(\\d+)$");
     const feedRegExp = new RegExp("^#(popular|last|signed)$");
-    const managedRegExp = new RegExp("^#managed$");
+    const managedRegExp = new RegExp("^#managed?$");
     const windowSearch = window.location.search.split("%23");
     let petitionId =
       window.location.hash.match(petitionRegExp) ||

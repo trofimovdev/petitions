@@ -7,11 +7,14 @@ import {
   Input,
   Textarea,
   Snackbar,
-  Avatar
+  Avatar,
+  usePlatform,
+  ANDROID
 } from "@vkontakte/vkui";
 import PropTypes from "prop-types";
 import "./EditPetition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
+import Icon24Back from "@vkontakte/icons/dist/24/back";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import Icon28CameraOutline from "@vkontakte/icons/dist/28/camera_outline";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
@@ -32,10 +35,12 @@ const EditPetition = ({
   setEdit,
   setCreate,
   editPetitions,
-  createPetitions
+  createPetitions,
+  initialEditPetitions
 }) => {
   const [snackbar, setSnackbar] = useState(null);
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
+  const platform = usePlatform();
 
   const checkFileSize = fileSize => {
     if (fileSize > MAX_FILE_SIZE) {
@@ -124,10 +129,10 @@ const EditPetition = ({
 
   const onCancel = e => {
     const file_preview = `${e.currentTarget.id}_preview`;
-    form[e.currentTarget.id] = undefined;
-    form[file_preview] = undefined;
     setForm({
-      ...form
+      ...form,
+      [e.currentTarget.id]: undefined,
+      [file_preview]: undefined
     });
     e.preventDefault();
   };
@@ -206,7 +211,7 @@ const EditPetition = ({
               api.selectionChanged().catch(() => {});
             }}
           >
-            <Icon28ChevronBack />
+            {platform === ANDROID ? <Icon24Back /> : <Icon28ChevronBack />}
           </PanelHeaderButton>
         }
       >
@@ -232,7 +237,6 @@ const EditPetition = ({
         <Textarea
           name="text"
           top="Текст петиции"
-          // TODO: вынести в константу с бэкенда
           status={form.text && form.text.length > 3000 ? "error" : ""}
           bottom={
             form.text && form.text.length > 3000
@@ -313,11 +317,14 @@ const EditPetition = ({
       {snackbar}
       <EditPetitionTabbar
         disabled={
+          (formType === "edit" && initialEditPetitions === form) ||
           !(
             form.title &&
             form.title.length <= 150 &&
+            form.title.trim().length > 0 &&
             form.text &&
             form.text.length <= 3000 &&
+            form.text.trim().length > 0 &&
             form.need_signatures &&
             form.need_signatures >= 1 &&
             form.need_signatures <= 10000000 &&
@@ -337,7 +344,8 @@ const mapStateToProps = state => {
     activePanel: state.router.activePanel,
     formType: state.petitions.formType,
     editPetitions: state.petitions.edit,
-    createPetitions: state.petitions.create
+    createPetitions: state.petitions.create,
+    initialEditPetitions: state.petitions.initialEdit
   };
 };
 
@@ -354,7 +362,8 @@ EditPetition.propTypes = {
   setEdit: PropTypes.func.isRequired,
   setCreate: PropTypes.func.isRequired,
   editPetitions: PropTypes.object.isRequired,
-  createPetitions: PropTypes.object.isRequired
+  createPetitions: PropTypes.object.isRequired,
+  initialEditPetitions: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditPetition);

@@ -157,15 +157,15 @@ export const userStackText = friends => {
         <>
           {friends.slice(0, 3).map((item, index) => {
             return (
-              <>
+              <React.Fragment key={index}>
                 {getLinkName(item)}
                 {index !== 2 && ","}{" "}
-              </>
+              </React.Fragment>
             );
           })}
         </>
       )}
-      {friends.length > 2 &&
+      {friends.length > 3 &&
         `и еще ${friends.length - 3} ${declOfNum(friends.length - 3, [
           "друг",
           "друга",
@@ -176,25 +176,7 @@ export const userStackText = friends => {
 };
 
 export const filterString = string => {
-  let clearString = "";
-
-  // Match Emoticons
-  clearString = string.replace(/[\u{1F600}-\u{1F64F}]/gu, "");
-
-  // Match Miscellaneous Symbols and Pictographs
-  clearString = clearString.replace(/[\u{1F300}-\u{1F5FF}]/gu, "");
-
-  // Match Transport And Map Symbols
-  clearString = clearString.replace(/[\u{1F680}-\u{1F6FF}]/gu, "");
-
-  // Match Miscellaneous Symbols
-  clearString = clearString.replace(/[\u{2600}-\u{26FF}]/gu, "");
-
-  // Match Dingbats
-  clearString = clearString.replace(/[\u{2700}-\u{27BF}]/gu, "");
-
-  // Match Dingbats
-  clearString = clearString.replace(/[\u{2700}-\u{27BF}]/gu, "");
+  let clearString = string;
 
   clearString = clearString.replace(/[^\p{L}\p{N}\p{P}\p{S}\s]/gu, "");
   clearString = clearString.replace(/\n\n+/g, "\n\n");
