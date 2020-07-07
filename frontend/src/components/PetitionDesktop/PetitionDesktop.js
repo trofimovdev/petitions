@@ -38,6 +38,7 @@ import {
 import { setLaunchParameters } from "../../store/data/actions";
 import { setPage } from "../../store/router/actions";
 import Backend from "../../tools/Backend";
+import store from "../../store";
 
 const api = new VKMiniAppAPI();
 
@@ -50,8 +51,7 @@ const PetitionDesktop = ({
   setInitialEdit,
   setEdit,
   setFormType,
-  appId,
-  initPetitions
+  appId
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
@@ -103,7 +103,7 @@ const PetitionDesktop = ({
             ...currentPetition,
             ...{ signed: true, count_signatures: parseInt(r) }
           });
-          initPetitions(launchParameters);
+          store.dispatch(initPetitions(launchParameters));
           setFetchingStatus(false);
         }
       })
@@ -121,7 +121,7 @@ const PetitionDesktop = ({
             ...currentPetition,
             ...{ signed: false, count_signatures: parseInt(r) }
           });
-          initPetitions(launchParameters);
+          store.dispatch(initPetitions(launchParameters));
           setFetchingStatus(false);
         }
       })
@@ -247,7 +247,7 @@ const PetitionDesktop = ({
                     setShareLoadingStatus(true);
                     api
                       .postToWall(
-                        "",
+                        currentPetition.title,
                         `https://vk.com/app${appId}#p${currentPetition.id}`
                       )
                       .then(() => {
@@ -448,8 +448,7 @@ const mapDispatchToProps = {
   setManaged,
   setInitialEdit,
   setEdit,
-  setFormType,
-  initPetitions
+  setFormType
 };
 
 PetitionDesktop.propTypes = {
@@ -465,8 +464,7 @@ PetitionDesktop.propTypes = {
   setInitialEdit: PropTypes.func.isRequired,
   setEdit: PropTypes.func.isRequired,
   setFormType: PropTypes.func.isRequired,
-  appId: PropTypes.number.isRequired,
-  initPetitions: PropTypes.func.isRequired
+  appId: PropTypes.number.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionDesktop);

@@ -19,6 +19,7 @@ import { goBack, setPage } from "../../store/router/actions";
 import HeaderDesktop from "../HeaderDesktop/HeaderDesktop";
 import Backend from "../../tools/Backend";
 import { filterString, initPetitions } from "../../tools/helpers";
+import store from "../../store";
 
 const EditPetitionDesktop = ({
   id,
@@ -92,10 +93,10 @@ const EditPetitionDesktop = ({
 
   const onCancel = e => {
     const file_preview = `${e.currentTarget.id}_preview`;
-    form[e.currentTarget.id] = undefined;
-    form[file_preview] = undefined;
     setForm({
-      ...form
+      ...form,
+      [e.currentTarget.id]: undefined,
+      [file_preview]: undefined
     });
     e.preventDefault();
   };
@@ -296,8 +297,10 @@ const EditPetitionDesktop = ({
               !(
                 form.title &&
                 form.title.length <= 150 &&
+                form.title.trim().length > 0 &&
                 form.text &&
                 form.text.length <= 3000 &&
+                form.text.trim().length > 0 &&
                 form.need_signatures &&
                 form.need_signatures >= 1 &&
                 form.need_signatures <= 10000000 &&
@@ -344,7 +347,7 @@ const EditPetitionDesktop = ({
                 });
                 Backend.request(`petitions/${form.id}`, changed, "PATCH")
                   .then(() => {
-                    initPetitions(launchParameters);
+                    store.dispatch(initPetitions(launchParameters));
                     setFetchingStatus(false);
                     setTs({ time: Date.now(), message: "Изменения сохранены" });
                   })
@@ -386,7 +389,7 @@ const EditPetitionDesktop = ({
                     mobile_photo_url: response.mobile_photo_url,
                     web_photo_url: response.web_photo_url
                   });
-                  initPetitions(launchParameters);
+                  store.dispatch(initPetitions(launchParameters));
                   setFetchingStatus(false);
                   setCreate({});
                   setPage("done", "");
@@ -424,8 +427,7 @@ const mapDispatchToProps = {
   setCreate,
   goBack,
   setCurrent,
-  setPage,
-  initPetitions
+  setPage
 };
 
 EditPetitionDesktop.propTypes = {
@@ -439,8 +441,7 @@ EditPetitionDesktop.propTypes = {
   setCurrent: PropTypes.func.isRequired,
   initialEditPetitions: PropTypes.object.isRequired,
   launchParameters: PropTypes.object.isRequired,
-  goBack: PropTypes.func.isRequired,
-  initPetitions: PropTypes.func.isRequired
+  goBack: PropTypes.func.isRequired
 };
 
 export default connect(

@@ -30,6 +30,7 @@ import {
 } from "../../store/petitions/actions";
 import Backend from "../../tools/Backend";
 import { initPetitions, loadPetitions, loadPhoto } from "../../tools/helpers";
+import store from "../../store";
 
 const api = new VKMiniAppAPI();
 
@@ -58,13 +59,13 @@ const PetitionTabbar = ({
             ...currentPetition,
             ...{ signed: true, count_signatures: parseInt(r) }
           });
-          initPetitions(launchParameters);
+          store.dispatch(initPetitions(launchParameters));
           api.notificationOccurred("success").catch(() => {});
           setFetchingStatus(false);
         }
       })
-      .catch(({ code, message }) => {
-        if (code === 409 || code === 404) {
+      .catch(({ error }) => {
+        if (error.code === 409 || error.code === 404) {
           if (launchParameters.vk_access_token_settings.includes("friends")) {
             loadPetitions(`petitions`, true, {
               petition_id: currentPetition.id.toString()
@@ -85,7 +86,7 @@ const PetitionTabbar = ({
               .catch(() => {});
           }
         } else {
-          setSnackbarError(message);
+          setSnackbarError(error.message);
         }
         api.selectionChanged().catch(() => {});
         setFetchingStatus(false);
@@ -101,13 +102,13 @@ const PetitionTabbar = ({
             ...currentPetition,
             ...{ signed: false, count_signatures: parseInt(r) }
           });
-          initPetitions(launchParameters);
+          store.dispatch(initPetitions(launchParameters));
           api.selectionChanged().catch(() => {});
           setFetchingStatus(false);
         }
       })
-      .catch(({ code, message }) => {
-        if (code === 409 || code === 404) {
+      .catch(({ error }) => {
+        if (error.code === 409 || error.code === 404) {
           if (launchParameters.vk_access_token_settings.includes("friends")) {
             loadPetitions(`petitions`, true, {
               petition_id: currentPetition.id.toString()
@@ -128,7 +129,7 @@ const PetitionTabbar = ({
               .catch(() => {});
           }
         } else {
-          setSnackbarError(message);
+          setSnackbarError(error.message);
         }
         api.selectionChanged().catch(() => {});
         setFetchingStatus(false);
@@ -203,7 +204,7 @@ const PetitionTabbar = ({
               signPetition();
             }
           }}
-          disabled={fetchingStatus}
+          disabled={fetchingStatus || currentPetition.completed}
         >
           {!fetchingStatus ? (
             currentPetition.completed ? (
@@ -290,6 +291,7 @@ const PetitionTabbar = ({
                 })
                 .catch(() => {});
             }}
+            disabled={currentPetition.completed}
           >
             <Icon28SettingsOutline />
           </Button>
@@ -320,8 +322,7 @@ const mapDispatchToProps = {
   setEdit,
   setInitialEdit,
   openPopout,
-  closePopout,
-  initPetitions
+  closePopout
 };
 
 PetitionTabbar.propTypes = {
@@ -341,8 +342,7 @@ PetitionTabbar.propTypes = {
   setSnackbarError: PropTypes.func.isRequired,
   lastPetitions: PropTypes.array,
   popularPetitions: PropTypes.array,
-  managedPetitions: PropTypes.array,
-  initPetitions: PropTypes.func.isRequired
+  managedPetitions: PropTypes.array
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PetitionTabbar);

@@ -15,10 +15,12 @@ import {
   Spinner,
   Button,
   Placeholder,
-  Snackbar
+  Snackbar,
+  ANDROID
 } from "@vkontakte/vkui";
 import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
+import Icon24Back from "@vkontakte/icons/dist/24/back";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
@@ -171,7 +173,7 @@ const Petition = ({
               api.selectionChanged().catch(() => {});
             }}
           >
-            <Icon28ChevronBack />
+            {platform === ANDROID ? <Icon24Back /> : <Icon28ChevronBack />}
           </PanelHeaderButton>
         }
         separator={false}

@@ -56,7 +56,7 @@ const FriendsCard = ({
   };
 
   const onClick = () => {
-    if (friendsCardStatus !== true) {
+    if (friendsCardStatus !== 1) {
       return;
     }
     setFriendsCardStatus(2);
@@ -64,6 +64,7 @@ const FriendsCard = ({
       .getAccessToken(appId, "friends")
       .then(r => {
         if (!r.scope.includes("friends")) {
+          setFriendsCardStatus(1);
           return;
         }
         setLaunchParameters({
@@ -77,16 +78,16 @@ const FriendsCard = ({
           type: activeView === "management" ? "managed" : activeTab.feed
         })
           .then(response => {
-            setFriendsCardStatus(false);
+            setFriendsCardStatus(0);
             setCurrentPetitions(response);
           })
-          .catch(() => setFriendsCardStatus(true));
+          .catch(() => setFriendsCardStatus(1));
       })
-      .catch(() => setFriendsCardStatus(true));
+      .catch(() => setFriendsCardStatus(1));
   };
 
   const onClose = () => {
-    setFriendsCardStatus(false);
+    setFriendsCardStatus(0);
     api.selectionChanged().catch(() => {});
   };
 
@@ -139,7 +140,7 @@ const mapDispatchToProps = {
 };
 
 FriendsCard.propTypes = {
-  friendsCardStatus: PropTypes.bool.isRequired,
+  friendsCardStatus: PropTypes.number.isRequired,
   setFriendsCardStatus: PropTypes.func.isRequired,
   launchParameters: PropTypes.object.isRequired,
   setLaunchParameters: PropTypes.func.isRequired,
