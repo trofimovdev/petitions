@@ -104,6 +104,24 @@
     }
   }
 
+  &__report {
+    .Cell {
+      &__children {
+        font-size: 15px;
+        color: $petition-creator-text-color;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+
+        .Spinner {
+          width: auto;
+          margin-left: 12px;
+        }
+      }
+    }
+  }
+
   &__link {
     font-weight: 600;
   }

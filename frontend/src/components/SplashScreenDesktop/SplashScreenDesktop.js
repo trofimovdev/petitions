@@ -18,7 +18,7 @@ const SplashScreenDesktop = ({ id, setPage }) => {
   return (
     <div id={id} className="SplashScreenDesktop">
       <Welcome
-        header="Петиции"
+        header="Хорошие петиции"
         description="Создавайте петиции, чтобы решать реальные проблемы"
         footer={
           <div>

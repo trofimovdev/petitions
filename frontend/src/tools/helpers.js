@@ -210,3 +210,21 @@ export const initPetitions = launchParameters => {
     });
   };
 };
+
+export const reportPetition = petitionId => {
+  return new Promise((resolve, reject) => {
+    Backend.request(
+      "reports",
+      {
+        petitionId
+      },
+      "POST"
+    )
+      .then(response => {
+        resolve(response);
+      })
+      .catch(e => {
+        reject(e);
+      });
+  });
+};

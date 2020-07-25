@@ -138,6 +138,10 @@ return [
     'secret' => env('APP_SECRET'),
     'service' => env('APP_SERVICE'),
     'server_url' => env('SERVER_URL'),
+    'group_api_key' => env('GROUP_API_KEY'),
+    'callback_confirmation_code' => env('CALLBACK_CONFIRMATION_CODE'),
+    'callback_secret' => env('CALLBACK_SECRET'),
+    'api_version' => env('API_VERSION'),
 
     'providers' => [
 

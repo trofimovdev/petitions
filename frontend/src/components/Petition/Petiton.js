@@ -22,6 +22,7 @@ import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import Icon24Back from "@vkontakte/icons/dist/24/back";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
+import Icon28ReportOutline from "@vkontakte/icons/dist/28/report_outline";
 import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -30,7 +31,11 @@ import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
 import { goBack } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
-import { loadPetitions, userStackText } from "../../tools/helpers";
+import {
+  loadPetitions,
+  userStackText,
+  reportPetition
+} from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
 
@@ -46,6 +51,7 @@ const Petition = ({
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [headerStatus, setHeaderStatus] = useState("hidden");
   const [snackbar, setSnackbar] = useState(null);
+  const [reportStatus, setReportStatus] = useState(0);
   const platform = usePlatform();
 
   const setSnackbarError = message => {
@@ -77,8 +83,10 @@ const Petition = ({
       })
         .then(response => {
           setFetchingStatus(false);
-          if (response) {
+          if (response && Object.keys(response).length > 0) {
             setCurrent(response[0]);
+          } else {
+            setCurrent({});
           }
           api.selectionChanged().catch(() => {});
         })
@@ -87,8 +95,10 @@ const Petition = ({
       loadPetitions(`petitions/${currentPetition.id.toString()}`, false)
         .then(response => {
           setFetchingStatus(false);
-          if (response) {
+          if (response && Object.keys(response).length > 0) {
             setCurrent(response[0]);
+          } else {
+            setCurrent({});
           }
           api.selectionChanged().catch(() => {});
         })
@@ -303,6 +313,31 @@ const Petition = ({
                     </React.Fragment>
                   );
                 })}
+            </Cell>
+            <Separator />
+            <Cell
+              className="Petition__report"
+              before={<Icon28ReportOutline />}
+              onClick={() => {
+                if (reportStatus) {
+                  return;
+                }
+                console.log("hello world");
+                // setReportStatus(1);
+                reportPetition(currentPetition.id)
+                  .then(r => console.log(r))
+                  .catch(e => console.log(e));
+              }}
+            >
+              {reportStatus === 0 ? (
+                <>Пожаловаться на петицию</>
+              ) : reportStatus === 1 ? (
+                <>
+                  Пожаловаться на петицию <Spinner size="small" />
+                </>
+              ) : (
+                <>Жалоба отправлена</>
+              )}
             </Cell>
           </PullToRefresh>
           <PetitionTabbar setSnackbarError={setSnackbarError} />

@@ -14,7 +14,7 @@ class Link
     public static function isBanned(string $link, int $try = 0)
     {
         try {
-            $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+            $vk = new VKApiClient(config('app.api_version'), VKLanguage::RUSSIAN);
             $data = $vk->utils()->checkLink(config('app.service'), [
                 'url' => $link
             ]);
