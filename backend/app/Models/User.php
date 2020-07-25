@@ -60,7 +60,7 @@ class User
 
         $users = [];
         try {
-            $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+            $vk = new VKApiClient(config('app.api_version'), VKLanguage::RUSSIAN);
             $usersData = $vk->users()->get(config('app.service'), [
                 'user_ids'  => $userIds,
                 'fields'    => $fields,
