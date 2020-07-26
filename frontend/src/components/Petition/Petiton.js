@@ -322,11 +322,15 @@ const Petition = ({
                 if (reportStatus) {
                   return;
                 }
-                console.log("hello world");
-                // setReportStatus(1);
+                setReportStatus(1);
                 reportPetition(currentPetition.id)
-                  .then(r => console.log(r))
-                  .catch(e => console.log(e));
+                  .then(() => {
+                    setReportStatus(2);
+                  })
+                  .catch(({ message }) => {
+                    setSnackbarError(message);
+                    setReportStatus(0);
+                  });
               }}
             >
               {reportStatus === 0 ? (

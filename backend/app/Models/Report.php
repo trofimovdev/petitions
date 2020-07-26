@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\API\CallbackController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
 use VK\Client\Enums\VKLanguage;
@@ -15,11 +16,12 @@ class Report extends Model
 
     public static function incrementCounter(int $userId)
     {
-        if (!Redis::get(Report::PREFIX . $userId)) {
-            Redis::set(Report::PREFIX . $userId, 1, Report::TTL);
+        if (!Redis::exists(Report::PREFIX . $userId)) {
+            Redis::setex(Report::PREFIX . $userId, Report::TTL, 1);
             return;
         }
         Redis::incr(Report::PREFIX . $userId);
+        return;
     }
 
     public static function getCounter(int $userId)
@@ -27,14 +29,13 @@ class Report extends Model
         return (int)Redis::get(Report::PREFIX . $userId);
     }
 
-    public static function create(int $petitionId, int $userId, array $petition)
+    public static function create(int $userId, array $petition)
     {
-//        Report::incrementCounter($userId);
-
-        $message = '@id' . $userId . ' оставил жалобу на петицию №' . $petition['id'] . ' «' . $petition['title'] . '»';
+        Report::incrementCounter($userId);
+        $message = '@id' . $userId . ' оставил жалобу на петицию №' . $petition['id'] . ' «' . $petition['title'] . '»' . "\n\n#user" . $userId;
         $vk = new VKApiClient(config('app.api_version'), VKLanguage::RUSSIAN);
-        $data = $vk->messages()->send(config('app.group_api_key'), [
-            'user_id' => 165275777,
+        $vk->messages()->send(config('app.group_api_key'), [
+            'peer_id' => CallbackController::CHAT_OFFSET + CallbackController::CHAT_ID,
             'random_id' => rand(PHP_INT_MIN, PHP_INT_MAX),
             'message' => $message,
             'keyboard' => json_encode(
