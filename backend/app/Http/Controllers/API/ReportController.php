@@ -27,6 +27,6 @@ class ReportController extends Controller
             return new ErrorResponse(404, 'Петиция не найдена');
         }
 
-        return new OkResponse(Report::create($petitionId, $request->userId, $petition[0]));
+        return new OkResponse(Report::create($request->userId, $petition[0]));
     }
 }

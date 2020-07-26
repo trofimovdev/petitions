@@ -14,12 +14,36 @@ use VK\Client\VKApiClient;
 
 class CallbackController extends Controller
 {
+    const CHAT_OFFSET = 2000000000;
+    const CHAT_ID = 1;
+
     public function store(Request $request)
     {
         if ($request->secret !== config('app.callback_secret')) {
             return;
         }
         $vk = new VKApiClient(config('app.api_version'), VKLanguage::RUSSIAN);
+
+//        $vk->messages()->send(config('app.group_api_key'), [
+//            'user_id' => 165275777,
+//            'random_id' => rand(PHP_INT_MIN, PHP_INT_MAX),
+//            'message' => 'new event'
+//        ]);
+
+//        $vk->messages()->send(config('app.group_api_key'), [
+//            'peer_id' => CallbackController::CHAT_OFFSET + CallbackController::CHAT_ID,
+//            'random_id' => rand(PHP_INT_MIN, PHP_INT_MAX),
+//            'message' => json_encode($request->object)
+//        ]);
+
+//        $data = $vk->messages()->getConversations(config('app.group_api_key'));
+//
+//        $vk->messages()->send(config('app.group_api_key'), [
+//            'user_id' => 165275777,
+//            'random_id' => rand(PHP_INT_MIN, PHP_INT_MAX),
+//            'message' => json_encode($data)
+//        ]);
+
         switch ($request->type) {
             case 'confirmation':
                 echo config('app.callback_confirmation_code');
@@ -56,6 +80,6 @@ class CallbackController extends Controller
                 ]);
                 break;
         }
-        return 'ok';
+        echo 'ok';
     }
 }
