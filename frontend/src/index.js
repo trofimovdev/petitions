@@ -69,7 +69,7 @@ api
   .then(isAppUser_response => {
     const petitionRegExp = new RegExp("^#p(\\d+)$");
     const feedRegExp = new RegExp("^#(popular|last|signed)$");
-    const managedRegExp = new RegExp("^#managed?$");
+    const managedRegExp = new RegExp("^#managed$");
     const windowSearch = window.location.search.split("%23");
     let petitionId =
       window.location.hash.match(petitionRegExp) ||
@@ -162,6 +162,7 @@ api
         store.dispatch(setActiveTab("feed", "managed"));
         store.dispatch(setStory("petitions", ""));
       } else if (
+        !launchParameters.vk_group_id ||
         ["moder", "editor", "admin"].includes(
           launchParameters.vk_viewer_group_role
         )

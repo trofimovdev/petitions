@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Button, Notify } from "@happysanta/vk-app-ui";
+import {Button, ModalDialog, Notify} from "@happysanta/vk-app-ui";
 import {
   Avatar,
   Cell,
@@ -17,13 +17,16 @@ import "./PetitionDesktop.css";
 import Icon16Chevron from "@vkontakte/icons/dist/16/chevron";
 import Icon24ShareOutline from "@vkontakte/icons/dist/24/share_outline";
 import Icon24GearOutline from "@vkontakte/icons/dist/24/gear_outline";
+import Icon24Report from "@vkontakte/icons/dist/24/report";
+import Icon24Done from "@vkontakte/icons/dist/24/done";
 import Linkify from "react-linkify";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import {
   userStackText,
   loadPetitions,
   loadPhoto,
-  initPetitions
+  initPetitions,
+  reportPetition
 } from "../../tools/helpers";
 import {
   setCurrent,
@@ -58,6 +61,8 @@ const PetitionDesktop = ({
   const [shareLoadingStatus, setShareLoadingStatus] = useState(false);
   const [settingsStatus, setSettingsStatus] = useState(false);
   const [initError, setInitError] = useState(undefined);
+  const [reportStatus, setReportStatus] = useState(0);
+  const [popout, setPopout] = useState(undefined);
 
   useEffect(() => {
     if (currentPetition.id) {
@@ -363,6 +368,44 @@ const PetitionDesktop = ({
                   <Avatar src={currentPetition.owner.photo_100} size={40} />
                 </a>
               }
+              asideContent={
+                <div
+                  onClick={() => {
+                    if (reportStatus) {
+                      return;
+                    }
+                    setReportStatus(1);
+                    reportPetition(currentPetition.id)
+                      .then(() => {
+                        setReportStatus(2);
+                      })
+                      .catch(({ message }) => {
+                        setReportStatus(0);
+                        setPopout(
+                          <ModalDialog
+                            header="Что-то пошло не так"
+                            confirmText="Закрыть"
+                            cancelText=""
+                            onConfirm={() => setPopout()}
+                            className="PetitionCardDesktop__modal"
+                          >
+                            {message}
+                          </ModalDialog>
+                        );
+                      });
+                  }}
+                >
+                  {reportStatus === 0 ? (
+                    <Icon24Report className="PetitionDesktop__report" />
+                  ) : reportStatus === 1 ? (
+                    <Spinner size="regular" />
+                  ) : reportStatus === 2 ? (
+                    <Icon24Done className="PetitionDesktop__report" />
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              }
               multiline
             >
               {parseInt(currentPetition.owner_id) < 0 && "Сообщество «"}
@@ -425,6 +468,7 @@ const PetitionDesktop = ({
       ) : (
         <Spinner size="regular" className="ManagementFeed__spinner" />
       )}
+      {popout}
     </div>
   );
 };

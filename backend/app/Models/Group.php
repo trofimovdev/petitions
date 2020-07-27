@@ -61,7 +61,7 @@ class Group
 
         $groups = [];
         try {
-            $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+            $vk = new VKApiClient(config('app.api_version'), VKLanguage::RUSSIAN);
             $groupsData = $vk->groups()->getById(config('app.service'), [
                 'group_ids'  => $groupIds,
                 'fields'    => $fields,
