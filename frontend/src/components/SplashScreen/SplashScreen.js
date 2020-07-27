@@ -14,7 +14,7 @@ const SplashScreen = ({ id, activeView, setPage }) => {
   return (
     <Panel id={id} separator={false} className="SplashScreen">
       <Placeholder
-        header="Петиции"
+        header="Хорошие петиции"
         icon={
           <PetitionCard
             id={0}

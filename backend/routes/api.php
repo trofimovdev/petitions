@@ -16,4 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('petitions', 'API\PetitionController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 Route::resource('signatures', 'API\SignatureController', ['only' => ['show', 'update', 'destroy']]);
+Route::resource('reports', 'API\ReportController', ['only' => ['store']]);
+Route::resource('callback', 'API\CallbackController', ['only' => ['store']]);
 

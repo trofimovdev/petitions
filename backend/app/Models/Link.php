@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Consts;
 use ErrorException;
 use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
@@ -14,7 +15,7 @@ class Link
     public static function isBanned(string $link, int $try = 0)
     {
         try {
-            $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+            $vk = new VKApiClient(Consts::API_VERSION, VKLanguage::RUSSIAN);
             $data = $vk->utils()->checkLink(config('app.service'), [
                 'url' => $link
             ]);

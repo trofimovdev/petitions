@@ -122,6 +122,21 @@
     color: $petition-desktop-link-color !important;
   }
 
+  &__creatorRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__report {
+    color: $petition-desktop-report-icon-color;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
   &__creator {
     margin-top: 15px;
 

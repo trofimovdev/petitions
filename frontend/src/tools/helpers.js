@@ -210,3 +210,7 @@ export const initPetitions = launchParameters => {
     });
   };
 };
+
+export const reportPetition = petitionId => {
+  return Backend.request("reports", { petitionId }, "POST");
+};
