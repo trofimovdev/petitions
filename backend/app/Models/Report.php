@@ -17,8 +17,10 @@ class Report extends Model
 
     public static function incrementCounter(int $userId)
     {
+        if (Redis::set(Report::PREFIX . $userId, 1, 'NX', 'EX', Report::TTL)) {
+            return;
+        }
         Redis::incr(Report::PREFIX . $userId);
-        return;
     }
 
     public static function getCounter(int $userId)
