@@ -66,7 +66,7 @@ export default class Backend {
                 if (data.response !== undefined) {
                   resolve(data.response);
                 } else {
-                  reject(data);
+                  reject(data.error);
                 }
               });
             } else if (retry > 0) {

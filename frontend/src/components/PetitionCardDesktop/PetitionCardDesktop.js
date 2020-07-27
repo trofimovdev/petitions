@@ -76,9 +76,7 @@ const PetitionCardDesktop = ({
       .then(() => {
         store.dispatch(initPetitions(launchParameters)).then(() => setPopout());
       })
-      .catch(e => {
-        const errorMessage =
-          e instanceof TypeError ? e.message : e.error.message;
+      .catch(({ message }) => {
         setPopout(
           <ModalDialog
             header="Что-то пошло не так"
@@ -87,10 +85,10 @@ const PetitionCardDesktop = ({
             className="PetitionCardDesktop__modal"
             onClose={() => setPopout()}
             onConfirm={() => {
-              deletePetition(true, errorMessage);
+              deletePetition(true, message);
             }}
           >
-            {errorMessage}
+            {message}
           </ModalDialog>
         );
       });
