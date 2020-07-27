@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Console\Commands\AddCallbackServer;
 use App\Http\Controllers\Controller as Controller;
 use App\Models\Petition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
 
@@ -21,8 +23,8 @@ class CallbackController extends Controller
         $vk = new VKApiClient(config('app.api_version'), VKLanguage::RUSSIAN);
         switch ($request->type) {
             case 'confirmation':
-                echo config('app.callback_confirmation_code');
-                break;
+                echo Redis::get(AddCallbackServer::KEY);
+                return;
 
             case 'message_event':
                 if ($request->object['payload']['action'] === 'delete') {
