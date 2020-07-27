@@ -141,7 +141,7 @@ return [
     'group_id' => env('GROUP_ID'),
     'group_api_key' => env('GROUP_API_KEY'),
     'callback_secret' => env('CALLBACK_SECRET'),
-    'api_version' => env('API_VERSION'),
+    'reports_peer_id' => env('REPORTS_PEER_ID'),
 
     'providers' => [
 

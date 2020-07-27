@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Consts;
 use ErrorException;
 use Illuminate\Support\Facades\Redis;
 use VK\Client\VKApiClient;
@@ -60,7 +61,7 @@ class User
 
         $users = [];
         try {
-            $vk = new VKApiClient(config('app.api_version'), VKLanguage::RUSSIAN);
+            $vk = new VKApiClient(Consts::API_VERSION, VKLanguage::RUSSIAN);
             $usersData = $vk->users()->get(config('app.service'), [
                 'user_ids'  => $userIds,
                 'fields'    => $fields,

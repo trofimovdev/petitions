@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Consts;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redis;
 use VK\Client\Enums\VKLanguage;
@@ -41,7 +42,7 @@ class AddCallbackServer extends Command
      */
     public function handle()
     {
-        $vk = new VKApiClient(config('app.api_version'), VKLanguage::RUSSIAN);
+        $vk = new VKApiClient(Consts::API_VERSION, VKLanguage::RUSSIAN);
         $code = $vk->groups()->getCallbackConfirmationCode(config('app.group_api_key'), [
             'group_id' => config('app.group_id')
         ]);
@@ -55,7 +56,7 @@ class AddCallbackServer extends Command
         $vk->groups()->setCallbackSettings(config('app.group_api_key'), [
             'group_id' => config('app.group_id'),
             'server_id' => $server_id['server_id'],
-            'api_version' => config('app.api_version'),
+            'api_version' => Consts::API_VERSION,
             'message_new' => 1,
             'message_event' => 1
         ]);
