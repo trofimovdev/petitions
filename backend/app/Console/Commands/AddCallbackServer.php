@@ -59,6 +59,5 @@ class AddCallbackServer extends Command
             'message_new' => 1,
             'message_event' => 1
         ]);
-
     }
 }
