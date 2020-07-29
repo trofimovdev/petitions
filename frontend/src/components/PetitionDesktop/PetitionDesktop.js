@@ -374,25 +374,41 @@ const PetitionDesktop = ({
                     if (reportStatus) {
                       return;
                     }
-                    setReportStatus(1);
-                    reportPetition(currentPetition.id)
-                      .then(() => {
-                        setReportStatus(2);
-                      })
-                      .catch(({ message }) => {
-                        setReportStatus(0);
-                        setPopout(
-                          <ModalDialog
-                            header="Что-то пошло не так"
-                            confirmText="Закрыть"
-                            cancelText=""
-                            onConfirm={() => setPopout()}
-                            className="PetitionCardDesktop__modal"
-                          >
-                            {message}
-                          </ModalDialog>
-                        );
-                      });
+                    setPopout(
+                      <ModalDialog
+                        header="Подтвердите действие"
+                        confirmText="Пожаловаться"
+                        cancelText="Отменить"
+                        className="PetitionCardDesktop__modal"
+                        onClose={() => setPopout()}
+                        onConfirm={() => {
+                          setPopout();
+                          setReportStatus(1);
+                          reportPetition(currentPetition.id)
+                            .then(() => {
+                              setReportStatus(2);
+                            })
+                            .catch(({ message }) => {
+                              setReportStatus(0);
+                              setPopout(
+                                <ModalDialog
+                                  header="Что-то пошло не так"
+                                  confirmText="Закрыть"
+                                  cancelText=""
+                                  onConfirm={() => setPopout()}
+                                  className="PetitionCardDesktop__modal"
+                                >
+                                  {message}
+                                </ModalDialog>
+                              );
+                            });
+                        }}
+                      >
+                        Вы действительно хотите оставить жалобу на эту петицию?
+                        <br />
+                        Это действие нельзя будет отменить.
+                      </ModalDialog>
+                    );
                   }}
                 >
                   {reportStatus === 0 ? (
