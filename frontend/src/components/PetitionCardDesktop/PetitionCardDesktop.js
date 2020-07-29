@@ -50,6 +50,7 @@ const PetitionCardDesktop = ({
           header="Что-то пошло не так"
           confirmText="Повторить"
           cancelText="Отменить"
+          onClose={() => setPopout()}
           className="PetitionCardDesktop__modal"
           loading
         >
@@ -62,6 +63,7 @@ const PetitionCardDesktop = ({
           header="Подтвердите действие"
           confirmText="Удалить"
           cancelText="Отменить"
+          onClose={() => setPopout()}
           className="PetitionCardDesktop__modal"
           loading
         >
