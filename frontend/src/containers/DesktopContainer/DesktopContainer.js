@@ -13,7 +13,6 @@ const DesktopContainer = ({ activeTab, activeView, scrollPosition }) => {
   useEffect(() => {
     if (activeView !== "edit") {
       const pageScrollPosition = scrollPosition[`petitions_${activeTab.feed}`];
-      console.log("apply ", activeView, activeTab.feed, pageScrollPosition);
       window.scroll(0, pageScrollPosition);
     } else {
       window.scroll(0, 0);

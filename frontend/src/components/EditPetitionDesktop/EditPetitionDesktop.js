@@ -140,6 +140,7 @@ const EditPetitionDesktop = ({
               confirmText="Закрыть"
               cancelText=""
               onConfirm={() => setPopout()}
+              onClose={() => setPopout()}
               className="PetitionCardDesktop__modal"
             >
               Слишком большой размер файла
@@ -154,6 +155,7 @@ const EditPetitionDesktop = ({
               confirmText="Закрыть"
               cancelText=""
               onConfirm={() => setPopout()}
+              onClose={() => setPopout()}
               className="PetitionCardDesktop__modal"
             >
               Неизвестный тип файла
