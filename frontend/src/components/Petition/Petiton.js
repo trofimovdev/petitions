@@ -16,7 +16,8 @@ import {
   Button,
   Placeholder,
   Snackbar,
-  ANDROID
+  ANDROID,
+  Alert,
 } from "@vkontakte/vkui";
 import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
@@ -29,12 +30,12 @@ import { connect } from "react-redux";
 import Linkify from "react-linkify";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
-import { goBack } from "../../store/router/actions";
+import { closePopout, goBack, openPopout } from "../../store/router/actions";
 import { setCurrent } from "../../store/petitions/actions";
 import {
   loadPetitions,
   userStackText,
-  reportPetition
+  reportPetition,
 } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
@@ -45,7 +46,9 @@ const Petition = ({
   currentPetition,
   activePanel,
   setCurrent,
-  launchParameters
+  launchParameters,
+  openPopout,
+  closePopout
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(true);
@@ -322,15 +325,42 @@ const Petition = ({
                 if (reportStatus) {
                   return;
                 }
-                setReportStatus(1);
-                reportPetition(currentPetition.id)
-                  .then(() => {
-                    setReportStatus(2);
-                  })
-                  .catch(({ message }) => {
-                    setSnackbarError(message);
-                    setReportStatus(0);
-                  });
+                openPopout(
+                  <Alert
+                    actionsLayout="vertical"
+                    onClose={() => closePopout()}
+                    actions={[
+                      {
+                        title: "Пожаловаться",
+                        autoclose: true,
+                        mode: "destructive",
+                        action: () => {
+                          closePopout();
+                          setReportStatus(1);
+                          reportPetition(currentPetition.id)
+                            .then(() => {
+                              setReportStatus(2);
+                            })
+                            .catch(({ message }) => {
+                              setSnackbarError(message);
+                              setReportStatus(0);
+                            });
+                        }
+                      },
+                      {
+                        title: "Отмена",
+                        autoclose: true,
+                        mode: "cancel"
+                      }
+                    ]}
+                  >
+                    <h2>Подтвердите действие</h2>
+                    <p>
+                      Вы действительно хотите удалить петицию? Это действие
+                      нельзя будет отменить.
+                    </p>
+                  </Alert>
+                );
               }}
             >
               {reportStatus === 0 ? (
@@ -364,7 +394,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   goBack,
-  setCurrent
+  setCurrent,
+  openPopout,
+  closePopout
 };
 
 Petition.propTypes = {
@@ -373,7 +405,9 @@ Petition.propTypes = {
   currentPetition: PropTypes.object,
   activePanel: PropTypes.string.isRequired,
   setCurrent: PropTypes.func.isRequired,
-  launchParameters: PropTypes.object.isRequired
+  launchParameters: PropTypes.object.isRequired,
+  openPopout: PropTypes.func.isRequired,
+  closePopout: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Petition);
