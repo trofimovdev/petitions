@@ -129,6 +129,10 @@
   .Snackbar {
     padding-bottom: calc(68px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара
   }
+
+  &--signed .Snackbar {
+    padding-bottom: calc(68px + 38px + var(--safe-area-inset-bottom)) !important; // 68px - высота таббара, 34px - высота зеленой надписи
+  }
 }
 
 .Petition .PullToRefresh {

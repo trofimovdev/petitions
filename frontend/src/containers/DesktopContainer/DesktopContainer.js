@@ -11,8 +11,13 @@ import SplashScreenDesktop from "../../components/SplashScreenDesktop/SplashScre
 
 const DesktopContainer = ({ activeTab, activeView, scrollPosition }) => {
   useEffect(() => {
-    const pageScrollPosition = scrollPosition[`petitions_${activeTab.feed}`];
-    window.scroll(0, pageScrollPosition);
+    if (activeView !== "edit") {
+      const pageScrollPosition = scrollPosition[`petitions_${activeTab.feed}`];
+      console.log("apply ", activeView, activeTab.feed, pageScrollPosition);
+      window.scroll(0, pageScrollPosition);
+    } else {
+      window.scroll(0, 0);
+    }
     return () => {};
   }, [activeView, activeTab, scrollPosition]);
 
