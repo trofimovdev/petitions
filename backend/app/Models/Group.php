@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Consts;
 use ErrorException;
 use Illuminate\Support\Facades\Redis;
 use VK\Client\Enums\VKLanguage;
@@ -61,7 +62,7 @@ class Group
 
         $groups = [];
         try {
-            $vk = new VKApiClient(config('app.api_version'), VKLanguage::RUSSIAN);
+            $vk = new VKApiClient(Consts::API_VERSION, VKLanguage::RUSSIAN);
             $groupsData = $vk->groups()->getById(config('app.service'), [
                 'group_ids'  => $groupIds,
                 'fields'    => $fields,

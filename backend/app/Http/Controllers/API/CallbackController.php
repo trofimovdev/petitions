@@ -2,32 +2,36 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Console\Commands\AddCallbackServer;
+use App\Consts;
 use App\Http\Controllers\Controller as Controller;
 use App\Models\Petition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
 
 class CallbackController extends Controller
 {
-    const CHAT_OFFSET = 2000000000;
-    const CHAT_ID = 1;
-
     public function store(Request $request)
     {
         if ($request->secret !== config('app.callback_secret')) {
             return;
         }
-        $vk = new VKApiClient(config('app.api_version'), VKLanguage::RUSSIAN);
+        $vk = new VKApiClient(Consts::API_VERSION, VKLanguage::RUSSIAN);
         switch ($request->type) {
             case 'confirmation':
-                echo config('app.callback_confirmation_code');
-                break;
+                echo Redis::get(AddCallbackServer::KEY);
+                return;
 
             case 'message_event':
+                if ($request->object['peer_id'] !== (int)config('app.reports_peer_id')) {
+                    break;
+                }
+                $petition = Petition::where('id', '=', $request->object['payload']['petitionId'])
+                    ->first();
+                $message = '@id' . $request->object['payload']['userId'] . ' оставил жалобу на петицию №' . $petition['id'] . ' «' . $petition['title'] . '»' . "\n\n#user" . $request->object['payload']['userId'];
                 if ($request->object['payload']['action'] === 'delete') {
-                    $petition = Petition::where('id', '=', $request->object['payload']['petitionId'])
-                        ->first();
                     if ($petition) {
                         if (!is_null($petition->mobile_photo_url)) {
                             $mobilePhotoUrl = explode(config('app.server_url'), $petition->mobile_photo_url)[1];
@@ -41,16 +45,50 @@ class CallbackController extends Controller
                     }
                     $vk->messages()->edit(config('app.group_api_key'), [
                         'peer_id' => $request->object['peer_id'],
-                        'keyboard' => [],
-                        'message' => "Удалена\n\n" . $request->object['payload']['message'],
+                        'keyboard' => json_encode(
+                            [
+                                'buttons' => [
+                                    [
+                                        [
+                                            'action' => [
+                                                'type' => 'open_app',
+                                                'app_id' => config('app.id'),
+                                                'payload' => '',
+                                                'label' => 'Открыть',
+                                                'hash' => 'p' . $petition['id']
+                                            ]
+                                        ]
+                                    ]
+                                ],
+                                'inline' => true
+                            ]
+                        ),
+                        'message' => "Удалена\n\n" . $message,
                         'conversation_message_id' => $request->object['conversation_message_id']
                     ]);
                     break;
                 }
                 $vk->messages()->edit(config('app.group_api_key'), [
                     'peer_id' => $request->object['peer_id'],
-                    'keyboard' => [],
-                    'message' => "Все ок\n\n" . $request->object['payload']['message'],
+                    'keyboard' => json_encode(
+                        [
+                            'buttons' => [
+                                [
+                                    [
+                                        'action' => [
+                                            'type' => 'open_app',
+                                            'app_id' => config('app.id'),
+                                            'payload' => '',
+                                            'label' => 'Открыть',
+                                            'hash' => 'p' . $petition['id']
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            'inline' => true
+                        ]
+                    ),
+                    'message' => "Все ок\n\n" . $message,
                     'conversation_message_id' => $request->object['conversation_message_id']
                 ]);
                 break;

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Consts;
 use App\Http\Controllers\API\CallbackController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
@@ -16,12 +17,10 @@ class Report extends Model
 
     public static function incrementCounter(int $userId)
     {
-        if (!Redis::exists(Report::PREFIX . $userId)) {
-            Redis::setex(Report::PREFIX . $userId, Report::TTL, 1);
+        if (Redis::set(Report::PREFIX . $userId, 1, 'NX', 'EX', Report::TTL)) {
             return;
         }
         Redis::incr(Report::PREFIX . $userId);
-        return;
     }
 
     public static function getCounter(int $userId)
@@ -33,10 +32,10 @@ class Report extends Model
     {
         Report::incrementCounter($userId);
         $message = '@id' . $userId . ' оставил жалобу на петицию №' . $petition['id'] . ' «' . $petition['title'] . '»' . "\n\n#user" . $userId;
-        $vk = new VKApiClient(config('app.api_version'), VKLanguage::RUSSIAN);
+        $vk = new VKApiClient(Consts::API_VERSION, VKLanguage::RUSSIAN);
         $vk->messages()->send(config('app.group_api_key'), [
-            'peer_id' => CallbackController::CHAT_OFFSET + CallbackController::CHAT_ID,
-            'random_id' => rand(PHP_INT_MIN, PHP_INT_MAX),
+            'peer_id' => config('app.reports_peer_id'),
+            'random_id' => 0,
             'message' => $message,
             'keyboard' => json_encode(
                 [
@@ -56,7 +55,7 @@ class Report extends Model
                             [
                                 'action' => [
                                     'type' => 'callback',
-                                    'payload' => '{"action": "delete", "petitionId": ' . $petition['id'] . ', "message": ' . json_encode($message) . '}',
+                                    'payload' => '{"action": "delete", "petitionId": ' . $petition['id'] . ', "userId": ' . $userId . '}',
                                     'label' => 'Удалить'
                                 ],
                                 'color' => 'negative'
@@ -64,7 +63,7 @@ class Report extends Model
                             [
                                 'action' => [
                                     'type' => 'callback',
-                                    'payload' => '{"action": "ok", "petitionId": ' . $petition['id'] . ', "message": ' . json_encode($message) . '}',
+                                    'payload' => '{"action": "ok", "petitionId": ' . $petition['id'] . ', "userId": ' . $userId . '}',
                                     'label' => 'Все ок'
                                 ],
                                 'color' => 'positive'
