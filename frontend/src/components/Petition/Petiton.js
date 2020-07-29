@@ -17,7 +17,7 @@ import {
   Placeholder,
   Snackbar,
   ANDROID,
-  Alert,
+  Alert
 } from "@vkontakte/vkui";
 import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
@@ -35,7 +35,7 @@ import { setCurrent } from "../../store/petitions/actions";
 import {
   loadPetitions,
   userStackText,
-  reportPetition,
+  reportPetition
 } from "../../tools/helpers";
 
 const api = new VKMiniAppAPI();
@@ -317,62 +317,74 @@ const Petition = ({
                   );
                 })}
             </Cell>
-            <Separator />
-            <Cell
-              className="Petition__report"
-              before={<Icon28ReportOutline />}
-              onClick={() => {
-                if (reportStatus) {
-                  return;
-                }
-                openPopout(
-                  <Alert
-                    actionsLayout="vertical"
-                    onClose={() => closePopout()}
-                    actions={[
-                      {
-                        title: "Пожаловаться",
-                        autoclose: true,
-                        mode: "destructive",
-                        action: () => {
-                          closePopout();
-                          setReportStatus(1);
-                          reportPetition(currentPetition.id)
-                            .then(() => {
-                              setReportStatus(2);
-                            })
-                            .catch(({ message }) => {
-                              setSnackbarError(message);
-                              setReportStatus(0);
-                            });
-                        }
-                      },
-                      {
-                        title: "Отмена",
-                        autoclose: true,
-                        mode: "cancel"
+            {currentPetition.owner_id !==
+              parseInt(launchParameters.vk_user_id) && (
+              <>
+                <Separator />
+                {!reportStatus ? (
+                  <Cell
+                    className="Petition__report"
+                    before={<Icon28ReportOutline />}
+                    onClick={() => {
+                      if (reportStatus) {
+                        return;
                       }
-                    ]}
+                      openPopout(
+                        <Alert
+                          actionsLayout="vertical"
+                          onClose={() => closePopout()}
+                          actions={[
+                            {
+                              title: "Пожаловаться",
+                              autoclose: true,
+                              mode: "destructive",
+                              action: () => {
+                                closePopout();
+                                setReportStatus(1);
+                                reportPetition(currentPetition.id)
+                                  .then(() => {
+                                    setReportStatus(2);
+                                  })
+                                  .catch(({ message }) => {
+                                    setSnackbarError(message);
+                                    setReportStatus(0);
+                                  });
+                              }
+                            },
+                            {
+                              title: "Отмена",
+                              autoclose: true,
+                              mode: "cancel"
+                            }
+                          ]}
+                        >
+                          <h2>Подтвердите действие</h2>
+                          <p>
+                            Вы действительно хотите оставить жалобу на эту
+                            петицию? Это действие нельзя будет отменить.
+                          </p>
+                        </Alert>
+                      );
+                    }}
                   >
-                    <h2>Подтвердите действие</h2>
-                    <p>
-                      Вы действительно хотите удалить петицию? Это действие
-                      нельзя будет отменить.
-                    </p>
-                  </Alert>
-                );
-              }}
-            >
-              {reportStatus === 0 ? (
-                <>Пожаловаться на петицию</>
-              ) : reportStatus === 1 ? (
-                <>
-                  Пожаловаться на петицию <Spinner size="small" />
-                </>
-              ) : (
-                <>Жалоба отправлена</>
-              )}
-            </Cell>
+                    Пожаловаться на петицию
+                  </Cell>
+                ) : (
+                  <Cell
+                    className="Petition__report"
+                    before={<Icon28ReportOutline />}
+                  >
+                    {reportStatus === 1 ? (
+                      <>
+                        Пожаловаться на петицию <Spinner size="small" />
+                      </>
+                    ) : (
+                      <>Жалоба отправлена</>
+                    )}
+                  </Cell>
+                )}
+              </>
+            )}
           </PullToRefresh>
           <PetitionTabbar setSnackbarError={setSnackbarError} />
         </>

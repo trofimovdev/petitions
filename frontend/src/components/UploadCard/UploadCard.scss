@@ -99,8 +99,9 @@
       font-weight: normal;
     }
 
-    &__l .UploadCard__card,
-    &__l .UploadCard__card__content {
+    &__m,
+    &__m .UploadCard__card,
+    &__m .UploadCard__card__content {
       height: 151px;
       width: 283px;
 
@@ -110,8 +111,8 @@
       }
     }
 
-    &__m .UploadCard__card,
-    &__m .UploadCard__card__content {
+    &__l .UploadCard__card,
+    &__l .UploadCard__card__content {
       height: 151px !important;
     }
   }
