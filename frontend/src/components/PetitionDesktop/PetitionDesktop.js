@@ -398,6 +398,7 @@ const PetitionDesktop = ({
                                     confirmText="Закрыть"
                                     cancelText=""
                                     onConfirm={() => setPopout()}
+                                    onClose={() => setPopout()}
                                     className="PetitionCardDesktop__modal"
                                   >
                                     {message}
