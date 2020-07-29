@@ -10,7 +10,8 @@ import {
   TooltipTag,
   Button,
   FadeInOut,
-  Gray
+  Gray,
+  ModalDialog
 } from "@happysanta/vk-app-ui";
 import EXIF from "exif-js";
 import UploadCard from "../UploadCard/UploadCard";
@@ -36,6 +37,7 @@ const EditPetitionDesktop = ({
 }) => {
   const [fetchingStatus, setFetchingStatus] = useState(null);
   const [ts, setTs] = useState({ time: undefined, message: undefined });
+  const [popout, setPopout] = useState(undefined);
   const MAX_FILE_SIZE = 10 * 10 ** 6; // максимальный размер - 10 мегабайт
 
   const checkFileSize = fileSize => {
@@ -131,7 +133,32 @@ const EditPetitionDesktop = ({
         const preview = j.target.result;
         const file = files[0];
         const fileSize = j.total; // в байтах
-        if (!checkFileSize(fileSize) || !checkFileType(file.type)) {
+        if (!checkFileSize(fileSize)) {
+          setPopout(
+            <ModalDialog
+              header="Что-то пошло не так"
+              confirmText="Закрыть"
+              cancelText=""
+              onConfirm={() => setPopout()}
+              className="PetitionCardDesktop__modal"
+            >
+              Слишком большой размер файла
+            </ModalDialog>
+          );
+          return;
+        }
+        if (!checkFileType(file.type)) {
+          setPopout(
+            <ModalDialog
+              header="Что-то пошло не так"
+              confirmText="Закрыть"
+              cancelText=""
+              onConfirm={() => setPopout()}
+              className="PetitionCardDesktop__modal"
+            >
+              Неизвестный тип файла
+            </ModalDialog>
+          );
           return;
         }
         EXIF.getData(file, function() {
@@ -266,7 +293,7 @@ const EditPetitionDesktop = ({
             id={2}
             text="Загрузить обложку"
             icon={<Icon48Camera />}
-            size="m"
+            size="l"
             onChange={handleFiles}
             onCancel={onCancel}
             img={form.file2_preview ? form.file2_preview : null}
@@ -284,7 +311,7 @@ const EditPetitionDesktop = ({
             id={1}
             text="Загрузить обложку"
             icon={<Icon48Camera />}
-            size="l"
+            size="m"
             onChange={handleFiles}
             onCancel={onCancel}
             img={form.file1_preview ? form.file1_preview : null}
@@ -407,6 +434,7 @@ const EditPetitionDesktop = ({
           </FadeInOut>
         </Div>
       </Div>
+      {popout}
     </div>
   );
 };

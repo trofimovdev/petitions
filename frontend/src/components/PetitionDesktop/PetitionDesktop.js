@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import {Button, ModalDialog, Notify} from "@happysanta/vk-app-ui";
+import { Button, ModalDialog, Notify } from "@happysanta/vk-app-ui";
 import {
   Avatar,
   Cell,
@@ -369,58 +369,64 @@ const PetitionDesktop = ({
                 </a>
               }
               asideContent={
-                <div
-                  onClick={() => {
-                    if (reportStatus) {
-                      return;
-                    }
-                    setPopout(
-                      <ModalDialog
-                        header="Подтвердите действие"
-                        confirmText="Пожаловаться"
-                        cancelText="Отменить"
-                        className="PetitionCardDesktop__modal"
-                        onClose={() => setPopout()}
-                        onConfirm={() => {
-                          setPopout();
-                          setReportStatus(1);
-                          reportPetition(currentPetition.id)
-                            .then(() => {
-                              setReportStatus(2);
-                            })
-                            .catch(({ message }) => {
-                              setReportStatus(0);
-                              setPopout(
-                                <ModalDialog
-                                  header="Что-то пошло не так"
-                                  confirmText="Закрыть"
-                                  cancelText=""
-                                  onConfirm={() => setPopout()}
-                                  className="PetitionCardDesktop__modal"
-                                >
-                                  {message}
-                                </ModalDialog>
-                              );
-                            });
-                        }}
-                      >
-                        Вы действительно хотите оставить жалобу на эту петицию?
-                        <br />
-                        Это действие нельзя будет отменить.
-                      </ModalDialog>
-                    );
-                  }}
-                >
-                  {reportStatus === 0 ? (
-                    <Icon24Report className="PetitionDesktop__report" />
-                  ) : reportStatus === 1 ? (
-                    <Spinner size="regular" />
-                  ) : reportStatus === 2 ? (
-                    <Icon24Done className="PetitionDesktop__report" />
-                  ) : (
-                    <></>
-                  )}
-                </div>
+                currentPetition.owner_id !==
+                parseInt(launchParameters.vk_user_id) ? (
+                  <div
+                    onClick={() => {
+                      if (reportStatus) {
+                        return;
+                      }
+                      setPopout(
+                        <ModalDialog
+                          header="Подтвердите действие"
+                          confirmText="Пожаловаться"
+                          cancelText="Отменить"
+                          className="PetitionCardDesktop__modal"
+                          onClose={() => setPopout()}
+                          onConfirm={() => {
+                            setPopout();
+                            setReportStatus(1);
+                            reportPetition(currentPetition.id)
+                              .then(() => {
+                                setReportStatus(2);
+                              })
+                              .catch(({ message }) => {
+                                setReportStatus(0);
+                                setPopout(
+                                  <ModalDialog
+                                    header="Что-то пошло не так"
+                                    confirmText="Закрыть"
+                                    cancelText=""
+                                    onConfirm={() => setPopout()}
+                                    className="PetitionCardDesktop__modal"
+                                  >
+                                    {message}
+                                  </ModalDialog>
+                                );
+                              });
+                          }}
+                        >
+                          Вы действительно хотите оставить жалобу на эту
+                          петицию?
+                          <br />
+                          Это действие нельзя будет отменить.
+                        </ModalDialog>
+                      );
+                    }}
+                  >
+                    {reportStatus === 0 ? (
+                      <Icon24Report className="PetitionDesktop__report" />
+                    ) : reportStatus === 1 ? (
+                      <Spinner size="regular" />
+                    ) : reportStatus === 2 ? (
+                      <Icon24Done className="PetitionDesktop__report" />
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                ) : (
+                  <></>
+                )
               }
               multiline
             >
