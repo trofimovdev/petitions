@@ -38,6 +38,7 @@ class Petition extends Model
     const TYPE_MANAGED = 'managed';
     const ACTION_TYPE_EDIT = 'edit';
     const MAX_PETITIONS_PER_HOUR = 3;
+    const MIN_SIGNATURES_LAST = 100;
 
     public static function getPopular(int $offset = 0, array $friendIds = [])
     {
@@ -82,6 +83,7 @@ class Petition extends Model
                 ->get();
         } else {
             $petitions = Petition::where('completed', '=', 'false')
+                ->where('count_signatures', '>', Petition::MIN_SIGNATURES_LAST)
                 ->latest('created_at')
                 ->offset($offset)
                 ->limit(10)
