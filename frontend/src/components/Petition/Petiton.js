@@ -17,7 +17,8 @@ import {
   Placeholder,
   Snackbar,
   ANDROID,
-  Alert
+  Alert,
+  PromoBanner
 } from "@vkontakte/vkui";
 import "./Petition.css";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
@@ -28,6 +29,7 @@ import { VKMiniAppAPI } from "@vkontakte/vk-mini-apps-api";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Linkify from "react-linkify";
+import bridge from "@vkontakte/vk-bridge";
 import PetitionProgress from "../PetitionProgress/PetitionProgress";
 import PetitionTabbar from "../PetitionTabbar/PetitionTabbar";
 import { closePopout, goBack, openPopout } from "../../store/router/actions";
@@ -55,6 +57,7 @@ const Petition = ({
   const [headerStatus, setHeaderStatus] = useState("hidden");
   const [snackbar, setSnackbar] = useState(null);
   const [reportStatus, setReportStatus] = useState(0);
+  const [promoBannerProps, setPromoBannerProps] = useState(null);
   const platform = usePlatform();
 
   const setSnackbarError = message => {
@@ -120,8 +123,10 @@ const Petition = ({
 
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
+    bridge.send("VKWebAppGetAds").then(e => setPromoBannerProps(e));
     return () => {
       window.removeEventListener("scroll", onScroll);
+      setPromoBannerProps(null);
     };
   }, [currentPetition]);
 
@@ -384,6 +389,12 @@ const Petition = ({
                   </Cell>
                 )}
               </>
+            )}
+            {promoBannerProps && (
+              <PromoBanner
+                bannerData={promoBannerProps}
+                onClose={() => setPromoBannerProps(null)}
+              />
             )}
           </PullToRefresh>
           <PetitionTabbar setSnackbarError={setSnackbarError} />
